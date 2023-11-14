@@ -36,7 +36,7 @@ Get for all label the unique property, after a : is the label and after a . is t
 
 
 def generate_dictionary_for_labels():
-    query='SHOW INDEXES'
+    query = 'SHOW INDEXES'
     results = g.run(query)
     # version <=4.0
     # query = '''CALL db.constraints'''
@@ -46,11 +46,15 @@ def generate_dictionary_for_labels():
         # label = constraint_string.split(':')[1].split(' )')[0]
         # unique_property = constraint_string.split('.')[1].split(' ')[0]
         # dict_label_to_unique_prop[label] = unique_property
-        [id,name,state,populationPercent,type,entityType,labelsOrTypes,properties,indexProvider,owningConstraint] = record.values()
+        # [id,name,state,populationPercent,type,entityType,labelsOrTypes,properties,indexProvider,owningConstraint] = record.values()
+        # [id,name,state,populationPercent,type,entityType,labelsOrTypes,properties,indexProvider,owningConstraint, lastRead,readCount] = record.values()
+        dict_key_value = record.data()
+        labelsOrTypes = dict_key_value['labelsOrTypes']
+        properties = dict_key_value['properties']
         if labelsOrTypes:
-            if len(labelsOrTypes)>1:
+            if len(labelsOrTypes) > 1:
                 sys.exit('ohno, multiple labels')
-            if len(properties)>1:
+            if len(properties) > 1:
                 sys.exit('ohno multiple properties')
             dict_label_to_unique_prop[labelsOrTypes[0]] = properties[0]
 
