@@ -160,7 +160,7 @@ def prepare_clinical_significance(node):
     clinical_significance = node.find('ClinicalSignificance')
     if clinical_significance is not None:
         date = clinical_significance.get('DateLastEvaluated')
-        dict_significance = {'date': date}
+        dict_significance = {'date': date} if date is not None else {}
         check_for_information_and_add_to_dictionary_with_extra_name('ReviewStatus', clinical_significance,
                                                                     dict_significance,
                                                                     name='review_status')
@@ -414,9 +414,13 @@ def fusion_of_them(node_dictionary, list_measures):
         for key, value in dict_measures.items():
             if key == 'allele_id':
                 if value in dict_allele_id_to_variant_id:
-                    sys.exit('allele and variant id are not unique?')
+                    print(value)
+                    print('exist', dict_allele_id_to_variant_id[value])
+                    print('new', node_dictionary['identifier'])
+                    print('allele and variant id are not unique?')
+                    dict_allele_id_to_variant_id[value].add(node_dictionary['identifier'])
                 else:
-                    dict_allele_id_to_variant_id[value] = node_dictionary['identifier']
+                    dict_allele_id_to_variant_id[value] = set([node_dictionary['identifier']])
             if key not in node_dictionary:
                 node_dictionary[key] = value
             else:
@@ -572,10 +576,10 @@ def prepare_rela_between_variations(node, variant_id, id_name, tag_name, from_ty
         if not (from_type, to_type) in edge_between_variations:
             dict_rela_type_pair_to_count[(from_type, to_type)] = 0
             edge_between_variations[(from_type, to_type)] = set()
-            file_edge = open(
-                'data/edge_' + prepare_for_file_name_and_label(from_type) + '_' + prepare_for_file_name_and_label(
-                    to_type) + '.tsv',
-                'w', encoding='utf-8')
+            file_name = path_of_clinvar_data + 'data/edge_' + prepare_for_file_name_and_label(
+                from_type) + '_' + prepare_for_file_name_and_label(
+                to_type) + '.tsv'
+            file_edge = open(file_name, 'w', encoding='utf-8')
             csv_writer = csv.writer(file_edge, delimiter='\t')
             csv_writer.writerow([id_name, 'other_id'])
             dict_tsv_edge_variations[(from_type, to_type)] = csv_writer
@@ -584,9 +588,7 @@ def prepare_rela_between_variations(node, variant_id, id_name, tag_name, from_ty
 
                 prepare_for_file_name_and_label(from_type), id_name,
                 prepare_for_file_name_and_label(to_type), 'other_id')
-            query = pharmebinetutils.get_query_import(path_of_directory,
-                                                      f'import_into_Neo4j/ClinVar/data/edge_{prepare_for_file_name_and_label(from_type)}_{prepare_for_file_name_and_label(to_type)}.tsv',
-                                                      query)
+            query = pharmebinetutils.get_query_import('', file_name, query)
             cypher_file_edges.write(query)
         if (variant_id, single_variation_id) not in edge_between_variations[(from_type, to_type)]:
             dict_rela_type_pair_to_count[(from_type, to_type)] += 1
@@ -617,7 +619,8 @@ def get_all_single_allele_infos_and_add_to_list(node, variation_id=None):
         if specific_type not in dict_variation_to_node_ids['Variant']:
             dict_specific_to_general_type[specific_type] = 'Variant'
             dict_variation_to_node_ids['Variant'][specific_type] = set()
-            file_type = open('data/' + prepare_for_file_name_and_label(specific_type) + '.tsv', 'w', encoding='utf-8')
+            file_name = path_of_clinvar_data + 'data/' + prepare_for_file_name_and_label(specific_type) + '.tsv'
+            file_type = open(file_name, 'w', encoding='utf-8')
             # csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=header_variation, escapechar="\\",
             #                                  doublequote=False)
             csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=header_variation, quotechar='"')
@@ -702,16 +705,16 @@ def observation_information_preparation(node, dict_used):
         sample = observation.find('Sample')
         sample_information = {}
         species = sample.find('Species')
-        if species is not None:
+        if species is not None and species.text is not None:
             species_text = species.text.lower()
             if species_text == 'human' or species_text == 'homo sapiens':
                 found_human = True
             else:
                 if species_text not in set_of_species:
+                    print(species_text)
                     print('other than human')
                     print(node.get('ID'))
-                    print(species.text)
-                    set_of_species.add(species.text)
+                    set_of_species.add(species_text)
                 # sys.exit('other the human')
 
         check_for_information_and_add_to_dictionary_with_extra_name('Origin', sample, sample_information,
@@ -846,10 +849,10 @@ extract relationships information from full release
 def get_information_from_full_relase():
     print(datetime.datetime.now(), 'start download')
 
-    filename = path_of_clinvar_data + 'clinvar/ClinVarFullRelease_00-latest.xml.gz'
+    filename = path_of_clinvar_data + 'ClinVarFullRelease_00-latest.xml.gz'
     if not os.path.exists(filename):
         url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarFullRelease_00-latest.xml.gz'
-        filename = pharmebinetutils.download_file(url,out=path_of_clinvar_data + 'clinvar/')
+        filename = pharmebinetutils.download_file(url, out=path_of_clinvar_data )
     file = gzip.open(filename, 'rb')
     print(datetime.datetime.now(), 'end download')
     # file = open('ClinVarFullRelease_00-latest.xml', 'rb')
@@ -976,33 +979,32 @@ def get_information_from_full_relase():
                             measure_type = measure.get('Type')
                             allele_id = measure.get('ID')
                             if allele_id in dict_allele_id_to_variant_id:
-                                measure_id = dict_allele_id_to_variant_id[allele_id]
-                                if not (type_measure_set, measure_type) in edge_between_variations:
-                                    dict_rela_type_pair_to_count[(type_measure_set, measure_type)] = 0
-                                    edge_between_variations[(type_measure_set, measure_type)] = set()
-                                    file_edge = open(
-                                        'data/edge_' + prepare_for_file_name_and_label(
+                                for measure_id in dict_allele_id_to_variant_id[allele_id]:
+                                    if not (type_measure_set, measure_type) in edge_between_variations:
+                                        dict_rela_type_pair_to_count[(type_measure_set, measure_type)] = 0
+                                        edge_between_variations[(type_measure_set, measure_type)] = set()
+                                        file_name = path_of_clinvar_data + 'data/edge_' + prepare_for_file_name_and_label(
                                             type_measure_set) + '_' + prepare_for_file_name_and_label(
-                                            measure_type) + '.tsv',
-                                        'w', encoding='utf-8')
-                                    csv_writer = csv.writer(file_edge, delimiter='\t')
-                                    csv_writer.writerow(['haplo', 'other_id'])
-                                    dict_tsv_edge_variations[(type_measure_set, measure_type)] = csv_writer
+                                            measure_type) + '.tsv'
+                                        file_edge = open(file_name, 'w', encoding='utf-8')
+                                        csv_writer = csv.writer(file_edge, delimiter='\t')
+                                        csv_writer.writerow(['haplo', 'other_id'])
+                                        dict_tsv_edge_variations[(type_measure_set, measure_type)] = csv_writer
 
-                                    query = query_edge_variation % (
-                                        prepare_for_file_name_and_label(type_measure_set), 'haplo',
-                                        prepare_for_file_name_and_label(measure_type), 'other_id')
-                                    query = pharmebinetutils.get_query_import(path_of_directory,
-                                                                              f'import_into_Neo4j/ClinVar/data/edge_{prepare_for_file_name_and_label(type_measure_set)}_{prepare_for_file_name_and_label(measure_type)}.tsv',
-                                                                              query)
-                                    cypher_file_edges.write(query)
-                                if (variant_id, measure_id) not in edge_between_variations[
-                                    (type_measure_set, measure_type)]:
-                                    dict_rela_type_pair_to_count[(type_measure_set, measure_type)] += 1
-                                    edge_between_variations[(type_measure_set, measure_type)].add(
-                                        (type_measure_set, measure_type))
-                                    dict_tsv_edge_variations[(type_measure_set, measure_type)].writerow(
-                                        [variant_id, measure_id])
+                                        query = query_edge_variation % (
+                                            prepare_for_file_name_and_label(type_measure_set), 'haplo',
+                                            prepare_for_file_name_and_label(measure_type), 'other_id')
+                                        query = pharmebinetutils.get_query_import('',
+                                                                                  file_name,
+                                                                                  query)
+                                        cypher_file_edges.write(query)
+                                    if (variant_id, measure_id) not in edge_between_variations[
+                                        (type_measure_set, measure_type)]:
+                                        dict_rela_type_pair_to_count[(type_measure_set, measure_type)] += 1
+                                        edge_between_variations[(type_measure_set, measure_type)].add(
+                                            (type_measure_set, measure_type))
+                                        dict_tsv_edge_variations[(type_measure_set, measure_type)].writerow(
+                                            [variant_id, measure_id])
                             else:
                                 print(variant_id)
                                 print(allele_id)
@@ -1038,8 +1040,8 @@ def get_information_from_full_relase():
 
             if not trait_set_type in dict_trait_set_type_dictionary:
                 dict_trait_set_type_dictionary[trait_set_type] = set()
-
-                writer = open('data/trait_set_' + trait_set_type + '.tsv', 'w', encoding='utf-8')
+                file_name = path_of_clinvar_data + 'data/trait_set_' + trait_set_type + '.tsv'
+                writer = open(file_name, 'w', encoding='utf-8')
                 # csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, escapechar="\\",
                 #                             doublequote=False)
                 csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, quotechar='"')
@@ -1061,10 +1063,9 @@ def get_information_from_full_relase():
                     if (trait_set_type, trait_type) not in dict_edge_traits:
                         dict_rela_type_pair_to_count[(trait_set_type, trait_type)] = 0
                         dict_edge_traits[(trait_set_type, trait_type)] = set()
-                        file_edge = open(
-                            'data/edge_' + prepare_for_file_name_and_label(
-                                trait_set_type) + '_' + prepare_for_file_name_and_label(trait_type) + '.tsv',
-                            'w', encoding='utf-8')
+                        file_name = path_of_clinvar_data + 'data/edge_' + prepare_for_file_name_and_label(
+                            trait_set_type) + '_' + prepare_for_file_name_and_label(trait_type) + '.tsv'
+                        file_edge = open(file_name, 'w', encoding='utf-8')
                         csv_writer = csv.writer(file_edge, delimiter='\t')
                         csv_writer.writerow(['trait_set_id', 'trait_id'])
                         dict_tsv_edge_variations[(trait_set_type, trait_type)] = csv_writer
@@ -1072,9 +1073,7 @@ def get_information_from_full_relase():
                         query = query_edge_variation % (
                             'trait_set_' + prepare_for_file_name_and_label(trait_set_type),
                             'trait_set_id', 'trait_' + prepare_for_file_name_and_label(trait_type), 'trait_id')
-                        query = pharmebinetutils.get_query_import(path_of_directory,
-                                                                  f'import_into_Neo4j/ClinVar/data/edge_{prepare_for_file_name_and_label(trait_set_type)}_{prepare_for_file_name_and_label(trait_type)}.tsv',
-                                                                  query)
+                        query = pharmebinetutils.get_query_import('', file_name, query)
                         cypher_file_edges.write(query)
                     if (trait_set_id, trait_identifier) not in dict_edge_traits[(trait_set_type, trait_type)]:
                         dict_rela_type_pair_to_count[(trait_set_type, trait_type)] += 1
@@ -1085,8 +1084,8 @@ def get_information_from_full_relase():
 
                     if not trait_type in dict_trait_type_dictionary:
                         dict_trait_type_dictionary[trait_type] = set()
-
-                        writer = open('data/trait_' + trait_type + '.tsv', 'w', encoding='utf-8')
+                        file_name = path_of_clinvar_data + 'data/trait_' + trait_type + '.tsv'
+                        writer = open(file_name, 'w', encoding='utf-8')
                         # csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, escapechar="\\",
                         #                             doublequote=False)
                         csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, quotechar='"')
@@ -1230,8 +1229,8 @@ def get_information_from_full_relase():
             if (general_type, trait_set_type, final_assertion) not in dict_edges:
                 dict_rela_type_pair_to_count[(general_type, trait_set_type, final_assertion)] = 0
                 dict_edges[(general_type, trait_set_type, final_assertion)] = set()
-                file = open('data/edges/edges_' + general_type + '_' + trait_set_type + '_' + final_assertion + '.tsv',
-                            'w', encoding='utf-8')
+                file_name = path_of_clinvar_data + 'data/edges/edges_' + general_type + '_' + trait_set_type + '_' + final_assertion + '.tsv'
+                file = open(file_name, 'w', encoding='utf-8')
                 # csv_writer = csv.DictWriter(file, fieldnames=edge_information, delimiter='\t', escapechar="\\",
                 #                             doublequote=False)
                 csv_writer = csv.DictWriter(file, fieldnames=edge_information, delimiter='\t', quotechar='"')
@@ -1284,8 +1283,8 @@ def perpare_query_for_edges():
                 query += head + ':line.' + head + ', '
         query = query[:-2] + '}]->(o)'
         query += end_query[:-2]
-        query = pharmebinetutils.get_query_import(path_of_directory,
-                                                  f'import_into_Neo4j/ClinVar/data/edges/edges_{general_type}_{trait_set_type}_{final_assertion}.tsv',
+        query = pharmebinetutils.get_query_import(path_of_clinvar_data,
+                                                  f'data/edges/edges_{general_type}_{trait_set_type}_{final_assertion}.tsv',
                                                   query)
         cypher_file_edges.write(query)
 
@@ -1322,7 +1321,8 @@ def preparation_on_variation_haplo_or_genotype(interpreted_record, variant_id, d
         if variation_type not in dict_variation_to_node_ids['Genotype']:
             dict_specific_to_general_type[variation_type] = 'Genotype'
             dict_variation_to_node_ids['Genotype'][variation_type] = set()
-            file_type = open('data/' + prepare_for_file_name_and_label(variation_type) + '.tsv', 'w', encoding='utf-8')
+            file_name = path_of_clinvar_data + 'data/' + prepare_for_file_name_and_label(variation_type) + '.tsv'
+            file_type = open(file_name, 'w', encoding='utf-8')
             # csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=header_variation, escapechar="\\",
             #                                  doublequote=False)
             csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=header_variation, quotechar='"')
@@ -1365,7 +1365,8 @@ def preparation_on_variation_haplo_or_genotype(interpreted_record, variant_id, d
         if variation_type not in dict_variation_to_node_ids['Haplotype']:
             dict_specific_to_general_type[variation_type] = 'Haplotype'
             dict_variation_to_node_ids['Haplotype'][variation_type] = set()
-            file_type = open('data/' + prepare_for_file_name_and_label(variation_type) + '.tsv', 'w', encoding='utf-8')
+            file_name= path_of_clinvar_data+ 'data/' + prepare_for_file_name_and_label(variation_type) + '.tsv'
+            file_type = open(file_name, 'w', encoding='utf-8')
             # csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=header_variation, escapechar="\\",
             #                                  doublequote=False)
             csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=header_variation, quotechar='"')
@@ -1441,12 +1442,12 @@ get the node information for variations
 
 def extract_node_info_for_variations():
     print(datetime.datetime.now(), 'start download')
-    filename = path_of_clinvar_data + 'clinvar/ClinVarVariationRelease_00-latest.xml.gz'
+    filename = path_of_clinvar_data + 'ClinVarVariationRelease_00-latest.xml.gz'
     if not os.path.exists(filename):
         url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/clinvar_variation/ClinVarVariationRelease_00-latest.xml.gz'
-        path_combi = path_of_clinvar_data + 'clinvar/'
+        path_combi = path_of_clinvar_data
         print(path_combi)
-        filename=pharmebinetutils.download_file(url,out=path_combi)
+        filename = pharmebinetutils.download_file(url, out=path_combi)
 
     file = gzip.open(filename, 'rb')
     print('end download', datetime.datetime.now())
@@ -1517,7 +1518,7 @@ def prepare_content_of_cypher_file(type_variation, dict_set_of_property_which_ar
     else:
         file_name = extra_name + type_variation
         this_query = query % (extra_name + type_variation)
-    this_query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/ClinVar/data/{file_name}.tsv',
+    this_query = pharmebinetutils.get_query_import(path_of_clinvar_data, f'data/{file_name}.tsv',
                                                    this_query)
     cypher_file_nodes.write(this_query)
 
@@ -1559,11 +1560,10 @@ def generate_node_cypher(dict_variation_to_node_ids, list_head, extra_name=None,
 
 def main():
     print(datetime.datetime.now())
-    global path_of_clinvar_data, path_of_directory
-    if len(sys.argv) > 2:
+    global path_of_clinvar_data
+    if len(sys.argv) > 1:
 
-        path_of_directory = sys.argv[1]
-        path_of_clinvar_data = sys.argv[2]
+        path_of_clinvar_data = sys.argv[1]+ 'clinvar/'
     else:
         sys.exit('need a path nd clinvar path')
 
