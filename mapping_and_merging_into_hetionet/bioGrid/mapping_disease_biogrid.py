@@ -37,7 +37,7 @@ def load_diseases_from_database_and_add_to_dict():
         node = record.data()['n']
         identifier = node['identifier']
         dict_disease_id_to_resource[identifier] = node['resource']
-        name = node['name']
+        name = node['name'].lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_synonym_to_ids, name, identifier)
         synonyms = node['synonyms'] if 'synonyms' in node else []
         for synonym in synonyms:
