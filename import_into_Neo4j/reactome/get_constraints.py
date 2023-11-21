@@ -15,7 +15,7 @@ def create_connection_with_neo4j():
     # authenticate("localhost:7474", "neo4j", "test")
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
 def get_the_constraints_and_write_into_file():
@@ -26,7 +26,6 @@ def get_the_constraints_and_write_into_file():
     """
 
     file_with_constraints = open('output/constraint.txt', 'w', encoding='utf-8')
-
 
     # version <=5.X
     query = 'SHOW INDEXES'
@@ -39,8 +38,13 @@ def get_the_constraints_and_write_into_file():
         # Call db.indexes
         # [id, name, state, populationPercent, uniqueness, type, entityType, labelsOrTypes, properties,
         #  provider] = record.values()
-        print(record.values())
-        [id,name,state,populationPercent,type,entityType,labelsOrTypes,properties,indexProvider,owningConstraint] = record.values()
+        # print(record.values())
+        print(record.data())
+        dict_key_value = record.data()
+        labelsOrTypes = dict_key_value['labelsOrTypes']
+        properties = dict_key_value['properties']
+        # [id, name, state, populationPercent, type, entityType, labelsOrTypes, properties, indexProvider,
+        #  owningConstraint, lastRead, readCount] = record.values()
         print(labelsOrTypes)
         if labelsOrTypes:
             for label in labelsOrTypes:
