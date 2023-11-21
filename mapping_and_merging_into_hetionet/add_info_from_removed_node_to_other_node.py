@@ -55,8 +55,11 @@ def generate_dictionary_for_labels():
         # label = constraint_string.split(':')[1].split(' )')[0]
         # unique_property = constraint_string.split('.')[1].split(' ')[0].rsplit(')', 1)[0]
         # dict_label_to_unique_prop[label] = unique_property
-        [id, name, state, populationPercent, type, entityType, labelsOrTypes, properties, indexProvider,
-         owningConstraint] = record.values()
+        # [id, name, state, populationPercent, type, entityType, labelsOrTypes, properties, indexProvider,
+        #  owningConstraint, lastRead, readCount] = record.values()
+        dict_key_value = record.data()
+        labelsOrTypes = dict_key_value['labelsOrTypes']
+        properties = dict_key_value['properties']
         if labelsOrTypes:
             if len(labelsOrTypes) > 1:
                 sys.exit('ohno, multiple labels')
