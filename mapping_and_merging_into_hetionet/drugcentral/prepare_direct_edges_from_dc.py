@@ -92,7 +92,7 @@ def load_and_map_DC_ATC_edges(label1, label2, dc_label_1, dc_label_2, edge_type_
             tsv_writer.writerow([node_1_id, node_2_id, pharmebinetutils.resource_add_and_prepare(
                 dict_pair_to_resource[(node_1_id, node_2_id)], 'DrugCentral'), id_dc])
         else:
-            tsv_writer.writerow([node_1_id, node_2_id, id_dc])
+            tsv_writer.writerow([node_1_id, node_2_id, '', id_dc])
 
 
 def main():
