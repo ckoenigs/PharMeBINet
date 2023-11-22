@@ -12,8 +12,8 @@ polymer_protein_dict = {}
 # dictionary containing monomerids and the corresponding chemical identifiers
 monomer_chemical_dict = {}
 
-# dictionary containing complexids and the corresponding complex identifiers (which are the same actually)
-complex_dict = {}
+# set containing complexids 
+set_complex = set()
 
 # dictionary containing enzyme_reactant_set_ids and chemical identifiers corresponding to monomer_inhibitor
 ers_inhibitor_chem_dict = {}
@@ -38,6 +38,15 @@ ers_substrate_complex_dict = {}
 
 # dictionary containing protein identifiers and the corresponding unpid1
 polymer_edge_dict = {}
+
+# dictionary containing entryid as key and relevant information from assay to be added to the ers nodes
+assay_dict = {}
+
+# dictionary containing entryid as key and relevant information from article (and edge to entry) to be added to the ers nodes
+article_dict = {}
+
+# dictionary containing reactant_set_id and entryid as key and relevant information from ki_result to be added to the ers nodes
+ki_result_dict = {}
 
 
 def create_connection_with_neo4j():
@@ -71,15 +80,62 @@ def load_dictionaries():
         [node_monomer_id, node_chemical_id] = record.values()
         monomer_chemical_dict[node_monomer_id] = node_chemical_id
 
-    query = "MATCH (n:bindingDB_complex_and_names)--(m:Complex) RETURN n.complexid,m.identifier"
+    query = "MATCH (n:bindingDB_complex_and_names)--(m:Complex) RETURN m.identifier"
     results = g.run(query)
     for record in results:
-        [node_BDcomplex_id, node_complex_id] = record.values()
-        complex_dict[node_BDcomplex_id] = node_complex_id
+        [node_complex_id] = record.values()
+        set_complex.add(node_complex_id)
+
+    '''
+        load assay, article and ki_result properties that will be added to the ERS node and store them in the above defined dictionaries
+        '''
+
+    print("Load assay dict")
+    print("#########################################")
+    query = "MATCH (n:bindingDB_assay) return n.entryid, n.description "
+    results = g.run(query)
+    for record in results:
+        [entryid, description] = record.values()
+        if entryid in assay_dict:
+            assay_dict[entryid].add(description)
+        else:
+            s = set()
+            s.add(description)
+            assay_dict[entryid] = s
+
+    print("Load article dict")
+    print("#########################################")
+    # add info from edge to the dict (n)-[r](m) return r.art_purp
+    query = "MATCH (n:bindingDB_article)-[r]-(m:bindingDB_entry) RETURN n.pmid, n.doi, m.entryid, r.art_purp"
+    results = g.run(query)
+    for record in results:
+        [pmid, doi, entryid, art_purp] = record.values()
+        if pmid is None and doi is None:
+            continue
+        if entryid not in article_dict:
+            # pubmed, dois, art_purp, patent number
+            article_dict[entryid] = [set(), set(), set(), set()]
+        if pmid is not None:
+            if not pmid.startswith('US'):
+                article_dict[entryid][0].add(pmid)
+            else:
+                article_dict[entryid][3].add(pmid)
+        if doi is not None:
+            article_dict[entryid][1].add(doi)
+        if art_purp not in ["___", "Not specified!", None]:
+            article_dict[entryid][2].add(art_purp)
+
+    print("Load ki_result dict")
+    print("#########################################")
+    query = "MATCH (n:bindingDB_ki_result) RETURN n.reactant_set_id, n.entryid, n.ki_result_id, n.ic50, n.k_cat, n.ec50, n.kd, n.koff, n.km, n.kon, n.temp, n.ph, n.ki"
+    results = g.run(query)
+    for record in results:
+        [reactant_set_id, entryid, ki_result_id, ic50, k_cat, ec_50, kd, koff, km, kon, temp, ph, ki] = record.values()
+        ki_result_dict[(reactant_set_id, entryid)] = [ki_result_id, ic50, k_cat, ec_50, kd, koff, km, kon, temp, ph, ki]
 
 
-
-
+properties = ['description', 'pmid', 'doi', 'art_purp', 'patents', 'ki_result_id', 'ic50', 'k_cat', 'ec50',
+              'kd', 'koff', 'km', 'kon', 'temp', 'ph', 'ki']
 
 
 def get_enzyme_reactant_set_properties():
@@ -102,9 +158,15 @@ def get_enzyme_reactant_set_properties():
             continue
         else:
             query_middle_new += property + ':b.' + property + ', '
+
+    for property in properties:
+        if property in ['description', 'pmid', 'doi', 'art_purp']:
+            query_middle_new += property + ":split(line." + property + ', "|"), '
+        else:
+            query_middle_new += property + ":line." + property + ", "
     query_end = ''' Create (a)-[:equal]->(b)'''
     # combine the important parts of node creation
-    query_new = query_nodes_start + query_middle_new + 'url:"https://www.bindingdb.org/rwd/jsp/dbsearch/Summary_ki.jsp?entryid=1571&ki_result_id=22134&reactant_set_id=22135", license:"", resource:["bindingDB"], source:"bindingDB"})' + query_end
+    query_new = query_nodes_start + query_middle_new + 'url:"https://www.bindingdb.org/rwd/jsp/dbsearch/Summary_ki.jsp?entryid="+b.entryid+"&ki_result_id="+line.ki_result_id+"&reactant_set_id="+b.reactant_set_id, license:"", resource:["bindingDB"], source:"bindingDB"})' + query_end
     return query_new
 
 
@@ -112,6 +174,15 @@ def create_node(path_of_directory, cypher_file):
     '''
     create ERS node that has properties which were already mapped
     '''
+
+    # save the ers_ids in a tsv file
+    file_name = 'ers_ids'
+    file = open(os.path.join(path_of_directory, file_name) + '.tsv', 'w', encoding='utf-8', newline="")
+    csv_mapping = csv.writer(file, delimiter='\t')
+    header = ['reactant_set_id']
+    header.extend(properties)
+    csv_mapping.writerow(header)
+
     ers_ids = set()
     enzyme_type_list = ['enzyme_polymerid', 'enzyme_monomerid', 'enzyme_complexid']
     substrate_type_list = ['substrate_polymerid', 'substrate_monomerid', 'substrate_complexid']
@@ -145,7 +216,7 @@ def create_node(path_of_directory, cypher_file):
                     else:
                         break
                 elif 'complex' in enzyme:
-                    if node[enzyme] in complex_dict:
+                    if node[enzyme] in set_complex:
                         enzyme_ok = True
                         break
                     else:
@@ -170,7 +241,7 @@ def create_node(path_of_directory, cypher_file):
                         substrate_ok = False
                         break
                 elif 'complex' in substrate:
-                    if node[substrate] in complex_dict:
+                    if node[substrate] in set_complex:
                         substrate_ok = True
                     else:
                         substrate_ok = False
@@ -179,7 +250,21 @@ def create_node(path_of_directory, cypher_file):
         if substrate_exists and not substrate_ok:
             continue
 
-        ers_ids.add(ersid)
+        l = [ersid]
+        entry_id = node['entryid']
+        if entry_id in assay_dict:
+            l.append("|".join(assay_dict[entry_id]))
+        else:
+            l.append('')
+        if entry_id in article_dict:
+            l.extend(["|".join(x) for x in article_dict[entry_id]])
+        else:
+            continue
+        if (ersid, entry_id) in ki_result_dict:
+            l.extend(ki_result_dict[(ersid, entry_id)])
+        else:
+            print('without ki', ersid)
+        csv_mapping.writerow(l)
 
         ers_inhibitor_chem_dict[ersid] = monomer_chemical_dict[node['inhibitor_monomerid']]
 
@@ -196,13 +281,6 @@ def create_node(path_of_directory, cypher_file):
             ers_substrate_chem_dict[ersid] = monomer_chemical_dict[node['substrate_monomerid']]
         if 'substrate_complexid' in node:
             ers_substrate_complex_dict[ersid] = node['substrate_complexid']
-    # save the ers_ids in a tsv file
-    file_name = 'ers_ids'
-    file = open(os.path.join(path_of_directory, file_name) + '.tsv', 'w', encoding='utf-8', newline="")
-    csv_mapping = csv.writer(file, delimiter='\t')
-    csv_mapping.writerow(['reactant_set_id'])
-    for id in ers_ids:
-        csv_mapping.writerow(id)
 
     # create ERS node and match it with bindingDB_enzyme_reactant_set
 
@@ -284,7 +362,7 @@ def main():
     print('Create Enzyme_reactant_set node', datetime.datetime.now())
     create_node(path_of_directory, cypher_file)
     print('##########################################################################')
-    print('Create the edges',datetime.datetime.now())
+    print('Create the edges', datetime.datetime.now())
     create_ers_edges(path_of_directory, cypher_file)
     print(datetime.datetime.now())
 
