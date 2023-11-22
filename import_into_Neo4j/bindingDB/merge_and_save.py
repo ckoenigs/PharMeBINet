@@ -1,7 +1,5 @@
-import shutil
-import numpy as np
-from collections import defaultdict
-import pandas as pd
+from zipfile import ZipFile
+import io
 import csv
 import datetime
 import sys
@@ -123,10 +121,28 @@ def join_polymer_or_complex_new(connection, main_table_name, identifier, sub_tab
 
 def join_monomer_new(connection):
     batch_size_mono = 300000
+
+    #dictionary mononmer id to name
+    dict_mono_id_to_name={}
+    print('start prepare dictionary', datetime.datetime.now())
+    #
+    with ZipFile('data/BindingDB_All_202311_tsv.zip', 'r') as zipObj:
+        f = zipObj.open(zipObj.filelist[0], 'r')
+        csv_reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8'), delimiter='\t')
+        for line in csv_reader:
+            mono_id=line['BindingDB MonomerID']
+            name=line['BindingDB Ligand Name']
+            if name is not None and name !='':
+                list_of_names=[x for x in name.split('::') if not 'CHEMBL' in x and not 'Example' in x and not 'CHEBI' in x and x!='Name not given']
+                if len(list_of_names)>0:
+                    dict_mono_id_to_name[mono_id]=list_of_names
+    print('end prepare dict', datetime.datetime.now(), len(dict_mono_id_to_name))
+
+
     cursor = connection.cursor()
 
     # Retrieve the total number of rows in the table
-    cursor.execute(f"SELECT COUNT(*) FROM MONOMER")
+    cursor.execute(f"select count(*) from monomer")
     total_rows = cursor.fetchone()[0]
     print('total rows', total_rows)
 
@@ -135,24 +151,25 @@ def join_monomer_new(connection):
 
     # Generate the dynamic SELECT statement
     select_query_start = "SELECT "
-    for table_name in ['MONOMER', 'MONOMER_STRUCT']:
+    for table_name in ['monomer', 'monomer_struct']:
         table_columns = get_table_columns(table_name, connection)
         for column in table_columns:
-            if column != 'MONOMERID':  # Exclude the duplicate ID column
+            if column != 'monomerid':  # exclude the duplicate id column
                 header.append(column)
                 select_query_start += f"{table_name}.{column}, "
-    header.append('MONOMERID')
+    header.append('monomerid')
     header.append('synonyms')
-    select_query_start += 'MONOMER.MONOMERID, names.synonyms'
+    header.append('name')
+    select_query_start += 'monomer.monomerid, names.synonyms'
 
     select_query_start += f"""
-           FROM MONOMER
-           LEFT OUTER JOIN MONOMER_STRUCT ON MONOMER.MONOMERID = MONOMER_STRUCT.MONOMERID
-           LEFT OUTER JOIN (SELECT MONOMERID, GROUP_CONCAT(NAME ORDER BY NAME SEPARATOR '|') as synonyms FROM MONO_NAME
-            GROUP BY  MONOMERID) as names ON MONOMER.MONOMERID = names.MONOMERID
+           from monomer
+           left outer join monomer_struct on monomer.monomerid = monomer_struct.monomerid
+           left outer join (select monomerid, group_concat(name order by name separator '|') as synonyms from mono_name
+            group by  monomerid) as names on monomer.monomerid = names.monomerid
            """
 
-    output_file = 'tsv_from_mysql/MONO_STRUCT_NAMES.tsv'
+    output_file = 'tsv_from_mysql/mono_struct_names.tsv'
 
     # set of all monomer ids
     set_of_monomer_ids=set()
@@ -174,6 +191,17 @@ def join_monomer_new(connection):
                 identifier=result[-2]
                 if identifier in set_of_monomer_ids:
                     continue
+                if identifier in dict_mono_id_to_name:
+                    name=dict_mono_id_to_name[identifier]
+                    synonyms=result[-1].split('|')
+                    synonyms=set([x for x in synonyms if x]) if len(synonyms)>0 else set()
+                    if len(name)==1:
+                        result.append(name[0])
+                    else:
+                        print(name, identifier)
+                        result.append(name[0])
+                        synonyms=synonyms.union(name[1:])
+                    result[-2]='|'.join(synonyms)
                 csv_writer.writerow(result)
                 set_of_monomer_ids.add(identifier)
 
@@ -187,19 +215,19 @@ if __name__ == "__main__":
     print(datetime.datetime.now())
     conn = create_connection_to_databases.mysqlconnect_bindingDB()
     cur = conn.cursor()
-    tables = ['ARTICLE', 'ASSAY', 'COBWEB_BDB', 'COMPLEX_COMPONENT', 'DATA_FIT_METH', 'ENTRY', 'ENTRY_CITATION',
-              'ENZYME_REACTANT_SET', 'INSTRUMENT', 'ITC_RESULT_A_B_AB', 'ITC_RUN_A_B_AB', 'KI_RESULT', 'PDB_BDB']
+    tables = ['article', 'assay', 'cobweb_bdb', 'complex_component',  'entry', 'entry_citation',
+              'enzyme_reactant_set',  'ki_result', 'pdb_bdb'] # 'itc_result_a_b_ab', 'itc_run_a_b_ab', 'instrument', 'data_fit_meth',
     for table in tables:
         print('create table', table, datetime.datetime.now())
         write_tsv(cur, table)
     #
     # # merge complex names and complex
     print('start complex', datetime.datetime.now())
-    join_polymer_or_complex_new(conn, 'COMPLEX', 'COMPLEXID', 'COMPLEX_NAME', 'COMPLEX_AND_NAMES')
+    join_polymer_or_complex_new(conn, 'complex', 'complexid', 'complex_name', 'complex_and_names')
 
     # merge polymer names and polymer
     print('start polymer', datetime.datetime.now())
-    join_polymer_or_complex_new(conn, 'POLYMER', 'POLYMERID', 'POLY_NAME', 'POLYMER_AND_NAMES')
+    join_polymer_or_complex_new(conn, 'polymer', 'polymerid', 'poly_name', 'polymer_and_names')
 
     # create a monomer_names table where names are grouped by monomer id
     print('start monomer', datetime.datetime.now())

@@ -1,51 +1,71 @@
-import pandas as pd
-import numpy as np
+import datetime
 import sys
+
+import numpy as np
+import pandas as pd
 
 sys.path.append("../..")
 import pharmebinetutils
 
 additional_to_label = 'bindingDB'
 
-tables = ['ARTICLE', 'ASSAY', 'COBWEB_BDB', 'COMPLEX_COMPONENT', 'DATA_FIT_METH', 'ENTRY',
-          'ENTRY_CITATION', 'ENZYME_REACTANT_SET', 'INSTRUMENT', 'ITC_RESULT_A_B_AB', 'ITC_RUN_A_B_AB',
-          'KI_RESULT', 'PDB_BDB', 'COMPLEX_AND_NAMES', 'POLYMER_AND_NAMES', 'MONO_STRUCT_NAMES']
-tables_index_edges = ['ARTICLE', 'ITC_RESULT_A_B_AB']
-kanten = [['ENTRY', 'ENTRY_CITATION', 'ARTICLE'], ['ENTRY', 'ITC_RUN_A_B_AB', 'ITC_RESULT_A_B_AB']]
+# tables names as list
+tables = ['article', 'assay', 'cobweb_bdb', 'complex_component',  'entry',
+           'enzyme_reactant_set', 'ki_result', 'pdb_bdb', 'complex_and_names', 'polymer_and_names', 'mono_struct_names']
+# 'itc_result_a_b_ab', 'itc_run_a_b_ab', 'instrument','data_fit_meth', 'entry_citation',
 
-tables_keys = {'ARTICLE': ['ARTICLEID'], 'ASSAY': ['ENTRYID', 'ASSAYID'], 'COBWEB_BDB': [],
-               'COMPLEX_COMPONENT': ['COMPLEXID', 'COMPONENTID'], 'DATA_FIT_METH': ['DATA_FIT_METH_ID'],
-               'ENTRY': ['ENTRYID'], 'ENTRY_CITATION': ['ARTICLEID', 'ENTRYID'],
-               'ENZYME_REACTANT_SET': ['ENTRYID', 'RECTANT_SET_ID'], 'INSTRUMENT': ['INSTRUMENTID'],
-               'ITC_RUN_A_B_AB': ['ENTRYID', 'ITC_RUN_A_B_AB_ID'],
-               'ITC_RESULT_A_B_AB': ['ENTRYID', 'ITC_RESULT_A_B_AB_ID'], 'KI_RESULT': ['ENTRYID', 'KI_RESULT_ID'],
-               'PDB_BDB': [], 'COMPLEX_AND_NAMES': ['COMPLEXID'], 'POLYMER_AND_NAMES': ['POLYMERID'],
-               'MONO_STRUCT_NAMES': ['MONOMERID']}
 
-# Every element of the list is a list of 3 items
+# list of tabels which will be an edge
+tables_index_edges = ['article'] # , 'itc_result_a_b_ab'
+#
+kanten = [['entry', 'entry_citation', 'article']] # , ['entry', 'itc_run_a_b_ab', 'itc_result_a_b_ab']
+
+tables_keys = {'article': ['articleid'], 'assay': ['entryid', 'assayid'], 'cobweb_bdb': [],
+               'complex_component': ['complexid', 'componentid'],
+               'entry': ['entryid'],
+               'enzyme_reactant_set': ['entryid', 'rectant_set_id'],
+                'ki_result': ['entryid', 'ki_result_id'],
+               'pdb_bdb': [], 'complex_and_names': ['complexid'], 'polymer_and_names': ['polymerid'],
+               'mono_struct_names': ['monomerid']}
+# 'itc_run_a_b_ab': ['entryid', 'itc_run_a_b_ab_id'], 'instrument': ['instrumentid'], 'entry_citation': ['articleid', 'entryid'],
+#                'itc_result_a_b_ab': ['entryid', 'itc_result_a_b_ab_id'], 'data_fit_meth': ['data_fit_meth_id'],
+
+# every element of the list is a list of 3 items
 # containing the name of the tables with direct connection and the name of the index column(s) in the original tsv file
 # note that the index column is always related to the second table.
-edges_id = [['MONO_STRUCT_NAMES', 'COBWEB_BDB', 'MONOMER_ID', 'MONOMERID'],
-            ['MONO_STRUCT_NAMES', 'COMPLEX_COMPONENT', 'MONOMERID', 'MONOMERID'],
-            ['POLYMER_AND_NAMES', 'COMPLEX_COMPONENT', 'POLYMERID', 'POLYMERID'],
-            ['ENZYME_REACTANT_SET', 'COBWEB_BDB', 'REACTANT_SET_ID', 'REACTANT_SET_ID'],
-            ['ENTRY', 'ENZYME_REACTANT_SET', 'ENTRYID', 'ENTRYID'],
-            ['ENZYME_REACTANT_SET', 'PDB_BDB', 'REACTANT_SET_ID_STR', 'REACTANT_SET_ID'],
-            ['ENTRY', 'ASSAY', 'ENTRYID', 'ENTRYID'], ['ASSAY', 'KI_RESULT', 'ASSAYID', 'ASSAYID'],
-            ['ENTRY', 'KI_RESULT', 'ENTRYID', 'ENTRYID'],
-            ['DATA_FIT_METH', 'KI_RESULT', 'DATA_FIT_METH_ID', 'DATA_FIT_METH_ID'],
-            ['INSTRUMENT', 'KI_RESULT', 'INSTRUMENTID', 'INSTRUMENTID'],
-            ['DATA_FIT_METH', 'ITC_RESULT_A_B_AB', 'DATA_FIT_METH_ID', 'DATA_FIT_METH_ID'],
-            ['INSTRUMENT', 'ITC_RESULT_A_B_AB', 'INSTRUMENTID', 'INSTRUMENTID'],
-            ['COMPLEX_AND_NAMES', 'COMPLEX_COMPONENT', 'COMPLEXID', 'COMPLEXID'],
-            ['ENTRY', 'ITC_RESULT_A_B_AB', 'ENTRYID', 'ENTRYID']]
+# list of list [table1, table2, property_name_table_1, property_name_table_2]
+list_of_direct_connected_tables_and_properties = [['mono_struct_names', 'cobweb_bdb', 'monomer_id', 'monomerid'],
+            ['mono_struct_names', 'complex_component', 'monomerid', 'monomerid'],
+            ['polymer_and_names', 'complex_component', 'polymerid', 'polymerid'],
+            ['enzyme_reactant_set', 'cobweb_bdb', 'reactant_set_id', 'reactant_set_id'],
+            ['entry', 'enzyme_reactant_set', 'entryid', 'entryid'],
+            ['enzyme_reactant_set', 'pdb_bdb', 'reactant_set_id_str', 'reactant_set_id'],
+            ['entry', 'assay', 'entryid', 'entryid'], ['assay', 'ki_result', 'assayid', 'assayid'],
+            ['entry', 'ki_result', 'entryid', 'entryid'],
+            ['complex_and_names', 'complex_component', 'complexid', 'complexid']]
+            # ['data_fit_meth', 'itc_result_a_b_ab', 'data_fit_meth_id', 'data_fit_meth_id'],
+            # ['instrument', 'itc_result_a_b_ab', 'instrumentid', 'instrumentid'],
+#               ['instrument', 'ki_result', 'instrumentid', 'instrumentid'],
+#             ['data_fit_meth', 'ki_result', 'data_fit_meth_id', 'data_fit_meth_id'],
+#             ['entry', 'itc_result_a_b_ab', 'entryid', 'entryid']
+
+# special columns as list
+special_col = ['inhibitor_polymerid', 'enzyme_polymerid', 'substrate_polymerid', 'enzyme_complexid',
+                   'inhibitor_complexid', 'substrate_complexid', 'substrate_monomerid', 'inhibitor_monomerid',
+                   'enzyme_monomerid']
+
 
 
 def create_node_queries(tab):
+    """
+    prepare cypher file and add for each node table a cypher query to the cypher file
+    :param tab:
+    :return:
+    """
     with open('output/create_nodes.cypher', 'w') as file:
         # Generate and write the queries to the file
         for table in tab:
-            if table not in ['COMPLEX_AND_NAMES', 'POLYMER_AND_NAMES', 'MONO_STRUCT_NAMES']:
+            if table not in ['complex_and_names', 'polymer_and_names', 'mono_struct_names']:
                 query = "create (:" + additional_to_label + "_" + table + "{"
                 file_name = "tsv_from_mysql/" + table + ".tsv"
                 for column in get_columns_names_from_tsv(file_name):
@@ -61,7 +81,7 @@ def create_node_queries(tab):
                 query = "create (:" + additional_to_label + "_" + table + "{"
                 file_name = "tsv_from_mysql/" + table + ".tsv"
                 for column in get_columns_names_from_tsv(file_name):
-                    if column == 'NAMES' or column == 'synonyms':
+                    if column == 'names' or column == 'synonyms':
                         str_to_add = column.lower() + ':split(line.' + column + ',"|"),'
                         query += str_to_add
                     else:
@@ -77,37 +97,34 @@ def create_node_queries(tab):
 
 
 def create_edge_queries(simple_edges, edges):
-    special_col = ['INHIBITOR_POLYMERID', 'ENZYME_POLYMERID', 'SUBSTRATE_POLYMERID', 'ENZYME_COMPLEXID',
-                   'INHIBITOR_COMPLEXID', 'SUBSTRATE_COMPLEXID', 'SUBSTRATE_MONOMERID', 'INHIBITOR_MONOMERID',
-                   'ENZYME_MONOMERID']
     with open('output/create_edges.cypher', 'w') as file:
         query = ''
         for col in special_col:
-            if "POLYMER" in col:
-                query = "MATCH (n1: " + additional_to_label + "_POLYMER_AND_NAMES {polymerid: line." + col + "}), (n2:" + additional_to_label + "_ENZYME_REACTANT_SET{reactant_set_id:line.REACTANT_SET_ID})\n create(n1) - [:" + col + "] -> (n2)"
-            elif "MONOMER" in col:
-                query = "MATCH (n1: " + additional_to_label + "_MONO_STRUCT_NAMES {monomerid: line." + col + "}), (n2:" + additional_to_label + "_ENZYME_REACTANT_SET{reactant_set_id:line.REACTANT_SET_ID})\n create(n1) - [:" + col + "] -> (n2)"
-            elif "COMPLEX" in col:
-                query = "MATCH (n1: " + additional_to_label + "_COMPLEX_AND_NAMES {complexid: line." + col + "}), (n2:" + additional_to_label + "_ENZYME_REACTANT_SET{reactant_set_id:line.REACTANT_SET_ID})\n create(n1) - [:" + col + "] -> (n2)"
+            if "polymer" in col:
+                query = "match (n1: " + additional_to_label + "_polymer_and_names {polymerid: line." + col + "}), (n2:" + additional_to_label + "_enzyme_reactant_set{reactant_set_id:line.reactant_set_id})\n create(n1) - [:" + col + "] -> (n2)"
+            elif "monomer" in col:
+                query = "match (n1: " + additional_to_label + "_mono_struct_names {monomerid: line." + col + "}), (n2:" + additional_to_label + "_enzyme_reactant_set{reactant_set_id:line.reactant_set_id})\n create(n1) - [:" + col + "] -> (n2)"
+            elif "complex" in col:
+                query = "match (n1: " + additional_to_label + "_complex_and_names {complexid: line." + col + "}), (n2:" + additional_to_label + "_enzyme_reactant_set{reactant_set_id:line.reactant_set_id})\n create(n1) - [:" + col + "] -> (n2)"
 
             query = pharmebinetutils.get_query_import(file_path,
-                                                      'import_into_Neo4j/bindingDB/idx_tsv/ENZYME_REACTANT_SET-' +
+                                                      'import_into_Neo4j/bindingDB/idx_tsv/enzyme_reactant_set-' +
                                                       col + '.tsv', query, batch_number=10000)
             file.write(query)
 
         for edge in simple_edges:
-            if edge[0] == 'ASSAY' and edge[1] == 'KI_RESULT':
-                query = "MATCH (n1:" + additional_to_label + "_ASSAY{assayid:line.ASSAYID, entryid:line.ENTRYID}), (n2:" + additional_to_label + "_KI_RESULT" \
-                        "{assayid:line.ASSAYID, entryid:line.ENTRYID})\n Create (n1) -[:RELATIONSHIP] -> (n2)"
+            if edge[0] == 'assay' and edge[1] == 'ki_result':
+                query = "MATCH (n1:" + additional_to_label + "_assay{assayid:line.assayid, entryid:line.entryid}), (n2:" + additional_to_label + "_ki_result" \
+                        "{assayid:line.assayid, entryid:line.entryid})\n Create (n1) -[:RELATIONSHIP] -> (n2)"
                 query = pharmebinetutils.get_query_import(file_path,
-                                                          'import_into_Neo4j/bindingDB/idx_tsv/ASSAY-KI_RESULT.tsv',
+                                                          'import_into_Neo4j/bindingDB/idx_tsv/assay-ki_result.tsv',
                                                           query, batch_number=10000)
                 file.write(query)
             else:
                 file_name = edge[0] + '-' + edge[1] + '.tsv'
-                if edge[0] == 'ENZYME_REACTANT_SET' and edge[1] == 'PDB_BDB':
-                    query = "MATCH (n1:" + additional_to_label + "_ENZYME_REACTANT_SET), (n2:" + additional_to_label + "_PDB_BDB{reactant_set_id_str:line.REACTANT_SET_ID_STR}) " \
-                            "where n1.reactant_set_id in split(line.REACTANT_SET_ID_STR, ',') " \
+                if edge[0] == 'enzyme_reactant_set' and edge[1] == 'pdb_bdb':
+                    query = "MATCH (n1:" + additional_to_label + "_enzyme_reactant_set), (n2:" + additional_to_label + "_pdb_bdb{reactant_set_id_str:line.reactant_set_id_str}) " \
+                            "where n1.reactant_set_id in split(line.reactant_set_id_str, ',') " \
                             "\nCreate (n1) -[:RELATIONSHIP] -> (n2)"
                     query = pharmebinetutils.get_query_import(file_path,
                                                               'import_into_Neo4j/bindingDB/idx_tsv/' + file_name, query,
@@ -159,9 +176,12 @@ def get_columns_names_from_tsv(file_name):
 
 
 def create_index_queries(edges, edges_2):
-    special_col = ['INHIBITOR_POLYMERID', 'ENZYME_POLYMERID', 'SUBSTRATE_POLYMERID', 'ENZYME_COMPLEXID',
-                   'INHIBITOR_COMPLEXID', 'SUBSTRATE_COMPLEXID', 'SUBSTRATE_MONOMERID', 'INHIBITOR_MONOMERID',
-                   'ENZYME_MONOMERID']
+    '''
+    Prepare indices for the different edge type nodes
+    :param edges:
+    :param edges_2:
+    :return:
+    '''
     with open('output/create_index.cypher', 'w') as file:
         queries_list = []
         for edge in edges:
@@ -180,7 +200,7 @@ def create_index_queries(edges, edges_2):
             queries_list.append(query)
         for col in special_col:
             query = "CREATE INDEX indexENZYME_REACTANT_SET_" + col.lower() + \
-                    " FOR (node:" + additional_to_label + "_ENZYME_REACTANT_SET) ON (node." + col.lower() + "); \n"
+                    " FOR (node:" + additional_to_label + "_enzyme_reactant_set) ON (node." + col.lower() + "); \n"
             queries_list.append(query)
         queries_list = list(dict.fromkeys(queries_list))
         for q in queries_list:
@@ -188,8 +208,14 @@ def create_index_queries(edges, edges_2):
         print("Queries saved to 'create_index.cypher' file.")
 
 
-def create_idx_tsv(edges_id):
-    for edges in edges_id:
+def create_idx_tsv(list_of_direct_connected_tables_and_properties):
+    """
+    Prepare TSV file for connected tables with no edge information and special edge between assay and ki-result.
+    This needs two properties as foreigen keys.
+    :param list_of_direct_connected_tables_and_properties: 
+    :return: 
+    """
+    for edges in list_of_direct_connected_tables_and_properties:
         file_name = 'idx_tsv/' + edges[0] + '-' + edges[1] + '.tsv'
         tab_name = 'tsv_from_mysql/' + edges[1] + '.tsv'
         idx_column = edges[2]
@@ -201,7 +227,7 @@ def create_idx_tsv(edges_id):
         # Read the TSV file in batches
         iterator = pd.read_csv(tab_name, sep='\t', usecols=[idx_column], chunksize=batch_size, na_values=[np.nan, ''])
         for batch_df in iterator:
-            if edges[1] == "PDB_BDB" or edges[0] == "PDB_BDB":
+            if edges[1] == "pdb_bdb" or edges[0] == "pdb_bdb":
                 unique_values.update(batch_df[idx_column].dropna().drop_duplicates())
             else:
                 unique_values.update(batch_df[idx_column].dropna().drop_duplicates().astype(int))
@@ -211,11 +237,11 @@ def create_idx_tsv(edges_id):
         unique_column_df.to_csv(file_name, sep='\t', header=True, index=False)
         print("index saved to " + file_name)
     # create tsv file for the edge ASSAY-KI-RESULTS containing ASSAYID and ENTRYID (from the KI-RESULTS table)
-    file_name = 'idx_tsv/ASSAY-KI_RESULT.tsv'
+    file_name = 'idx_tsv/assay-ki_result.tsv'
     batch_size = 10000
-    columns_to_keep = ["ASSAYID", "ENTRYID"]
+    columns_to_keep = ["assayid", "entryid"]
     unique_rows = pd.DataFrame(columns=columns_to_keep)
-    for chunk in pd.read_csv("tsv_from_mysql/KI_RESULT.tsv", sep='\t', usecols=columns_to_keep, chunksize=batch_size,
+    for chunk in pd.read_csv("tsv_from_mysql/ki_result.tsv", sep='\t', usecols=columns_to_keep, chunksize=batch_size,
                              na_values=[np.nan, '']):
         chunk = chunk.dropna(subset=columns_to_keep, how='any', inplace=False)
         chunk.drop_duplicates(inplace=True)
@@ -225,24 +251,22 @@ def create_idx_tsv(edges_id):
 
     unique_rows.to_csv(file_name, sep='\t', index=False, header=True)
     print('index saved to ', file_name)
-    special_col = ['INHIBITOR_POLYMERID', 'ENZYME_POLYMERID', 'SUBSTRATE_POLYMERID', 'ENZYME_COMPLEXID',
-                   'INHIBITOR_COMPLEXID', 'SUBSTRATE_COMPLEXID', 'SUBSTRATE_MONOMERID', 'INHIBITOR_MONOMERID',
-                   'ENZYME_MONOMERID']
+
 
     for col in special_col:
-        unique_rows = pd.DataFrame(columns=[col, 'REACTANT_SET_ID'])
+        unique_rows = pd.DataFrame(columns=[col, 'reactant_set_id'])
 
-        for chunk in pd.read_csv("tsv_from_mysql/ENZYME_REACTANT_SET.tsv", sep='\t', usecols=[col, 'REACTANT_SET_ID'],
+        for chunk in pd.read_csv("tsv_from_mysql/enzyme_reactant_set.tsv", sep='\t', usecols=[col, 'reactant_set_id'],
                                  chunksize=batch_size, na_values=[np.nan, '']):
-            chunk = chunk.dropna(subset=[col, 'REACTANT_SET_ID'], how='any', inplace=False)
+            chunk = chunk.dropna(subset=[col, 'reactant_set_id'], how='any', inplace=False)
             chunk.drop_duplicates(inplace=True)
             chunk[col] = chunk[col].astype(int)
-            chunk['REACTANT_SET_ID'] = chunk['REACTANT_SET_ID'].astype(int)
+            chunk['reactant_set_id'] = chunk['reactant_set_id'].astype(int)
             unique_rows = pd.concat([unique_rows, chunk])
             unique_rows[col].drop_duplicates(inplace=True)
 
-        unique_rows.to_csv('idx_tsv/ENZYME_REACTANT_SET-' + col + '.tsv', sep='\t', index=False, header=True)
-        print('index saved to ', 'ENZYME_REACTANT_SET-' + col + '.tsv')
+        unique_rows.to_csv('idx_tsv/enzyme_reactant_set-' + col + '.tsv', sep='\t', index=False, header=True)
+        print('index saved to ', 'enzyme_reactant_set-' + col + '.tsv')
 
 
 if __name__ == "__main__":
@@ -251,7 +275,15 @@ if __name__ == "__main__":
         file_path = sys.argv[1]
     else:
         sys.exit('need a path')
-    create_idx_tsv(edges_id)
+
+    print('*'*30)
+    print(datetime.datetime.now())
+    print('prepare tsv for direct edges')
+    create_idx_tsv(list_of_direct_connected_tables_and_properties)
+
+    print('*'*30)
+    print(datetime.datetime.now())
+    print('prepare node cypher file with the fitting cypher queries')
     create_node_queries(tables)
-    create_index_queries(edges_id, tables_index_edges)
-    create_edge_queries(edges_id, kanten)
+    create_index_queries(list_of_direct_connected_tables_and_properties, tables_index_edges)
+    create_edge_queries(list_of_direct_connected_tables_and_properties, kanten)
