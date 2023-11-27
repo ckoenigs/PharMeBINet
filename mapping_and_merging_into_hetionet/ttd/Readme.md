@@ -26,7 +26,7 @@ The following program map TTD drug to Chemical:
         The next mapping is with PubChem CID to the xrefs of the chemical. But only entries are mapped where the name is not a combination of multiple drugs.
         The last mapping is with name mapping to the name/synonyms of the chemicals.
     All mapped nodes are written into the TSV file.
-    From the not-mapped nodes, the ones with only one PubChem ID are added to a dictionary.
+    From the not-mapped nodes, the ones with only one PubChem ID are added to a dictionary and got the synonyms from PubChem.
     Next, the cypher queries for the mapping and the newly generated nodes are prepared and added to the cypher file.
     In the last step, a TSV file is opened for the new nodes and the information from the dictionary is added to the TSV file.
 
