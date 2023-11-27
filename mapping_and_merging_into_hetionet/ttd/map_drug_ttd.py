@@ -1,6 +1,6 @@
 import csv, sys
-import datetime
-
+import datetime, time
+import pubchempy as pcp
 sys.path.append('..')
 import change_xref_source_name_to_a_specifice_form
 
@@ -28,6 +28,34 @@ dict_smiles_to_chemicals = {}
 dict_pubchem_c_ids_to_identifier = {}
 # dictionary ttd id to chemical ids
 dict_ttd_id_to_identifiers = {}
+
+
+def load_already_extracted_infos_from_file():
+    """
+    To avoid to many questions to the api a file with the information is generated and if generated the data are
+    add into a dictionary
+    :return:
+    """
+    global csv_writer_already_downloaded, dict_pubchem_id_to_synonyms
+    file_name = 'data/api_infos.tsv'
+    dict_pubchem_id_to_synonyms={}
+    try:
+        file_already_downloaded = open(file_name, 'r', encoding='utf-8')
+        csv_reader=csv.reader(file_already_downloaded,delimiter='\t')
+        counter_line = 0
+        for line in csv_reader:
+            counter_line += 1
+            node_id = line[0]
+            dict_pubchem_id_to_synonyms[node_id]=line[1].split('|') if line[1]!='' else []
+            # print(node_id)
+            # dict_nodes[node_id] = node
+        file_already_downloaded.close()
+        file_already_downloaded = open(file_name, 'a')
+        csv_writer_already_downloaded=csv.writer(file_already_downloaded,delimiter='\t')
+    except:
+        print('in new')
+        file_already_downloaded = open(file_name, 'w')
+        csv_writer_already_downloaded=csv.writer(file_already_downloaded,delimiter='\t')
 
 
 def load_chemical_information():
@@ -186,9 +214,13 @@ def compound_ttd_mapping():
 
         counter = 0
         counter_mapped = 0
+        counter_request=0
         for record in result:
             [node_id, smiles, inchikey, name, pubchem_cids, chebi_id, pubchem_sids, node] = record.values()
+
             counter += 1
+            if counter% 5000 ==0:
+                print(counter,datetime.datetime.now())
             mapping_found = False
 
             pubchem_cids = pubchem_cids if pubchem_cids else []
@@ -274,11 +306,26 @@ def compound_ttd_mapping():
                             node['drug_class'] = set([node['drug_class']])
                         if 'company' in node:
                             node['company'] = set([node['company']])
-                        if 'synonyms' in node:
-                            node['synonyms'] = set(node['synonyms'])
+                        # if 'synonyms' in node:
+                        #     node['synonyms'] = set(node['synonyms'])
                         if 'superdrug_atcs' in node:
                             node['superdrug_atcs'] = set(node['superdrug_atcs'])
                         node['xrefs'] = xrefs
+                        if new_id in dict_pubchem_id_to_synonyms:
+                            synonyms=dict_pubchem_id_to_synonyms[new_id]
+                        else:
+                            c = pcp.Compound.from_cid(int(new_id))
+                            synonyms=c.synonyms
+                            csv_writer_already_downloaded.writerow([new_id,'|'.join(synonyms)])
+                            counter_request+=1
+                            if counter_request % 10 ==0:
+                                time.sleep(5)
+                            if counter_request % 100 ==0:
+                                print(counter_request, datetime.datetime.now())
+                            if counter_request%1000 ==0:
+                                time.sleep(60)
+
+                        node['synonyms'] = set(synonyms)
                         dict_new_nodes[new_id] = node
 
                     else:
@@ -290,15 +337,20 @@ def compound_ttd_mapping():
                                     dict_to_up_date[key] = value
                                 elif key in ['drug_class', 'company', 'superdrug_atcs']:
                                     dict_to_up_date[key] = set([value])
+                                elif key =='synonyms':
+                                    continue
                                 else:
                                     dict_to_up_date[key] = set(value)
                             elif key in ['id', 'drug_class', 'company', 'superdrug_atcs']:
                                 dict_to_up_date[key].add(value)
                             elif key in ['synonyms']:
-                                dict_to_up_date[key] = dict_to_up_date[key].union(value)
+                                continue
+                                # print('add more synonyms', new_id)
+                                # dict_to_up_date[key] = dict_to_up_date[key].union(value)
                             elif key in dict_to_up_date and not value == dict_to_up_date[key]:
                                 # names add to synonyms but try to avoid name with start PMID
                                 if 'name' == key:
+                                    print('add name as synonym', new_id)
                                     old_name = dict_to_up_date['name']
                                     if 'synonyms' not in dict_to_up_date:
                                         dict_to_up_date['synonyms'] = set()
@@ -315,6 +367,7 @@ def compound_ttd_mapping():
                                 print(key, value)
                                 print(dict_to_up_date[key], new_id, dict_to_up_date['id'], node_id)
                                 # TODO
+
 
     print('number of nodes:', counter)
     print('number of mapped nodes:', counter_mapped)
@@ -337,6 +390,11 @@ def main():
     print(datetime.datetime.now())
     print('create connection')
     create_connection_with_neo4j()
+
+    print('#' * 50)
+    print(datetime.datetime.now())
+    print('load existing synonyms')
+    load_already_extracted_infos_from_file()
 
     print('#' * 50)
     print(datetime.datetime.now())
