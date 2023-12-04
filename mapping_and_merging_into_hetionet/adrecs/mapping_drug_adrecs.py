@@ -207,6 +207,15 @@ def get_all_adrecs_target_and_map(db_label, dict_node_id_to_resource):
         if found_mapping:
             continue
 
+        if pubchem_id is not None:
+            if str(pubchem_id) in dict_node_id_to_resource:
+                counter_mapping += 1
+                found_mapping = True
+                add_to_file(dict_node_id_to_resource, str(pubchem_id), identifier, csv_mapping, 'pubchem_direct')
+
+        if found_mapping:
+            continue
+
         if name in dict_name_to_ids:
             counter_mapping += 1
             found_mapping = True
