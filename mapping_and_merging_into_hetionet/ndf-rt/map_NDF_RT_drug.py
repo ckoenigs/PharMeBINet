@@ -6,8 +6,11 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-# dictionary with chemical id as key and the whole node as value
-dict_chemical_pharmebinet = {}
+# dictionary with chemical id as key and resource
+dict_chemical_pharmebinet_to_resource = {}
+
+# dictionary with chemical id as key and name
+dict_chemical_pharmebinet_to_name = {}
 
 # dictionary with code as key and value is class DrugNDF_RT
 dict_drug_NDF_RT = {}
@@ -101,44 +104,46 @@ load in all compound from pharmebinet in a dictionary
 
 
 def load_pharmebinet_chemical_in():
-    query = '''MATCH (n:Chemical) RETURN n.identifier,n'''
+    query = '''MATCH (n:Chemical) RETURN n.identifier,n.unii, n.name, n.synonyms, n.international_brands_name_company, n.xrefs, n.resource '''
     results = g.run(query)
 
     for record in results:
-        [identifier, node] = record.values()
-        dict_chemical_pharmebinet[identifier] = dict(node)
-        if 'unii' in node:
-            if node['unii'] in dict_unii_to_chemical_id:
+        [identifier, unii, name, synonyms, brand_name_and_companys, xrefs, resource] = record.values()
+        dict_chemical_pharmebinet_to_resource[identifier] = resource
+        dict_chemical_pharmebinet_to_name[identifier] = name
+        if unii is not None:
+            if unii in dict_unii_to_chemical_id:
                 sys.exit('ohje unii')
-            dict_unii_to_chemical_id[node['unii']] = [identifier]
-        name = node['name'].lower() if 'name' in node else ''
-        if not name in dict_synonyms_to_chemicals_ids:
+            dict_unii_to_chemical_id[unii] = [identifier]
+        name = name.lower() if name is not None else ''
+        if not name in dict_synonyms_to_chemicals_ids and name != '':
             dict_synonyms_to_chemicals_ids[name] = set()
-        dict_synonyms_to_chemicals_ids[name].add(identifier)
+        elif name != '':
+            dict_synonyms_to_chemicals_ids[name].add(identifier)
 
-        synonyms = node['synonyms']
         if synonyms:
             for synonym in synonyms:
                 synonym = synonym.lower()
                 if not synonym in dict_synonyms_to_chemicals_ids:
                     dict_synonyms_to_chemicals_ids[synonym] = set()
                 dict_synonyms_to_chemicals_ids[synonym].add(identifier)
-        brand_name_and_companys = node['international_brands_name_company']
+
         if brand_name_and_companys:
             for brand_name_and_company in brand_name_and_companys:
                 brand_name = brand_name_and_company.split('::')[0]
                 if not brand_name in dict_synonyms_to_chemicals_ids:
                     dict_synonyms_to_chemicals_ids[brand_name] = set()
                 dict_synonyms_to_chemicals_ids[brand_name].add(identifier)
-        xrefs = node['xrefs'] if 'xrefs' in node else []
-        for xref in xrefs:
-            if xref.startswith('RxNorm_CUI:'):
-                xref = xref.split(':', 1)[1]
-                rxcuis = check_for_rxcui(name, xref)
-                for rxcui in rxcuis:
-                    if rxcui not in dict_rnxnorm_to_chemical_id:
-                        dict_rnxnorm_to_chemical_id[rxcui] = set()
-                    dict_rnxnorm_to_chemical_id[rxcui].add(identifier)
+
+        if xrefs:
+            for xref in xrefs:
+                if xref.startswith('RxNorm_CUI:'):
+                    xref = xref.split(':', 1)[1]
+                    rxcuis = check_for_rxcui(name, xref)
+                    for rxcui in rxcuis:
+                        if rxcui not in dict_rnxnorm_to_chemical_id:
+                            dict_rnxnorm_to_chemical_id[rxcui] = set()
+                        dict_rnxnorm_to_chemical_id[rxcui].add(identifier)
 
         cur = con.cursor()
         query = ("Select CUI,LAT,CODE,SAB From MRCONSO Where (SAB = 'DRUGBANK' or SAB='MSH') and CODE= %s ;")
@@ -149,7 +154,7 @@ def load_pharmebinet_chemical_in():
                     dict_umls_cui_to_chemical_id[cui] = set()
                 dict_umls_cui_to_chemical_id[cui].add(identifier)
 
-    print('length of compound in pharmebinet:' + str(len(dict_chemical_pharmebinet)))
+    print('length of compound in pharmebinet:' + str(len(dict_chemical_pharmebinet_to_resource)))
 
 
 '''
@@ -159,6 +164,7 @@ load in all compound from ndf-rt in a dictionary and get the  umls cui, rxcui
 
 
 def load_ndf_rt_drug_in():
+    #
     query = '''MATCH (n:NDFRT_DRUG_KIND) RETURN n'''
     results = g.run(query)
     count = 0
@@ -179,15 +185,15 @@ def load_ndf_rt_drug_in():
         nui = ''
         node = dict(result)
         for prop in properties:
-            if prop[0:8] == 'UMLS_CUI':
+            if prop.startswith('UMLS_CUI'):
                 cui = prop
                 umls_cuis.add(cui.split(':')[1])
-            elif prop[0:10] == 'RxNorm_CUI':
+            elif prop.startswith('RxNorm_CUI'):
                 cui = prop
                 rxnorm_cuis.append(cui.split(':')[1])
-            elif prop[0:4] == 'NUI':
+            elif prop.startswith('NUI'):
                 nui = prop.split(':')[1]
-            elif prop[0:8] == 'FDA_UNII':
+            elif prop.startswith('FDA_UNII'):
                 unii = prop.split(':')[1]
                 uniis.add(unii)
                 dict_unii_to_code[unii].append(code)
@@ -265,16 +271,19 @@ def check_with_name_mapping(code, mapping_values):
     name = name.rsplit('[', 1)[0]
 
     # name and xref are the same identifier
-    if name in dict_synonyms_to_chemicals_ids:
-        chemical_ids_name = dict_synonyms_to_chemicals_ids[name]
-        intersection = chemical_ids_name.intersection(mapping_values)
-        if intersection:
-            chemical_ids = intersection
-        else:
-            if chemical_ids_name:
-                chemical_ids = chemical_ids_name
+    if name:
+        if name in dict_synonyms_to_chemicals_ids:
+            chemical_ids_name = dict_synonyms_to_chemicals_ids[name]
+            intersection = chemical_ids_name.intersection(mapping_values)
+            if intersection:
+                chemical_ids = intersection
             else:
-                return False, ''
+                if chemical_ids_name:
+                    chemical_ids = chemical_ids_name
+                else:
+                    return False, ''
+        else:
+            return False, ''
 
     else:
         return False, ''
@@ -324,12 +333,12 @@ def map_rxnorm_to_drugbank_use_rxnorm_database():
             mapped_chemical = set()
             # check the mapped drugbank ids
             for drugbank in drugbank_ids:
-                if drugbank in dict_chemical_pharmebinet:
+                if drugbank in dict_chemical_pharmebinet_to_resource:
                     in_drugbank = True
                     mapped_drugs.add(drugbank)
             # check the mapped mesh ids
             for mesh in mesh_ids:
-                if mesh in dict_chemical_pharmebinet:
+                if mesh in dict_chemical_pharmebinet_to_resource:
                     in_chemical = True
                     mapped_chemical.add(mesh)
             dict_code_to_mapped = {}
@@ -338,11 +347,11 @@ def map_rxnorm_to_drugbank_use_rxnorm_database():
                 print(mesh_ids)
                 dict_mesh_name_to_mesh_id = {}
                 for mesh_id in mapped_chemical:
-                    dict_mesh_name_to_mesh_id[dict_chemical_pharmebinet[mesh_id]['name'].lower()] = [mesh_id]
+                    dict_mesh_name_to_mesh_id[dict_chemical_pharmebinet_to_name[mesh_id].lower()] = [mesh_id]
                 print(drugbank_ids)
                 dict_drug_name_to_db_id = {}
                 for drugbank_id in mapped_drugs:
-                    dict_drug_name_to_db_id[dict_chemical_pharmebinet[drugbank_id]['name'].lower()] = [drugbank_id]
+                    dict_drug_name_to_db_id[dict_chemical_pharmebinet_to_name[drugbank_id].lower()] = [drugbank_id]
                 print(codes)
                 find_a_mapping = False
                 for code in codes:
@@ -501,8 +510,8 @@ def map_use_name_mapped_rxnorm_drugbank():
     delete_list = set()
     number_of_mapped = 0
     for line in csv_reader:
-        rxnorm_cui = line[1]
-        drugbank_id = line[0]
+        rxnorm_cui = line[0]
+        drugbank_id = line[1]
         if rxnorm_cui in list_rxcuis_without_drugbank_ids:
             codes = dict_drug_NDF_RT_rxcui_to_code[rxnorm_cui]
             for code in codes:
@@ -541,7 +550,7 @@ def name_mapping():
             if not code in dict_mapped_code_to_db_id:
 
                 name = dict_drug_NDF_RT[code]['name'].lower() if 'name' in dict_drug_NDF_RT[code] else ''
-                name = name.rsplit('[', 1)[0]
+                name = name.rsplit('[', 1)[0] if not name.startswith('[') else name.rsplit('] ', 1)[1]
                 if name in dict_synonyms_to_chemicals_ids:
                     dict_drug_NDF_RT[code]['mapped_ids'] = list(dict_synonyms_to_chemicals_ids[name])
                     dict_drug_NDF_RT[code]['how_mapped'] = 'use name mapping with synonyms and brands'
@@ -674,7 +683,7 @@ def integration_of_ndf_rt_drugs_into_pharmebinet():
     delete_code = []
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = '''  MATCH (n:NDFRT_DRUG_KIND{code:line.code}), (c:Chemical{identifier:line.Chemical_id})  Set n.mapped_ids=split(line.mapped_ids,'|'), n.how_mapped=line.how_mapped, c.ndf_rt='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_drug_ndf_rt]->(n)'''
+    query = '''  MATCH (n:NDFRT_DRUG_KIND{code:line.code}), (c:Chemical{identifier:line.Chemical_id})  Set   c.ndf_rt='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_drug_ndf_rt{how_mapped:line.how_mapped}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ndf-rt/drug/mapping_drug.tsv',
                                               query)
@@ -684,21 +693,22 @@ def integration_of_ndf_rt_drugs_into_pharmebinet():
     cypher_file.close()
     writer = open('drug/mapping_drug.tsv', 'w')
     csv_writer = csv.writer(writer, delimiter='\t')
-    header = ['code', 'mapped_ids', 'how_mapped', 'Chemical_id', 'resource']
+    header = ['code', 'how_mapped', 'Chemical_id', 'resource']
     csv_writer.writerow(header)
     for code in list_codes_with_drugbank_ids:
         if code == 'C11442':
             print('huhu')
         counter += 1
         drugbank_ids = dict_drug_NDF_RT[code]['mapped_ids']
-        string_drugbank_ids = "|".join(drugbank_ids)
+        if len(drugbank_ids) > 1:
+            print('multiple maPPING NODES', code, '|'.join(drugbank_ids))
         how_mapped = dict_drug_NDF_RT[code]['how_mapped']
 
         for drugbank_id in drugbank_ids:
-            resources = set(dict_chemical_pharmebinet[drugbank_id]['resource'])
+            resources = set(dict_chemical_pharmebinet_to_resource[drugbank_id])
             resources.add('NDF-RT')
             string_resource = '|'.join(list(resources))
-            list_of_values = [code, string_drugbank_ids, how_mapped, drugbank_id, string_resource]
+            list_of_values = [code, how_mapped, drugbank_id, string_resource]
             csv_writer.writerow(list_of_values)
 
 

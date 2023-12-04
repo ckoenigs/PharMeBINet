@@ -155,6 +155,9 @@ dict_mapping_pairs = {}
 def try_to_map(identifier, key, dictionary, how_mapped):
     if key in dictionary:
         for chemical_id in dictionary[key]:
+            # this synonym is not unique and caused an error
+            if (identifier,chemical_id) in [('C24834','8576'),('C7765700397396','4715169')]:
+                continue
             if not (identifier, chemical_id) in dict_mapping_pairs:
                 dict_mapping_pairs[(identifier, chemical_id)] = set()
             dict_mapping_pairs[(identifier, chemical_id)].add(how_mapped)

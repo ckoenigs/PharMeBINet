@@ -72,30 +72,29 @@ def load_pharmebinet_chemical_in():
     Load the chemical information and add information to dictionaries
     :return:
     """
-    query = '''MATCH (n:Chemical) RETURN n.identifier,n'''
+    query = '''MATCH (n:Chemical) RETURN n.identifier,n.resource, n.name, n.synonyms, n.xrefs'''
     results = g.run(query)
 
     for record in results:
-        [identifier, node] = record.values()
-        dict_chemical_pharmebinet_to_resource[identifier] = dict(node)['resource']
-        name = node['name'].lower()
+        [identifier, resource, name, synonyms, xrefs] = record.values()
+        dict_chemical_pharmebinet_to_resource[identifier] = resource
+        name = name.lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_synonyms_to_chemicals_ids, name, identifier)
 
-        synonyms = node['synonyms']
         if synonyms:
             for synonym in synonyms:
                 synonym = synonym.lower()
                 pharmebinetutils.add_entry_to_dict_to_set(dict_synonyms_to_chemicals_ids, synonym, identifier)
-        xrefs = node['xrefs'] if 'xrefs' in node else []
-        for xref in xrefs:
-            if xref.startswith('RxNorm_CUI:'):
-                xref = xref.split(':', 1)[1]
-                rxcuis = check_for_rxcui(name, xref)
-                for rxcui in rxcuis:
-                    pharmebinetutils.add_entry_to_dict_to_set(dict_rnxnorm_to_chemical_id, rxcui, identifier)
-            elif xref.startswith('MESH:'):
-                xref = xref.split(':', 1)[1]
-                pharmebinetutils.add_entry_to_dict_to_set(dict_mesh_id_to_chemicals_ids, xref, identifier)
+        if xrefs:
+            for xref in xrefs:
+                if xref.startswith('RxNorm_CUI:'):
+                    xref = xref.split(':', 1)[1]
+                    rxcuis = check_for_rxcui(name, xref)
+                    for rxcui in rxcuis:
+                        pharmebinetutils.add_entry_to_dict_to_set(dict_rnxnorm_to_chemical_id, rxcui, identifier)
+                elif xref.startswith('MESH:'):
+                    xref = xref.split(':', 1)[1]
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_mesh_id_to_chemicals_ids, xref, identifier)
 
     print('length of compound in pharmebinet:' + str(len(dict_chemical_pharmebinet_to_resource)))
 

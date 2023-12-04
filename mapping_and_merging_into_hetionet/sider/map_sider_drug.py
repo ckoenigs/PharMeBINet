@@ -109,42 +109,39 @@ def load_chemicals_from_database():
     url: url
     :return:
     """
-    query = 'MATCH (n:Chemical) RETURN n '
+    query = 'MATCH (n:Chemical) RETURN n.identifier,n.inchikey, n.inchi, n.name, n.synonyms, n.international_brands_name_company, n.resource, n.mixtures_name_ingredients, n.xrefs, n.ChEMBL '
     results = g.run(query)
 
     for record in results:
-        result = record.data()['n']
-        identifier = result['identifier']
-        inchikey = result['inchikey'] if 'inchikey' in result else ''
+        [identifier, inchikey, inchi, name, synonyms, brand_name_and_companys, resource, mixtures_name_ingredients,
+         xrefs, chembl_id] = record.values()
+        inchikey = inchikey if inchikey else ''
         if not inchikey in dict_inchikey_to_compound and inchikey != '':
             dict_inchikey_to_compound[inchikey] = [identifier]
         elif not inchikey == '':
             dict_inchikey_to_compound[inchikey].append(identifier)
-        inchi = result['inchi'] if 'inchi' in result else ''
-        name = result['name'].lower() if 'name' in result else ''
+        inchi = inchi if inchi else ''
+        name = name.lower() if name else ''
         if not name in dict_name_to_chemical and name != '':
             dict_name_to_chemical[name] = set([identifier])
         elif name != '':
             dict_name_to_chemical[name].add(identifier)
 
-        if 'synonyms' in result:
-            synonyms = result['synonyms']
+        if synonyms:
             for synonym in synonyms:
                 synonym = synonym.lower()
                 if not synonym in dict_synonyms_to_chemicals_ids:
                     dict_synonyms_to_chemicals_ids[synonym] = set()
                 dict_synonyms_to_chemicals_ids[synonym].add(identifier)
-        if 'international_brands_name_company' in result:
-            brand_name_and_companys = result['international_brands_name_company']
+        if brand_name_and_companys:
             for brand_name_and_company in brand_name_and_companys:
                 brand_name = brand_name_and_company.split('::')[0]
                 brand_name = brand_name.lower()
                 if not brand_name in dict_synonyms_to_chemicals_ids:
                     dict_synonyms_to_chemicals_ids[brand_name] = set()
                 dict_synonyms_to_chemicals_ids[brand_name].add(identifier)
-        resource = result['resource']
         # take mixtures name as synonym if it has only one ingredient and it is only the drug name!
-        mixtures_name_ingredients = result['mixtures_name_ingredients'] if 'mixtures_name_ingredients' in result else []
+        mixtures_name_ingredients = mixtures_name_ingredients if mixtures_name_ingredients else []
         for mixture_name_ingredient in mixtures_name_ingredients:
             # print(mixture_name_ingredient)
             splitted = mixture_name_ingredient.split('::')
@@ -156,14 +153,14 @@ def load_chemicals_from_database():
                         dict_synonyms_to_chemicals_ids[mixture_name] = set()
                     dict_synonyms_to_chemicals_ids[mixture_name].add(identifier)
 
-        xrefs = result['xrefs'] if 'xrefs' in result else []
+        xrefs = xrefs if xrefs else []
         for xref in xrefs:
             if xref.startswith('PubChem Compound:'):
                 id = int(xref.split(':')[1])
                 if id not in dict_pubchem_to_chemical_ids:
                     dict_pubchem_to_chemical_ids[id] = set()
                 dict_pubchem_to_chemical_ids[id].add(identifier)
-        chembl_id = result['ChEMBL'] if 'ChEMBL' in result else ''
+        chembl_id = chembl_id if chembl_id else ''
         if not chembl_id in dict_chembl_to_drugbank_id and chembl_id != '':
             dict_chembl_to_drugbank_id[chembl_id] = []
         if chembl_id != '':
@@ -281,7 +278,7 @@ def map_with_pubchem_id():
             print('huhu')
 
         # check if some map already if not add to not mapped list
-        if pubchem_id in dict_pubchem_to_chemical_ids:
+        if pubchem_id in dict_pubchem_to_chemical_ids and pubchem_id != '297':
             # manual checked that methan do not map to activated charcoal (carbon)
             if pubchem_id == '297':
                 continue
@@ -290,6 +287,10 @@ def map_with_pubchem_id():
             #     continue
             dict_sider_drug[pubchem_id].set_how_mapped('drugbank to pubchem stereo')
             dict_sider_drug_with_chemical_ids[pubchem_id].extend(dict_pubchem_to_chemical_ids[pubchem_id])
+            delete_list.add(pubchem_id)
+        elif str(pubchem_id) in dict_all_drug:
+            dict_sider_drug[pubchem_id].set_how_mapped('pubchem to pubchem stereo')
+            dict_sider_drug_with_chemical_ids[pubchem_id].append(str(pubchem_id))
             delete_list.add(pubchem_id)
         elif pubchem_flat in dict_pubchem_to_chemical_ids:
             found, chemical_ids = check_with_name_mapping(pubchem_id, pubchem_flat, dict_stereo_key_name,

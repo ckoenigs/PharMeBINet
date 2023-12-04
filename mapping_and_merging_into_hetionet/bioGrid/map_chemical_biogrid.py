@@ -30,21 +30,19 @@ def load_chemical_from_database_and_add_to_dict():
     """
     Load all Chemical from my database  and add them into a dictionary
     """
-    query = "MATCH (n:Chemical) RETURN n"
+    query = "MATCH (n:Chemical) RETURN n.identifier, n.resource, n.inchikey, n.name, n.synonyms "
     results = g.run(query)
 
     for record in results:
-        node=record.data()['n']
-        identifier = node['identifier']
-        dict_chemical_id_to_resource[identifier] = node['resource']
+        [identifier, resource, inchikey, name, synonyms] = record.values()
+        dict_chemical_id_to_resource[identifier] = resource
 
-        if 'inchikey' in node:
-            inchikey = node['inchikey']
+        if inchikey:
             pharmebinetutils.add_entry_to_dict_to_set(dict_chemical_inchikey_to_ids, inchikey, identifier)
 
-        name = node['name'].lower()
+        name = name.lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_chemical_synonym_to_chemical_ids, name, identifier)
-        synonyms = node['synonyms'] if 'synonyms' in node else []
+        synonyms = synonyms if synonyms else []
         for synonym in synonyms:
             pharmebinetutils.add_entry_to_dict_to_set(dict_chemical_synonym_to_chemical_ids, synonym.lower(),
                                                       identifier)
@@ -76,12 +74,10 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping):
         # mapping
         found_mapping = False
 
-
-
         if 'inchikey' in node:
             inchikey = node['inchikey']
             if inchikey in dict_chemical_inchikey_to_ids:
-                found_mapping=True
+                found_mapping = True
                 for chemical_id in dict_chemical_inchikey_to_ids[inchikey]:
                     csv_mapping.writerow(
                         [identifier, chemical_id,
@@ -167,7 +163,7 @@ def main():
     print(datetime.datetime.now())
     print('Generate cypher and tsv file')
     csv_mapping = general_function_bioGrid.generate_files(path_of_directory, 'mapped_chemical.tsv', source,
-                                                          'bioGrid_chemical', 'Chemical', ['chemical_id','id'])
+                                                          'bioGrid_chemical', 'Chemical', ['chemical_id', 'id'])
 
     print('##########################################################################')
 

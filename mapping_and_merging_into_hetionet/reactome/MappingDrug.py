@@ -58,7 +58,7 @@ def load_iuphar_ids_in():
     with open('IUPHAR/ligands.csv', newline='', encoding="utf-8") as csvfile:
         iuphar_and_inchi = csv.DictReader(csvfile, delimiter=',')
         for row in iuphar_and_inchi:
-            iuphar_id = row['Ligand id']
+            iuphar_id = row['Ligand ID']
             inchi_iuphar = row['InChI']
             inchiKey_iuphar = row['InChIKey']
             dict_inchi_to_iuphar_id[inchi_iuphar] = iuphar_id
@@ -161,6 +161,19 @@ def load_reactome_drug_in(label):
                 set_pair.add((pharmebinet_identifier, dbId))
 
 
+        # mapping:  PubChem-direct identifier
+        elif (databaseName == "PubChem Compound") \
+                and identifier_reactome in dict_identifier_to_resource:
+            if (identifier_reactome, dbId) in set_pair:
+                continue
+            counter_map_with_id += 1
+            csv_mapped.writerow([dbId, identifier_reactome, pharmebinetutils.resource_add_and_prepare(
+                dict_identifier_to_resource[pharmebinet_identifier], 'Reactome'), 'direct_pubchem', drug_name,
+                                 databaseName])
+            mapped = True
+            set_pair.add((identifier_reactome, dbId))
+
+
         # mapping xrefs: ChEBI, KEGG & PubChem
         elif (databaseName == "ChEBI" or databaseName == "COMPOUND" or databaseName == "PubChem Compound") \
                 and database_identifier in dict_identifier_pharmebinet_xref:
@@ -173,6 +186,7 @@ def load_reactome_drug_in(label):
                                  databaseName])
             mapped = True
             set_pair.add((pharmebinet_identifier, dbId))
+
 
         # mapping with name
         if drug_name in dict_drug_pharmebinet_names and not mapped:
