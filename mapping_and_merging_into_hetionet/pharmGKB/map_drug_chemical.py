@@ -294,7 +294,11 @@ def load_pharmgkb_in(label):
         pubchem_compound_identifiers = result[
             'pubchem_compound_identifiers'] if 'pubchem_compound_identifiers' in result else []
         for pubchem_compound_identifier in pubchem_compound_identifiers:
-            if pubchem_compound_identifier in dict_pubchem_compound_to_chemical_id:
+            if pubchem_compound_identifier in dict_chemical_to_resource:
+                mapped = True
+                add_information_to_file(pubchem_compound_identifier, identifier, csv_writer, 'pubchem_direct', set_of_all_tuples,
+                                        dict_chemical_to_resource, xref=dict_compound_id_to_xrefs[pubchem_compound_identifier])
+            elif pubchem_compound_identifier in dict_pubchem_compound_to_chemical_id:
                 mapped = True
                 counter_map += 1
                 for drugbank_id in dict_pubchem_compound_to_chemical_id[pubchem_compound_identifier]:
@@ -303,7 +307,7 @@ def load_pharmgkb_in(label):
                         drugbank_ids = check_if_name_are_correct_or_with_salt(name, drugbank_id)
                     mapped = True
                     for db_id in drugbank_ids:
-                        add_information_to_file(db_id, identifier, csv_writer, 'pubchem compound', set_of_all_tuples,
+                        add_information_to_file(db_id, identifier, csv_writer, 'pubchem_compound', set_of_all_tuples,
                                                 dict_chemical_to_resource, xref=dict_compound_id_to_xrefs[db_id])
         # if mapped:
         #     continue
