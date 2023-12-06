@@ -14,7 +14,7 @@ license="https://www.ncbi.nlm.nih.gov/home/about/policies/"
 
 
 sleep 30
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
 sleep 30
 
 now=$(date +"%F %T")
@@ -33,22 +33,15 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-sleep 30
-$path_neo4j/neo4j restart
-sleep 30
-
-
 sleep 60
-$path_neo4j/neo4j restart
-sleep 120
-
-sleep 60
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
 sleep 180
+
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo integrat dbSNP clinvar rela
+echo integrat dbSNP edges
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
 
@@ -62,8 +55,8 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_dbSNP_clinVar.cy
 
 
 sleep 30
-$path_neo4j/neo4j restart
-sleep 30
+python ../../restart_neo4j.py $path_neo4j > neo4j.txt
+sleep 60
 
 
 now=$(date +"%F %T")
@@ -106,5 +99,6 @@ echo "Current time: $now"
 
 
 sleep 30
-$path_neo4j/neo4j restart
-sleep 70
+python ../../restart_neo4j.py $path_neo4j > neo4j2.txt
+
+sleep 60
