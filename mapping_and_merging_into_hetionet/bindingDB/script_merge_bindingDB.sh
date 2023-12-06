@@ -26,13 +26,10 @@ echo integrate map drug and outcome
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
-sleep 30
-$path_neo4j/neo4j restart
-sleep 60
+sleep 100
+python ../../restart_neo4j.py $path_neo4j > neo4j.txt
+sleep 200
 
-sleep 60
-$path_neo4j/neo4j restart
-sleep 120
 
 
 now=$(date +"%F %T")
@@ -40,12 +37,28 @@ echo "Current time: $now"
 echo complex integration
 python3 prepare_complex_edge.py $path_to_project > protein/output.txt
 
+
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo integrate map drug and outcome
+echo integrate complex
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
 
-sleep 30
-$path_neo4j/neo4j restart
-sleep 50
+sleep 60
+python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
+sleep 120
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo ers integration
+python3 prepare_ERS_edge.py $path_to_project > ERS/output.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo integrate map ers and the edges
+
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge_2.cypher
+
+sleep 60
+python ../../restart_neo4j.py $path_neo4j > neo4j2.txt
+sleep 120
