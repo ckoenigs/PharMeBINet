@@ -58,7 +58,7 @@ list_rxnorm_id = set()
 
 g = open('results/name_map_drugbank_to_rxnorm.tsv', 'w', encoding='utf-8')
 csv_writer = csv.writer(g, delimiter='\t')
-csv_writer.writerow(['drugbank_id', 'rxnorm_cui'])
+csv_writer.writerow([ 'rxnorm_cui','drugbank_id'])
 
 synonym_to_drugbank_ids = {}
 
