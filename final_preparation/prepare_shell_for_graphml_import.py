@@ -14,7 +14,7 @@ def create_connection_with_neo4j():
     # authenticate("localhost:7474", "neo4j", "test")
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
 def get_the_constraints_and_write_into_file():
@@ -35,8 +35,11 @@ path_to_pharmebinet=$2\n\n''')
     results = g.run(query)
     list_indices = []
     for record in results:
-        [id, name, state, populationPercent, type, entityType, labelsOrTypes, properties, indexProvider,
-         owningConstraint] = record.values()
+        # [id, name, state, populationPercent, type, entityType, labelsOrTypes, properties, indexProvider,
+        #  owningConstraint, lastRead,readCount] = record.values()
+        dict_key_value = record.data()
+        labelsOrTypes = dict_key_value['labelsOrTypes']
+        properties = dict_key_value['properties']
         if labelsOrTypes:
             for label in labelsOrTypes:
                 if '_' in label or not label[0].isupper():
