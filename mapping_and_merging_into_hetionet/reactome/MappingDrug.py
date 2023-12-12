@@ -168,7 +168,7 @@ def load_reactome_drug_in(label):
                 continue
             counter_map_with_id += 1
             csv_mapped.writerow([dbId, identifier_reactome, pharmebinetutils.resource_add_and_prepare(
-                dict_identifier_to_resource[pharmebinet_identifier], 'Reactome'), 'direct_pubchem', drug_name,
+                dict_identifier_to_resource[identifier_reactome], 'Reactome'), 'direct_pubchem', drug_name,
                                  databaseName])
             mapped = True
             set_pair.add((identifier_reactome, dbId))
