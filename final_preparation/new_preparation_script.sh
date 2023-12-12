@@ -14,7 +14,7 @@ path_to_pharMeBiNet='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeB
 
 sleep 60
 
-$path_neo4j/neo4j restart
+python ../restart_neo4j.py $path_neo4j > neo4.txt
 
 
 sleep 120
@@ -30,7 +30,7 @@ echo "Current time: $now"
 
 sleep 60
 
-$path_neo4j/neo4j restart
+python ../restart_neo4j.py $path_neo4j > neo4.txt
 
 
 sleep 120
@@ -68,7 +68,7 @@ echo 'integrate used data'
 
 sleep 120
 
-$path_neo4j/neo4j restart
+python ../restart_neo4j.py $path_neo4j > neo4.txt
 
 sleep 120
 
