@@ -2152,7 +2152,7 @@ def add_the_other_rela_to_cypher(pathway_label, product_label, salt_label, mutat
     label_neo4j_compound_pathway = 'associates_with_CawPA'
     label_neo4j_compound_salt = 'has_ChS'
     label_neo4j_compound_mutaded = 'combination_causes_adrs_CccaMU'
-    label_neo4j_interaction = 'interacts_CiC'
+    label_neo4j_interaction = 'INTERACTS_CHiCH'
     label_neo4j_enzyme_pathway = 'participates_EpPA'
     label_neo4j_target_peptide = 'has_component_POhcPO'
     label_neo4j_pharmacologic_class_compound = 'includes_PCiC'
