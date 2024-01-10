@@ -61,14 +61,25 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+cd gwas
+echo gwas
+
+# ./script_gwas_integration.sh $path_neo4j $path_to_project $password > output/script_output.txt
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 cd gencc
 echo gencc
 
-# ./script_integrate_gencc.sh $path_neo4j $path_to_project > output.txt
 ./integrate_gencc.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
 
 
 cd ..
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -92,16 +103,16 @@ echo DDinter
 
 cd ..
 
-now=$(date +"%F %T")
-echo "Current time: $now"
+#now=$(date +"%F %T")
+#echo "Current time: $now"
 
-cd foodb 
-echo Foodb
+#cd foodb 
+#echo Foodb
 
-./script_foodb.sh $path_neo4j $path_to_project $password > output.txt
+#./script_foodb.sh $path_neo4j $path_to_project $password > output.txt
 
 
-cd ..
+#cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -203,16 +214,16 @@ echo hpo
 cd ..
 
 
-now=$(date +"%F %T")
-echo "Current time: $now"
+#now=$(date +"%F %T")
+#echo "Current time: $now"
 
 
-cd  openFDA
-echo openFDA
+#cd  openFDA
+#echo openFDA
 
 #./script_open_fda.sh $path_neo4j $password > output_openFDA.txt
 
-cd ..
+#cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -225,16 +236,16 @@ echo aeolus
 
 cd ..
 
-now=$(date +"%F %T")
-echo "Current time: $now"
+#now=$(date +"%F %T")
+#echo "Current time: $now"
 
-cd RNAcentral
-echo RNACentral
+#cd RNAcentral
+#echo RNACentral
 
 #./script_rna_central.sh $path_neo4j $path_to_project $password > output_script.txt
 
 
-cd ..
+#cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -266,7 +277,7 @@ echo "Current time: $now"
 cd  drugbank
 echo drugbank
 
-./script_to_start_program_and_integrate_into_neo4j.sh $path_to_project $path_neo4j $password > output_script.txt
+./script_to_start_program_and_integrate_into_neo4j.sh $path_neo4j $path_to_project $password > output_script.txt
 
 
 cd ..
@@ -282,16 +293,16 @@ echo EFO
 
 cd ..
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-
-cd  adrecs_target
-echo adrecs-target
-
-./script_adrecs_target.sh $path_neo4j $path_to_project $password > output_script.txt
-
-cd ..
+#now=$(date +"%F %T")
+#echo "Current time: $now"
+#
+#
+#cd  adrecs_target
+#echo adrecs-target
+#
+#./script_adrecs_target.sh $path_neo4j $path_to_project $password > output_script.txt
+#
+#cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -420,6 +431,17 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+cd bindingDB 
+echo bindingDB
+
+./script_bindingdb.sh $path_neo4j $path_to_project $password > output.txt
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 cd  mondo
 echo mondo
 
@@ -463,23 +485,3 @@ echo ctd
 
 cd ..
 
-# cd  dbSNP
-# echo dbSNP
-
-# #python3 parse_json_to_tsv_dbsnp.py "/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/dbSNP" $path_to_project  > output/output_generate_integration_file.txt
-
-# now=$(date +"%F %T")
-# echo "Current time: $now"
-
-# echo integrate efo into neo4j
-
-# #$path_neo4j/cypher-shell -u neo4j -p $password -f cypher.cypher > output/output_cypher_node.txt 2>&1
-
-# sleep 60
-
-# $path_neo4j/neo4j restart
-
-
-# sleep 120
-
-# cd ..
