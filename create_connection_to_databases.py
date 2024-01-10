@@ -10,14 +10,21 @@ def database_connection_neo4j_driver() -> neo4j.Driver:
     neo4j_address = 'bolt://localhost:7687'
     username = 'neo4j'
     password = 'test1234'
-    try:
-        driver = neo4j.GraphDatabase.driver(neo4j_address, auth=(username, password))
-        driver.verify_connectivity()
-    except Exception as ex:
-        print('Error while establishing neo4j connection, trying again in 30 seconds...', ex)
-        time.sleep(30)
-        driver = neo4j.GraphDatabase.driver(neo4j_address, auth=(username, password))
-        driver.verify_connectivity()
+    retries = 0
+    max_retries = 10
+    success = False
+    while not success:
+        try:
+            driver = neo4j.GraphDatabase.driver(neo4j_address, auth=(username, password))
+            driver.verify_connectivity()
+            success = True
+        except Exception as ex:
+            retries += 1
+            print('Error while establishing neo4j connection, trying again in 30 seconds (%s/%s)...' % (retries, max_retries))
+            if retries == max_retries:
+                raise ex
+            else:
+                time.sleep(30)
     return driver
 
 def mysqlconnect_bindingDB():
