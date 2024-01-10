@@ -6,6 +6,9 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+#password
+password=$3
+
 license='Attribution-NonCommercial 4.0 International'
 
 
@@ -30,10 +33,18 @@ python3 mapping_GOterm_drugcentral.py $path_to_project > goTerm/output.txt
 
 
 now=$(date +"%F %T")
+echo "Current time: $now"
 echo 'integrate Drugcentral chemical'
 
 echo "Current time: $now"
 python3 mapping_chemical_drugcentral.py $path_to_project > chemical/output.txt
+
+
+now=$(date +"%F %T")
+echo 'integrate Drugcentral pc'
+
+echo "Current time: $now"
+python3 mapping_pharmaClass.py $path_to_project > pharmaClass/output.txt
 
 
 now=$(date +"%F %T")
@@ -44,11 +55,52 @@ python3 mapping_atc_drugcentral.py $path_to_project > atc/output.txt
 
 
 now=$(date +"%F %T")
+echo 'integrate Drugcentral disease'
+
+echo "Current time: $now"
+python3 mapping_disease_drugcentral.py $path_to_project > disease/output.txt
+
+
+now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
-sleep 120
-$path_neo4j/neo4j restart
-sleep 120
+sleep 30
+python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
+sleep 60
+
+now=$(date +"%F %T")
+echo 'integrate Drugcentral different edges'
+
+echo "Current time: $now"
+python3 prepare_direct_edges_from_dc.py $path_to_project > edge/output_directed.txt
+
+now=$(date +"%F %T")
+echo 'integrate Drugcentral interaction edges'
+
+echo "Current time: $now"
+python3 prepare_interaction_edge.py $path_to_project > edge/output_interacts.txt
+
+now=$(date +"%F %T")
+echo 'integrate Drugcentral chemical-product edges'
+
+echo "Current time: $now"
+python3 prepare_edge_product_chemical.py $path_to_project > edge/output_edge_to_product.txt
+
+now=$(date +"%F %T")
+echo 'integrate Drugcentral chemical-protein edges'
+
+echo "Current time: $now"
+python3 merge_protein_chemical_edge.py $path_to_project > edge/output_edge_to_protein.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
+
+sleep 60
+python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
+sleep 90
 
