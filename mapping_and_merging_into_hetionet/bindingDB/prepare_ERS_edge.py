@@ -148,7 +148,7 @@ def get_enzyme_reactant_set_properties():
 
     part = ''' Match (b:bindingDB_enzyme_reactant_set{reactant_set_id:line.reactant_set_id})'''
     query_nodes_start = part
-    query_middle_new = ' Create (a:ERS{'
+    query_middle_new = ' Create (a:EnzymeReactantSet{'
     for record in result:
         property = record.data()['l']
         if property == "reactant_set_id":
@@ -160,13 +160,15 @@ def get_enzyme_reactant_set_properties():
             query_middle_new += property + ':b.' + property + ', '
 
     for property in properties:
-        if property in ['description', 'pmid', 'doi', 'art_purp']:
-            query_middle_new += property + ":split(line." + property + ', "|"), '
+        if property in ['description', 'doi', 'art_purp']:
+            query_middle_new += property + "s:split(line." + property + ', "|"), '
+        elif property =='pmid':
+            query_middle_new += "pubMed_ids:split(line." + property + ', "|"), '
         else:
             query_middle_new += property + ":line." + property + ", "
     query_end = ''' Create (a)-[:equal]->(b)'''
     # combine the important parts of node creation
-    query_new = query_nodes_start + query_middle_new + 'url:"https://www.bindingdb.org/rwd/jsp/dbsearch/Summary_ki.jsp?entryid="+b.entryid+"&ki_result_id="+line.ki_result_id+"&reactant_set_id="+b.reactant_set_id, license:"", resource:["bindingDB"], source:"bindingDB"})' + query_end
+    query_new = query_nodes_start + query_middle_new + 'url:"https://www.bindingdb.org/rwd/jsp/dbsearch/Summary_ki.jsp?entryid="+b.entryid+"&ki_result_id="+line.ki_result_id+"&reactant_set_id="+b.reactant_set_id, node_edge:true , license:"CC BY 3.0 US Deed", resource:["BindingDB"], source:"BindingDB", bindingdb:"yes"})' + query_end
     return query_new
 
 
@@ -288,9 +290,9 @@ def create_node(path_of_directory, cypher_file):
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file.write(query)
 
-    query = pharmebinetutils.prepare_index_query('ERS', 'identifier')
+    query = pharmebinetutils.prepare_index_query('EnzymeReactantSet', 'identifier')
     cypher_file.write(query)
-    cypher_file.write('CALL db.awaitIndex("indexERS", 300);\n')
+    cypher_file.write('CALL db.awaitIndex("indexEnzymeReactantSet", 300);\n')
 
 
 def create_ers_edges(path_of_directory, cypher_file):
@@ -299,12 +301,12 @@ def create_ers_edges(path_of_directory, cypher_file):
     '''
     file_names = ['ers_inhibitor_chem', 'ers_enzyme_prot', 'ers_enzyme_chem', 'ers_enzyme_complex',
                   'ers_substrate_prot', 'ers_substrate_chem', 'ers_substrate_complex']
-    node_name = ['Chemical', 'Protein', 'Chemical', 'Complex', 'Protein', 'Chemical', 'Complex']
+    node_name = ['Chemical', 'Protein', 'Chemical', 'MolecularComplex', 'Protein', 'Chemical', 'MolecularComplex']
 
     dictionaries = [ers_inhibitor_chem_dict, ers_enzyme_prot_dict, ers_enzyme_chem_dict, ers_enzyme_complex_dict,
                     ers_substrate_prot_dict, ers_substrate_chem_dict, ers_substrate_complex_dict]
-    relationship_names = ['inhibitor_chemical', 'enzyme_protein', 'enzyme_chemical', 'enzyme_complex',
-                          'substrate_protein', 'substrate_chemical', 'substrate_complex']
+    relationship_names = ['INHIBITS', 'IS_ENZYME', 'IS_ENZYME', 'IS_ENZYME',
+                          'IS_SUBSTRATE', 'IS_SUBSTRATE', 'IS_SUBSTRATE']
     headers = [['ersid', k] for k in relationship_names]
 
     for i in range(len(dictionaries)):
@@ -325,9 +327,9 @@ def create_ers_edges(path_of_directory, cypher_file):
             csv_mapping.writerow(row)
         # for POLYMER: add unpid1 to edge (variant)
         if "prot" in file_name:
-            query = f'Match (n:ERS{{identifier:line.ersid}}), (m:{node_name[i]}{{identifier:line.{header[1]}}}) Create (n)-[:{relationship_names[i]}{{ source:"bindingDB", resource:["bindingDB"], variant: line.unpid1}}] -> (m)'
+            query = f'Match (n:EnzymeReactantSet{{identifier:line.ersid}}), (m:{node_name[i]}{{identifier:line.{header[1]}}}) Create (m)-[:{relationship_names[i]}_{pharmebinetutils.dictionary_label_to_abbreviation[node_name[i]]}{"".join([x[0].lower() for x in relationship_names[i].split("_")])}{pharmebinetutils.dictionary_label_to_abbreviation["EnzymeReactantSet"]}{{ source:"BindingDB", resource:["BindingDB"], url:"https://www.bindingdb.org/rwd/jsp/dbsearch/Summary_ki.jsp?entryid="+n.entryid+"&ki_result_id="+n.ki_result_id+"&reactant_set_id="+line.ersid, bindingdb:"yes", license:"CC BY 3.0 US Deed", variant: line.unpid1}}] -> (n)'
         else:
-            query = f'Match (n:ERS{{identifier:line.ersid}}), (m:{node_name[i]}{{identifier:line.{header[1]}}}) Create (n)-[:{relationship_names[i]}{{ source:"bindingDB", resource:["bindingDB"]}}] -> (m)'
+            query = f'Match (n:EnzymeReactantSet{{identifier:line.ersid}}), (m:{node_name[i]}{{identifier:line.{header[1]}}}) Create (m)-[:{relationship_names[i]}_{pharmebinetutils.dictionary_label_to_abbreviation[node_name[i]]}{"".join([x[0].lower() for x in relationship_names[i].split("_")])}{pharmebinetutils.dictionary_label_to_abbreviation["EnzymeReactantSet"]}{{ source:"BindingDB", bindingdb:"yes", url:"https://www.bindingdb.org/rwd/jsp/dbsearch/Summary_ki.jsp?entryid="+n.entryid+"&ki_result_id="+n.ki_result_id+"&reactant_set_id="+line.ersid, license:"CC BY 3.0 US Deed", resource:["BindingDB"]}}] -> (n)'
         query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
         cypher_file.write(query)
 
@@ -341,7 +343,7 @@ def main():
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
-        sys.exit('need a path bindingdb ers')
+        sys.exit('need a path bindingdb EnzymeReactantSet')
 
     os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet/bindingDB/')
     home = os.getcwd()
