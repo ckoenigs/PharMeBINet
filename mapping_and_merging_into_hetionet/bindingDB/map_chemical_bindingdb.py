@@ -87,7 +87,7 @@ def generate_new_file_and_add_cypher_query(source):
         # elif prop=='smiles_string':
         #     list_of_prop.append('smiles:n.' + prop)
 
-    query_cypher = 'Match (n:bindingDB_mono_struct_names{monomerid:line.id}) Create (m:Chemical{identifier:line.pubchem_id, smiles:line.smiles, name:line.name, xrefs:split(line.xrefs,"|"), url:"https://www.bindingdb.org/rwd/bind/chemsearch/marvin/MolStructure.jsp?monomerid="+line.id, source:"PubChem via BindingDB", resource:["BindingDB"], license:"CC BY 3.0 US Deed ",  ' + ', '.join(
+    query_cypher = 'Match (n:bindingDB_mono_struct_names{monomerid:line.id}) Create (m:Chemical{identifier:line.pubchem_id, smiles:line.smiles, name:line.name, xrefs:split(line.xrefs,"|"), url:"https://www.bindingdb.org/rwd/bind/chemsearch/marvin/MolStructure.jsp?monomerid="+line.id, source:"PubChem via BindingDB", bindingdb:"yes", resource:["BindingDB"], license:"CC BY 3.0 US Deed",  ' + ', '.join(
         list_of_prop) + '})-[:equal_binding{new:true}]->(n)'
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
