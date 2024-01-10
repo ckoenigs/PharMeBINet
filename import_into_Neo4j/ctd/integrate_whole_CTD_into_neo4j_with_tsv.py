@@ -5,7 +5,8 @@ import csv
 sys.path.append("../..")
 import pharmebinetutils
 
-csv.field_size_limit(137261)
+# csv.field_size_limit(137261)
+csv.field_size_limit(237261)
 
 # cypher file for all nodes
 cypher_file_nodes = open('cypher/nodes_1.cypher', 'w', encoding='utf-8')
