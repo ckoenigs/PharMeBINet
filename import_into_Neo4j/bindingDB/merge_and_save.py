@@ -75,7 +75,8 @@ def join_polymer_or_complex_new(connection, main_table_name, identifier, sub_tab
     # Retrieve the total number of rows in the table
     cursor.execute(f"SELECT COUNT(*) FROM {main_table_name}")
     total_rows = cursor.fetchone()[0]
-    print('total rows', total_rows)
+
+    print('total rows', total_rows, main_table_name)
 
     # header of tsv file
     header = []
@@ -126,7 +127,7 @@ def join_monomer_new(connection):
     dict_mono_id_to_name = {}
     print('start prepare dictionary', datetime.datetime.now())
     #
-    with ZipFile('data/BindingDB_All_202311_tsv.zip', 'r') as zipObj:
+    with ZipFile('data/BindingDB_All_202401_tsv.zip', 'r') as zipObj:
         f = zipObj.open(zipObj.filelist[0], 'r')
         csv_reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8'), delimiter='\t')
         for line in csv_reader:
@@ -198,7 +199,6 @@ def join_monomer_new(connection):
                     if len(name) == 1:
                         result.append(name[0])
                     else:
-                        print(name, identifier)
                         result.append(name[0])
                         synonyms = synonyms.union(name[1:])
                     result[-2] = '|'.join(synonyms)
