@@ -40,7 +40,7 @@ list_new_properties = []
 neo4j_label_drugbank = 'Compound_DrugBank'
 
 # neo4j_interaction_rela_label='interacts'
-neo4j_interaction_rela_label = 'interacts_CiC'
+neo4j_interaction_rela_label = 'INTERACTS_CHiCH'
 
 # set of properties which are list element
 set_of_list_properties = set([])
@@ -420,7 +420,7 @@ def generation_of_interaction_file():
     csv_writer = csv.writer(g_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     csv_writer.writerow(['db1', 'db2', 'description'])
     cypherfile = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
-    query = ''' Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CiC{source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.db1, unbiased:false, resource:['DrugBank'], drugbank:'yes',  license:'%s', descriptions:split(line.description,'||')}]->(c2) '''
+    query = ''' Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CHiCH{source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.db1, unbiased:false, resource:['DrugBank'], drugbank:'yes',  license:'%s', descriptions:split(line.description,'||')}]->(c2) '''
     query = query % (license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.tsv',

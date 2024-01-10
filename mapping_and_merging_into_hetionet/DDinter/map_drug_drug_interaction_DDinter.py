@@ -24,7 +24,7 @@ def load_existing_drug_interaction():
     Load all drug interaction from database
     :return:
     """
-    query = '''MATCH (a:Chemical)-[s:INTERACTS_CiC]->(b:Chemical) RETURN a.identifier, b.identifier, s.resource'''
+    query = '''MATCH (a:Chemical)-[s:INTERACTS_CHiCH]->(b:Chemical) RETURN a.identifier, b.identifier, s.resource'''
     results = g.run(query)
     for record in results:
         [chemical_1, chemical_2, resource] = record.values()
@@ -111,12 +111,12 @@ def generate_cypher_file(file_name, file_name_new):
     :param file_name_new: string
     :return:
     """
-    query = ''' MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Match (n)-[r:INTERACTS_CiC]->(c)  Set r.resource=split(line.resource,"|"), r.ddinter="yes", r.level=line.level, r.rela_infos=split(line.rela_infos,"|")'''
+    query = ''' MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Match (n)-[r:INTERACTS_CHiCH]->(c)  Set r.resource=split(line.resource,"|"), r.ddinter="yes", r.level=line.level, r.rela_infos=split(line.rela_infos,"|")'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/DDinter/{file_name}', query)
     cypher_file.write(query)
 
-    query = '''MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Create (n)-[r:INTERACTS_CiC{source:"DDinter", resource:["DDinter"], source:"DDinter", ddinter:"yes" , license:"%s", level:line.level, rela_infos:split(line.rela_infos,"|")}]->(c) '''
+    query = '''MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Create (n)-[r:INTERACTS_CHiCH{source:"DDinter", resource:["DDinter"], source:"DDinter", ddinter:"yes" , license:"%s", level:line.level, rela_infos:split(line.rela_infos,"|")}]->(c) '''
     query = query % (license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/DDinter/{file_name_new}',
