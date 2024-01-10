@@ -123,7 +123,7 @@ def pathway_commons():
         # Add pathway
         i += 1
         row = PC_Row(
-            identifier='PC13_{}'.format(i),
+            identifier='PC12_{}'.format(i),
             synonyms=name,
             source=description['datasource'],
             genes=genes,
@@ -178,7 +178,7 @@ def wikipathways():
     # Parse WikiPathways
 
     # download WikiPathways
-    url = 'http://data.wikipathways.org/20230410/gmt/wikipathways-20230410-gmt-Homo_sapiens.gmt'
+    url = 'http://data.wikipathways.org/20231210/gmt/wikipathways-20231210-gmt-Homo_sapiens.gmt'
     filename = pharmebinetutils.download_file(url, out='data/')
 
     gmt_generator = read_gmt(filename)
@@ -190,7 +190,7 @@ def wikipathways():
         print('wikipathway ulr is not working anymore')
         sys.exit('wikipathway ulr is not working anymore')
     print(i)
-    wikipath_df['identifier'] = ['PC13_{}'.format(j) for j in range(i + 1, i + 1 + len(wikipath_df))]
+    wikipath_df['identifier'] = ['PC12_{}'.format(j) for j in range(i + 1, i + 1 + len(wikipath_df))]
     print(len(wikipath_df))
     # print(j)
 
