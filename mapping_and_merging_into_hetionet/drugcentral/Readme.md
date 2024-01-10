@@ -43,12 +43,12 @@ in the following, the DrugCentral DC_structures and DC_ParentDrugMolecules are m
 
 First, the DrugCentral DC_PharmaClasses are mapped to Pharmacological class (PC):
     First, the TSV files for mapped and not mapped nodes are prepared. 
-    Next, the PC nodes are loaded and the information is written into a dictionaries.
-    Then, the DC_PharmaClass are loaded and mapped to PC (all mapping method were use at the same time):
-        It map with DC_PharmaClass source MESH the code (Mesh ID) to PC xref Mesh ID.
-        Also, with source FDA the code is mapped to the PC identifier.
-        Additional, is the name mapped to PC name.
-        The last mapping method is using the synonyms to map to PC name.
+    Next, the PC nodes are loaded and the information is written into dictionaries.
+    Then, the DC_PharmaClass (exclude the FDA because they are already integrated with this pipeline and might be more up-to-date than them) are loaded and mapped to PC (all mapping methods were used at the same time):
+        It maps with DC_PharmaClass source MESH the code (Mesh ID) to PC xref Mesh ID.
+        Also, with the source FDA, the code is mapped to the PC identifier.
+        Additionally, the name is mapped to the PC name.
+        The last mapping method is using the synonyms to map to the PC name.
     The mapped and not mapped nodes are written into the TSV files.
     Also, the cypher query is generated and added to the cypher file.
 
