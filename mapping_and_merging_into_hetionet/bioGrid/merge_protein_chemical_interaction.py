@@ -135,8 +135,17 @@ dict_chemical_type_to_rela_type = {
     "inhibitor": "INHIBITS_CHiP",
     "unknown": "ASSOCIATES_CHaP",
     "modulator": "REGULATES_CHrP",
-    "activator": "UPREGULATES_CHuP"
+    "activator": "UPREGULATES_CHuP",
+    # "sars-cov-2 inhibitor":"INHIBITS_CHiP",
+    "inhibitor/sars-cov-2 inhibitor":"INHIBITS_CHiP",
+    "inhibitor/sars-cov inhibitor":"INHIBITS_CHiP",
+    "inhibitor/sars-cov-2 activator":"INHIBITS_CHiP",
+    "inhibitor/mers-cov inhibitor":"INHIBITS_CHiP",
+    "activator/sars-cov-2 inhibitor":"UPREGULATES_CHuP"
 }
+
+# properties where I do not know how to name them because it is only a indirect action
+set_of_chemical_type_which_are_not_ordered=set(['sars-cov-2 inhibitor','sars-cov-2 activator'])
 
 
 def load_and_prepare_biogrid_human_data():
@@ -151,8 +160,12 @@ def load_and_prepare_biogrid_human_data():
         if protein_action_type != 'target':
             sys.exit('other protein action type );')
 
-        if chemical_action_type not in dict_chemical_type_to_rela_type:
+        if chemical_action_type not in dict_chemical_type_to_rela_type and chemical_action_type not in set_of_chemical_type_which_are_not_ordered:
+            print(chemical_action_type)
+            print('other chemical action type );')
             sys.exit('other chemical action type );')
+        elif chemical_action_type in set_of_chemical_type_which_are_not_ordered:
+            continue
         rela_info = dict(rela)
         if (chemical_id, protein_id, protein_action_type, chemical_action_type) not in dict_pair_to_infos:
             dict_pair_to_infos[(chemical_id, protein_id, protein_action_type, chemical_action_type)] = []
