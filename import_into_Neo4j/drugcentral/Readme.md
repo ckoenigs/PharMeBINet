@@ -1,6 +1,6 @@
 https://drugcentral.org/
 
-Version: 2023-05-10
+Version: 2023-11-01
 
 BioDWH2 prepare transformation into GraphML file and with the GraphmML importert the data are add to Neo4j.
 

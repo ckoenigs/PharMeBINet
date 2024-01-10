@@ -2,7 +2,7 @@
 
 https://thegencc.org/
 
-Version: 2022-03-22
+Version: 2024-01-05
 
 BioDWH2 prepare transformation into GraphML file and with the GraphmML importert the data are add to Neo4j.
 

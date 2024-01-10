@@ -1,6 +1,6 @@
 http://obophenotype.github.io/uberon/
 
-version: 2023-04-19
+version: 2023-12-08
 
 First, the script downloads the latest version of UBERON.
 Then the OBO file from the UBERON will be transformed into node and relationship TSV with the program of EFO/transform_obo_to_tsv_and_cypher_file.py data/ext.obo Uberon uberon_extend

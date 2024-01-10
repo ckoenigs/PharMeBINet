@@ -1,6 +1,6 @@
 https://reactome.org/
 
-Version: 2023-03-15
+Version: 2023-11-30
 
 ## Preparation of Neo4j :
 
@@ -13,11 +13,16 @@ Version: 2023-03-15
 4. Generate dump:
    JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ./neo4j-admin dump --database=reactome --to=reactome.dump
 
-5. Load dump into Neo4j 5.3:
+5. Delete existing reactome directories in data.
+
+6. Load dump into Neo4j 5.3:
 
    ./neo4j-admin database load --from-path=/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j/neo4j-community-5.3.0 reactome
 
-    ./neo4j-admin database migrate --force-btree-indexes-to-range reactome
+   ./neo4j-admin database migrate --force-btree-indexes-to-range reactome
+
+   If after execute this command this error appeare: Failed to migrate database 'reactome': Failed to verify the transaction logs. This most likely means that the transaction logs are corrupted.
+   The remove all transaction files!
 
 
 ## Perpare import into other Neo4j database

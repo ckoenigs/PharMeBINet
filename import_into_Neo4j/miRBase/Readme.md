@@ -1,6 +1,6 @@
 https://www.mirbase.org/
 
-Version: 22.1  (2018)
+Version: 22.1  (2018-05-23)
 
 BioDWH2 prepare transformation into GraphML file and with the GraphmML importert the data are add to Neo4j.
 

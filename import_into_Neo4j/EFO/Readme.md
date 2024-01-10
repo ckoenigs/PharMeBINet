@@ -2,7 +2,7 @@
 
 https://www.ebi.ac.uk/efo/
 
-Version: 3.56.0 (2023-7-17)
+Version: 3.61.0 (2023-12-18)
 
 
 First, the script downloads the latest version of EFO.
