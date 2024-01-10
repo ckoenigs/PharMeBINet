@@ -18,7 +18,7 @@ def database_connection():
 
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
 def cui_to_mesh(cui):
@@ -106,7 +106,7 @@ def generate_cypher_queries_and_tsv_files():
         RETURN allfields as l;'''
     results = g.run(query)
 
-    license = 'This service/product uses the Human Phenotype Ontology (April 2021). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.'
+    license = 'This service/product uses the Human Phenotype Ontology (September 2023). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.'
 
     query_start_match = '''Match (s:Symptom{identifier:line.pharmebinet_id }) , (n:HPO_symptom{id:line.hpo_id}) Set s.hpo='yes', s.umls_cuis=split(line.umls_cuis,"|"), s.highest_level=line.level,  s.resource=split(line.resource,"|") , s.hpo_release='%s', s.url_HPO="https://hpo.jax.org/app/browse/term/"+line.hpo_id, n.mesh_ids=split(line.mesh_ids,'|'), s.xrefs=s.xrefs + line.hpo_id, '''
     query_start_create = '''Match (n:HPO_symptom{id:line.hpo_id}) Create (s:Symptom{identifier:line.pharmebinet_id, umls_cuis:split(line.umls_cuis,"|"), highest_level:line.level ,source:'HPO', resource:['HPO'], source:'HPO', hpo:'yes', hpo_release:'%s', license:'%s', url:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:split(line.xrefs,"|"), '''

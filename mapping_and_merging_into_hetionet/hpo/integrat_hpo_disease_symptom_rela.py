@@ -13,7 +13,7 @@ def database_connection():
 
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
 # cypher file for mapping and integration
@@ -265,7 +265,7 @@ def generate_cypher_file_for_connection(cypher_file):
     # query = '''Match (n:Disease)-[r:PRESENTS_DpS]-(s:Symptom) Where r.hpo='yes SET r.resource=r.resource+'HPO' '''
     # cypher_file.write(query)
 
-    query_new = query_new + '''version:'phenotype_annotation.tab %s',unbiased:false,source:'Human Phenontype Ontology', license:'This service/product uses the Human Phenotype Ontology (April 2021). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', resource:['HPO'], hpo:'yes', sources:split(line.sources,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.sources,'|')[0]}]->(s)'''
+    query_new = query_new + '''version:'phenotype_annotation.tab %s',unbiased:false,source:'Human Phenontype Ontology', license:'This service/product uses the Human Phenotype Ontology (September 2023). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', resource:['HPO'], hpo:'yes', sources:split(line.sources,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.sources,'|')[0]}]->(s)'''
     query_new = query_new % (hpo_date)
 
     query_new = pharmebinetutils.get_query_import(path_of_directory,
