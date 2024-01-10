@@ -37,6 +37,10 @@ sleep 60
 python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
 sleep 180
 
+sleep 60
+python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
+sleep 180
+
 
 
 now=$(date +"%F %T")
