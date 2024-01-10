@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #projekt path
-path_to_project=$1
+path_to_project=$2
 
 # path to neo4j
-path_neo4j=$2
+path_neo4j=$1
 
 #password
 password=$3
@@ -19,7 +19,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo prepare drugbank categories
 
-#python3 update_drugbank_categories.py > out_categories.txt
+# python3 update_drugbank_categories.py > out_categories.txt
 
 
 
