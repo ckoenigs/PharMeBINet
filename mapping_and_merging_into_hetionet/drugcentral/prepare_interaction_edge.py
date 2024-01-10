@@ -22,7 +22,7 @@ def create_connection_with_neo4j():
 def load_edge_into_dictionary():
     """Load existing interaction pairs between chemical nodes from Pharmebinet"""
 
-    query = f'''MATCH (n:Chemical)-[r:INTERACTS_CiC]->(m:Chemical) RETURN n.identifier,m.identifier, r.resource, r.descriptions'''
+    query = f'''MATCH (n:Chemical)-[r:INTERACTS_CHiCH]->(m:Chemical) RETURN n.identifier,m.identifier, r.resource, r.descriptions'''
     results = graph_database.run(query)
 
     dict_pair_to_resource_description = {}
@@ -51,7 +51,7 @@ def prepare_tsv_and_cypher():
 
     url = '"https://drugcentral.org/"'
 
-    query = f'''Match (n:Chemical{{identifier:line.id1}}),(o:Chemical{{identifier:line.id2}}) Merge (n)-[m:INTERACTS_CiC]->(o) On Match Set m.dc_source=line.source, m.risk=line.risk, m.descriptions=split(line.descriptions,"|"), m.resource=split(line.resource,"|"), m.drugcentral='yes' On Create Set m.resource=['DrugCentral'], m.source='DrugCentral', m.url={url}, m.license="Creative Commons Attribution-ShareAlike 4.0 International Public License", m.drugcentral='yes', m.dc_source=line.source, m.risk=line.risk, m.descriptions=split(line.descriptions,"|") '''
+    query = f'''Match (n:Chemical{{identifier:line.id1}}),(o:Chemical{{identifier:line.id2}}) Merge (n)-[m:INTERACTS_CHiCH]->(o) On Match Set m.dc_source=line.source, m.risk=line.risk, m.descriptions=split(line.descriptions,"|"), m.resource=split(line.resource,"|"), m.drugcentral='yes' On Create Set m.resource=['DrugCentral'], m.source='DrugCentral', m.url={url}, m.license="Creative Commons Attribution-ShareAlike 4.0 International Public License", m.drugcentral='yes', m.dc_source=line.source, m.risk=line.risk, m.descriptions=split(line.descriptions,"|") '''
     query_create = pharmebinetutils.get_query_import(path_of_directory,
                                                      'mapping_and_merging_into_hetionet/drugcentral/' + file_name,
                                                      query)
@@ -83,6 +83,12 @@ def load_and_map_DC_ATC_edges(dict_pair_to_resource):
             tsv_writer.writerow([node_1_id, node_2_id, rela['source'], rela['risk'], '|'.join(descriptions),
                                  pharmebinetutils.resource_add_and_prepare(
                                      dict_pair_to_resource[(node_1_id, node_2_id)][0], 'DrugCentral')])
+        elif (node_2_id , node_1_id) in dict_pair_to_resource:
+            descriptions = dict_pair_to_resource[(node_2_id , node_1_id)][1]
+            descriptions.add(rela['description'])
+            tsv_writer.writerow([node_2_id , node_1_id, rela['source'], rela['risk'], '|'.join(descriptions),
+                                 pharmebinetutils.resource_add_and_prepare(
+                                     dict_pair_to_resource[(node_2_id , node_1_id)][0], 'DrugCentral')])
         else:
             tsv_writer.writerow([node_1_id, node_2_id, rela['source'], rela['risk'], rela['description']])
 

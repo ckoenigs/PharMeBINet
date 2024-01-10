@@ -22,7 +22,7 @@ def create_connection_with_neo4j():
 def load_edge_into_dictionary():
     """Load existing interaction pairs between chemical-product nodes from Pharmebinet"""
 
-    query = f'''MATCH (n:Chemical)-[r:HAS_ChPR]->(m:Product) RETURN n.identifier,m.identifier, r.resource'''
+    query = f'''MATCH (n:Chemical)-[r:HAS_CHhPR]->(m:Product) RETURN n.identifier,m.identifier, r.resource'''
     results = graph_database.run(query)
 
     dict_pair_to_resource = {}
@@ -50,7 +50,7 @@ def prepare_tsv_and_cypher():
 
     url = '"https://drugcentral.org/"'
 
-    query = f'''Match (n:Chemical{{identifier:line.id1}}),(o:Product{{identifier:line.id2}}) Merge (n)-[m:HAS_ChPR]->(o) On Match Set m.active_moiety_substance_list=split(line.props,"|"), m.resource=split(line.resource,"|"), m.drugcentral='yes' On Create Set m.resource=['DrugCentral'], m.source='DrugCentral', m.url={url}, m.license="Creative Commons Attribution-ShareAlike 4.0 International Public License", m.drugcentral='yes', m.active_moiety_substance_list=split(line.props,"|") '''
+    query = f'''Match (n:Chemical{{identifier:line.id1}}),(o:Product{{identifier:line.id2}}) Merge (n)-[m:HAS_CHhPR]->(o) On Match Set m.active_moiety_substance_list=split(line.props,"|"), m.resource=split(line.resource,"|"), m.drugcentral='yes' On Create Set m.resource=['DrugCentral'], m.source='DrugCentral', m.url={url}, m.license="Creative Commons Attribution-ShareAlike 4.0 International Public License", m.drugcentral='yes', m.active_moiety_substance_list=split(line.props,"|") '''
     query_create = pharmebinetutils.get_query_import(path_of_directory,
                                                      'mapping_and_merging_into_hetionet/drugcentral/' + file_name,
                                                      query)
