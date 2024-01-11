@@ -17,4 +17,4 @@ The ctd nodes are integraten into Neo4j with Neo4j cypher-shell and the cypher f
 The schema is shown below:
 ![er_diagram](picture/ctd.png)
 
-License:© 2002–2012 MDI Biological Laboratory. All rights reserved. © 2012-2023 NC State University. All rights reserved. 
+License:© 2002–2012 MDI Biological Laboratory. All rights reserved. © 2012-2024 NC State University. All rights reserved. 
