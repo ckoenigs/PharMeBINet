@@ -47,7 +47,8 @@ sleep 120
 
 cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/graph /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/inte.db
 
-$path_neo4j/neo4j restart
+#$path_neo4j/neo4j restart
+python restart_neo4j.py $path_neo4j/
 
 sleep 120
 
@@ -62,7 +63,7 @@ cd mapping_and_merging_into_hetionet
 cd ..
 
 
-exit 1
+# exit 1
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo cp database
