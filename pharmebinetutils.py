@@ -18,13 +18,17 @@ USE_VERSION_5 = True
 # dictionary label to abbreviation
 dictionary_label_to_abbreviation = {
     'Anatomy': 'A', 'BiologicalProcess': 'BP', 'BlackBoxEvent': 'B', 'CellularComponent': 'CC', 'Chemical': 'CH',
-    'ClinicalAnnotation': 'CA', 'Compound': 'C', 'Depolymerisation': 'DP', 'Disease': 'D', 'FailedReaction': 'F',
-    'Gene': 'G', 'GeneVariant': 'GV', 'Genotype': 'GT', 'Haplotype': 'H', 'Interaction': 'I', 'Metabolite': 'M',
-    'MolecularComplex': 'MC', 'MolecularFunction': 'MF', 'Pathway': 'PW', 'PharmacologicClass': 'PC', 'Phenotype': 'PT',
-    'Polymerisation': 'PO', 'Product': 'PR', 'Protein': 'P', 'Reaction': 'RN', 'ReactionLikeEvent': 'RLE',
-    'Regulation': 'RG', 'RNA': 'R', 'Salt': 'SA', 'SideEffect': 'SE', 'Symptom': 'S', 'Treatment': 'T', 'Variant': 'V',
-    'VariantAnnotation': 'VA'
+    'ClinicalAnnotation': 'CA', 'Complex': 'CX', 'Compound': 'C', 'Depolymerisation': 'DP', 'Disease': 'D',
+    'EnzymeReactantSet': 'E', 'FailedReaction': 'F', 'Gene': 'G', 'GeneVariant': 'GV', 'Genotype': 'GT',
+    'Haplotype': 'H', 'Interaction': 'I', 'Metabolite': 'M', 'MolecularComplex': 'MC', 'MolecularFunction': 'MF',
+    'Pathway': 'PW', 'PharmacologicClass': 'PC', 'Phenotype': 'PT', 'Polymerisation': 'PO', 'Product': 'PR',
+    'Protein': 'P', 'Reaction': 'RN', 'ReactionLikeEvent': 'RLE', 'Regulation': 'RG', 'RNA': 'R', 'Salt': 'SA',
+    'SideEffect': 'SE', 'Symptom': 'S', 'Treatment': 'T', 'Variant': 'V', 'VariantAnnotation': 'VA'
 }
+
+get_all_properties_of_on_label = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys
+UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
+RETURN allfields order by allfields;'''
 
 
 def download_file(url: str, out: str = './', file_name: str or None = None, retries: int = 10, silent: bool = False,
@@ -98,7 +102,7 @@ def add_entry_to_dict_to_set(dictionary, key, value):
     dictionary[key].add(value)
 
 
-def print_hline():
+def print_hline() -> str:
     print('#' * 100)
 
 
@@ -111,6 +115,7 @@ def get_query_start(base_path: str, file_path: str) -> str:
 def get_query_import(base_path: str, file_path: str, query: str, delimiter: str = '\\t',
                      batch_number: int = 10000) -> str:
     base_path = base_path.rstrip('/')
+    file_path = file_path.lstrip('/')
     if USE_VERSION_5:
         return """LOAD CSV WITH HEADERS FROM "file:%s/%s" AS line FIELDTERMINATOR '%s' Call { with line %s } IN TRANSACTIONS OF %s ROWS;\n""" % (
             base_path, file_path, delimiter, query, str(batch_number))
@@ -148,7 +153,6 @@ def prepare_obo_synonyms(synonym):
     if ' [' in synonym:
         synonym = synonym.rsplit(' [', 1)[0][1:-1]
     return synonym
-
 
 # def main():
 #     with open('label_to_short.tsv', 'r', encoding='utf-8') as f:
