@@ -144,7 +144,7 @@ def prepare_cypher_file_and_queries(file_name, file_name_new):
                 if allfields not in ['drug_class', 'company']:
                     list_of_props.append('m.' + allfields + '=split(line.' + allfields + ',"|")')
                 elif allfields == 'company':
-                    list_of_props.append('m.companies=split(line.' + allfields + ',"|")')
+                    list_of_props.append('m.manufacturers=split(line.' + allfields + ',"|")')
                 else:
                     list_of_props.append('m.' + allfields + 'es=split(line.' + allfields + ',"|")')
             else:
