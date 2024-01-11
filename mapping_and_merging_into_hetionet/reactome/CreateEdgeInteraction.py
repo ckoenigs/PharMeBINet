@@ -41,7 +41,7 @@ load in all Interactions from pharmebinet into dictionary
 
 def load_pharmebinet_interactions_in():
     global maximal_id
-    query = '''MATCH (n:Compound)-[r:INTERACTS_CiC]->(m:Compound) RETURN n.identifier, m.identifier, r.resource;'''
+    query = '''MATCH (n:Compound)-[r:INTERACTS_CHiCH]->(m:Compound) RETURN n.identifier, m.identifier, r.resource;'''
     results = graph_database.run(query)
 
     for record in results:
@@ -238,7 +238,7 @@ def main():
         ['Chemical)-[:equal_to_reactome_drug', 'equal_to_reactome_uniprot]-(q:Protein)', 'Chemical', 'Protein',
          'chemical_to_protein', 'INTERACTS_CHiP'],
         ['Chemical)-[:equal_to_reactome_drug', 'equal_to_reactome_drug]-(q:Chemical)', 'Chemical', 'Chemical',
-         'chemical_to_chemical', 'INTERACTS_CiC']
+         'chemical_to_chemical', 'INTERACTS_CHiCH']
     ]
     for list_element in list_of_combinations:
         pathlabel_1 = list_element[0]

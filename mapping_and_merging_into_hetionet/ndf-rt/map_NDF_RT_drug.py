@@ -688,7 +688,7 @@ def integration_of_ndf_rt_drugs_into_pharmebinet():
                                               f'mapping_and_merging_into_hetionet/ndf-rt/drug/mapping_drug.tsv',
                                               query)
     cypher_file.write(query)
-    query = '''Match (b:Chemical)--(:NDFRT_DRUG_KIND)-[:effect_may_be_inhibited_by]->(:NDFRT_DRUG_KIND)--(c:Chemical) Merge (b)<-[r:INTERACTS_CiC]-(c)  On Match Set r.resource=r.resource+'NDF-RT', r.ndf_rt='yes' On Create set r.resource=['NDF-RT'], r.source='NDF-RT', r.ndf_rt='yes', r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html';\n '''
+    query = '''Match (b:Chemical)--(:NDFRT_DRUG_KIND)-[:effect_may_be_inhibited_by]->(:NDFRT_DRUG_KIND)--(c:Chemical) Merge (b)<-[r:INTERACTS_CHiCH]-(c)  On Match Set r.resource=r.resource+'NDF-RT', r.ndf_rt='yes' On Create set r.resource=['NDF-RT'], r.source='NDF-RT', r.ndf_rt='yes', r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html';\n '''
     cypher_file.write(query)
     cypher_file.close()
     writer = open('drug/mapping_drug.tsv', 'w')

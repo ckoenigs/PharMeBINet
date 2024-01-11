@@ -100,7 +100,7 @@ def load_and_map_miRBase_rna():
     :return:
     """
     writer_mirna = generate_files('miRBase_miRNA')
-    writer_pre_mirna = generate_files('miRBase_pre_miRNA', additional_condition=', c.strand=n.strand, c.fold=n.fold, c.contig_start=n.contig_start, c.contig_end=n.contig_end, c.xsome=n.xsome, c.alignment=n.alignment ')
+    writer_pre_mirna = generate_files('miRBase_pre_miRNA', additional_condition=', c.strand=n.strand, c.fold=n.fold, c.contig_start=toString(n.contig_start), c.contig_end=toString(n.contig_end), c.xsome=n.xsome, c.alignment=n.alignment ')
 
     map_to_RNA('miRBase_miRNA', writer_mirna, dict_mirbase_id_to_miRNA, dict_node_id_mirna_to_resource,
                condition='--(:miRBase_pre_miRNA)')

@@ -26,7 +26,7 @@ def load_load_interaction_pairs():
     Load all interaction tuple into a dictionary
     :return:
     """
-    query = 'Match (n:Chemical)-[r:INTERACTS_CiC]->(m:Chemical) Return n.identifier, r.resource, m.identifier'
+    query = 'Match (n:Chemical)-[r:INTERACTS_CHiCH]->(m:Chemical) Return n.identifier, r.resource, m.identifier'
     results = g.run(query)
     for result in results:
         [chemical_id1, resource, chemical_id2] = result.values()
@@ -53,7 +53,7 @@ def write_files(label, direction_1, direction_2, rela_name, rela_type):
     header_rela = ['chemical_id1', 'chemical_id2', 'source', 'resource', 'rela_type']
     csv_rela.writerow(header_rela)
 
-    query = '''Match (c:Chemical{identifier:line.chemical_id1}), (p:Chemical{identifier:line.chemical_id2}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['MED-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.pharmacological_class_id , r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html', r.unbiased=false, r.med_rt='yes', r.type=split(line.rela_type,"|") On Match Set r.resource=split(line.resource,"|") , r.med_rt='yes', r.type=split(line.rela_type,"|") '''
+    query = '''Match (c:Chemical{identifier:line.chemical_id1}), (p:Chemical{identifier:line.chemical_id2}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['MED-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.pharmacological_class_id , r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html', r.unbiased=false, r.med_rt='yes', r.types=split(line.rela_type,"|") On Match Set r.resource=split(line.resource,"|") , r.med_rt='yes', r.types=split(line.rela_type,"|") '''
     query = query % (direction_1, rela_name, direction_2)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/med_rt/{file_name}',
@@ -66,7 +66,7 @@ def write_files(label, direction_1, direction_2, rela_name, rela_type):
 # dictionary rela name in med-rt to information needed
 dict_rela_name_to_other_information = {
     'CI': ['-', '->', 'CONTRAINDICATES_CHcCH'],
-    'effect_may_be_inhibited_by': ['-', '->', 'INTERACTS_CiC'],
+    'effect_may_be_inhibited_by': ['-', '->', 'INTERACTS_CHiCH'],
 }
 
 # set of not used pairs
@@ -119,7 +119,7 @@ def load_connections(label):
 
     for rela_type, dict_pairs in dict_mapping_pairs.items():
         rela_info = dict_rela_name_to_other_information[rela_type][-1]
-        if rela_info == 'INTERACTS_CiC':
+        if rela_info == 'INTERACTS_CHiCH':
             for (chemical_id1, chemical_id2), dict_sources_rela_type in dict_pairs.items():
 
                 sources = ['MED-RT' if x == 'MED-RT:Authority:MEDRT' else x.split(':')[-1] + ' via MED-RT' for x in
