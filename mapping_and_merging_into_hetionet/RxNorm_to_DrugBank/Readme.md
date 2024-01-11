@@ -1,9 +1,10 @@
 The idea is from https://think-lab.github.io/d/40/ but it is only the basic idea.
 
-Version: UNII: Apr 12, 2021
+Version: UNII:  2023-09-22 
+        RxNorm: 2023-11 
 
 The preparation of mapping table with RxNorm and UNII from mapping between RxNorm Cui to DrugBank.
-First, download the latest version of UNII from FDA-SRS database (https://fdasis.nlm.nih.gov/srs/srs.jsp) and unzip it.
+First, download the latest version of UNII from FDA-SRS database (https://precision.fda.gov/uniisearch/archive/latest/UNII_Data.zip) and unzip it.
 Then generate the UNII-DrugBank-InChIKey table.
                Load all DrugBank identifier with UNII and InChIKey entries and wrote into a TSV file.
 Next, load all RxNorm-UNII connections.
