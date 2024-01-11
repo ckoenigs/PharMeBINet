@@ -127,7 +127,7 @@ now=$(date +"%F %T")
 echo "Current time: $now" 
 echo miRBase
 
-#./script_mirbase.sh $path_neo4j $path_to_project  $password> output_script.txt
+./script_mirbase.sh $path_neo4j $path_to_project  $password> output_script.txt
 
 
 
@@ -262,6 +262,15 @@ cd ttd
 
 ./script_to_mapping_ttd.sh $path_neo4j $path_to_project $password > output_script.txt
 
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo bindingDB
+cd bindingDB
+
+./script_merge_bindingDB.sh $path_neo4j $path_to_project $password > output_script.txt
 
 cd ..
 
@@ -405,15 +414,15 @@ cd adrecs
 
 cd ..
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo ADReCS-Target  
+#now=$(date +"%F %T")
+#echo "Current time: $now"
+#echo ADReCS-Target  
 
-cd adrecs_target
+#cd adrecs_target
 
-./script_to_integrate_ADReCS_Target.sh $path_neo4j $path_to_project $password > output_script.txt
+#./script_to_integrate_ADReCS_Target.sh $path_neo4j $path_to_project $password > output_script.txt
 
-cd ..
+#cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -444,7 +453,7 @@ cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo gencc
+echo gencc 
 cd gencc
 
 ./script_gencc_mapping_and_merging.sh $path_neo4j $path_to_project $password > output_script.txt
