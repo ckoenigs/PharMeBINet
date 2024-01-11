@@ -64,6 +64,22 @@ The shell script does the integration into neo4j and the mapping and merging to 
 
 ```
 
-Please cite:
+## Citing this work
+If you find this resource useful, please do remember to cite:
+
+```bib
+@article{konigs2022heterogeneous,
+  title={The heterogeneous pharmacological medical biochemical network PharMeBINet},
+  author={K{\"o}nigs, Cassandra and Friedrichs, Marcel and Dietrich, Theresa},
+  journal={Scientific Data},
+  volume={9},
+  number={1},
+  pages={1--14},
+  year={2022},
+  publisher={Nature Publishing Group}
+}
+```
+
+ALternatively, using plain text, you can use:
 
 Königs C, Friedrichs M, Dietrich T. [The heterogeneous pharmacological medical biochemical network PharMeBINet](https://www.nature.com/articles/s41597-022-01510-3). Scientific Data. 2022;9(1): 393.
