@@ -157,7 +157,7 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping, csv_new):
     counter_inchikey_file = 0
     counter_inchikey = 0
     counter_create = 0
-    batch = 300000
+    batch = 150000
     file = open('chemical/chemical_inchikeys' + str(counter_inchikey_file) + '.tsv', 'w', encoding='utf-8')
 
     for record in results:
@@ -319,7 +319,7 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping, csv_new):
 
         if not created_new_node:
             counter_not_mapped += 1
-            if not inchikey in dict_inchikey_to_pubchem_id:
+            if not inchikey in dict_inchikey_to_pubchem_id and inchikey != '':
                 counter_inchikey += 1
                 file.write(inchikey + '\t')
                 if counter_inchikey % batch == 0:
