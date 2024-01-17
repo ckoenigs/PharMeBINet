@@ -63,7 +63,7 @@ also generate a cypher file to integrate this information
 def take_all_relationships_of_gene_go():
     # generate cypher file
     cypherfile = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
-    query = ''' Match (n:Gene{identifier:line.GeneID}), (b:%s{identifier:line.GOID}) Merge (n)-[r:PARTICIPATES_Gp%s]->(b) On Create Set  r.ctd='yes', r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false, r.resource=['CTD'] On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+'CTD' '''
+    query = ''' Match (n:Gene{identifier:line.GeneID}), (b:%s{identifier:line.GOID}) Merge (n)-[r:PARTICIPATES_Gp%s]->(b) On Create Set  r.ctd='yes', r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2024 NC State University. All rights reserved.", r.unbiased=false, r.resource=['CTD'] On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+'CTD' '''
     for label, file_name in dict_labels_go_to_file_name.items():
         label_query = query % (label, file_name.upper())
         query = pharmebinetutils.get_query_import(path_of_directory,
