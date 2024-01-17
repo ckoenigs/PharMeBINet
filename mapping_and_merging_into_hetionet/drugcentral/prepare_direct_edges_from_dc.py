@@ -65,7 +65,7 @@ def prepare_tsv_and_cypher(label1, label2, dc_label_1, dc_label_2, edge_type):
     return csv_writer
 
 
-def load_and_map_DC_ATC_edges(label1, label2, dc_label_1, dc_label_2, edge_type_dc, edge_type, dict_pair_to_resource):
+def load_and_map_DC_edges(label1, label2, dc_label_1, dc_label_2, edge_type_dc, edge_type, dict_pair_to_resource):
     tsv_writer = prepare_tsv_and_cypher(label1, label2, dc_label_1, dc_label_2, edge_type)
     query = f'''MATCH (n:{label1})--(a:{dc_label_1})-[r:{edge_type_dc}]->(b:{dc_label_2})--(m:{label2}) RETURN n.identifier,m.identifier, a.id, b.id '''
     print(query)
@@ -136,7 +136,7 @@ def main():
     ]
 
     for edge_info in list_of_list_with_edge_information:
-        load_and_map_DC_ATC_edges(edge_info[0], edge_info[1], edge_info[2], edge_info[3], edge_info[4], edge_info[5],
+        load_and_map_DC_edges(edge_info[0], edge_info[1], edge_info[2], edge_info[3], edge_info[4], edge_info[5],
                                   load_edge_into_dictionary(edge_info[0], edge_info[1], edge_info[5]))
 
     print(

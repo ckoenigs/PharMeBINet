@@ -237,7 +237,7 @@ def prepare_relationships_information_from_bioactivity(rela_infos):
 dict_rela_type_to_existing_rela_pairs_to_information = {}
 
 
-def load_and_map_DC_ATC_edges():
+def load_and_map_DC_chemical_protein_edges():
     query = f'''MATCH (n:Chemical)--(a:DC_Structure)-[]->(b:DC_Bioactivity)--(m:Protein) Where b.act_source<>'UNKNOWN' RETURN n.identifier,m.identifier, b, ID(b), a.id '''
     results = g.run(query)
 
@@ -373,7 +373,7 @@ def main():
     print(datetime.datetime.now())
     print('map')
 
-    load_and_map_DC_ATC_edges()
+    load_and_map_DC_chemical_protein_edges()
 
     print(
         '###########################################################################################################################')
