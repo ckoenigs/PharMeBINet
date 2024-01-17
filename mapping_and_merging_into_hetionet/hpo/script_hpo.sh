@@ -10,10 +10,10 @@ path_to_project=$2
 password=$3
 
 # hpo date annotated
-hpo_annotated_date='2023-10-09'
+hpo_annotated_date='2024-01-11'
 
 # hpo date ontology
-hpo_ontology_date='2023-10-09'
+hpo_ontology_date='2024-01-11'
 
 now=$(date +"%F %T")
 echo "Current time: $now"
