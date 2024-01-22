@@ -1,3 +1,4 @@
+import os.path
 from zipfile import ZipFile
 import io
 import csv
@@ -16,19 +17,21 @@ def prepare_results(row):
     :param row:
     :return:
     """
-    return [str(value).replace("\"", "\'").replace('\r', '').replace("\n", "").replace('NULL', '').replace('null',
-                                                                                                           '') if not value is None else ''
-            for value in row]
+    return [
+        str(value).replace('"', "\'").replace('\r', '').replace('\n', '').replace('NULL', '').replace('null', '')
+        if value is not None else ''
+        for value in row
+    ]
 
 
-def write_tsv(cursor, table_name):
+def write_tsv(conn, table_name: str):
     # Retrieve the total number of rows in the table
-    cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
-    total_rows = cursor.fetchone()[0]
+    with conn.cursor() as cursor:
+        cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
+        total_rows = cursor.fetchone()[0]
 
     # Retrieve the column names from table metadata
-    cursor.execute(f"DESCRIBE {table_name}")
-    columns = [column[0] for column in cursor.fetchall()]
+    columns = get_table_columns(table_name, conn)
 
     # Create the TSV file with the table name as the filename
     output_file = f"tsv_from_mysql/{table_name}.tsv"
@@ -44,14 +47,12 @@ def write_tsv(cursor, table_name):
         offset = 0
         while offset < total_rows:
             # Fetch a batch of data using LIMIT and OFFSET
-            query = f"SELECT * FROM {table_name} LIMIT {BATCH_SIZE} OFFSET {offset}"
-            cursor.execute(query)
-            rows = cursor.fetchall()
-
-            # Write the batch of rows to the TSV file
-            for row in rows:
-                result = prepare_results(row)
-                csv_writer.writerow(result)
+            with conn.cursor() as cursor:
+                cursor.execute(f"SELECT * FROM {table_name} LIMIT {BATCH_SIZE} OFFSET {offset}")
+                # Write the batch of rows to the TSV file
+                for row in cursor:
+                    result = prepare_results(row)
+                    csv_writer.writerow(result)
 
             # Increment the offset for the next batch
             offset += BATCH_SIZE
@@ -62,19 +63,17 @@ def write_tsv(cursor, table_name):
 
 
 def get_table_columns(table_name, connection):
-    describe_query = f"DESCRIBE {table_name}"
     with connection.cursor() as cursor:
-        cursor.execute(describe_query)
+        cursor.execute(f"DESCRIBE {table_name}")
         columns = [desc[0] for desc in cursor.fetchall()]
     return columns
 
 
 def join_polymer_or_complex_new(connection, main_table_name, identifier, sub_table_name, file_name):
-    cursor = connection.cursor()
-
     # Retrieve the total number of rows in the table
-    cursor.execute(f"SELECT COUNT(*) FROM {main_table_name}")
-    total_rows = cursor.fetchone()[0]
+    with conn.cursor() as cursor:
+        cursor.execute(f"SELECT COUNT(*) FROM {main_table_name}")
+        total_rows = cursor.fetchone()[0]
 
     print('total rows', total_rows, main_table_name)
 
@@ -105,9 +104,9 @@ def join_polymer_or_complex_new(connection, main_table_name, identifier, sub_tab
         offset = 0
         while offset < total_rows:
             # Fetch a batch of data using LIMIT and OFFSET
-            query = select_query_start + f" LIMIT {BATCH_SIZE} OFFSET {offset}"
-            cursor.execute(query)
-            rows = cursor.fetchall()
+            with conn.cursor() as cursor:
+                cursor.execute(select_query_start + f" LIMIT {BATCH_SIZE} OFFSET {offset}")
+                rows = cursor.fetchall()
 
             # Write the batch of rows to the TSV file
             for row in rows:
@@ -140,11 +139,10 @@ def join_monomer_new(connection):
                     dict_mono_id_to_name[mono_id] = list_of_names
     print('end prepare dict', datetime.datetime.now(), len(dict_mono_id_to_name))
 
-    cursor = connection.cursor()
-
     # Retrieve the total number of rows in the table
-    cursor.execute(f"select count(*) from monomer")
-    total_rows = cursor.fetchone()[0]
+    with conn.cursor() as cursor:
+        cursor.execute(f"select count(*) from monomer")
+        total_rows = cursor.fetchone()[0]
     print('total rows', total_rows)
 
     # header of tsv file
@@ -182,9 +180,9 @@ def join_monomer_new(connection):
         offset = 0
         while offset < total_rows:
             # Fetch a batch of data using LIMIT and OFFSET
-            query = select_query_start + f" LIMIT {batch_size_mono} OFFSET {offset}"
-            cursor.execute(query)
-            rows = cursor.fetchall()
+            with conn.cursor() as cursor:
+                cursor.execute(select_query_start + f" LIMIT {batch_size_mono} OFFSET {offset}")
+                rows = cursor.fetchall()
 
             # Write the batch of rows to the TSV file
             for row in rows:
@@ -213,14 +211,15 @@ def join_monomer_new(connection):
 
 if __name__ == "__main__":
     print(datetime.datetime.now())
+    if not os.path.exists('tsv_from_mysql/'):
+        os.mkdir('tsv_from_mysql')
     conn = create_connection_to_databases.mysqlconnect_bindingDB()
-    cur = conn.cursor()
     tables = ['article', 'assay', 'cobweb_bdb', 'complex_component', 'entry', 'entry_citation',
               'enzyme_reactant_set', 'ki_result',
               'pdb_bdb']  # 'itc_result_a_b_ab', 'itc_run_a_b_ab', 'instrument', 'data_fit_meth',
     for table in tables:
         print('create table', table, datetime.datetime.now())
-        write_tsv(cur, table)
+        write_tsv(conn, table)
     #
     # # merge complex names and complex
     print('start complex', datetime.datetime.now())
