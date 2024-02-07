@@ -12,9 +12,10 @@ name_of_import_tool=$3
 # password neo4j
 password=$4
 
-name_of_biodwh2_tool='BioDWH2-v0.4.13'
+# path to external save position of data
+path_to_other_place_of_data=$5
 
-path_to_other_place_of_data='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/'
+name_of_biodwh2_tool='BioDWH2-v0.4.15'
 
 echo $name_of_import_tool
 
@@ -22,7 +23,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo add hetionet and resource to nodes
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f cypher.cypher 
+python ../execute_cypher_shell.py $path_neo4j $password cypher.cypher > output_cypher.txt
 
 
 now=$(date +"%F %T")
@@ -352,7 +353,7 @@ echo "Current time: $now"
 cd  drugcentral
 echo drugcentral
 
-./integrate_drugcentral.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+./integrate_drugcentral.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password $path_to_other_place_of_data > output/script_output.txt
 
 cd ..
 
