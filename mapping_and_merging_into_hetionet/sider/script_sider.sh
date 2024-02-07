@@ -9,6 +9,9 @@ path_to_project=$2
 #password
 password=$3
 
+#path to stich data directory
+path_to_stich=$4
+
 echo se
 python3 map_Sider_se.py $path_to_project > output/output_map_se.txt
 
@@ -16,17 +19,17 @@ python3 map_Sider_se.py $path_to_project > output/output_map_se.txt
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo drug
-python3 map_sider_drug.py $path_to_project > output/output_map_drug.txt
+python3 map_sider_drug.py $path_to_project $path_to_stich > output/output_map_drug.txt
 
 echo integrate mapping with cypher shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
 
 sleep 30
 
-python ../../restart_neo4j.py $path_neo4j > neo4.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 sleep 40
 
 now=$(date +"%F %T")
@@ -38,10 +41,10 @@ echo integrate relationships
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_rela.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_rela.cypher > output/cypher2.txt
 
 sleep 30
 
-python ../../restart_neo4j.py $path_neo4j > neo4.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 sleep 30
 

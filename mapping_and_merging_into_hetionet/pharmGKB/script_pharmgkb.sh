@@ -40,8 +40,8 @@ python3 map_phenotype.py $path_to_project "${license}" > disease/output.txt
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
 
 sleep 30
-python ../../restart_neo4j.py $path_neo4j > neo4.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 sleep 30

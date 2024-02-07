@@ -27,10 +27,10 @@ python3 integrate_pc.py $path_to_project "${license}" > pharmacological_class/ou
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f protein/cypher_protein.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password protein/cypher_protein.cypher > output/cypher5.txt
 
 sleep 30
-python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
 sleep 40
 
 now=$(date +"%F %T")
@@ -55,8 +55,8 @@ python3 integrate_compound_pc_rela.py $path_to_project "${license}" > compound_p
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f rela_protein/cypher.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password rela_protein/cypher.cypher > output/cypher6.txt
 
 sleep 30
-python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
 sleep 40

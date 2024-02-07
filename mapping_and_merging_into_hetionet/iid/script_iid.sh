@@ -14,10 +14,10 @@ echo mapping
 python3 mapping_protein.py $path_to_project > protein/output_mapping_and_integration.txt 
 
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f protein/cypher.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password protein/cypher.cypher > output/cypher.txt
 
 sleep 30
-python ../../restart_neo4j.py $path_neo4j > neo4.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 sleep 30
 
 now=$(date +"%F %T")
@@ -27,8 +27,8 @@ echo 'IID interaction'
 python3 integrate_interaction_rela.py $path_to_project > interaction/outputintegration.txt 
 
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f interaction/cypher.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password interaction/cypher.cypher > output/cypher1.txt
 
 sleep 30
-python ../../restart_neo4j.py $path_neo4j > neo4.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 sleep 60

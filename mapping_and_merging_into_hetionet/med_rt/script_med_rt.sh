@@ -39,10 +39,10 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integration of med-rt connection into pharmebinet
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
 
 sleep 30
-python ../../restart_neo4j.py $path_neo4j > neo4.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 sleep 30
 
 now=$(date +"%F %T")
@@ -68,10 +68,10 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integration edges of med-rt into pharmebinet
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
 
 sleep 30
-python ../../restart_neo4j.py $path_neo4j > neo4.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 sleep 30
 
 

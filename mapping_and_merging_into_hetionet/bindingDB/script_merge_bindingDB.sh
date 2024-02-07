@@ -24,10 +24,10 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate map drug and outcome
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
 
 sleep 100
-python ../../restart_neo4j.py $path_neo4j > neo4j.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
 sleep 200
 
 
@@ -42,10 +42,10 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate complex
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
 
 sleep 60
-python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
 sleep 120
 
 now=$(date +"%F %T")
@@ -57,8 +57,8 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate map ers and the edges
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge_2.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge_2.cypher > output/cypher3.txt
 
 sleep 60
-python ../../restart_neo4j.py $path_neo4j > neo4j2.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j2.txt
 sleep 120

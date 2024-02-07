@@ -47,14 +47,14 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate nodes into database
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 
 sleep 30
-python ../../restart_neo4j.py $path_neo4j > neo4j.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
 sleep 60
 
 
@@ -102,13 +102,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate ctd edges
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 sleep 30
-python ../../restart_neo4j.py $path_neo4j > neo4j2.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j2.txt
 sleep 60
 
 
@@ -138,7 +138,7 @@ sleep 60
 #echo "Current time: $now"
 
 #sleep 180
-#python ../../restart_neo4j.py $path_neo4j > neo4.txt
+#python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 #sleep 120
 
 
@@ -158,7 +158,7 @@ sleep 60
 
 
 #sleep 180
-#python ../../restart_neo4j.py $path_neo4j > neo4.txt
+#python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 #sleep 120
 
 
@@ -178,7 +178,7 @@ sleep 60
 
 
 #sleep 180
-#python ../../restart_neo4j.py $path_neo4j > neo4.txt
+#python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 #sleep 120
 
 
@@ -199,7 +199,7 @@ sleep 60
 
 
 #sleep 180
-#python ../../restart_neo4j.py $path_neo4j > neo4.txt
+#python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 #sleep 120
 
 # sudo shutdown -h 60 # fährt das system in 60 min

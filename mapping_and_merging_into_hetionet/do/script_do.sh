@@ -11,14 +11,14 @@ password=$3
 
 echo 'Mapping Disease Ontology into PharMeBINet'
 
-python3 map_disease_ontology_to_disease.py $path_to_project > output_do.txt
+python3 map_disease_ontology_to_disease.py $path_to_project > output/output_do.txt
 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f cypher.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password cypher.cypher > output/cypher.txt
 
 sleep 30
-python ../../restart_neo4j.py $path_neo4j > neo4.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 sleep 30

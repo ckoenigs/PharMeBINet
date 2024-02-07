@@ -46,11 +46,11 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f FDA_mappings/cypher.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password FDA_mappings/cypher.cypher > output/cypher.txt
 
 sleep 60
 
-python ../../restart_neo4j.py $path_neo4j > neo4.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 
 sleep 120
 
@@ -88,11 +88,11 @@ echo "Current time: $now"
 echo integrate connection with cypher shell
 
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f FDA_edges/edge_cypher.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password FDA_edges/edge_cypher.cypher > output/cypher1.txt
 
 sleep 60
 
-python ../../restart_neo4j.py $path_neo4j > neo4.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 
 sleep 120
 
