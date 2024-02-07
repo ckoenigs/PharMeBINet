@@ -325,12 +325,12 @@ def give_drugbank_ids_with_use_of_stitch_information():
     part_exist = False
     f = None
     try:
-        f = open('StitchData/chemical.sources.v5.0_part.tsv', 'r', encoding='utf-8')
+        f = open(f'{path_to_stiches}StitchData/chemical.sources.v5.0_part.tsv', 'r', encoding='utf-8')
         csv_reader = csv.reader(f, delimiter='\t')
         part_exist = True
     except OSError:
-        f = gzip.open('StitchData/chemical.sources.v5.0.tsv.gz', 'rt')
-        writer = open('StitchData/chemical.sources.v5.0_part.tsv', 'w', encoding='utf-8')
+        f = gzip.open(f'{path_to_stiches}StitchData/chemical.sources.v5.0.tsv.gz', 'rt')
+        writer = open(f'{path_to_stiches}StitchData/chemical.sources.v5.0_part.tsv', 'w', encoding='utf-8')
         csv_writer = csv.writer(writer, delimiter='\t')
         csv_reader = csv.reader(f, delimiter='\t')
     if not part_exist:
@@ -465,12 +465,12 @@ def load_in_stitch_inchikeys():
     part_exist = False
     f = None
     try:
-        f = open('StitchData/chemicals.inchikeys.v5.0_part.tsv', 'r', encoding='utf-8')
+        f = open(f'{path_to_stiches}StitchData/chemicals.inchikeys.v5.0_part.tsv', 'r', encoding='utf-8')
         part_exist = True
         csv_reader = csv.reader(f, delimiter='\t')
     except OSError:
-        f = gzip.open('StitchData/chemicals.inchikeys.v5.0.tsv.gz', 'rt')
-        writer = open('StitchData/chemicals.inchikeys.v5.0_part.tsv', 'w', encoding='utf-8')
+        f = gzip.open(f'{path_to_stiches}StitchData/chemicals.inchikeys.v5.0.tsv.gz', 'rt')
+        writer = open(f'{path_to_stiches}StitchData/chemicals.inchikeys.v5.0_part.tsv', 'w', encoding='utf-8')
         csv_writer = csv.writer(writer, delimiter='\t')
         csv_reader = csv.reader(f, delimiter='\t')
     if not part_exist:
@@ -527,12 +527,12 @@ def load_in_stitch_name():
     part_exist = False
     f = None
     try:
-        f = open('StitchData/chemicals.v5.0_part.tsv', 'r', encoding='utf-8')
+        f = open(f'{path_to_stiches}StitchData/chemicals.v5.0_part.tsv', 'r', encoding='utf-8')
         part_exist = True
         csv_reader = csv.reader(f, delimiter='\t')
     except OSError:
-        f = gzip.open('StitchData/chemicals.v5.0.tsv.gz', 'rt')
-        writer = open('StitchData/chemicals.v5.0_part.tsv', 'w', encoding='utf-8')
+        f = gzip.open(f'{path_to_stiches}StitchData/chemicals.v5.0.tsv.gz', 'rt')
+        writer = open(f'{path_to_stiches}StitchData/chemicals.v5.0_part.tsv', 'w', encoding='utf-8')
         csv_writer = csv.writer(writer, delimiter='\t')
         csv_reader = csv.reader(f, delimiter='\t')
     if not part_exist:
@@ -670,9 +670,10 @@ def integrate_sider_drugs_into_pharmebinet():
 
 
 def main():
-    global path_of_directory
-    if len(sys.argv) > 1:
+    global path_of_directory, path_to_stiches
+    if len(sys.argv) > 2:
         path_of_directory = sys.argv[1]
+        path_to_stiches = sys.argv[2]
     else:
         sys.exit('need a path sider')
 
