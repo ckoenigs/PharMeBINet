@@ -1,6 +1,6 @@
 The idea is from https://think-lab.github.io/d/40/ but it is only the basic idea.
 
-Version: UNII:  2023-12-14 
+Version: UNII:  2024-01-27 
         RxNorm: 2023-11 
 
 The preparation of mapping table with RxNorm and UNII from mapping between RxNorm Cui to DrugBank.

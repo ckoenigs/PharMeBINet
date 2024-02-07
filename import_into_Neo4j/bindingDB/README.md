@@ -2,11 +2,11 @@
 
 https://www.bindingdb.org/rwd/bind/index.jsp
 
-Version: 2023-12-31
+Version: 2024-01-29
 
 
 Important steps for importing BindingDB into MySQL:
-mysql -u ckoenigs -p bindingDB < BDB-mySQL_All_202301.dmp
+mysql -u ckoenigs -p bindingDB < BDB-mySQL_All_202402.dmp
 Create Index mono_in_struct ON bindingDB.monomer_struct (monomerid);
 
 The import into Neo4j is separated into multiple steps.
