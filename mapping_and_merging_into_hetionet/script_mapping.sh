@@ -9,6 +9,8 @@ path_to_project=$2
 #password
 password=$3
 
+# path to external save position of data
+path_to_other_place_of_data=$4
 
 cd monDO
 now=$(date +"%F %T")
@@ -351,7 +353,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo Sider
 
-./script_sider.sh $path_neo4j/ $path_to_project $password > output_script.txt
+./script_sider.sh $path_neo4j/ $path_to_project $password $path_to_other_place_of_data > output_script.txt
 
 cd ..
 
@@ -487,7 +489,7 @@ echo "Current time: $now"
 echo dbSNP
 cd dbSNP
 
-./script_to_get_dbSNPs_information.sh $path_neo4j $path_to_project $password > output_script.txt
+./script_to_get_dbSNPs_information.sh $path_neo4j $path_to_project $password $path_to_other_place_of_data > output_script.txt
 
 cd ..
 
