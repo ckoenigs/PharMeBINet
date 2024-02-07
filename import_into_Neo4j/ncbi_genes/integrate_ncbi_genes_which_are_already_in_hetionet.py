@@ -15,7 +15,7 @@ load ncbi tsv file in and write only the important lines into a new tsv file for
 
 def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     file_url = 'https://ftp.ncbi.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens.gene_info.gz'
-    for path in ['./data', './output_data']:
+    for path in ['./data', './output']:
         if not os.path.exists(path):
             os.makedirs(path)
     file_name = pharmebinetutils.download_file(file_url, './data')
@@ -51,19 +51,19 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
 
         query = query + ' license:"CC0 1.0"})'
         query = pharmebinetutils.get_query_import(path_of_directory,
-                                                  'import_into_Neo4j/ncbi_genes/output_data/genes.tsv', query)
+                                                  'import_into_Neo4j/ncbi_genes/output/genes.tsv', query)
         cypher_file.write(query)
         cypher_file.write(pharmebinetutils.prepare_index_query('Gene_Ncbi', 'identifier'))
 
         # file for integration into pharmebinet
-        file = open('output_data/genes.tsv', 'w', newline='')
+        file = open('output/genes.tsv', 'w', newline='')
         writer = csv.DictWriter(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL,
                                 fieldnames=csv_reader.fieldnames)
         # writer.writeheader()
         writer.writerow(dict_header)
 
         # file with all gene from pharmebinet which are not human
-        file_nH = open('output_data/genes_not_human.tsv', 'w', newline='')
+        file_nH = open('output/genes_not_human.tsv', 'w', newline='')
         writer_not_human = csv.DictWriter(file_nH, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL,
                                           fieldnames=csv_reader.fieldnames)
         writer_not_human.writeheader()
