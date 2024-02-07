@@ -423,9 +423,21 @@ def prepare_data_for_tsv():
                 print(list_of_dict_of_information)
                 filter_list_of_dict_info = list_of_dict_of_information
                 if list_of_dict_of_information[0]['how_mapped'] == 'omim' and len(how_mapped_set) == 1:
-                    print(mondo_id)
-                    print([x['identifier'] for x in filter_list_of_dict_info])
-                    sys.exit('multiple mapping only omim was a problem so far')
+                    if mondo_id != 'MONDO:0030977':
+                        print(mondo_id)
+                        print(list_of_dict_of_information[0]['how_mapped'])
+                        print([x['identifier'] for x in filter_list_of_dict_info])
+                        sys.exit('multiple mapping only omim was a problem so far')
+                    # manual check mapping
+                    else:
+                        new_list_of_dict_of_information = []
+                        for dict_info in list_of_dict_of_information:
+                            if dict_info['identifier'] == 'DOID:0081426':
+                                new_list_of_dict_of_information.append(dict_info)
+                        if len(new_list_of_dict_of_information) == 0:
+                            sys.exit('manual mapping not working')
+                        filter_list_of_dict_info= new_list_of_dict_of_information
+
             dict_of_information = combine_information(filter_list_of_dict_info, mondo_id)
 
         dict_of_information['mondo_id'] = mondo_id

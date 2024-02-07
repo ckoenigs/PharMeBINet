@@ -267,7 +267,7 @@ def integrate_DB_compound_information_into_pharmebinet():
                     text = 'python3 ../add_info_from_removed_node_to_other_node.py %s %s %s\n' % (
                         alternative_drug_id, drugbank_id, 'Compound')
                     bash_shell.write(text)
-                    text = '$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_merge.cypher \n\n'
+                    text = 'python ../../execute_cypher_shell.py $path_neo4j $password cypher_merge.cypher > cypher1.txt \n\n'
                     bash_shell.write(text)
                     text = '''now=$(date +"%F %T")
                         echo "Current time: $now"\n'''

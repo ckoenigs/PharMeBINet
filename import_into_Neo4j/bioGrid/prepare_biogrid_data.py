@@ -219,7 +219,7 @@ file: BIOGRID-CHEMICALS-4.4.198.chemtab
 
 
 def load_chemical_interaction_and_seperate_information():
-    url_file = 'https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-4.4.229/BIOGRID-CHEMICALS-4.4.229.chemtab.zip'
+    url_file = 'https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-4.4.230/BIOGRID-CHEMICALS-4.4.230.chemtab.zip'
 
     csv_writer, csv_drug, csv_related_interaction = generate_files_for_gene_chemical_interaction()
 
@@ -484,7 +484,7 @@ def load_protein_interaction_and_seperate_information():
     Parse the Biogrid-organism-homo sapiens
     :return:
     """
-    url_file = 'https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-4.4.229/BIOGRID-ORGANISM-4.4.229.tab3.zip'
+    url_file = 'https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-4.4.230/BIOGRID-ORGANISM-4.4.230.tab3.zip'
 
     csv_writer_interaction = prepare_file_and_query_for_gene_gene_interaction()
 
@@ -493,7 +493,7 @@ def load_protein_interaction_and_seperate_information():
     request = get(url_file)
     with ZipFile(BytesIO(request.content), 'r') as zipObj:
         print('download and unzip is finsihed',datetime.datetime.now())
-        file_name = 'BIOGRID-ORGANISM-Homo_sapiens-4.4.229.tab3.txt'
+        file_name = 'BIOGRID-ORGANISM-Homo_sapiens-4.4.230.tab3.txt'
         # for zip_info in zipObj.filelist:
         #     if zip_info.filename!=file_name:
         #         continue

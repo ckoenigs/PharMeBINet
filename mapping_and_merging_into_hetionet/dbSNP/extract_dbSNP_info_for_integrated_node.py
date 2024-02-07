@@ -263,7 +263,7 @@ def go_through_downloaded_json_and_add_them_to_tsv():
     TSV file.
     :return:
     """
-    file_name = '/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/dbSNP/api_infos.json'
+    file_name = f'{path_to_data}dbSNP/api_infos.json'
     file_already_downloaded = open(file_name, 'r')
     counter_line = 0
     for line in file_already_downloaded.readlines():
@@ -276,13 +276,14 @@ def go_through_downloaded_json_and_add_them_to_tsv():
 
 
 def main():
-    global license, path_of_directory_dbSNP
-    if len(sys.argv) > 2:
+    global license, path_of_directory_dbSNP, path_to_data
+    if len(sys.argv) > 3:
         path_of_directory = sys.argv[1]
         path_of_directory_dbSNP = path_of_directory + 'mapping_and_merging_into_hetionet/dbSNP/'
         license = sys.argv[2]
+        path_to_data =sys.argv[3]
     else:
-        sys.exit('need a path and license ')
+        sys.exit('need a path and license and path to data ')
 
     print(datetime.datetime.now())
     print('diseaserate connection with neo4j')

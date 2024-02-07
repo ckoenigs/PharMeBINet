@@ -43,7 +43,7 @@ def prepare_query(rela_type, file_name):
     :param file_name: string
     :return:
     """
-    query = f'Match (m:Protein{{identifier:line.protein_id}}),(n:Chemical{{identifier:line.drug_id}}) Merge (m)<-[r:{rela_type}]-(n) On Create Set r.moas=split(line.moa,"|"), r.activities=split(line.activity,"|"), r.highest_clinical_statuses=split(line.highest_clinical_status,"|"), r.source="TTD", r.resource=["TTD"], r.url="ttd", r.license="No license", r.ttd="yes" On Match Set r.ttd="yes", r.resource=r.resource+"TTD"'
+    query = f'Match (m:Protein{{identifier:line.protein_id}}),(n:Chemical{{identifier:line.drug_id}}) Merge (m)<-[r:{rela_type}]-(n) On Create Set r.moas=split(line.moa,"|"), r.activities=split(line.activity,"|"), r.highest_clinical_statuses=split(line.highest_clinical_status,"|"), r.source="TTD", r.resource=["TTD"], r.url="https://db.idrblab.net/ttd/data/drug/details/"+line.ttd_id, r.license="No license", r.ttd="yes" On Match Set r.ttd="yes", r.resource=r.resource+"TTD"'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ttd/{file_name}',
                                               query)
@@ -65,7 +65,7 @@ def get_right_csv_file(rela_type):
         file_name = f'edges/{rela_type}.tsv'
         file = open(file_name, 'w', encoding='utf-8')
         csv_writer = csv.writer(file, delimiter='\t')
-        csv_writer.writerow(['protein_id', 'drug_id', 'moa', 'activity', 'highest_clinical_status'])
+        csv_writer.writerow(['protein_id', 'drug_id', 'moa', 'activity', 'highest_clinical_status', 'ttd_id'])
         prepare_query(rela_type, file_name)
         dict_rela_to_csv_file[rela_type] = csv_writer
 
@@ -76,7 +76,7 @@ def get_right_csv_file(rela_type):
 dict_rela_to_tuple_to_list_of_properties = {}
 
 
-def prepare_dictionary(rela_type, protein_id, chemical_id, moa, activity, highest_clinical_status):
+def prepare_dictionary(rela_type, protein_id, chemical_id, moa, activity, highest_clinical_status, ttd_id):
     """
     Prepare for each rela type an entry in the dictionary with value a dictionary with protein id and chemical id as key
      and value a list of list (moa, activity and highest_clinical_status)
@@ -86,6 +86,7 @@ def prepare_dictionary(rela_type, protein_id, chemical_id, moa, activity, highes
     :param moa: string
     :param activity: string
     :param highest_clinical_status: string
+    :param ttd_id: string
     :return:
     """
     if rela_type not in dict_rela_to_tuple_to_list_of_properties:
@@ -93,14 +94,14 @@ def prepare_dictionary(rela_type, protein_id, chemical_id, moa, activity, highes
     if (protein_id, chemical_id) not in dict_rela_to_tuple_to_list_of_properties[rela_type]:
         dict_rela_to_tuple_to_list_of_properties[rela_type][(protein_id, chemical_id)] = []
     dict_rela_to_tuple_to_list_of_properties[rela_type][(protein_id, chemical_id)].append(
-        [moa, activity, highest_clinical_status])
+        [moa, activity, highest_clinical_status, ttd_id])
 
 
 def get_all_pairs_and_write_into_dictionary():
-    query = 'Match (n:Protein)--(:TTD_Target)-[r]-(:TTD_Drug)--(m:Chemical) Return n.identifier, m.identifier, r.moa, r.activity, r.highest_clinical_status'
+    query = 'Match (n:Protein)--(:TTD_Target)-[r]-(l:TTD_Drug)--(m:Chemical) Return n.identifier, m.identifier, r.moa, r.activity, r.highest_clinical_status, l.id'
     results = g.run(query)
     for result in results:
-        [protein_id, chemical_id, list_of_moas, activity, highest_clinical_status] = result.values()
+        [protein_id, chemical_id, list_of_moas, activity, highest_clinical_status, ttd_id] = result.values()
         if list_of_moas is None:
             moa = ''
             rela_type = 'associates'
@@ -112,7 +113,7 @@ def get_all_pairs_and_write_into_dictionary():
                     if moa == 'agonis':
                         moa = 'agonist'
                     rela_type = dict_moa_to_rela_type[moa]
-                    prepare_dictionary(rela_type, protein_id, chemical_id, moa, activity, highest_clinical_status)
+                    prepare_dictionary(rela_type, protein_id, chemical_id, moa, activity, highest_clinical_status, ttd_id)
                 continue
             else:
                 moa = list_of_moas[0]
@@ -123,7 +124,7 @@ def get_all_pairs_and_write_into_dictionary():
                     moa = moa.split(' (')[0].split('(')[0]
                     rela_type = dict_moa_to_rela_type[moa]
 
-        prepare_dictionary(rela_type, protein_id, chemical_id, moa, activity, highest_clinical_status)
+        prepare_dictionary(rela_type, protein_id, chemical_id, moa, activity, highest_clinical_status, ttd_id)
 
 
 def add_entries(set_infos, info):
@@ -149,12 +150,14 @@ def prepare_tsv_and_queries():
             moas = set()
             activities = set()
             highest_clinical_statuses = set()
+            ttd_id = ''
             for prop in list_of_prop:
                 add_entries(moas, prop[0])
                 add_entries(activities, prop[1])
                 add_entries(highest_clinical_statuses, prop[2])
+                ttd_id= prop[3]
             csv_writer.writerow(
-                [protein_id, chemical_id, '|'.join(moas), '|'.join(activities), '|'.join(highest_clinical_statuses)])
+                [protein_id, chemical_id, '|'.join(moas), '|'.join(activities), '|'.join(highest_clinical_statuses), ttd_id])
 
 
 def main():

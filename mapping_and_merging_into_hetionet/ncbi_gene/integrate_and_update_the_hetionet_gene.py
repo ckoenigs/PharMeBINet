@@ -76,14 +76,14 @@ load ncbi tsv file in and write only the important lines into a new tsv file for
 
 def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     # file for integration into pharmebinet
-    file = open('output_data/genes_merge.tsv', 'w')
+    file = open('output/genes_merge.tsv', 'w')
     header = ['identifier', 'name', 'description', 'chromosome', 'gene_symbols', 'synonyms', 'feature_type',
               'type_of_gene', 'map_location', 'xrefs', 'gene_symbol']
     writer = csv.DictWriter(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL,
                             fieldnames=header)
     writer.writeheader()
 
-    cypher_file = open('output_data/cypher_merge.cypher', 'w')
+    cypher_file = open('output/cypher_merge.cypher', 'w')
     query = '''Match (n:Gene_Ncbi {identifier:line.identifier}) Merge (g:Gene{identifier:line.identifier }) On Match Set '''
 
     on_create_string = ''' On Create SET '''
@@ -102,7 +102,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
 
     query += 'g.ncbi="yes", g.resource=g.resource+"NCBI" ' + on_create_string + '''  g.source="Entrez Gene", g.resource="NCBI", g.license="https://www.ncbi.nlm.nih.gov/home/about/policies/", g.url="http://identifiers.org/ncbigene/"+line.identifier, g.ncbi='yes', g.resource=["NCBI"] Create (n)<-[:equal_to_ncbi_gene]-(g)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
-                                              f'mapping_and_merging_into_hetionet/ncbi_gene/output_data/genes_merge.tsv',
+                                              f'mapping_and_merging_into_hetionet/ncbi_gene/output/genes_merge.tsv',
                                               query)
     cypher_file.write(query)
     query = '''MATCH (a:Gene) Where not  (a)-[:equal_to_ncbi_gene]->() Detach Delete a;\n'''

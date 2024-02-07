@@ -84,7 +84,7 @@ def get_information_from_pharmebinet():
     """
     global maximal_id
 
-    query = '''MATCH (n:Protein)-->(a:Interaction)-->(m:Protein) Where not (a.iso_of_protein_from is not NULL or a.iso_of_protein_to  is not NULL)  RETURN n.identifier, m.identifier, a.resource, a.identifier, a.interaction_ids;'''
+    query = '''MATCH (n:Protein)-->(a:Interaction)-->(m:Protein) Where not (a.iso_of_protein_from is not NULL or a.iso_of_protein_to  is not NULL)  RETURN n.identifier, m.identifier, a.resource, a.identifier, a.interaction_ids'''
     results = g.run(query)
 
     for record in results:
@@ -334,7 +334,8 @@ def write_info_into_files():
             else:
                 print('multi')
                 final_dictionary = prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2)
-
+            final_dictionary['protein_id_1'] = p1
+            final_dictionary['protein_id_2'] = p2
             csv_writer.writerow(prepare_dictionary(final_dictionary, identifier))
             set_of_added_pair.add((p1, p2))
 

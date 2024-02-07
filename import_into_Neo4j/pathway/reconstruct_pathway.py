@@ -27,7 +27,7 @@ def use_of_entrez_gene():
     human_coding_genes = set()
     symbol_to_entrez = {}
 
-    gene_file_name = '../ncbi_genes/output_data/genes.tsv'
+    gene_file_name = '../ncbi_genes/output/genes.tsv'
 
     with open(gene_file_name, 'r', encoding='utf-8') as gene_file:
         csv_reader = csv.DictReader(gene_file, delimiter='\t')
