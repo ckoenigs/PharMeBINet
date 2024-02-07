@@ -65,9 +65,11 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integration with cypher shell
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_file.cypher
+python ../../../execute_cypher_shell.py $path_neo4j $password cypher_file.cypher > cypher.txt
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_rela_file.cypher
+python ../../../execute_cypher_shell.py $path_neo4j $password cypher_rela_file.cypher > cypher1.txt
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f ../cypher_atc.cypher
+python ../../../execute_cypher_shell.py $path_neo4j $password ../cypher_atc.cypher > cypher2.txt
+
+cd ..
 

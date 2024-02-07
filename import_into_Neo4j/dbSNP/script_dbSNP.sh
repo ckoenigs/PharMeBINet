@@ -21,10 +21,10 @@ echo "Current time: $now"
 
 echo integrate efo into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f cypher.cypher > output/output_cypher_node.txt 2>&1
+python ../../execute_cypher_shell.py $path_neo4j $password cypher.cypher > output/cypher.txt
 
 sleep 60
 
-python ../../restart_neo4j.py $path_neo4j > neo4j.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
 
 sleep 120

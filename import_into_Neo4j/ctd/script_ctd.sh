@@ -46,35 +46,34 @@ echo nodes
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f cypher/nodes_1.cypher 
-
+python ../../execute_cypher_shell.py $path_neo4j $password cypher/nodes_1.cypher > output/cypher.txt
 
 sleep 60
-python ../../restart_neo4j.py $path_neo4j > neo4j.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
 sleep 60
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo edge
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f cypher/edges_1.cypher 
+python ../../execute_cypher_shell.py $path_neo4j $password cypher/edges_1.cypher > output/cypher1.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 sleep 60
-python ../../restart_neo4j.py $path_neo4j > neo4j.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
 sleep 60
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f cypher/nodes_delete.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password cypher/nodes_delete.cypher > output/cypher2.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 sleep 60
-python ../../restart_neo4j.py $path_neo4j > neo4j.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
 sleep 60
 
 

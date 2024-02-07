@@ -31,18 +31,18 @@ echo "Current time: $now"
 
 echo integrate bindingDB nodes into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f output/create_nodes.cypher 
+python ../../execute_cypher_shell.py $path_neo4j $password output/create_nodes.cypher > output/cypher.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 echo integrate bindingDB index into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f output/create_index.cypher 
+python ../../execute_cypher_shell.py $path_neo4j $password output/create_index.cypher > output/cypher2.txt
 
 sleep 20
 
-python ../../restart_neo4j.py $path_neo4j > neo4j.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
 
 
 sleep 60
@@ -52,11 +52,11 @@ echo "Current time: $now"
 
 echo integrate binding db rela into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f output/create_edges.cypher 
+python ../../execute_cypher_shell.py $path_neo4j $password output/create_edges.cypher > output/cypher.txt
 
 sleep 30
 
-python ../../restart_neo4j.py $path_neo4j > neo4j.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
 
 
 sleep 30

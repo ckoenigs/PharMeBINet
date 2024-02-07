@@ -41,13 +41,13 @@ java -jar ../$import_tool.jar -i $path_data_source/refseq/sources/RefSeq/interme
 
 sleep 30
 
-python ../../restart_neo4j.py $path_neo4j > neo4.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 
 
 sleep 30
 
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_add_label.cypher
+python ../../execute_cypher_shell.py $path_neo4j $password cypher_add_label.cypher > output/cypher.txt
 
 
 

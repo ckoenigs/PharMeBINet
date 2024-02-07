@@ -34,13 +34,13 @@ echo $import_tool
 
 echo integrate hgnc into neo4j
 
-java -jar ../$import_tool.jar -i sources/HGNC/intermediate.graphml  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix hgnc_ --indices "hgnc_Gene.hgnc_id;hgnc_miRNA.mirbase_accession;hgnc_Protein.uniprot_id" > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/HGNC/intermediate.graphml  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix hgnc_ --indices "hgnc_Gene.id;hgnc_miRNA.mirbase_accession;hgnc_Protein.uniprot_id" > output/import_tool_output.txt
 
 echo finished integration
 
 sleep 30
 
-python ../../restart_neo4j.py $path_neo4j > neo4.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 
 
 sleep 30

@@ -38,7 +38,7 @@ java -jar ../$import_tool.jar -i sources/GWASCatalog/intermediate.graphml  -e bo
 
 sleep 30
 
-python ../../restart_neo4j.py $path_neo4j > neo4j.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
 
 
 sleep 30
