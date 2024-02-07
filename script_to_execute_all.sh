@@ -20,7 +20,10 @@ path_neo4j=$1
 path_project=$2
 
 # path to import tool
-name_of_import_tool='../Neo4j-GraphML-Importer-v1.2.0'
+name_of_import_tool='../Neo4j-GraphML-Importer-v1.2.1'
+
+# path to external save position of data
+path_to_other_place_of_data='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/'
 
 password='test1234'
 
@@ -33,7 +36,7 @@ echo integration of the database into hetionet
 # ths python scripts executed on windows with python 3.5.3
 cd import_into_Neo4j
 
-./integration_shell.sh $path_neo4j $path_project $name_of_import_tool $password #> output_all_integration.txt
+./integration_shell.sh $path_neo4j $path_project $name_of_import_tool $password $path_to_other_place_of_data #> output_all_integration.txt
 
 cd ..
 
@@ -58,7 +61,7 @@ echo "Current time: $now"
 echo mapping and integration
 cd mapping_and_merging_into_hetionet
 
-./script_mapping.sh $path_neo4j $path_project $password #> output_mapping.txt
+./script_mapping.sh $path_neo4j $path_project $password $path_to_other_place_of_data #> output_mapping.txt
 
 cd ..
 
