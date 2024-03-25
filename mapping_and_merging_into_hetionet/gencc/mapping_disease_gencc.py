@@ -245,7 +245,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load all gencc disease extansion information from the gencc edge')
+    print('Load all gencc disease extension information from the gencc edge')
 
     load_extensions_information_from_gencc_edges()
 

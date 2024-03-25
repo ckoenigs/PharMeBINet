@@ -29,7 +29,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrate Drugcentral go'
 
-python3 mapping_GOterm_drugcentral.py $path_to_project > goTerm/output.txt
+# python3 mapping_GOterm_drugcentral.py $path_to_project > goTerm/output.txt
 
 
 now=$(date +"%F %T")
