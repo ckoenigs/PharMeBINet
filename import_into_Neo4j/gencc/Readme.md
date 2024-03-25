@@ -9,6 +9,6 @@ BioDWH2 prepare transformation into GraphML file and with the GraphmML importert
 
 The schema is shown here:
 
-![er_diagram](meta_graph_gencc.jpg)
+![er_diagram](meta_graph_gencc.png)
 
 License: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
