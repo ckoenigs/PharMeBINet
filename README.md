@@ -62,6 +62,7 @@ Data Sources used for mapping:
 | IUPHAR    | 2023-11-29    |[CC BY-SA 4.0 Deed](https://creativecommons.org/licenses/by-sa/4.0/)      | [Link](https://www.guidetopharmacology.org/)    | 
 | PubChem    | 2024-01    |Therefore, NCBI itself places no restrictions on the use or distribution of the data contained therein. However, some submitters of the original data may claim patent, copyright, or other intellectual property rights in all or a portion of the data they have submitted. NCBI is not in a position to assess the validity of such claims and, therefore, cannot provide comment or unrestricted permission concerning the use, copying, or distribution of the information contained in the molecular databases.      | [Link](https://pubchem.ncbi.nlm.nih.gov/)    |
 | RxNorm    | 2023-11    |UMLS license, available at https://uts.nlm.nih.gov/license.html      | [Link](https://www.nlm.nih.gov/research/umls/rxnorm/index.html)    |
+| STITCH    | 2020-02-07    |STITCH is available for licensing - both for commercial and for academic institutions.  | [Link](http://stitch.embl.de/)    |
 | UMLS    | 2023-11    |UMLS license, available at https://uts.nlm.nih.gov/license.html      | [Link](https://www.nlm.nih.gov/research/umls/index.html)    |
 
 The shell script does the integration into neo4j and the mapping and merging to Hetionet.
