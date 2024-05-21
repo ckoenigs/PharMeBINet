@@ -17,11 +17,11 @@ if [ ! -d output ]; then
   mkdir output
 fi
 
-echo load latest version of ADReCS and generat GraphML file
+echo load latest version of GWAS and generat GraphML file
 
 dir=./sources/
 
-# prepare workspace and add ADReCS to bioDWB2 tool
+# prepare workspace and add GWAS to bioDWB2 tool
 if [ ! -d "$dir" ]; 
 then
     echo generate workspace in directory
