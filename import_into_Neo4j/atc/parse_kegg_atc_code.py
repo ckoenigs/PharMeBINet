@@ -1,7 +1,14 @@
 # https://www.genome.jp/kegg-bin/get_htext?br08303.keg
-import csv
+# https://www.genome.jp/kegg-bin/download_htext?htext=br08303.keg&format=json&filedir=
+import csv, os
 import ujson, sys
 import datetime
+import urllib.request
+
+try:
+    from BeautifulSoup import BeautifulSoup
+except ImportError:
+    from bs4 import BeautifulSoup
 
 sys.path.append("../..")
 import pharmebinetutils
@@ -50,7 +57,7 @@ def load_information_form_json(csv_node, csv_edge):
     :param csv_edge:
     :return:
     """
-    file = open('data/br08303.json', 'r', encoding='utf-8')
+    file = open('data/atc_kegg.json', 'r', encoding='utf-8')
     data = ujson.load(file)
 
     # level 1 children
@@ -79,6 +86,45 @@ def load_information_form_json(csv_node, csv_edge):
                                     csv_edge.writerow([level4_id, level5_id])
 
 
+
+def get_website_source(url: str) -> str:
+    request_headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) ' +
+                      'Chrome/35.0.1916.47 Safari/537.36'
+    }
+    request = urllib.request.Request(url, headers=request_headers)
+    with urllib.request.urlopen(request) as response:
+        print(response.headers)
+        print(response.headers.get_content_charset())
+        return response.read().decode('utf-8')
+
+def check_for_new_version():
+    source=get_website_source('https://www.genome.jp/kegg-bin/get_htext?br08303.keg')
+    # parsed_html = BeautifulSoup(source, "lxml")
+    if '<br>Last updated: ' in source:
+        last_updated=source.split('<br>Last updated: ')[1].split('<br>')[0]
+        print(last_updated)
+        last_update_date=datetime.datetime.strptime(last_updated, '%B %d, %Y')
+        print(last_update_date)
+    download=False
+    if os.path.isfile('update.txt'):
+        with open('update.txt', 'r', encoding='utf-8') as f:
+            other_data=next(f)
+            print(other_data)
+            other_data_update=datetime.datetime.strptime(other_data, '%Y-%m-%d')
+            if other_data_update < last_update_date:
+                download=True
+            # f.write(last_update_date.strftime('%Y-%m-%d'))
+    else:
+        download=True
+
+    if download:
+        print('download')
+        pharmebinetutils.download_file('https://www.genome.jp/kegg-bin/download_htext?htext=br08303.keg&format=json&filedir=',out='data/', file_name='atc_kegg.json')
+        with open('update.txt', 'w', encoding='utf-8') as f:
+            f.write(last_update_date.strftime('%Y-%m-%d'))
+
+
 def main():
     print(datetime.datetime.now())
 
@@ -88,6 +134,8 @@ def main():
         print(path_of_directory)
     else:
         sys.exit('need a path atc')
+
+    check_for_new_version()
 
     print('##########################################################################')
 
