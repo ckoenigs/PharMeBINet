@@ -9,8 +9,18 @@ import_tool=$2
 #password
 password=$3
 
+#path other data source space
+path_data_source=$4
+
+
 # path to reactome graphml
-path_to_reactome='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/reactome/'
+path_to_reactome=$path_data_source/reactome/
+
+
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
 
 # if reactome is with another version
 # JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ 

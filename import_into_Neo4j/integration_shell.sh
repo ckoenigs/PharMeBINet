@@ -222,7 +222,7 @@ cd ..
 #cd  openFDA
 #echo openFDA
 
-#./script_open_fda.sh $path_neo4j $password > output_openFDA.txt
+#./script_open_fda.sh $path_neo4j $password $path_to_other_place_of_data > output_openFDA.txt
 
 #cd ..
 
@@ -278,7 +278,7 @@ echo "Current time: $now"
 cd  drugbank
 echo drugbank
 
-./script_to_start_program_and_integrate_into_neo4j.sh $path_neo4j $path_to_project $password > output_script.txt
+./script_to_start_program_and_integrate_into_neo4j.sh $path_neo4j $path_to_project $password $path_to_other_place_of_data > output_script.txt
 
 
 cd ..
@@ -425,7 +425,7 @@ echo "Current time: $now"
 cd  reactome
 echo reactome
 
-./script_import_recatome_with_graphml.sh $path_neo4j $name_of_import_tool $password > output_reactome.txt
+./script_import_recatome_with_graphml.sh $path_neo4j $name_of_import_tool $password $path_to_other_place_of_data > output_reactome.txt
 
 cd ..
 

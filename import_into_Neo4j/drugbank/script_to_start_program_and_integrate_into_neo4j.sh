@@ -9,8 +9,17 @@ path_neo4j=$1
 #password
 password=$3
 
+#path other data source space
+path_data_source=$4
+
+# prepare directories
+if [ ! -d output/neo4j_import ]; then
+  mkdir output/neo4j_import
+fi
+
+
 # path to drugbank
-path_to_drugbank_data="/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/Drugbank_database/drugbank_files_without_preperation/"
+path_to_drugbank_data=$4/Drugbank_database/drugbank_files_without_preperation/
 
 
 echo  $path_neo4j
