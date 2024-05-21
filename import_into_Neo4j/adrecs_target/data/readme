@@ -1,9 +1,9 @@
 Drug 	Basical drug information. 	ALLDRUG_INFO.xlsx
-Protein 	Basical protein information. 	DITOP_PROTEIN_INFO
+Protein 	Basical protein information. 	ADReCS_Target_INFO
 Gene 	Basical gene information. 	ADRAlert_LINCS_Gene_inf
 Genetic Variation 	Basical genetic variation information. 	SNP_Variation_INFO
 ADR 	Adverse reaction drug information. 	ALLTOXI_INFO
-All ADR associations 	Adverse reaction drug associations information(protein, gene, genetic variation). 	all_adr_association.csv
+All ADR associations 	Adverse reaction drug associations information(protein, gene, genetic variation). 	three_level.csv
 ADR-protein associations 	Adverse reaction drug associations with protein information. 	P_D_A
 ADR-gene regulation associations 	Adverse reaction drug associations with gene regulation information. 	ADRAlert2GENE2ID
 ADR-genetic variation associations 	Adverse reaction drug associations with genetic variation information.. 	V_D_A

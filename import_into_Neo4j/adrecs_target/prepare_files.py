@@ -598,8 +598,9 @@ def prepare_proteins():
 
     """
     global set_of_gene_ids
-
-    protein = pd.read_excel('data/DITOP_PROTEIN_INFO.xlsx', index_col=None, )
+    # old file name
+    # protein = pd.read_excel('data/DITOP_PROTEIN_INFO.xlsx', index_col=None, )
+    protein = pd.read_excel('data/ADReCS_Target_INFO.xlsx', index_col=None, )
     # print(protein.head())
     header = list(protein.columns)
     # print(header)
@@ -607,7 +608,9 @@ def prepare_proteins():
     protein_properties = header[::]
     protein_properties.remove('RID')
     protein_properties.remove('String')
-    protein_properties.remove('Gene names')
+    # old property name
+    # protein_properties.remove('Gene names')
+    protein_properties.remove('Gene.names')
     protein_properties.remove('GeneID')
 
     # prepare dataframe
@@ -644,7 +647,7 @@ def prepare_proteins():
             dict_rela_to_tsv['ditop_protein'].writerow([rid, protein_id])
 
         gene_id = row['GeneID']
-        if gene_id != '':
+        if gene_id != '' and not 'E' in gene_id:
             if not int(gene_id) in set_of_gene_ids:
                 dict_label_to_csv_writer['gene'].writerow([gene_id])
                 set_of_gene_ids.add(int(gene_id))
