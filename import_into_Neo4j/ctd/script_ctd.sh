@@ -9,6 +9,18 @@ path_neo4j=$2
 # password neo4j
 password=$3
 
+
+
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+
+if [ ! -d cypher ]; then
+  mkdir cypher
+fi
+
+
 file=$path_to_ctd_data/ctd_data/CTD_genes.tsv
 
 if [ ! -f "$file" ];

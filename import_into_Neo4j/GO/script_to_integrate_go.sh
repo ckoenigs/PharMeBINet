@@ -9,6 +9,14 @@ path_to_project=$2
 #password
 password=$3
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+if [ ! -d data ]; then
+  mkdir data
+fi
+
 #download go
 wget  -O data/go-basic.obo "purl.obolibrary.org/obo/go/go-basic.obo"
 

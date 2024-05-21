@@ -9,6 +9,14 @@ path_to_project=$2
 #password
 password=$3
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+if [ ! -d data ]; then
+  mkdir data
+fi
+
 python3 integrate_ncbi_genes_which_are_already_in_hetionet.py $path_to_project > output_generate_integration_file.txt
 
 echo rm gz file

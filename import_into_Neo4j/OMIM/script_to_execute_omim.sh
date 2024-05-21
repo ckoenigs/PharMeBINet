@@ -10,6 +10,14 @@ path_neo4j=$2
 #password
 password=$3
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+if [ ! -d data ]; then
+  mkdir data
+fi
+
 echo download omim files if needed
 now=$(date +"%F %T")
 echo "Current time: $now"

@@ -9,6 +9,15 @@ path_to_project=$2
 #password
 password=$3
 
+
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+if [ ! -d data ]; then
+  mkdir data
+fi
+
 #download uberon
 # old used http://purl.obolibrary.org/obo/uberon/ext.obo 
 # I think this http://purl.obolibrary.org/obo/uberon/uberon-full.obo is similar but I will test

@@ -13,6 +13,12 @@ biodwh2=$3
 password=$4
 
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+
+
 echo load latest version of TTD and generat GraphML file
 
 dir=./sources/

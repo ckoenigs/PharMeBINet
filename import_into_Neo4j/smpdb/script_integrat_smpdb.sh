@@ -9,6 +9,15 @@ path_to_project=$2
 #password
 password=$3
 
+
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+if [ ! -d metabolite ]; then
+  mkdir metabolite
+fi
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 

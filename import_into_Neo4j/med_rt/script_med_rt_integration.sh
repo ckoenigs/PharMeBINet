@@ -9,6 +9,14 @@ path_to_project=$2
 #password
 password=$3
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+if [ ! -d data ]; then
+  mkdir data
+fi
+
 python3 parse_med_rt_to_tsv.py $path_to_project > output/output_integration_med_rt.txt
 
 

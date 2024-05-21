@@ -15,6 +15,11 @@ password=$4
 #path other data source space
 path_data_source=$5
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+
 
 echo load latest version of DrugCentral and generat GraphML file
 

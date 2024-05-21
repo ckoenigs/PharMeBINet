@@ -9,6 +9,15 @@ path_to_project=$2
 #password
 password=$3
 
+
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+if [ ! -d data ]; then
+  mkdir data
+fi
+
 python3 importSideEffects_change_to_umls_meddra_final.py data/ $path_to_project > output/output_integration_sider.txt
 
 

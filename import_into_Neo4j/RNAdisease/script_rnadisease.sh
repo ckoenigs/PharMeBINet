@@ -9,6 +9,15 @@ path_to_project=$2
 #password
 password=$3
 
+
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+if [ ! -d data ]; then
+  mkdir data
+fi
+
 python3 RNAdisease.py $path_to_project > output/output_integration_rnadisease.txt
 
 now=$(date +"%F %T")

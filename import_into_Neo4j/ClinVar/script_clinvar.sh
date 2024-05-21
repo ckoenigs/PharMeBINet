@@ -12,6 +12,12 @@ path_to_clinvar_data=$3
 #password
 password=$4
 
+
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo prepare clinvar data

@@ -10,6 +10,21 @@ path_to_project=$2
 password=$3
 
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+if [ ! -d tsv_from_mysql ]; then
+  mkdir tsv_from_mysql
+fi
+if [ ! -d idx_tsv ]; then
+  mkdir idx_tsv
+fi
+if [ ! -d data ]; then
+  mkdir data
+fi
+
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 

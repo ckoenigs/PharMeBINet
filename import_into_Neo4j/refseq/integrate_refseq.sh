@@ -16,6 +16,12 @@ password=$4
 path_data_source=$5
 
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+
+
 echo load latest version of mirbase and generat GraphML file
 
 dir=$path_data_source/refseq/sources/

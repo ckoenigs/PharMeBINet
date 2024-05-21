@@ -12,6 +12,11 @@ biodwh2=$3
 #password
 password=$4
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+
 
 echo load latest version of mirbase and generat GraphML file
 

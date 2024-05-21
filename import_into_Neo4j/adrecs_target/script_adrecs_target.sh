@@ -10,6 +10,16 @@ path_to_project=$2
 password=$3
 
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+
+if [ ! -d data ]; then
+  mkdir data
+fi
+
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 

@@ -9,6 +9,14 @@ path_to_project=$2
 #password
 password=$3
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+if [ ! -d aeolus_v1 ]; then
+  mkdir aeolus_v1
+fi
+
 python3 importAeolus_final.py aeolus_v1/ $path_to_project > output/output_integration_aeolus.txt 
 
 now=$(date +"%F %T")

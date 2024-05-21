@@ -9,6 +9,14 @@ path_to_project=$2
 #password
 password=$3
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+if [ ! -d data ]; then
+  mkdir data
+fi
+
 #download do
 wget  -O data/efo.obo "https://www.ebi.ac.uk/efo/efo.obo"
 
