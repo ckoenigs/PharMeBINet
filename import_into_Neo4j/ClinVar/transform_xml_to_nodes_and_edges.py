@@ -851,7 +851,8 @@ def get_information_from_full_relase():
 
     filename = path_of_clinvar_data + 'ClinVarFullRelease_00-latest.xml.gz'
     if not os.path.exists(filename):
-        url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarFullRelease_00-latest.xml.gz'
+        # url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarFullRelease_00-latest.xml.gz'
+        url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/RCV_xml_old_format/ClinVarFullRelease_00-latest.xml.gz'
         filename = pharmebinetutils.download_file(url, out=path_of_clinvar_data )
     file = gzip.open(filename, 'rb')
     print(datetime.datetime.now(), 'end download')
@@ -1444,7 +1445,8 @@ def extract_node_info_for_variations():
     print(datetime.datetime.now(), 'start download')
     filename = path_of_clinvar_data + 'ClinVarVariationRelease_00-latest.xml.gz'
     if not os.path.exists(filename):
-        url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/clinvar_variation/ClinVarVariationRelease_00-latest.xml.gz'
+        # url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/clinvar_variation/ClinVarVariationRelease_00-latest.xml.gz'
+        url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/VCV_xml_old_format/ClinVarVariationRelease_00-latest.xml.gz'
         path_combi = path_of_clinvar_data
         print(path_combi)
         filename = pharmebinetutils.download_file(url, out=path_combi)
