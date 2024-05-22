@@ -35,6 +35,9 @@ java -jar ../$biodwh2.jar -u .
 
 echo $import_tool
 
+echo Unpacking GraphML files
+
+gunzip sources/MarkerDB/intermediate.graphml.gz -d sources/MarkerDB/
 
 echo integrate markerdb into neo4j
 
@@ -44,7 +47,7 @@ echo finished integration
 
 sleep 30
 
-python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
+python ../../restart_neo4j.py > output/neo4.txt
 
 
 sleep 30
