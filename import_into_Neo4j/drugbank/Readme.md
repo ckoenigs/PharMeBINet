@@ -3,6 +3,9 @@ This integrates all open-source data of DrugBank into Neo4j.
 
 Version: 5.1.11 (2024-01-03)
 
+First, put the Drugbank_database in the other external databases. Then an account is needed to download DrugBank data. Then download the complete database as  XML. This is extracted and the XML into this folder. Next, from structures the full drug structures in SDF format "all", from full metabolite structures the SDF file and from structure external links the "All" CSV file are downloaded. The zip files are added to the directory Drugbank_database/drugbank_files_without_preperation/structure and with the script they can be extracted. Next, from external links, all "All" files are downloaded (total 5 files) and put into Drugbank_database/drugbank_files_without_preperation/external_links and with the script extracted. Then, download from protein identifiers all "All" files (total 4 files) and put them into Drugbank_database/drugbank_files_without_preperation/Protein_identifiers and with the script extracted. In the following, download from target sequences all "All" files (total 4 files) and put them into Drugbank_database/drugbank_files_without_preperation/target_sequences and with the script extracted. From the drug sequence download all files (total 7 files) and put them into Drugbank_database/drugbank_files_without_preperation/drug_sequences and with the script extracted.
+
+
 The first step of the DrugBank integration script is to get all DrugBank categories from the API.
 The next step is to prepare the SDF files into CSV files.
 Then the DrugBank XML file is formed into a tsv file orientated by https://github.com/dhimmel/drugbank/blob/gh-pages/parse.ipynb

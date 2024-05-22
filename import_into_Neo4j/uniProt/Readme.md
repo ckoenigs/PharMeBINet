@@ -17,3 +17,5 @@ The schema is shown here:
 ![er_diagram](uniprot.png)
 
 License: CC BY 4.0
+
+This automatically updated if the file is removed from database.

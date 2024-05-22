@@ -16,6 +16,13 @@ if [ ! -d output ]; then
 fi
 if [ ! -d data ]; then
   mkdir data
+  cd data
+  wget http://www.rnainter.org/raidMedia/download/Download_data_RC.tar.gz
+  wget http://www.rnainter.org/raidMedia/download/Download_data_RD.tar.gz
+  wget http://www.rnainter.org/raidMedia/download/Download_data_RH.tar.gz
+  wget http://www.rnainter.org/raidMedia/download/Download_data_RP.tar.gz
+  wget http://www.rnainter.org/raidMedia/download/Download_data_RR.tar.gz
+  cd ..
 fi
 
 echo $path_to_project

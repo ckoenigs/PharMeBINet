@@ -20,6 +20,9 @@ path_data_source=$5
 if [ ! -d output ]; then
   mkdir output
 fi
+if [ ! -d $path_data_source/refseq/ ]; then
+  mkdir $path_data_source/refseq/
+fi
 
 
 echo load latest version of mirbase and generat GraphML file

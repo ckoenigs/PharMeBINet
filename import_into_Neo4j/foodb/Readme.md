@@ -7,3 +7,5 @@ For the different TSV files the different node and edge information are extracte
 Additionally, the cypher queries for the node and the different kinds of relationships are generated. After this, the data will be integrated into Neo4j with the Neo4j shell.
 
 License: Creative Commons Attribution-NonCommercial 4.0 International License
+
+Update when change download url and remove data directory.

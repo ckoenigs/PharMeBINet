@@ -9,3 +9,5 @@ Schema is below:
 ![er_diagram](schema.png)
 
 License: no license
+
+This updated automatically.

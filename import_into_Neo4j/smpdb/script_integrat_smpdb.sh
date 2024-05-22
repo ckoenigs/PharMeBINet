@@ -14,9 +14,6 @@ password=$3
 if [ ! -d output ]; then
   mkdir output
 fi
-if [ ! -d metabolite ]; then
-  mkdir metabolite
-fi
 
 now=$(date +"%F %T")
 echo "Current time: $now"

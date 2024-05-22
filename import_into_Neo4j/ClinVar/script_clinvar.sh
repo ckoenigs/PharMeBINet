@@ -17,6 +17,9 @@ password=$4
 if [ ! -d output ]; then
   mkdir output
 fi
+if [ ! -d $path_to_clinvar_data/clinvar ]; then
+  mkdir $path_to_clinvar_data/clinvar
+fi
 
 now=$(date +"%F %T")
 echo "Current time: $now"

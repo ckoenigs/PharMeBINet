@@ -20,3 +20,5 @@ The schema is shown here:
 ![er_diagram](clinvar.png)
 
 License:https://www.ncbi.nlm.nih.gov/home/about/policies/
+
+Download the latest version automatically.

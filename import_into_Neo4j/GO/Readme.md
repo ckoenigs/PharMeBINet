@@ -20,3 +20,5 @@ The schema is shown here:
 ![er_diagram](go.png)
 
 License: CC BY 4.0
+
+This data are automatically updated.

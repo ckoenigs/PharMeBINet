@@ -19,3 +19,5 @@ prepare_queries.py: creates cypher queries
 
 
 License: CC BY 3.0 US Deed
+
+This need manual updating. First the, dump need to be downloaded and integrated int mysql, then in the script the url need to be changed to the latest version and in merge_and_save the zip name need to be changed too.

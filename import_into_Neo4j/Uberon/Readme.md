@@ -8,3 +8,5 @@ All terms are a node in DO all property-value pairs in OBO are a property in the
 Additionally, the cypher queries for the node and the different kinds of relationships are generated. After this, the data will be integrated into Neo4j with the Neo4j shell.
 
 License: Attribution 3.0 Unported (CC BY 3.0)
+
+This is automatically updated.

@@ -6,6 +6,7 @@ Version: 2023-11-30
 
 1. Download latest Neo4j V4
 2. Start reactome in Neo4j V4
+   Therefore, java 11 is needed.
    JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ./restart_neo4j.sh reactome restart
 
 3. Stop Neo4j.

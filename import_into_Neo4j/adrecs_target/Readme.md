@@ -41,3 +41,5 @@ schema is show below:
 
 
 License:  Free for academic use
+
+To update the data remove the data directory.

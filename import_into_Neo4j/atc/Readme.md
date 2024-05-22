@@ -7,3 +7,5 @@ Next, the KEGG downloaded JSON is used to extract the nodes and the structure an
 
 
 License: Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed.
+
+This updated the data automatically.

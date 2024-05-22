@@ -17,3 +17,5 @@ Therefore it runs through all lines and combines the information of equal diseas
 In the last step, the nodes and relationships are integrated into Neo4j with the cypher queries from the different programs!
 
 License: This service/product uses the Human Phenotype Ontology (version information). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well. 
+
+This is automatically updated.

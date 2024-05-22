@@ -28,3 +28,5 @@ uniprot1	uniprot2	symbol1	symbol2	methods	pmids	db_with_ppi	evidence_type	n_meth
 *mutation effect on interactions:* mutation effects summary	# of causing mutations	# of decreasing mutations	# of decreasing rate mutations	# of decreasing strength mutations	# of disrupting mutations	# of disrupting rate mutations	# of disrupting strength mutations	# of increasing mutations	# of increasing rate mutations	# of increasing strength mutations	# of no effect mutations	# of unknown effect mutations	causing mutations	decreasing mutations	decreasing rate mutations	decreasing strength mutations	disrupting mutations	disrupting rate mutations	disrupting strength mutations	increasing mutations	increasing rate mutations	increasing strength mutations	no effect mutations	unknown effect mutations
 
 License: free to use for academic purposes
+
+This is automatically updated.

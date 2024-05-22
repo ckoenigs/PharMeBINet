@@ -10,3 +10,5 @@ The data are looking like this:
 ![er_diagram](https://github.com/ckoenigs/PharMeBINet/blob/master/import_into_Neo4j/PharmGKB/pharmGKB.png)
 
 License:  Creative Commons Attribution-ShareALike 4.0 license
+
+This is automatically updated.

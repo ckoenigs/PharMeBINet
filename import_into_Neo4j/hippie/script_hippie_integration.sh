@@ -15,6 +15,9 @@ if [ ! -d output ]; then
 fi
 if [ ! -d data ]; then
   mkdir data
+  cd data
+  wget https://cbdm-01.zdv.uni-mainz.de/~mschaefer/hippie/HIPPIE-current.mitab.txt
+  cd ..
 fi
 
 

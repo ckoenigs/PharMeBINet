@@ -13,3 +13,5 @@ All data are integrated and removed into Neo4j cypher-shell and cypher files.
 
 License: UMLS license, available at https://uts.nlm.nih.gov/license.html
 
+Can not be updated anymore.
+

@@ -8,3 +8,5 @@ It runs through the file and generates the content of the node TSV file. In this
 In the last step, the information is integrated into Neo4j.
 
 License: https://www.ncbi.nlm.nih.gov/home/about/policies/
+
+This is automatically updated.

@@ -15,6 +15,10 @@ if [ ! -d output ]; then
 fi
 if [ ! -d database ]; then
   mkdir database
+  cd database
+  wget https://hmdb.ca/system/downloads/current/hmdb_metabolites.zip
+  wget https://hmdb.ca/system/downloads/current/hmdb_proteins.zip
+  cd ..
 fi
 
 now=$(date +"%F %T")

@@ -16,6 +16,9 @@ if [ ! -d output ]; then
 fi
 if [ ! -d data ]; then
   mkdir data
+  cd data
+  wget http://www.rnadisease.org/static/download/RNADiseasev4.0_RNA-disease_experiment_all.zip
+  cd ..
 fi
 
 python3 RNAdisease.py $path_to_project > output/output_integration_rnadisease.txt

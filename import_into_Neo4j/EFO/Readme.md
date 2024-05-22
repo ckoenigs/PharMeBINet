@@ -12,3 +12,5 @@ All terms are a node in efo all property-value pairs in OBO are a property in th
 Additionally, the cypher queries for the node and the different kinds of relationships are generated. After this, the data will be integrated into Neo4j with the Neo4j shell.
 
 License: Apache-2.0
+
+EFO is automatically updated.

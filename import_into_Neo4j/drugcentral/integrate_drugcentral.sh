@@ -19,6 +19,9 @@ path_data_source=$5
 if [ ! -d output ]; then
   mkdir output
 fi
+if [ ! -d $path_data_source/drugcentral ]; then
+  mkdir $path_data_source/drugcentral
+fi
 
 
 echo load latest version of DrugCentral and generat GraphML file

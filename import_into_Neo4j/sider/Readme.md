@@ -27,3 +27,5 @@ The same is done for the placebo frequencies.
 In the last step, the data are integrated into Neo4j with cypher-shell and the cypher file.
  
 License:  Creative Commons Attribution-Noncommercial-Share Alike 4.0 License
+
+Theoretically it automatically updaed when data is removed.

@@ -22,6 +22,9 @@ if [ ! -d idx_tsv ]; then
 fi
 if [ ! -d data ]; then
   mkdir data
+  cd data
+  wget https://www.bindingdb.org/bind/downloads/BindingDB_All_202405_tsv.zip
+  cd ..
 fi
 
 

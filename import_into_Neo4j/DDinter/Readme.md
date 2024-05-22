@@ -13,3 +13,5 @@ Next, with the use of Neo4j cypher and the cypher shell the drug and edge inform
 
 
 License: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International license
+
+This use automatically the latest version of DDinter.

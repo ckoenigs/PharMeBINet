@@ -9,6 +9,7 @@ Next, the BIOGRID-Organisms are downloaded and only the human file is taken. Fir
 
 Last the combined gene information from both files is written into a TSV file.
 
+To update the data in the Python program the version at the top need to be changed.
 
 The schema is shown here:
 

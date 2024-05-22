@@ -8,3 +8,5 @@ Then the script executes the Neo4j cypher-shell to execute the cypher file to in
 
 
 License:  Provide data for non-commercial use, distribution, or reproduction in any medium, only if you properly cite the original work.
+
+To updated the data the URL link in the shell script need to be changed and the data directory need to be removed.

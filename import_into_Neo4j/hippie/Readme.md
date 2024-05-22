@@ -9,3 +9,5 @@ First, download the HIPPIE txt file and open it as a TSV file. Next, the TSV fil
 Then the script executes the cypher file with Neo4j cypher-shell.
 
 License:Free to use for academic purposes
+
+Theoretically update by deleting the data directory.

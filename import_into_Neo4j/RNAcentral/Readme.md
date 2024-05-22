@@ -15,3 +15,5 @@ Then the script executes the Neo4j cypher-shell to execute the cypher file to in
 
 
 License: Creative Commons Zero license (CC0)
+
+This is automatically updated if the files are removed from directory json_homo.

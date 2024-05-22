@@ -15,6 +15,13 @@ if [ ! -d output ]; then
 fi
 if [ ! -d data ]; then
   mkdir data
+  cd data
+  wget "https://evs.nci.nih.gov/ftp1/NDF-RT/Archive/NDFRT_Public_All 2018-02-05.zip"
+  unzip "NDFRT_Public_All 2018-02-05.zip"
+  mv NDFRT_Public_2018.02.05/NDFRT_Public_2018.02.05_TDE.xml ./
+  rm "NDFRT_Public_All 2018-02-05.zip"
+  rm -r NDFRT_Public_2018.02.05
+  cd ..
 fi
 if [ ! -d results ]; then
   mkdir results

@@ -18,3 +18,5 @@ The schema is shown below:
 ![er_diagram](picture/ctd.png)
 
 License:© 2002–2012 MDI Biological Laboratory. All rights reserved. © 2012-2024 NC State University. All rights reserved. 
+
+To use the latest version remove all tsv files from cdt_data.

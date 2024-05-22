@@ -16,6 +16,15 @@ if [ ! -d output ]; then
 fi
 if [ ! -d data ]; then
   mkdir data
+  cd data
+  wget http://sideeffects.embl.de/media/download/meddra_all_indications.tsv.gz
+  wget http://sideeffects.embl.de/media/download/meddra_all_se.tsv.gz
+  wget http://sideeffects.embl.de/media/download/meddra_freq.tsv.gz
+  wget http://sideeffects.embl.de/media/download/meddra_all_label_indications.tsv.gz
+  wget http://sideeffects.embl.de/media/download/meddra_all_label_se.tsv.gz
+  wget http://sideeffects.embl.de/media/download/meddra.tsv.gz
+  gzip -d *.gz 
+  cd ..
 fi
 
 python3 importSideEffects_change_to_umls_meddra_final.py data/ $path_to_project > output/output_integration_sider.txt

@@ -19,6 +19,9 @@ fi
 if [ ! -d cypher ]; then
   mkdir cypher
 fi
+if [ ! -d $path_to_ctd_data/ctd_data ]; then
+  mkdir $path_to_ctd_data/ctd_data
+fi
 
 
 file=$path_to_ctd_data/ctd_data/CTD_genes.tsv

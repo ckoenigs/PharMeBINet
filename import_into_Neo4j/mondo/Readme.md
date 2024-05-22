@@ -8,3 +8,5 @@ All terms are a node in MONDO all property-value pairs in OBO are a property in 
 Additionally, the cypher queries for the node and the different kinds of relationships are generated. After this, the data will be integrated into Neo4j with the Neo4j cypher-shell.
 
 License: CC BY 4.0
+
+This is automatical updated.

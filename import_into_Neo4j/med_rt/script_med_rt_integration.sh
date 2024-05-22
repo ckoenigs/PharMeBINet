@@ -15,6 +15,13 @@ if [ ! -d output ]; then
 fi
 if [ ! -d data ]; then
   mkdir data
+  cd data
+  wget https://evs.nci.nih.gov/ftp1/MED-RT/Core_MEDRT_Accessory_Files.zip
+  wget https://evs.nci.nih.gov/ftp1/MED-RT/Core_MEDRT_XML.zip
+  for f in *.zip; do unzip "$f" -d "${f%.zip}"; done
+  rm Core_MEDRT_Accessory_Files.zip
+  rm Core_MEDRT_XML.zip
+  cd ..
 fi
 
 python3 parse_med_rt_to_tsv.py $path_to_project > output/output_integration_med_rt.txt
