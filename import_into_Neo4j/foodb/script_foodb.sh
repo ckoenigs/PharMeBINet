@@ -15,6 +15,11 @@ if [ ! -d output ]; then
 fi
 if [ ! -d data ]; then
   mkdir data
+  cd data
+  wget https://foodb.ca/public/system/downloads/foodb_2020_4_7_csv.tar.gz
+  tar -xf foodb_2020_4_7_csv.tar.gz
+  rm foodb_2020_4_7_csv.tar.gz
+  cd ..
 fi
 
 python3 fooddb.py $path_to_project > output_generate_integration_file.txt

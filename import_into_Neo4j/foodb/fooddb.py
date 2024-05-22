@@ -14,7 +14,7 @@ if len(sys.argv) > 1:
 else:
     sys.exit('need path')
 # Config
-orig_food_folder = "data/foodb_2020_4_7_csv/foodb_2020_04_07_csv/"
+orig_food_folder = "data/foodb_2020_04_07_csv/"
 
 # the Content.csv file
 content_file = orig_food_folder + "Content.csv"
