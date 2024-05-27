@@ -2,6 +2,11 @@ All programs which are used to map and merge the different databases into Hetion
 
 All this can be executed with the shell script.
 
+The scripts which need a bit manual work:
+- AEOLUS -> see readme
+- Reactome: to use the latest IUPHAR version the file need to be removed.
+- TTD: to use thr latest CHEMBL version the file need to be removed.
+
 Here is an overview of the different mapping methods:
 
 |Label|MONDO|DO|Entrez Gene|OMIM|Pathway Commons&WikiPathways|UniProt|GO|IID|Reactome|ClinVar|DrugBank|HPO|CTD|NDF-RT|SIDER|AEOLUS|PharmGKB|dbSNP|

@@ -1,4 +1,8 @@
 Version BioPortal: 
+
+First, to make it run you need to register at https://bioportal.bioontology.org/ to get an API key. Then generate in this folder a file called api_key.txt and paste the key inside.
+
+
 The script can be run with a path to neo4j and a path to the project.
 First map the AEOLUS outcome and the AEOLUS drugs. After that, the connections are integrated.
 

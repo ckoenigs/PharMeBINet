@@ -139,3 +139,6 @@ The last get component connections from the CA nodes. So, this generates connect
 
 
 As the last step, the cypher-shell integrates the edges into the database.
+
+
+To use the latest version of IUPHAR remove the ligand.csv.
