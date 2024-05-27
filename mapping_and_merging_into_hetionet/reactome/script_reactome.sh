@@ -9,6 +9,35 @@ path_to_project=$2
 #password
 password=$3
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+  mkdir disease
+  mkdir drug
+  mkdir CatalystActivityEdges
+  mkdir ComplexEdges
+  mkdir gobiolproc
+  mkdir pathway
+  mkdir gocellcomp
+  mkdir gomolfunc
+  mkdir interactions
+  mkdir PathwayEdges
+  mkdir physikalEntityEdges
+  mkdir reactionLikeEventEdge
+  mkdir RegulationEdges
+  mkdir treatment
+  mkdir uniprotIDs
+  mkdir IUPHAR
+  cd IUPHAR
+  wget https://www.guidetopharmacology.org/DATA/ligands.csv
+  cd ..
+fi
+if [ ! -f IUPHAR/ligands.csv ]; then
+    cd IUPHAR
+    wget https://www.guidetopharmacology.org/DATA/ligands.csv
+    cd ..
+fi
+
 # license
 license="CC BY-SA 4.0"
 

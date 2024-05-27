@@ -12,6 +12,15 @@ password=$3
 #path to stich data directory
 path_to_stich=$4
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+  mkdir $path_to_stich/StitchData
+  wget -P $path_to_stich/StitchData/ http://stitch.embl.de/download/chemicals.v5.0.tsv.gz
+  wget -P $path_to_stich/StitchData/ http://stitch.embl.de/download/chemicals.inchikeys.v5.0.tsv.gz
+  wget -P $path_to_stich/StitchData/ http://stitch.embl.de/download/chemical.sources.v5.0.tsv.gz
+fi
+
 echo se
 python3 map_Sider_se.py $path_to_project > output/output_map_se.txt
 
