@@ -68,3 +68,5 @@ In the last program, chemical-target connections are merged into PharMeBINet:
     Additionally, the relationship information of a pair is combined and the information is written into the TSV file.
 
 In the last step, the cypher queries are executed with the Neo4j cypher-shell.
+
+To get the latest information of CHEMBL you need to remove the data/api_infos.tsv.
