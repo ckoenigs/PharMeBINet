@@ -15,7 +15,7 @@ password=$4
 # path to external save position of data
 path_to_other_place_of_data=$5
 
-name_of_biodwh2_tool='BioDWH2-v0.4.15'
+name_of_biodwh2_tool='BioDWH2-v0.5.0'
 
 echo $name_of_import_tool
 
@@ -394,6 +394,17 @@ cd  hgnc
 echo HGNC
 
 ./integrate_hgnc.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+
+cd ..
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd  markerdb
+echo markerdb
+
+./integrate_markerdb.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
 
 cd ..
 
