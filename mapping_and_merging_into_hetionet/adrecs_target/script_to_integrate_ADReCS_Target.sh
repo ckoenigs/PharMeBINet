@@ -11,6 +11,15 @@ password=$3
 
 path_to_datasource="adrecs_target"
 
+if [ ! -d output ]; then
+  mkdir output
+  mkdir chemical
+  mkdir gene
+  mkdir sideeffect
+  mkdir protein
+  mkdir variant
+fi
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"

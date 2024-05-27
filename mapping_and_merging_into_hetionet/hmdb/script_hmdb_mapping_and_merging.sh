@@ -10,6 +10,18 @@ path_to_project=$2
 password=$3
 
 echo hmdb
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+  mkdir disease
+  mkdir edge_protein_metabolite_without_info
+  mkdir go
+  mkdir metabolite
+  mkdir metabolite_compound_edge
+  mkdir metabolite_disease_protein
+  mkdir pathway
+  mkdir protein
+fi
 
 
 now=$(date +"%F %T")

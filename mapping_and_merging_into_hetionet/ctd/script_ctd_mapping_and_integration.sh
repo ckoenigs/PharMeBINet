@@ -9,6 +9,27 @@ path_to_project=$2
 #password
 password=$3
 
+
+if [ ! -d output ]; then
+  mkdir output
+  mkdir chemical
+  mkdir change_gene_rela_to_protein
+  mkdir chemical_disease
+  mkdir chemical_gene
+  mkdir chemical_go
+  mkdir chemical_pathway
+  mkdir chemical_phenotype
+  mkdir disease_Disease
+  mkdir disease_go
+  mkdir disease_pathway
+  mkdir gene
+  mkdir gene_disease
+  mkdir gene_go
+  mkdir gene_pathway
+  mkdir GO
+  mkdir pathway
+fi
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo map and integrate gene

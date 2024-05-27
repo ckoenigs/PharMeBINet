@@ -9,6 +9,20 @@ path_to_project=$2
 #password
 password=$3
 
+
+if [ ! -d output ]; then
+  mkdir output
+  mkdir atc
+  mkdir chemical
+  mkdir disease
+  mkdir edge
+  mkdir protein
+  mkdir goTerm
+  mkdir product
+  mkdir protein
+  mkdir pharmaClass
+fi
+
 license='Attribution-NonCommercial 4.0 International'
 
 

@@ -8,6 +8,13 @@ path_to_project=$2
 #password
 password=$3
 
+
+if [ ! -d output ]; then
+  mkdir output
+  mkdir edge_go_protein_gene
+  mkdir protein
+fi
+
 python3 combine_with_new_go.py $path_to_project > output/output_map.txt
 
 

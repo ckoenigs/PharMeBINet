@@ -9,6 +9,16 @@ path_to_project=$2
 #password
 password=$3
 
+
+if [ ! -d output ]; then
+  mkdir output
+  mkdir chemical
+  mkdir disease
+  mkdir gene
+  mkdir GO
+  mkdir interaction
+fi
+
 rm output/cypher.cypher
 
 

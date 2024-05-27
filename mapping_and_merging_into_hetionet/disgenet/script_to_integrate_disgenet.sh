@@ -10,6 +10,19 @@ path_to_project=$2
 password=$3
 
 
+if [ ! -d output ]; then
+  mkdir output
+  mkdir gene
+  mkdir disease
+  mkdir gene_disease_edge
+  mkdir gene_protein_edge
+  mkdir protein
+  mkdir variant
+  mkdir variant_disease_edge
+  mkdir gene_variant_edge
+fi
+
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'Map disgenet protein'

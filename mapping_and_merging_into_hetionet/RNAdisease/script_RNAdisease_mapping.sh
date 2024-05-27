@@ -9,6 +9,12 @@ path_to_project=$2
 #password
 password=$3
 
+if [ ! -d output ]; then
+  mkdir output
+  mkdir disease
+  mkdir rna
+fi
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo mapping rna and disease

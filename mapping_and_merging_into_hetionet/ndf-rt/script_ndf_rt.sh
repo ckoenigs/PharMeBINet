@@ -9,6 +9,18 @@ path_to_project=$2
 #password
 password=$3
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+  mkdir disease
+  mkdir drug
+  mkdir chemical_ingredient
+  mkdir chemical_pharmacological
+  mkdir ingredient
+  mkdir pharmacologicClass
+  mkdir relationships
+fi
+
 echo ndf-rt
 
 now=$(date +"%F %T")

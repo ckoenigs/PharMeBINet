@@ -9,6 +9,14 @@ path_to_project=$2
 #password
 password=$3
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+  mkdir uniprot_disease
+  mkdir uniprot_gene
+  mkdir uniprot_go
+fi
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrate proteins with interaction into Hetionet'

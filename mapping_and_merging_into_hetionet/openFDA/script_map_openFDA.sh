@@ -10,6 +10,15 @@ path_to_project=$2
 password=$3
 
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+  mkdir mapping
+  mkdir FDA_edges
+  mkdir FDA_mappings
+fi
+
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo gene and disease

@@ -9,8 +9,18 @@ path_to_project=$2
 #password
 password=$3
 
-echo smpdb
+echo ttd
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+  mkdir data
+  mkdir drug
+  mkdir edges
+  mkdir disease
+  mkdir protein
+  mkdir pathway
+fi
 
 now=$(date +"%F %T")
 echo "Current time: $now"

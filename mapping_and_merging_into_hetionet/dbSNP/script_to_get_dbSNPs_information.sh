@@ -16,6 +16,14 @@ path_to_data=$4
 license="https://www.ncbi.nlm.nih.gov/home/about/policies/"
 
 
+if [ ! -d output ]; then
+  mkdir output
+  mkdir data
+  mkdir disease
+  mkdir output_mapping
+  mkdir $path_to_data/dbSNP
+fi
+
 sleep 30
 python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 sleep 30

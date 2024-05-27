@@ -9,6 +9,11 @@ path_to_project=$2
 #password
 password=$3
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+
 echo perparation
 
 python3 integrate_and_update_the_hetionet_gene.py $path_to_project > output/output_map.txt

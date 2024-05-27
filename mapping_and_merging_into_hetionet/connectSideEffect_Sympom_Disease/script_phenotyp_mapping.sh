@@ -9,6 +9,14 @@ path_to_project=$2
 #password
 password=$3
 
+
+if [ ! -d output ]; then
+  mkdir output
+  mkdir mapping_disease_mapping
+  mkdir mapping_phenotype_mapping
+  mkdir mapping_symptom_sideeffect
+fi
+
 echo mapp se, symptom, disease and phenotypes to each other
 
 python3 connect_sideeffect_symptom_disease.py $path_to_project > output/output_symptoms_to_sideEffects_disease.txt

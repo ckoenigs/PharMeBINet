@@ -10,6 +10,14 @@ path_to_project=$2
 password=$3
 
 echo smpdb
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+  mkdir edge_pathways
+  mkdir metabolite
+  mkdir protein
+  mkdir pathway
+fi
 
 
 now=$(date +"%F %T")

@@ -11,6 +11,16 @@ password=$3
 
 echo med-rt
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+  mkdir disease
+  mkdir chemical
+  mkdir chemical_edge
+  mkdir chemical_pharmacological
+  mkdir pharmacological_class
+fi
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo pharmacologic class mapping

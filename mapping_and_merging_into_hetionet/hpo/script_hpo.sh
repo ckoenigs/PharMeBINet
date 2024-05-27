@@ -19,6 +19,14 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+  mkdir cypher
+  mkdir mapping_files
+fi
+
+
 echo HPO
 python3 map_and_integrate_hpo_info_into_hetionet.py $path_to_project > output/output_hpo_disease.txt
 

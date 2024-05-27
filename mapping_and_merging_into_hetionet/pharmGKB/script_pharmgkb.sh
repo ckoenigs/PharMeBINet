@@ -11,6 +11,20 @@ password=$3
 
 license="CC BY-SA 4.0"
 
+
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+  mkdir disease
+  mkdir chemical
+  mkdir annotation_variant_edge
+  mkdir gene
+  mkdir metadata_edge
+  mkdir pathway
+  mkdir variant
+  mkdir variant_gene
+fi
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'map pahrmgkb gene'

@@ -10,6 +10,15 @@ path_to_project=$2
 password=$3
 
 
+if [ ! -d output ]; then
+  mkdir output
+  mkdir chemical
+  mkdir complex
+  mkdir ERS
+  mkdir protein
+fi
+
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo protein mapping

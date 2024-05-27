@@ -11,6 +11,14 @@ password=$3
 
 echo mapping
 
+
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+  mkdir interaction
+  mkdir protein
+fi
+
 python3 mapping_protein.py $path_to_project > protein/output_mapping_and_integration.txt 
 
 

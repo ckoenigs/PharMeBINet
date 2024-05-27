@@ -9,6 +9,11 @@ path_to_project=$2
 #password
 password=$3
 
+
+if [ ! -d output ]; then
+  mkdir output
+fi
+
 echo perparation
 
 python3 map_and_integrate_atc.py $path_to_project > output/output.txt 

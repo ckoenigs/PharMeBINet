@@ -6,6 +6,11 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo download fda file
 
+if [ ! -d output ]; then
+  mkdir output
+  mkdir results
+fi
+
 #$counter_of_connection_tries -lt 11 && 
 while  ! $worked_url && (("$counter_of_connection_tries" < "11")) ; do
     wget -O ./UNII_Data.zip "https://precision.fda.gov/uniisearch/archive/latest/UNII_Data.zip" 

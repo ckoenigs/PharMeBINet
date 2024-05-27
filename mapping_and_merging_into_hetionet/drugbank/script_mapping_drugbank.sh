@@ -9,6 +9,24 @@ path_to_project=$2
 #password
 password=$3
 
+
+if [ ! -d output ]; then
+  mkdir output
+  mkdir compound_interaction
+  mkdir compound_pc
+  mkdir compound_variant
+  mkdir data
+  mkdir protein
+  mkdir gene_variant
+  mkdir metabolite
+  mkdir pathway
+  mkdir pharmacological_class
+  mkdir product
+  mkdir reaction
+  mkdir rela_protein
+  mkdir salts
+fi
+
 license='Attribution-NonCommercial 4.0 International'
 
 

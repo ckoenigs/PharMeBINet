@@ -11,6 +11,13 @@ password=$3
 
 path_to_datasource="adrecs"
 
+if [ ! -d output ]; then
+  mkdir output
+  mkdir chemical
+  mkdir edge
+  mkdir sideeffect
+fi
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"

@@ -9,6 +9,11 @@ path_to_project=$2
 #password
 password=$3
 
+
+if [ ! -d output ]; then
+  mkdir output
+fi
+
 echo 'Mapping Disease Ontology into PharMeBINet'
 
 python3 map_disease_ontology_to_disease.py $path_to_project > output/output_do.txt

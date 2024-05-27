@@ -9,6 +9,12 @@ path_to_project=$2
 #password
 password=$3
 
+
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+
 echo perparation
 
 python3 switch_identifier_pathway_to_newer_version.py $path_to_project > output/output_map.txt

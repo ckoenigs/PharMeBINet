@@ -9,6 +9,14 @@ path_to_project=$2
 #password
 password=$3
 
+
+if [ ! -d output ]; then
+  mkdir output
+  mkdir gene
+  mkdir rela
+  mkdir disease
+fi
+
 echo gencc
 
 now=$(date +"%F %T")

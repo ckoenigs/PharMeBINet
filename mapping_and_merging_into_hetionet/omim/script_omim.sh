@@ -9,6 +9,14 @@ path_to_project=$2
 #password
 password=$3
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+  mkdir disease
+  mkdir gene
+  mkdir rela
+fi
+
 echo gene and disease
 
 python3 integrate_omim_genes_phenotypes.py $path_to_project > output/output_map_gene_phenotype.txt

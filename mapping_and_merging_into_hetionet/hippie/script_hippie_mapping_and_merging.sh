@@ -9,6 +9,11 @@ path_to_project=$2
 #password
 password=$3
 
+# prepare directories
+if [ ! -d output ]; then
+  mkdir output
+fi
+
 echo hippie
 
 now=$(date +"%F %T")

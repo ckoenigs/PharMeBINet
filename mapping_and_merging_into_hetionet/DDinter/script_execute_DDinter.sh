@@ -10,6 +10,11 @@ path_to_project=$2
 password=$3
 
 
+if [ ! -d output ]; then
+  mkdir output
+fi
+
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'Map DDinter node mapping'
