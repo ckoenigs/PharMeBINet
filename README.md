@@ -76,7 +76,24 @@ The shell script does the integration into neo4j and the mapping and merging to 
 
 ./script_to_execute_all.sh /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j/neo4j-community-5.15.0/bin /home/cassandra/Documents/Project/master_database_change/ > output.txt 2>&1 &
 
+
+./script_to_execute_all.sh {path to neo4j bin} {globaler path to project}
 ```
+
+## Manual stepps which are needed
+
+It is executed on ubuntu.
+
+First, download a Neo4j Service version 5.
+The restart_neo4j.sh needs to be added to the Neo4j service bin. In the script, the path needs to be changed to the path to the conf of the neo4j service.
+Download a version of BioDWH2 https://github.com/BioDWH2/BioDWH2 and put it into import_into_Neo4j and change in the integration_shell.sh the BioDWH2 version to the correct one. Download a version of Neo4j-GraphML-Importer https://github.com/BioDWH2/Neo4j-GraphML-Importer put it into this directory and change in the script_to_execute_all.sh that Neo4j-GraphML-Importer version to the correct one.
+In script_to_execute_all.sh the password needs to be changed to your Neo4j password and change the path path_to_other_place_of_data to a path where a lot of memory exists.
+RxNorm needs to be downloaded from https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html and with the script the data should be imported into a MySQL database. Next, the UMLS Full release needs to be downloaded from https://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html and also imported with the script.
+In import_into_Neo4j/readme, you see the databases that need manual steps. The accurate description is in the readmes of the different databases.
+Also, in all readmes of the different databases, it explains if this is automatically updated or if you need to do some manual steps.
+In the mapping_and_merging_into_hetionet/readme, it explains which databases need manual changes for the mapping like using external resources.
+In create_connection_to_databases.py change the MySQL user name, MySQL password, MySQL db names, neo4j user, neo4j address, and neo4j password.
+
 
 ## Citing this work
 If you find this resource useful, please do remember to cite:
