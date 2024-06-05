@@ -11,9 +11,7 @@ import create_connection_to_database_metabolite
 # dictionary variant id to resource
 dict_variant_id_to_resource = {}
 
-# dictionary from gene id to gene id
-dict_snp_id_to_identifier = defaultdict(str)
-
+# dictionary dbSNP id to identifier
 dbsnp_identifier_map = {}
 
 def load_variants_from_database_and_add_to_dict():
