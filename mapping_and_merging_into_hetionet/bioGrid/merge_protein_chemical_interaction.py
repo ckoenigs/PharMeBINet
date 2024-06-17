@@ -76,7 +76,11 @@ def generate_file_and_cypher():
             query_middle += head + ':line.' + head + ', '
             query_middle_update += 'a.' + head + '=line.' + head + ', '
 
+    set_of_rela_types=set()
     for rela_type in dict_chemical_type_to_rela_type.values():
+        if rela_type in set_of_rela_types:
+            continue
+        set_of_rela_types.add(rela_type)
         rename_file_name = file_name + rela_type
         query = '''Match (p1:Chemical{identifier:line.id_1}), (p2:Protein{identifier:line.id_2}) Create (p1)-[:%s{biogrid:'yes', source:'BioGRID', resource:['BioGRID'], url:"https://thebiogrid.org/"+line.gene_id ,license:"The MIT License", '''
         query = query % (rela_type)
