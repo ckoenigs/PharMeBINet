@@ -65,7 +65,7 @@ def generate_files(path_of_directory):
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/MarkerDB/
     query = f' MATCH (n:MarkerDB_Condition) WHERE toLower(n.name) = toLower(line.MarkerDB_condition_name) MATCH (v:Phenotype{{identifier: line.identifier}}) SET v.markerdb = "yes", v.resource = split(line.resource, "|") CREATE (v)-[:equal_to_MarkerDB_condition {{mapped_with: line.mapping_method}}]->(n)'
-    mode = 'w' if os.path.exists(cypher_file_path) else 'w+'
+    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
@@ -102,7 +102,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping):
                  'synonym'])
         else:
             counter_not_mapped += 1
-            #print(name)
+            print(name)
 
 
 
