@@ -167,14 +167,17 @@ Where n.`http://www.geneontology.org/formats/oboInOwl#id` ='MONDO:0010168'
 
 
 def load_in_all_monDO_in_dictionary():
-    query = ''' MATCH (n:disease) Where n.is_obsolete is NULL RETURN n'''
+    query = ''' MATCH (n:disease) Where n.is_obsolete is NULL and n.id starts with "MONDO" RETURN n'''
     results = g.run(query)
     for record in results:
         disease = record.data()['n']
         monDo_id = disease['id']
         if monDo_id in set_of_non_human_ids:
             continue
-        name = disease['name'].lower()
+        # name = disease['name'].lower()
+        name = disease['names'][0].lower()
+        if len(disease['names'])>1:
+            sys.exit('multiple names')
         add_entry_to_dict(dict_mondo_id_to_name, monDo_id, name)
         synonyms = disease['synonyms'] if 'synonyms' in disease else []
         for synonym in synonyms:
@@ -229,6 +232,10 @@ def generate_cypher_queries():
             if property == 'alt_ids':
                 query_new += 'alternative_ids:split(line.' + property + ', "|"), '
                 query_update += 'n.alternative_ids=split(line.' + property + ', "|"), '
+                continue
+            if property == 'names':
+                query_new += 'name:line.' + property + ', '
+                query_update += 'n.name=line.' + property + ', '
                 continue
             query_new += property + ':split(line.' + property + ', "|"), '
             query_update += 'n.' + property + '=split(line.' + property + ', "|"), '
