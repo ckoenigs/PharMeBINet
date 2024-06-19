@@ -57,8 +57,7 @@ def prepare_sources_information(rela):
     :param rela: dictionary
     :return: dictionary
     """
-    comb = {"source": rela['source'], "score": rela["score"], "YearInitial": rela["YearInitial"],
-            "YearFinal": rela["YearFinal"]}
+    comb = {"source": rela['source'], "score": rela["score"], "years": rela["years"]}
     if "EI" in rela:
         comb["EI"] = rela["EI"]
     return comb
