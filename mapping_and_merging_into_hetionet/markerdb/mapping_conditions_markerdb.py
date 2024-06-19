@@ -1,10 +1,12 @@
 import csv
 import datetime
-import os
+import os, sys
 
-
+sys.path.append("../..")
+import create_connection_to_databases
 import pharmebinetutils
-import create_connection_to_database_metabolite
+
+# import create_connection_to_database_metabolite
 
 
 # dictionary disease name to resource
@@ -13,31 +15,81 @@ dict_disease_id_to_resource = {}
 dict_disease_id_to_name = {}
 
 dict_disease_name_to_id = {}
+# dictionary umls cui to disease id
+dict_disease_umls_cui_to_id = {}
+# dictionary omim id to disease id
+dict_disease_omim_id_to_id = {}
 
 # dictionary gene symbol to gene id
 dict_synonym_to_ids = {}
+
+
+def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    """
+    # set up authentication parameters and connection
+    global g, driver, con
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session(database='graph')
+
+    # create connection with mysql database
+    global con
+    con = create_connection_to_databases.database_connection_umls()
+
 
 def load_disease_from_database_and_add_to_dict():
     """
     Load all Genes from my database and add them into a dictionary
     """
-    query = "MATCH (n:Phenotype) RETURN n"
+    query = "MATCH (n:Phenotype) RETURN n.identifier, n.name, n.synonyms, n.xrefs, n.resource"
     results = g.run(query)
 
-    for record in results:
-        node = record.data()['n']
-        identifier = node['identifier']
-        dict_disease_id_to_resource[identifier] = node['resource']
-        name = node['name'].lower()
+    for identifier, name, synonyms, xrefs, resource, in results:
+        # node = record.data()['n']
+        # identifier = node['identifier']
+        # dict_disease_id_to_resource[identifier] = node['resource']
+        dict_disease_id_to_resource[identifier] = resource
+        # name = node['name'].lower()
+        name = name.lower()
         dict_disease_id_to_name[identifier] = name
         dict_disease_name_to_id[name] = identifier
         pharmebinetutils.add_entry_to_dict_to_set(dict_synonym_to_ids, name, identifier)
-        synonyms = node['synonyms'] if 'synonyms' in node else []
-        for synonym in synonyms:
-            synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
-            pharmebinetutils.add_entry_to_dict_to_set(dict_synonym_to_ids, synonym, identifier)
+        # synonyms = node['synonyms'] if 'synonyms' in node else []
+        if synonyms:
+            for synonym in synonyms:
+                synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
+                pharmebinetutils.add_entry_to_dict_to_set(dict_synonym_to_ids, synonym, identifier)
+
+        if xrefs:
+            for xref in xrefs:
+                if xref.startswith('UMLS'):
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_disease_umls_cui_to_id, xref.split(':')[1],
+                                                              identifier)
+                elif xref.startswith('OMIM'):
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_disease_omim_id_to_id, xref.split(':')[1],
+                                                              identifier)
 
 
+def try_to_get_umls_ids_with_UMLS(name):
+    """
+    Try to get umls cuis be search with name in UMLS
+    :param name:
+    :return:
+    """
+    cur = con.cursor()
+    query = ('Select Distinct CUI From MRCONSO Where STR = "%s";')
+    query = query % (name)
+    rows_counter = cur.execute(query)
+
+    list_of_cuis = []
+
+    if rows_counter > 0:
+        # add found cuis
+        for (cui,) in cur:
+            list_of_cuis.append(cui)
+
+    return list_of_cuis
 
 
 def generate_files(path_of_directory):
@@ -72,6 +124,7 @@ def generate_files(path_of_directory):
 
     return csv_mapping
 
+
 def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping):
     """
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
@@ -87,47 +140,79 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping):
         name = node['name'].lower()
         if '\xa0' in name:
             name = name.replace(u'\xa0', u' ')
+        mapped = False
         # mapping
         if name in dict_disease_name_to_id:
+            mapped = True
             identifier = dict_disease_name_to_id[name]
             csv_mapping.writerow(
                 [name, identifier,
                  pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "MarkerDB"),
                  'name'])
         elif name in dict_synonym_to_ids:
-            identifier = dict_synonym_to_ids[name].pop()
-            csv_mapping.writerow(
-                [name, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "MarkerDB"),
-                 'synonym'])
-        else:
+            mapped = True
+            for identifier in dict_synonym_to_ids[name]:
+                csv_mapping.writerow(
+                    [name, identifier,
+                     pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "MarkerDB"),
+                     'synonym'])
+
+        if mapped:
+            continue
+
+        umls_cui_list = try_to_get_umls_ids_with_UMLS(name)
+        for umls_cui in umls_cui_list:
+            if umls_cui in dict_disease_umls_cui_to_id:
+                mapped = True
+                for disease_id in dict_disease_umls_cui_to_id[umls_cui]:
+                    csv_mapping.writerow(
+                        [name, disease_id,
+                         pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "MarkerDB"),
+                         'umls'])
+
+        if mapped:
+            continue
+
+        cur = con.cursor()
+        query = ('Select Distinct STR From MRCONSO Where CUI in  ("%s");')
+        query = query % ('","'.join(umls_cui_list))
+        rows_counter = cur.execute(query)
+
+        if rows_counter > 0:
+            # add found cuis
+            for (name_umls,) in cur:
+                name_umls = name_umls.lower()
+                if name_umls in dict_disease_name_to_id:
+                    mapped = True
+                    identifier = dict_disease_name_to_id[name_umls]
+                    csv_mapping.writerow(
+                        [name, identifier,
+                         pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "MarkerDB"),
+                         'umls_name'])
+
+        if not mapped:
             counter_not_mapped += 1
             print(name)
-
 
 
     print('number of not-mapped conditions:', counter_not_mapped)
     print('number of all conditions:', counter_all)
 
-def create_connection_with_neo4j():
-    """
-    create a connection with neo4j
-    """
-    # set up authentication parameters and connection
-    global g, driver
-    driver = create_connection_to_database_metabolite.database_connection_neo4j_driver()
-    g = driver.session(database='graph')
 
 def main():
     global path_of_directory
     global source
     global home
 
-    path_of_directory = "/Users/ann-cathrin/Documents/Master_4_Semester/Forschungsmodul_Heyer/Projekt_Cassandra/Test"
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
+    # path_of_directory = "/Users/ann-cathrin/Documents/Master_4_Semester/Forschungsmodul_Heyer/Projekt_Cassandra/Test"
     home = os.getcwd()
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'condition/')
-
 
     print('##########################################################################')
     print(datetime.datetime.now())
@@ -136,7 +221,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.now())
-    print('Load all Genes from database')
+    print('Load all disease from database')
     load_disease_from_database_and_add_to_dict()
     print('##########################################################################')
 
