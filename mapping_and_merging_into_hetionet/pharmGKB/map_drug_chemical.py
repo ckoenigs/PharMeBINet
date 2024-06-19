@@ -227,8 +227,9 @@ def load_pharmgkb_in(label):
     csv_writer_not.writerow(['pharmgkb_id', 'namr'])
     # generate cypher file
 
-    query = '''MATCH (n:%s) RETURN n'''
+    query = '''MATCH (n:%s) Where not n.id is null RETURN n'''
     query = query % (label)
+    print(query)
     results = g.run(query)
 
     counter_map = 0
