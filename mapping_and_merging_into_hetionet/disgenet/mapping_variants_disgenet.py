@@ -20,7 +20,7 @@ def create_connection_with_neo4j():
 
 
 # dict for alternative_ids
-dict_snp_id_to_identifier = defaultdict(str)
+# dict_snp_id_to_identifier = set()
 
 # dictionary variant id to resource
 dict_variant_id_to_resource = {}
@@ -30,20 +30,19 @@ def load_variants_from_database_and_add_to_dict():
     '''
     Load all variants from Graph-DB and add them into a dictionary
     '''
-    query = "MATCH (n:Variant) WHERE any(x in n.xrefs WHERE x =~ 'dbSNP:.*') RETURN n"
+    query = "MATCH (n:Variant) WHERE any(x in n.xrefs WHERE x =~ 'dbSNP:.*') RETURN n.identifier, n.resource, n.xrefs"
     results = g.run(query)
 
-    for record in results:
-        node = record.data()['n']
-        identifier = node['identifier']
-        dict_variant_id_to_resource[identifier] = node['resource']
+    for identifier, resource, xrefs, in results:
+        dict_variant_id_to_resource[identifier] = resource
 
         # find index of xrefs "snp_id" entry
-        snp_id_idx = [i for i, item in enumerate(node['xrefs']) if item.startswith('dbSNP:')]
-
-        _, snp_id = node['xrefs'][snp_id_idx[0]].split(':')
+        # snp_id_idx = [i for i, item in enumerate(xrefs) if item.startswith('dbSNP:')]
+        #
+        # _, snp_id = xrefs[snp_id_idx[0]].split(':')
         # put snp_id as identifier if 'dbSNP' exists in xrefs
-        dict_snp_id_to_identifier[identifier] = identifier
+        # dict_snp_id_to_identifier.add(identifier)
+        # dict_snp_id_to_identifier[identifier] = identifier
 
 
 def generate_files(path_of_directory):
@@ -103,11 +102,11 @@ def load_all_DisGeNet_variants_and_finish_the_files(csv_mapping):
         counter_all += 1
         identifier = node['snpId']
         # mapping
-        if identifier in dict_snp_id_to_identifier:
-            variant_id = dict_snp_id_to_identifier[identifier]
+        if identifier in dict_variant_id_to_resource:
+            # variant_id = dict_snp_id_to_identifier[identifier]
             csv_mapping.writerow(
-                [identifier, variant_id,
-                 pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[variant_id], "DisGeNet"),
+                [identifier, identifier,
+                 pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[identifier], "DisGeNet"),
                  'external_references'])
         else:
             counter_not_mapped += 1
