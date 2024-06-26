@@ -1,10 +1,12 @@
 import csv
 import datetime
-import os
+import os, sys
 
 
+sys.path.append("../..")
+import create_connection_to_databases
 import pharmebinetutils
-import create_connection_to_database_metabolite
+# import create_connection_to_database_metabolite
 
 
 # dictionary protein id to resource
@@ -57,7 +59,7 @@ def generate_files(path_of_directory):
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/MakerDB/
     query = f' Match (n:MarkerDB_Protein{{id:toInteger(line.MarkerDB_id)}}), (v:Protein{{identifier:line.identifier}}) Set v.markerdb="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_MarkerDB_protein{{mapped_with:line.mapping_method}}]->(n)'
-    mode = 'w' if os.path.exists(cypher_file_path) else 'w+'
+    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
@@ -107,7 +109,8 @@ def create_connection_with_neo4j():
     """
     # set up authentication parameters and connection
     global g, driver
-    driver = create_connection_to_database_metabolite.database_connection_neo4j_driver()
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    # driver = create_connection_to_database_metabolite.database_connection_neo4j_driver()
     g = driver.session(database='graph')
 
 def main():
@@ -115,7 +118,13 @@ def main():
     global source
     global home
 
-    path_of_directory = "/Users/ann-cathrin/Documents/Master_4_Semester/Forschungsmodul_Heyer/Projekt_Cassandra/Test"
+    # path_of_directory = "/Users/ann-cathrin/Documents/Master_4_Semester/Forschungsmodul_Heyer/Projekt_Cassandra/Test"
+
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     home = os.getcwd()
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'protein/')
