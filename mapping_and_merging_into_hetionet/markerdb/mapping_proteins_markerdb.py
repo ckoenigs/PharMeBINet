@@ -23,29 +23,24 @@ def load_proteins_from_database_and_add_to_dict():
     """
     Load all Proteins from pharmebinet and add them into a dictionary
     """
-    query = "MATCH (n:Protein) RETURN n"
+    query = "MATCH (n:Protein) RETURN n.identifier, n.name, n.resource, n.synonyms"
     results = g.run(query)
 
-    for record in results:
-        node = record.data()['n']
-        identifier = node['identifier']
-        dict_identifier_to_resource[identifier] = node['resource']
-        name = node['name'].lower()
+    for identifier, name, resource , synonyms, in results:
+        dict_identifier_to_resource[identifier] = resource
+        name = name.lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_to_identifier, name, identifier)
-        synonyms = node['synonyms'] if 'synonyms' in node else []
-        for synonym in synonyms:
-            synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
-            pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_to_identifier, synonym, identifier)
+        if synonyms:
+            for synonym in synonyms:
+                synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
+                pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_to_identifier, synonym, identifier)
 
-    query2 = "MATCH (g:Gene)--(p:Protein) RETURN g,p"
+    query2 = "MATCH (g:Gene)--(p:Protein) RETURN g.gene_symbol ,p.identifier"
     results2 = g.run(query2)
 
-    for record in results2:
-        node = record.data()['g']
-        node2 = record.data()['p']
-        identifier = node2['identifier']
-        gene_symbol = node['gene_symbol'].lower()
-        pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_gene_name, gene_symbol, identifier)
+    for gene_symbol, identifier, in results2:
+        # for gene_symbol in node['gene_symbols']:
+        pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_gene_name, gene_symbol.lower(), identifier)
 
 def generate_files(path_of_directory):
     """
@@ -117,7 +112,7 @@ def load_all_MarkerDB_proteins_and_finish_the_files(csv_mapping):
                     'gene_symbol'])
             else:
                 counter_not_mapped += 1
-                print(identifier, protein_name)
+                print(unique_id, protein_name, gene_name)
         else:
             counter_not_mapped += 1
             print(identifier, protein_name)
