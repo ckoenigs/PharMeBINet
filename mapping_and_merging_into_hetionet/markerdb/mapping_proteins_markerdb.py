@@ -14,6 +14,9 @@ dict_identifier_to_resource = {}
 # dictionary protein name to identifier
 dict_protein_name_to_identifier = {}
 
+#dictionary for gene_symbol to protein gene_name
+dict_gene_symbol_to_gene_name = {}
+
 def load_proteins_from_database_and_add_to_dict():
     """
     Load all Proteins from pharmebinet and add them into a dictionary
@@ -32,6 +35,15 @@ def load_proteins_from_database_and_add_to_dict():
             synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
             pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_to_identifier, synonym, identifier)
 
+    query2 = "MATCH (g:Gene)--(p:Protein) RETURN g,p"
+    results2 = g.run(query2)
+
+    for record in results2:
+        node = record.data()['g']
+        node2 = record.data()['p']
+        identifier = node2['identifier']
+        gene_symbol = node['gene_symbol'].lower()
+        pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_gene_name, gene_symbol, identifier)
 
 def generate_files(path_of_directory):
     """
@@ -57,7 +69,7 @@ def generate_files(path_of_directory):
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/MakerDB/
     query = f' Match (n:MarkerDB_Protein{{id:toInteger(line.MarkerDB_id)}}), (v:Protein{{identifier:line.identifier}}) Set v.markerdb="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_MarkerDB_protein{{mapped_with:line.mapping_method}}]->(n)'
-    mode = 'w' if os.path.exists(cypher_file_path) else 'w+'
+    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
@@ -79,20 +91,31 @@ def load_all_MarkerDB_proteins_and_finish_the_files(csv_mapping):
         identifier = node.get('uniprot_id', None)
         unique_id = node['id']
         protein_name = node['name'].lower()
-
+        if 'gene_name' in node:
+            gene_name = node['gene_name'].lower()
+        ignored_id = ["P01860", "Q969X2"]
         # mapping
-
-        if identifier in dict_identifier_to_resource and identifier != "P01860":
-            csv_mapping.writerow(
-                [unique_id, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "MarkerDB"),
-                    'id'])
-        elif protein_name in dict_protein_name_to_identifier:
-            identifier = dict_protein_name_to_identifier[protein_name].pop()
-            csv_mapping.writerow(
-                [unique_id, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
-                'name'])
+        if identifier not in ignored_id:
+            if identifier in dict_identifier_to_resource:
+                csv_mapping.writerow(
+                    [unique_id, identifier,
+                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "MarkerDB"),
+                        'id'])
+            elif protein_name in dict_protein_name_to_identifier:
+                identifier = dict_protein_name_to_identifier[protein_name].pop()
+                csv_mapping.writerow(
+                    [unique_id, identifier,
+                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
+                    'name'])
+            elif gene_name in dict_gene_symbol_to_gene_name and dict_gene_symbol_to_gene_name[gene_name]:
+                identifier = dict_gene_symbol_to_gene_name[gene_name].pop()
+                csv_mapping.writerow(
+                    [unique_id, identifier,
+                    pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
+                    'gene_symbol'])
+            else:
+                counter_not_mapped += 1
+                print(identifier, protein_name)
         else:
             counter_not_mapped += 1
             print(identifier, protein_name)

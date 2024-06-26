@@ -66,21 +66,21 @@ def get_MarkerDB_information():
     mode = 'w' if os.path.exists(not_mapped_path_disease) else 'w+'
     file_disease = open(not_mapped_path_disease, mode, encoding='utf-8')
     writer_disease = csv.writer(file_disease, delimiter='\t')
-    writer_disease.writerow(['protein_id', 'phenotype_id', 'makerdb_id'])
+    writer_disease.writerow(['protein_id', 'phenotype_id'])
     # Create tsv for protein-sideEffects edges
     file_name_not_mapped_sideEffect = 'new_protein_sideEffect_edges.tsv'
     not_mapped_path_sideEffect = os.path.join(path_of_directory, file_name_not_mapped_sideEffect)
     mode = 'w' if os.path.exists(not_mapped_path_sideEffect) else 'w+'
     file_sideEffect = open(not_mapped_path_sideEffect, mode, encoding='utf-8')
     writer_sideEffect = csv.writer(file_sideEffect, delimiter='\t')
-    writer_sideEffect.writerow(['protein_id', 'phenotype_id', 'makerdb_id'])
+    writer_sideEffect.writerow(['protein_id', 'phenotype_id'])
     # Create tsv for protein-symptoms edges
     file_name_not_mapped_symptom = 'new_protein_symptom_edges.tsv'
     not_mapped_path_symptom = os.path.join(path_of_directory, file_name_not_mapped_symptom)
     mode = 'w' if os.path.exists(not_mapped_path_symptom) else 'w+'
     file_symptom = open(not_mapped_path_symptom, mode, encoding='utf-8')
     writer_symptom = csv.writer(file_symptom, delimiter='\t')
-    writer_symptom.writerow(['protein_id', 'phenotype_id', 'makerdb_id'])
+    writer_symptom.writerow(['protein_id', 'phenotype_id'])
 
     # Create tsv for protein-phenotype edges
     file_name_not_mapped_phenotype = 'new_protein_phenotype_edges.tsv'
@@ -88,13 +88,14 @@ def get_MarkerDB_information():
     mode = 'w' if os.path.exists(not_mapped_path_phenotype) else 'w+'
     file_phenotype = open(not_mapped_path_phenotype, mode, encoding='utf-8')
     writer_phenotype = csv.writer(file_phenotype, delimiter='\t')
-    writer_phenotype.writerow(['protein_id', 'phenotype_id', 'makerdb_id'])
+    writer_phenotype.writerow(['protein_id', 'phenotype_id'])
 
     counter_disease = 0
     counter_sideEffect = 0
     counter_symptom = 0
     counter_phenotype = 0
     counter_all = 0
+    dict_all_mappings = {}
 
     query = "Match (n:Protein)--(p:MarkerDB_Protein)-[r]-(:MarkerDB_Condition)--(m:Phenotype) Return p.id, n.identifier, r, m.identifier, labels(m)"
     results = g.run(query)
@@ -104,19 +105,25 @@ def get_MarkerDB_information():
         counter_all += 1
 
         # mapping of new edges
-        if "Disease" in labels:
-            writer_disease.writerow([protein_id, phenotype_id, markerdb_id])
+        if "Disease" in labels and (protein_id, phenotype_id) not in dict_all_mappings:
+            dict_all_mappings[(protein_id, phenotype_id)] = "Disease"
+            writer_disease.writerow([protein_id, phenotype_id])
             counter_disease += 1
-        elif "SideEffect" in labels:
-            writer_sideEffect.writerow([protein_id, phenotype_id, markerdb_id])
+        elif "SideEffect" in labels and (protein_id, phenotype_id) not in dict_all_mappings:
+            dict_all_mappings[(protein_id, phenotype_id)] = "SideEffect"
+            writer_sideEffect.writerow([protein_id, phenotype_id])
             counter_sideEffect += 1
-        elif "Symptom" in labels:
-            writer_symptom.writerow([protein_id, phenotype_id, markerdb_id])
+        elif "Symptom" in labels and (protein_id, phenotype_id) not in dict_all_mappings:
+            dict_all_mappings[(protein_id, phenotype_id)] = "Symptom"
+            writer_symptom.writerow([protein_id, phenotype_id])
             counter_symptom += 1
             # when label is only phenotype
-        else:
-            writer_phenotype.writerow([protein_id, phenotype_id, markerdb_id])
+        elif (protein_id, phenotype_id) not in dict_all_mappings:
+            dict_all_mappings[(protein_id, phenotype_id)] = "Phenotype"
+            writer_phenotype.writerow([protein_id, phenotype_id])
             counter_phenotype += 1
+        else:
+            print("Not mapped:", protein_id, phenotype_id, dict_all_mappings[(protein_id, phenotype_id)])
     file_disease.close()
     file_symptom.close()
     file_sideEffect.close()
@@ -131,28 +138,28 @@ def get_MarkerDB_information():
 
     # cypher queries
     cypher_path = os.path.join(source, 'cypher_edge.cypher')
-    mode = 'a' if os.path.exists(cypher_path) else 'w'
+    mode = 'a' if os.path.exists(cypher_path) else 'w+'
     file_cypher = open(cypher_path, mode, encoding='utf-8')
 
 
     # 2. Create new edges
     # url:"https://www.disgenet.org/browser/2/1/0/"+line.variant_id
-    query = f' Match (p:Protein{{identifier:line.protein_id}}), (d:Disease{{identifier:line.phenotype_id}}) Create (p)-[:is_BIOMARKER_PbD{{resource:["MarkerDB"],markerdb:"yes", url:"https://markerdb.ca/proteins/"+line.markerdb_id}}]->(d)'
+    query = f' Match (p:Protein{{identifier:line.protein_id}}), (d:Disease{{identifier:line.phenotype_id}}) Create (p)-[:is_BIOMARKER_PibD{{resource:["MarkerDB"],markerdb:"yes"}}]->(d)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_not_mapped_disease,
                                               query)
     file_cypher.write(query)
-    query = f' Match (p:Protein{{identifier:line.protein_id}}), (d:SideEffect{{identifier:line.phenotype_id}}) Create (p)-[:is_BIOMARKER_PbSE{{resource:["MarkerDB"],markerdb:"yes", url:"https://markerdb.ca/proteins/"+line.markerdb_id}}]->(d)'
+    query = f' Match (p:Protein{{identifier:line.protein_id}}), (d:SideEffect{{identifier:line.phenotype_id}}) Create (p)-[:is_BIOMARKER_PibSE{{resource:["MarkerDB"],markerdb:"yes"}}]->(d)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_not_mapped_sideEffect,
                                               query)
     file_cypher.write(query)
-    query = f' Match (p:Protein{{identifier:line.protein_id}}), (d:Symptom{{identifier:line.phenotype_id}}) Create (p)-[:is_BIOMARKER_PbS{{resource:["MarkerDB"],markerdb:"yes", url:"https://markerdb.ca/proteins/"+line.markerdb_id}}]->(d)'
+    query = f' Match (p:Protein{{identifier:line.protein_id}}), (d:Symptom{{identifier:line.phenotype_id}}) Create (p)-[:is_BIOMARKER_PibS{{resource:["MarkerDB"],markerdb:"yes"}}]->(d)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_not_mapped_symptom,
                                               query)
     file_cypher.write(query)
-    query = f' Match (p:Protein{{identifier:line.protein_id}}), (d:Phenotype{{identifier:line.phenotype_id}}) Create (p)-[:is_BIOMARKER_PbP{{resource:["MarkerDB"],markerdb:"yes", url:"https://markerdb.ca/proteins/"+line.markerdb_id}}]->(d)'
+    query = f' Match (p:Protein{{identifier:line.protein_id}}), (d:Phenotype{{identifier:line.phenotype_id}}) Create (p)-[:is_BIOMARKER_PibP{{resource:["MarkerDB"],markerdb:"yes"}}]->(d)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_not_mapped_phenotype,
                                               query)
