@@ -3,6 +3,7 @@ import os
 import sys
 import csv
 
+
 import create_connection_to_databases
 import pharmebinetutils
 
@@ -25,7 +26,7 @@ def load_edges_from_database_and_add_to_dict():
     Load all Gene-Variant edges from Graph-DB and add rela-info into a dictionary
     '''
     print("query_started--------")
-    query = "MATCH (n:Gene)-[r]-(p:Phenotype) RETURN n.identifier,r.resource,p.identifier"
+    query = "MATCH (n:gene)-[r]-(p:Phenotype) RETURN n.identifier,r.resource,p.identifier"
     results = g.run(query)
     print("query_ended----------")
 
@@ -45,6 +46,11 @@ def load_edges_from_database_and_add_to_dict():
         dict_pairs_to_info[(gene_id, phenotype_id)] = resource
 
 
+
+
+
+
+
 def get_MarkerDB_information():
     '''
     Load all MarkerDB gene-variant-phenotype and save to tsv
@@ -53,65 +59,109 @@ def get_MarkerDB_information():
     # make sure folder exists
     if not os.path.exists(path_of_directory):
         os.mkdir(path_of_directory)
-    # Create tsv for existing edges
 
-    file_name = 'gene_phenotype_edges.tsv'
-    file_path = os.path.join(path_of_directory, file_name)
-    mode = 'w' if os.path.exists(file_path) else 'w+'
-    file_gene_phenotype = open(file_path, mode)
-    csv_gene_phenotype = csv.writer(file_gene_phenotype, delimiter='\t')
-    csv_gene_phenotype.writerow(['gene_id', 'phenotype_id', 'resource'])
+    # Create tsv for gene-disease edges
+    file_name_not_mapped_disease = 'new_gene_disease_edges.tsv'
+    not_mapped_path_disease = os.path.join(path_of_directory, file_name_not_mapped_disease)
+    mode = 'w' if os.path.exists(not_mapped_path_disease) else 'w+'
+    file_disease = open(not_mapped_path_disease, mode, encoding='utf-8')
+    writer_disease = csv.writer(file_disease, delimiter='\t')
+    writer_disease.writerow(['gene_id', 'phenotype_id'])
+    # Create tsv for gene-sideEffects edges
+    file_name_not_mapped_sideEffect = 'new_gene_sideEffect_edges.tsv'
+    not_mapped_path_sideEffect = os.path.join(path_of_directory, file_name_not_mapped_sideEffect)
+    mode = 'w' if os.path.exists(not_mapped_path_sideEffect) else 'w+'
+    file_sideEffect = open(not_mapped_path_sideEffect, mode, encoding='utf-8')
+    writer_sideEffect = csv.writer(file_sideEffect, delimiter='\t')
+    writer_sideEffect.writerow(['gene_id', 'phenotype_id'])
+    # Create tsv for gene-symptoms edges
+    file_name_not_mapped_symptom = 'new_gene_symptom_edges.tsv'
+    not_mapped_path_symptom = os.path.join(path_of_directory, file_name_not_mapped_symptom)
+    mode = 'w' if os.path.exists(not_mapped_path_symptom) else 'w+'
+    file_symptom = open(not_mapped_path_symptom, mode, encoding='utf-8')
+    writer_symptom = csv.writer(file_symptom, delimiter='\t')
+    writer_symptom.writerow(['gene_id', 'phenotype_id'])
 
-    # Create tsv for NON-existing edges
-    file_name_not_mapped = 'new_gene_phenotype_edges.tsv'
-    not_mapped_path = os.path.join(path_of_directory, file_name_not_mapped)
-    mode = 'w' if os.path.exists(not_mapped_path) else 'w+'
-    file = open(not_mapped_path, mode, encoding='utf-8')
-    writer = csv.writer(file, delimiter='\t')
-    writer.writerow(['gene_id', 'phenotype_id'])
+    # Create tsv for gene-phenotype edges
+    file_name_not_mapped_phenotype = 'new_gene_phenotype_edges.tsv'
+    not_mapped_path_phenotype = os.path.join(path_of_directory, file_name_not_mapped_phenotype)
+    mode = 'w' if os.path.exists(not_mapped_path_phenotype) else 'w+'
+    file_phenotype = open(not_mapped_path_phenotype, mode, encoding='utf-8')
+    writer_phenotype = csv.writer(file_phenotype, delimiter='\t')
+    writer_phenotype.writerow(['gene_id', 'phenotype_id'])
 
-    counter_not_mapped = 0
+    counter_disease = 0
+    counter_sideEffect = 0
+    counter_symptom = 0
+    counter_phenotype = 0
     counter_all = 0
+    dict_all_mappings = {}
 
-    query = "Match (n:Gene)--(:MarkerDB_Gene)-[r]-(:MarkerDB_Condition)--(m:Phenotype) Return n.identifier, r, m.identifier"
+    query = "Match (n:Gene)--(p:MarkerDB_Gene)-[r]-(:MarkerDB_Condition)--(m:Phenotype) Return p.id, n.identifier, r, m.identifier, labels(m)"
     results = g.run(query)
 
     for record in results:
-        [gene_id, rela, phenotype_id] = record.values()
+        [markerdb_id, gene_id, rela, phenotype_id, labels] = record.values()
         counter_all += 1
-        # mapping of existing edges
 
-        if (gene_id, phenotype_id) in dict_pairs_to_info:
-            csv_gene_phenotype.writerow(
-                [gene_id, phenotype_id,
-                 pharmebinetutils.resource_add_and_prepare(dict_pairs_to_info[(gene_id, phenotype_id)], "MarkerDB")])
+        # mapping of new edges
+        if "Disease" in labels and (gene_id, phenotype_id) not in dict_all_mappings:
+            dict_all_mappings[(gene_id, phenotype_id)] = "Disease"
+            writer_disease.writerow([gene_id, phenotype_id])
+            counter_disease += 1
+        elif "SideEffect" in labels and (gene_id, phenotype_id) not in dict_all_mappings:
+            dict_all_mappings[(gene_id, phenotype_id)] = "SideEffect"
+            writer_sideEffect.writerow([gene_id, phenotype_id])
+            counter_sideEffect += 1
+        elif "Symptom" in labels and (gene_id, phenotype_id) not in dict_all_mappings:
+            dict_all_mappings[(gene_id, phenotype_id)] = "Symptom"
+            writer_symptom.writerow([gene_id, phenotype_id])
+            counter_symptom += 1
+            # when label is only phenotype
+        elif (gene_id, phenotype_id) not in dict_all_mappings:
+            dict_all_mappings[(gene_id, phenotype_id)] = "Phenotype"
+            writer_phenotype.writerow([gene_id, phenotype_id])
+            counter_phenotype += 1
         else:
-            counter_not_mapped += 1
-            writer.writerow([gene_id, phenotype_id])
-            # überprüfen ob das pärchen nicht schon da drinnen ist, set() erstellen -> nicht nätig
+            print("Not mapped:", gene_id, phenotype_id, dict_all_mappings[(gene_id, phenotype_id)])
+    file_disease.close()
+    file_symptom.close()
+    file_sideEffect.close()
+    file_phenotype.close()
 
-        print(dict_pairs_to_info[(gene_id, phenotype_id)])
-    file.close()
-    file_gene_phenotype.close()
-    print('number of new edges:', counter_not_mapped)
+
+    print('number of disease edges:', counter_disease)
+    print('number of sideEffect edges:', counter_sideEffect)
+    print('number of symptom edges:', counter_symptom)
+    print('number of phenotype edges:', counter_phenotype)
     print('number of all edges:', counter_all)
 
-    # 2 cypher queries
+    # cypher queries
     cypher_path = os.path.join(source, 'cypher_edge.cypher')
-    mode = 'a' if os.path.exists(cypher_path) else 'w'
+    mode = 'a' if os.path.exists(cypher_path) else 'w+'
     file_cypher = open(cypher_path, mode, encoding='utf-8')
-    # 1. Set…
-    query = f' Match (n:Gene{{identifier:line.gene_id}})-[r]-(p:Phenotype{{identifier:line.phenotype_id}}) Set r.markerdb="yes", r.resource = split(line.resource,"|")'
+
+
+    # 2. Create new edges
+    # url:"https://www.disgenet.org/browser/2/1/0/"+line.variant_id
+    query = f' Match (g:Gene{{identifier:line.gene_id}}), (d:Disease{{identifier:line.phenotype_id}}) Create (g)-[:is_BIOMARKER_GibD{{resource:["MarkerDB"],markerdb:"yes"}}]->(d)'
     query = pharmebinetutils.get_query_import(path_of_directory,
-                                              file_name,
+                                              file_name_not_mapped_disease,
                                               query)
     file_cypher.write(query)
-
-    # 2. Create… (finde beide KNOTEN)
-    # url:"https://www.disgenet.org/browser/2/1/0/"+line.variant_id
-    query = f' Match (n:Gene{{identifier:line.gene_id}}), (p:Phenotype{{identifier:line.phenotype_id}}) Create (p)-[:is_BIOMARKER_DbG{{resource:["MarkerDB"],markerdb:"yes"}}]->(n)'
+    query = f' Match (g:Gene{{identifier:line.gene_id}}), (d:SideEffect{{identifier:line.phenotype_id}}) Create (g)-[:is_BIOMARKER_GibSE{{resource:["MarkerDB"],markerdb:"yes"}}]->(d)'
     query = pharmebinetutils.get_query_import(path_of_directory,
-                                              file_name_not_mapped,
+                                              file_name_not_mapped_sideEffect,
+                                              query)
+    file_cypher.write(query)
+    query = f' Match (g:Gene{{identifier:line.gene_id}}), (d:Symptom{{identifier:line.phenotype_id}}) Create (g)-[:is_BIOMARKER_GibS{{resource:["MarkerDB"],markerdb:"yes"}}]->(d)'
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              file_name_not_mapped_symptom,
+                                              query)
+    file_cypher.write(query)
+    query = f' Match (g:Gene{{identifier:line.gene_id}}), (d:Phenotype{{identifier:line.phenotype_id}}) Create (g)-[:is_BIOMARKER_GibP{{resource:["MarkerDB"],markerdb:"yes"}}]->(d)'
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              file_name_not_mapped_phenotype,
                                               query)
     file_cypher.write(query)
     file_cypher.close()
@@ -140,7 +190,7 @@ def main():
     print(datetime.datetime.now())
     print('gather all information of the genes/phenotypes')
 
-    load_edges_from_database_and_add_to_dict()
+    #load_edges_from_database_and_add_to_dict()
 
     print('##########################################################################')
     print('gather all information of the MarkerDB genes/phenotypes')
