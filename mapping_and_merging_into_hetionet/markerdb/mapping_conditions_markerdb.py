@@ -95,11 +95,11 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping):
                  pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "MarkerDB"),
                  'name'])
         elif name in dict_synonym_to_ids:
-            identifier = dict_synonym_to_ids[name].pop()
-            csv_mapping.writerow(
-                [name, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "MarkerDB"),
-                 'synonym'])
+            for identifier in dict_synonym_to_ids[name]:
+                csv_mapping.writerow(
+                    [name, identifier,
+                     pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "MarkerDB"),
+                     'synonym'])
         else:
             counter_not_mapped += 1
             print(name)
