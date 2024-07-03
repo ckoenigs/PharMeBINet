@@ -17,40 +17,6 @@ def create_connection_with_neo4j():
     g = driver.session(database='graph')
 
 
-# dictionary pairs to info
-dict_pairs_to_info = {}
-
-
-def load_edges_from_database_and_add_to_dict():
-    '''
-    Load all Gene-Variant edges from Graph-DB and add rela-info into a dictionary
-    '''
-    print("query_started--------")
-    query = "MATCH (n:Protein)-[r]-(p:Phenotype) RETURN n.identifier,r.resource,p.identifier"
-    results = g.run(query)
-    print("query_ended----------")
-
-    count = 0
-    print(datetime.datetime.now())
-    for record in results:
-        [protein_id, resource, phenotype_id] = record.values()
-        count += 1
-        if count % 50000 == 0:
-            print(f"process: {count}")
-            print(datetime.datetime.now())
-        if (protein_id, phenotype_id) in dict_pairs_to_info and dict_pairs_to_info[(protein_id, phenotype_id)] != resource:
-            print('------ohje------')
-            print(protein_id, phenotype_id)
-            print(resource)
-            print(dict_pairs_to_info[(protein_id, phenotype_id)])
-        dict_pairs_to_info[(protein_id, phenotype_id)] = resource
-
-
-
-
-
-
-
 def get_MarkerDB_information():
     '''
     Load all MarkerDB protein-variant-phenotype and save to tsv
@@ -94,6 +60,7 @@ def get_MarkerDB_information():
     counter_sideEffect = 0
     counter_symptom = 0
     counter_phenotype = 0
+    counter_not_mapped = 0
     counter_all = 0
     dict_all_mappings = {}
 
@@ -122,8 +89,10 @@ def get_MarkerDB_information():
             dict_all_mappings[(protein_id, phenotype_id)] = "Phenotype"
             writer_phenotype.writerow([protein_id, phenotype_id])
             counter_phenotype += 1
+        # when edge is already integrated
         else:
-            print("Not mapped:", protein_id, phenotype_id, dict_all_mappings[(protein_id, phenotype_id)])
+            print("Already mapped edge:", protein_id, phenotype_id, dict_all_mappings[(protein_id, phenotype_id)])
+            counter_not_mapped += 1
     file_disease.close()
     file_symptom.close()
     file_sideEffect.close()
@@ -134,6 +103,7 @@ def get_MarkerDB_information():
     print('number of sideEffect edges:', counter_sideEffect)
     print('number of symptom edges:', counter_symptom)
     print('number of phenotype edges:', counter_phenotype)
+    print('number of not mapped edges:', counter_not_mapped)
     print('number of all edges:', counter_all)
 
     # cypher queries
@@ -142,8 +112,7 @@ def get_MarkerDB_information():
     file_cypher = open(cypher_path, mode, encoding='utf-8')
 
 
-    # 2. Create new edges
-    # url:"https://www.disgenet.org/browser/2/1/0/"+line.variant_id
+    # 2. Create new edges, write cypher queries
     query = f' Match (p:Protein{{identifier:line.protein_id}}), (d:Disease{{identifier:line.phenotype_id}}) Create (p)-[:is_BIOMARKER_PibD{{resource:["MarkerDB"],markerdb:"yes"}}]->(d)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_not_mapped_disease,
@@ -184,13 +153,6 @@ def main():
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
-
-    print('##########################################################################')
-
-    print(datetime.datetime.now())
-    print('gather all information of the proteins/phenotypes')
-
-    #load_edges_from_database_and_add_to_dict()
 
     print('##########################################################################')
     print('gather all information of the MarkerDB proteins/phenotypes')
