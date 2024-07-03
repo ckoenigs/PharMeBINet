@@ -90,6 +90,8 @@ def load_all_MarkerDB_proteins_and_finish_the_files(csv_mapping):
         protein_name = node['name'].lower()
         if 'gene_name' in node:
             gene_name = node['gene_name'].lower()
+        else:
+            gene_name = ""
         ignored_id = ["P01860", "Q969X2"]
         # mapping
         if identifier not in ignored_id:
@@ -99,17 +101,17 @@ def load_all_MarkerDB_proteins_and_finish_the_files(csv_mapping):
                      pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "MarkerDB"),
                         'id'])
             elif protein_name in dict_protein_name_to_identifier:
-                identifier = dict_protein_name_to_identifier[protein_name].pop()
-                csv_mapping.writerow(
-                    [unique_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
-                    'name'])
+                for identifier in dict_protein_name_to_identifier[protein_name]:
+                    csv_mapping.writerow(
+                        [unique_id, identifier,
+                         pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
+                        'name'])
             elif gene_name in dict_gene_symbol_to_gene_name and dict_gene_symbol_to_gene_name[gene_name]:
-                identifier = dict_gene_symbol_to_gene_name[gene_name].pop()
-                csv_mapping.writerow(
-                    [unique_id, identifier,
-                    pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
-                    'gene_symbol'])
+                for identifier in dict_gene_symbol_to_gene_name[gene_name]:
+                    csv_mapping.writerow(
+                        [unique_id, identifier,
+                        pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
+                        'gene_symbol'])
             else:
                 counter_not_mapped += 1
                 print(unique_id, protein_name, gene_name)
