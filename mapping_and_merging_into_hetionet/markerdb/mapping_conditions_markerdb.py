@@ -19,6 +19,8 @@ dict_disease_name_to_id = {}
 dict_disease_umls_cui_to_id = {}
 # dictionary omim id to disease id
 dict_disease_omim_id_to_id = {}
+# dictionary nci id to disease id
+dict_disease_nci_id_to_id = {}
 
 # dictionary gene symbol to gene id
 dict_synonym_to_ids = {}
@@ -69,6 +71,9 @@ def load_disease_from_database_and_add_to_dict():
                 elif xref.startswith('OMIM'):
                     pharmebinetutils.add_entry_to_dict_to_set(dict_disease_omim_id_to_id, xref.split(':')[1],
                                                               identifier)
+                elif xref.startswith('NCIT:'):
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_disease_nci_id_to_id, xref.split(':')[1],
+                                                              identifier)
 
 
 def try_to_get_umls_ids_with_UMLS(name):
@@ -106,7 +111,7 @@ def generate_files(path_of_directory):
     # namen von der condition (markerdb), identifier von disease, resource, mapping_method
     header = ['MarkerDB_condition_name', 'identifier', 'resource', 'mapping_method']
     # 'w+' creates file, 'w' opens file for writing
-    mode = 'w' if os.path.exists(file_path) else 'w+'
+    mode = 'w' if os.path.exists(file_path) else 'a'
     file = open(file_path, mode, encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
@@ -160,6 +165,17 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping):
         if mapped:
             continue
 
+        # manual mapping
+        if name=='antenatal bartter syndrome type 1':
+            mapped = True
+            csv_mapping.writerow(
+                [name, "MONDO:0100344",
+                 pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "MarkerDB"),
+                 'manual'])
+
+        if mapped:
+            continue
+
         umls_cui_list = try_to_get_umls_ids_with_UMLS(name)
         for umls_cui in umls_cui_list:
             if umls_cui in dict_disease_umls_cui_to_id:
@@ -173,22 +189,65 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping):
         if mapped:
             continue
 
-        cur = con.cursor()
-        query = ('Select Distinct STR From MRCONSO Where CUI in  ("%s");')
-        query = query % ('","'.join(umls_cui_list))
-        rows_counter = cur.execute(query)
+        if len(umls_cui_list) > 0:
+            cur = con.cursor()
+            query = ('Select Distinct CODE From MRCONSO Where CUI in  ("%s") and SAB="NCI" ;')
+            query = query % ('","'.join(umls_cui_list))
+            rows_counter = cur.execute(query)
 
-        if rows_counter > 0:
-            # add found cuis
-            for (name_umls,) in cur:
-                name_umls = name_umls.lower()
-                if name_umls in dict_disease_name_to_id:
-                    mapped = True
-                    identifier = dict_disease_name_to_id[name_umls]
-                    csv_mapping.writerow(
-                        [name, identifier,
-                         pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "MarkerDB"),
-                         'umls_name'])
+            if rows_counter > 0:
+                # add found cuis
+                for (nci_id,) in cur:
+                    if nci_id in dict_disease_nci_id_to_id:
+                        mapped = True
+                        for identifier in dict_disease_nci_id_to_id[nci_id]:
+                            csv_mapping.writerow(
+                                [name, identifier,
+                                 pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier],
+                                                                           "MarkerDB"),
+                                 'umls_nci'])
+
+        if mapped:
+            continue
+
+        if len(umls_cui_list) > 0:
+            cur = con.cursor()
+            query = ('Select Distinct CODE From MRCONSO Where CUI in  ("%s") and SAB="OMIM" ;')
+            query = query % ('","'.join(umls_cui_list))
+            rows_counter = cur.execute(query)
+
+            if rows_counter > 0:
+                # add found cuis
+                for (omim_id,) in cur:
+                    if omim_id in dict_disease_omim_id_to_id:
+                        mapped = True
+                        for identifier in dict_disease_omim_id_to_id[omim_id]:
+                            csv_mapping.writerow(
+                                [name, identifier,
+                                 pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier],
+                                                                           "MarkerDB"),
+                                 'umls_omim'])
+
+        if mapped:
+            continue
+
+        if len(umls_cui_list)>0:
+            cur = con.cursor()
+            query = ('Select Distinct STR From MRCONSO Where CUI in  ("%s");')
+            query = query % ('","'.join(umls_cui_list))
+            rows_counter = cur.execute(query)
+
+            if rows_counter > 0:
+                # add found cuis
+                for (name_umls,) in cur:
+                    name_umls = name_umls.lower()
+                    if name_umls in dict_disease_name_to_id:
+                        mapped = True
+                        identifier = dict_disease_name_to_id[name_umls]
+                        csv_mapping.writerow(
+                            [name, identifier,
+                             pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "MarkerDB"),
+                             'umls_name'])
 
         if not mapped:
             counter_not_mapped += 1
