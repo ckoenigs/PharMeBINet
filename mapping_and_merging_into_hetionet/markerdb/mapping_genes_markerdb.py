@@ -1,10 +1,11 @@
 import csv
 import datetime
-import os
+import os, sys
 
-
+sys.path.append("../..")
+import create_connection_to_databases
 import pharmebinetutils
-import create_connection_to_database_metabolite
+# import create_connection_to_database_metabolite
 
 
 # dictionary gene id to resource
@@ -103,7 +104,8 @@ def create_connection_with_neo4j():
     """
     # set up authentication parameters and connection
     global g, driver
-    driver = create_connection_to_database_metabolite.database_connection_neo4j_driver()
+    # driver = create_connection_to_database_metabolite.database_connection_neo4j_driver()
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session(database='graph')
 
 def main():
@@ -111,7 +113,13 @@ def main():
     global source
     global home
 
-    path_of_directory = "/Users/ann-cathrin/Documents/Master_4_Semester/Forschungsmodul_Heyer/Projekt_Cassandra/Test"
+    # path_of_directory = "/Users/ann-cathrin/Documents/Master_4_Semester/Forschungsmodul_Heyer/Projekt_Cassandra/Test"
+
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     home = os.getcwd()
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'gene/')

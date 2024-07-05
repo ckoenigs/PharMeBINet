@@ -44,7 +44,7 @@ if [ ! -d condition ]; then
   mkdir condition
 fi
 
-python3 mapping_conditions_markerdb.py $path_to_project > condition/output_condition_2.txt
+# python3 mapping_conditions_markerdb.py $path_to_project > condition/output_condition_2.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -54,7 +54,7 @@ if [ ! -d variant ]; then
   mkdir variant
 fi
 
-# python3 mapping_variants_markerdb.py $path_to_project > variant/output_variant.txt
+python3 mapping_variants_markerdb.py $path_to_project > variant/output_variant.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

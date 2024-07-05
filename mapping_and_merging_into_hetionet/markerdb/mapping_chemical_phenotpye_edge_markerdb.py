@@ -3,7 +3,7 @@ import os
 import sys
 import csv
 
-
+sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
@@ -173,8 +173,12 @@ def main():
     global path_of_directory
     global source
 
-    path_of_directory = "/Users/ann-cathrin/Documents/Master_4_Semester/Forschungsmodul_Heyer/Projekt_Cassandra/Test/"
+    # path_of_directory = "/Users/ann-cathrin/Documents/Master_4_Semester/Forschungsmodul_Heyer/Projekt_Cassandra/Test/"
 
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
     #os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet/markerdb')
     home = os.getcwd()
     source = os.path.join(home, 'output')
