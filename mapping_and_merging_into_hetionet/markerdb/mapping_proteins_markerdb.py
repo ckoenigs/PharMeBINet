@@ -26,7 +26,7 @@ def load_proteins_from_database_and_add_to_dict():
     query = "MATCH (n:Protein) RETURN n.identifier, n.name, n.resource, n.synonyms"
     results = g.run(query)
 
-    for identifier, name, resource , synonyms, in results:
+    for identifier, name, resource, synonyms, in results:
         dict_identifier_to_resource[identifier] = resource
         name = name.lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_to_identifier, name, identifier)
@@ -92,7 +92,7 @@ def load_all_MarkerDB_proteins_and_finish_the_files(csv_mapping):
             gene_name = node['gene_name'].lower()
         else:
             gene_name = ""
-        ignored_id = ["P01860", "Q969X2"]
+        ignored_id = ["P01860", "Q969X2", "Q13609"]
         # mapping
         if identifier not in ignored_id:
             if identifier in dict_identifier_to_resource:
