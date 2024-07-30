@@ -71,17 +71,6 @@ python execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > outp
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo 'Edge markerdb gene-phenotype'
-
-if [ ! -d gene_phenotype_edge ]; then
-  mkdir gene_phenotype_edge
-fi
-
-python3 mapping_gene_phenotype_edge_markerdb.py $path_to_project > gene_phenotype_edge/output.txt
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
 echo 'Edge markerdb chemical-phenotype'
 
 if [ ! -d chemical_phenotype_edge ]; then
