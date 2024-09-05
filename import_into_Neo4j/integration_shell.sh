@@ -404,7 +404,7 @@ echo "Current time: $now"
 cd  markerdb
 echo markerdb
 
-./integrate_markerdb.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+#./integrate_markerdb.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
 
 cd ..
 
