@@ -34,6 +34,8 @@ python ../../execute_cypher_shell.py $path_neo4j $password output/fooddb_cypher.
 
 sleep 30
 
+echo restart
+
 python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 
 

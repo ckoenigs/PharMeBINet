@@ -38,7 +38,7 @@ echo $import_tool
 
 echo integrate GWASCatalog into neo4j
 
-java -jar ../$import_tool.jar -i sources/GWASCatalog/intermediate.graphml  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix GWASCatalog_ --indices "" > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/GWASCatalog/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix GWASCatalog_ --indices "" > output/import_tool_output.txt
 
 sleep 30
 

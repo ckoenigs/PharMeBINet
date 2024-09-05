@@ -21,6 +21,7 @@ path_project=$2
 
 # path to import tool
 name_of_import_tool='../Neo4j-GraphML-Importer-v1.2.1'
+#name_of_import_tool='../Neo4j-GraphML-Importer-v1.3.0'
 
 # path to external save position of data
 path_to_other_place_of_data='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/'
