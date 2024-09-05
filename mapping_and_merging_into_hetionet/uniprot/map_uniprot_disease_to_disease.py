@@ -106,6 +106,7 @@ def gather_uniprot_disease_infos_and_add_to_file():
         name = node['name'].lower()
 
         has_mapped = False
+        disease_ids_with_similar_name = set()
         for xref in xrefs:
             if xref.startswith('MIM'):
                 xref = xref.split(':')[1]
@@ -116,7 +117,6 @@ def gather_uniprot_disease_infos_and_add_to_file():
                     # if len(omim_disease_ids)>1:
                     #     print('ohje')
                     #     print(xref)
-                    disease_ids_with_similar_name = set()
                     for disease_id in omim_disease_ids:
                         if name in dict_disease_id_to_set_of_name_and_synonyms[disease_id]:
                             disease_ids_with_similar_name.add(disease_id)
@@ -139,6 +139,7 @@ def gather_uniprot_disease_infos_and_add_to_file():
             counter_mapped += 1
             for disease_id in disease_ids_with_similar_name:
                 write_pair_into_file(disease_id, identifier, csv_disease, 'name')
+
 
     print('number of mapped diseases:', counter_mapped)
     print('number of all diseases:', counter_all)

@@ -27,7 +27,7 @@ python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/mondo.obo mondo dise
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate do into neo4j
+echo integrate mondo into neo4j
 
 python ../../execute_cypher_shell.py $path_neo4j $password cypher.cypher > output/cypher.txt
 
@@ -35,7 +35,7 @@ python ../../execute_cypher_shell.py $path_neo4j $password cypher.cypher > outpu
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate do into neo4j
+echo integrate mondo into neo4j
 
 python ../../execute_cypher_shell.py $path_neo4j $password cypher_edge.cypher > output/cypher1.txt
 

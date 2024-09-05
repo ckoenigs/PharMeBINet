@@ -24,6 +24,7 @@ echo "Current time: $now"
 echo parse disgenet to nodes and edges
 
 python3 integrate_disgenet.py $path_to_project  > output/output.txt
+#python3 new_disgenet_integration.py $path_to_project  > output/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -31,6 +32,7 @@ echo "Current time: $now"
 echo integrate disgenet into neo4j
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher.txt
 
 
 sleep 60
