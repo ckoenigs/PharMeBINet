@@ -23,8 +23,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo parse disgenet to nodes and edges
 
-python3 integrate_disgenet.py $path_to_project  > output/output.txt
-#python3 new_disgenet_integration.py $path_to_project  > output/output.txt
+python3 new_disgenet_integration.py $path_to_project  > output/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

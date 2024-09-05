@@ -184,7 +184,7 @@ def new_pathway_add_to_file(csv_not_mapped):
         xrefs = '|'.join(two_set_of_ids[0])
         highest_identifier += 1
         for identifier in two_set_of_ids[1]:
-            csv_not_mapped.writerow([identifier, name, 'PC12_' + str(highest_identifier), xrefs])
+            csv_not_mapped.writerow([identifier, name, 'PC14_' + str(highest_identifier), xrefs])
 
 
 def main():

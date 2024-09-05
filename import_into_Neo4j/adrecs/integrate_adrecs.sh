@@ -39,8 +39,7 @@ echo $import_tool
 
 echo integrate ADReCS into neo4j
 
-java -jar ../$import_tool.jar -i sources/ADReCS/intermediate.graphml  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix ADReCS_ --indices "ADReCS_Drug.id;ADReCS_ADR.id" > output/import_tool_output.txt
-#java -jar ../$import_tool.jar -i sources/ADReCS/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix ADReCS_ --indices "ADReCS_Drug.id;ADReCS_ADR.id" > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/ADReCS/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix ADReCS_ --indices "ADReCS_Drug.id;ADReCS_ADR.id" > output/import_tool_output.txt
 
 sleep 30
 

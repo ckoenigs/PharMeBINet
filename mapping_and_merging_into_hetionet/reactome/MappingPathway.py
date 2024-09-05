@@ -148,7 +148,7 @@ def load_reactome_pathways_in():
         # dafür braucht man die höchte Zahl +1, damit keiner überschrieben wird
         else:
             highest_identifier += 1
-            new_identifier = "PC12_" + str(highest_identifier)
+            new_identifier = "PC14_" + str(highest_identifier)
             csv_not_mapped.writerow([new_identifier, pathways_id, pathways_name])  # new_identifier, pathways_id,
 
     print('number of mapping with name:' + str(counter_map_with_name))
