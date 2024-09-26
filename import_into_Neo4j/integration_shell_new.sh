@@ -19,12 +19,6 @@ name_of_biodwh2_tool='BioDWH2-v0.5.0'
 
 echo $name_of_import_tool
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo add hetionet and resource to nodes
-
-python ../execute_cypher_shell.py $path_neo4j $password cypher.cypher > output_cypher.txt
-
 
 now=$(date +"%F %T")
 echo "Current time: $now"
