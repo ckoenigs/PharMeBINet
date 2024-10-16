@@ -28,7 +28,7 @@ def get_mondo_properties_and_generate_csv_files():
     # tsv with nodes which needs to be updated
     map_node_file = open('output/map_nodes.tsv', 'w', encoding='utf-8')
     tsv_map_nodes = csv.writer(map_node_file, delimiter='\t')
-    tsv_map_nodes.writerow(['id','doid','how_mapped'])
+    tsv_map_nodes.writerow(['id','doid','how_mapped', 'resource'])
 
 
 
@@ -45,7 +45,7 @@ generate cypher queries to integrate and merge disease nodes and create the subc
 def generate_cypher_queries():
     # cypher file to integrate mondo
     with open('output/cypher.cypher', 'a', encoding='utf-8') as cypher_file:
-        query = ''' Match (a:Disease_hetionet{identifier:line.doid}), (b:Disease{identifier:line.id}) Create (b)-[:equal_to_hetionet_disease{how_mapped:line.how_mapped}]->(a) '''
+        query = ''' Match (a:Disease_hetionet{identifier:line.doid}), (b:Disease{identifier:line.id}) Set b.resource=split(line.resource,"|") Create (b)-[:equal_to_hetionet_disease{how_mapped:line.how_mapped}]->(a) '''
 
         query= pharmebinetutils.get_query_import(path_of_directory,'mapping_and_merging_into_hetionet/hetionet/output/map_nodes.tsv',query)
         cypher_file.write(query)
@@ -103,7 +103,8 @@ def mapping_hetionet_disease():
         if doid in dict_doid_to_mondo:
             for mondo_id in dict_doid_to_mondo[doid]:
                 is_mapped=True
-                tsv_map_nodes.writerow([mondo_id,doid,'DOID'])
+                tsv_map_nodes.writerow([mondo_id,doid,'DOID', pharmebinetutils.resource_add_and_prepare(dict_mondo_to_resource[mondo_id],
+                                                                           'Hetionet')])
 
         if is_mapped:
             counter_mapped+=1
@@ -112,7 +113,8 @@ def mapping_hetionet_disease():
         if name in dict_name_to_mondo:
             for mondo_id in dict_name_to_mondo[name]:
                 is_mapped = True
-                tsv_map_nodes.writerow([mondo_id, doid, 'name'])
+                tsv_map_nodes.writerow([mondo_id, doid, 'name', pharmebinetutils.resource_add_and_prepare(dict_mondo_to_resource[mondo_id],
+                                                                           'Hetionet')])
 
         if is_mapped:
             counter_mapped += 1

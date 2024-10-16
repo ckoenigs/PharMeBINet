@@ -77,9 +77,8 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
 
         if gene_id in dict_pharmebinet_gene_ids_to_name:
             counter_all_in_pharmebinet += 1
-            resource=set(dict_pharmebinet_gene_ids_to_name[gene_id]['resource'])
-            resource.add('Hetionet')
-            writer.writerow([gene_id,gene_id, "|".join(resource)])
+            writer.writerow([gene_id,gene_id, pharmebinetutils.resource_add_and_prepare(dict_pharmebinet_gene_ids_to_name[gene_id]['resource'],
+                                                                           'Hetionet')])
 
         else:
             print('not in pharmebinet')
