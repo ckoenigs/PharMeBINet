@@ -46,7 +46,7 @@ def load_disease_and_add_to_cypher_file():
         7: Synonyms
         8: SlimMappings
     """
-    cypher_file_nodes.write(pharmebinetutils.prepare_index_query('CTD_disease_chemical', 'disease_id'))
+    cypher_file_nodes.write(pharmebinetutils.prepare_index_query('CTD_disease', 'disease_id'))
     query = ''' Create (c:CTD_disease{ disease_id:split(line.DiseaseID,':')[1], altDiseaseIDs:split(line.AltDiseaseIDs,"|"), idType:split(line.DiseaseID,':')[0] , synonyms:split(line.Synonyms,'|'), slimMappings:split(line.SlimMappings,'|'), parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.DiseaseName, url:"http://ctdbase.org/detail.go?type=disease&acc="+ split(line.DiseaseID,':')[1]})  '''
     query = pharmebinetutils.get_query_import(path_of_ctd_data, 'ctd_data/CTD_diseases.tsv', query)
     cypher_file_nodes.write(query)
