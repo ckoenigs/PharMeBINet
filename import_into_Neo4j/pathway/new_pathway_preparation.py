@@ -82,7 +82,7 @@ def prepare_files():
 
 
 '''
-Pathway Commons V11 download and information extraction
+Pathway Commons V12 download and information extraction
 '''
 
 
@@ -91,10 +91,11 @@ def pathway_commons():
     # url = 'https://www.pathwaycommons.org/archives/PC2/v12/PathwayCommons12.All.hgnc.gmt.gz'
     filename_without_gz='data/pc-hgnc.gmt'
     if not os.path.exists(filename_without_gz+'.gz'):
-        url = 'https://www.pathwaycommons.org/archives/PC2/v14/pc-hgnc.gmt.gz'
+        url = 'https://download.baderlab.org/PathwayCommons/PC2/v14/pc-hgnc.gmt.gz'
         filename = pharmebinetutils.download_file(url, out='data/')
         filename_without_gz = filename.rsplit('.', 1)[0]
         print(filename_without_gz)
+
         file = open(filename_without_gz, 'wb')
         with gzip.open(filename, 'rb') as f:
             file.write(f.read())
@@ -209,7 +210,7 @@ def pathway_commons():
 
     file_name='data/pc-hgnc.txt.gz'
     if not os.path.exists(file_name):
-        url = 'https://www.pathwaycommons.org/archives/PC2/v14/pc-hgnc.txt.gz'
+        url = 'https://download.baderlab.org/PathwayCommons/PC2/v14/pc-hgnc.txt.gz'
         pharmebinetutils.download_file(url, out='data/')
 
     # association_df = pandas.read_csv(file_name, compression='gzip', header=0, delimiter='\t')
