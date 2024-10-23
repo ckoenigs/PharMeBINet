@@ -20,21 +20,17 @@ def create_connection_with_neo4j():
 # dictionary gene id to resource
 dict_gene_id_to_resource = {}
 
-# dictionary from gene id to gene id
-dict_gene_id_to_gene_id = {}
-
 
 def load_genes_from_database_and_add_to_dict():
     """
     Load all Genes from my database  and add them into a dictionary
     """
-    query = "MATCH (n:Gene) RETURN n"
+    query = "MATCH (n:Gene) RETURN n.identifier, n.resource "
     results = g.run(query)
 
     for record in results:
-        node = record.data()['n']
-        identifier = node['identifier']
-        dict_gene_id_to_resource[identifier] = node['resource']
+        [identifier, resource] = record.values()
+        dict_gene_id_to_resource[identifier] = resource
 
 
 def generate_files(path_of_directory):
@@ -71,15 +67,14 @@ def load_all_DisGeNet_genes_and_finish_the_files(csv_mapping):
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
-    query = "MATCH (n:gene_DisGeNet) RETURN n"
+    query = "MATCH (n:gene_DisGeNet) RETURN n.geneId"
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
     for record in results:
-        node = record.data()['n']
+        [identifier] = record.values()
         counter_all += 1
-        identifier = node['geneId']
-        # mapping
+
         if identifier in dict_gene_id_to_resource:
             csv_mapping.writerow(
                 [identifier, identifier,
