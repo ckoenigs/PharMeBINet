@@ -77,7 +77,7 @@ def get_go_properties():
         else:
             query_middle_new += property + ':b.' + property + ', '
     query_end = ''' Create (a)-[:equal_to_go]->(b)'''
-    global query_new, query_delete
+    global query_new
 
     # combine the important parts of node creation
     query_new = query_nodes_start + query_middle_new + 'resource:["GO"], go:"yes", source:"Gene Ontology", url:"http://purl.obolibrary.org/obo/"+line.identifier, license:"' + license + '"})' + query_end
@@ -91,9 +91,6 @@ create the tsv files
 
 def create_tsv_files():
     for label in dict_go_to_pharmebinet_label:
-        # delete the old nodes
-        query_delete = '''Match (a:%s)  Detach Delete a;\n''' % dict_go_to_pharmebinet_label[label]
-        cypher_file.write(query_delete)
         # prepare file and queries for new nodes
         file_name = 'output/integrate_go_' + label + '.tsv'
         query = query_new % (dict_go_to_pharmebinet_label[label])
@@ -101,6 +98,8 @@ def create_tsv_files():
                                                   f'mapping_and_merging_into_hetionet/go/{file_name}',
                                                   query)
         cypher_file.write(query)
+        cypher_file.write(pharmebinetutils.prepare_index_query(dict_go_to_pharmebinet_label[label],'identifier'))
+        cypher_file.write(pharmebinetutils.prepare_index_query_text(dict_go_to_pharmebinet_label[label], 'name'))
         file = open(file_name, 'w')
         tsv_file = csv.writer(file, delimiter='\t')
         tsv_file.writerow(['identifier', 'xrefs'])

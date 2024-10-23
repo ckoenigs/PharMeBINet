@@ -41,6 +41,7 @@ def get_all_metabolites_with_xrefs():
 
     # add an indice on metabolite
     cypher_file.write(pharmebinetutils.prepare_index_query('Metabolite', 'identifier'))
+    cypher_file.write(pharmebinetutils.prepare_index_query_text('Metabolite', 'name'))
 
     query = 'MATCH (p:Metabolite_HMDB) Return p.identifier, p.xrefs'
     results = g.run(query)

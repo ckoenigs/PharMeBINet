@@ -52,6 +52,7 @@ def get_node_properties_and_prepare_query(label, additional_label, id_property_n
 # cypher file
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 cypher_file.write(pharmebinetutils.prepare_index_query('RNA', 'identifier', 'mirna'))
+cypher_file.write(pharmebinetutils.prepare_index_query_text('RNA', 'name','mirna'))
 
 
 def generate_tsv_and_query(label, additional_label, id_property_name):
