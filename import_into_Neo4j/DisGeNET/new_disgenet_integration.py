@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 import sqlite3
 
+from pandas.core.computation.expr import intersection
+
 sys.path.append("../..")
 import pharmebinetutils
 
@@ -158,7 +160,15 @@ def get_geneInfo(gene_ids):
         'Select geneId, geneName, geneDescription, pLI, DSI, DPI From geneAttributes;',
         ['geneId', 'geneSymbol', 'geneDescription', 'pLI', 'DSI', 'DPI'])
 
-    unique_gene_ids['geneId'] = list(set(unique_gene_ids['geneId']).union(*[set(file2['geneId']), set(gene_ids)]))
+
+    all_gene_ids=unique_gene_ids['geneId']
+    other_ids=set(file2['geneId']).union(gene_ids)
+    intersection=set(other_ids).difference(all_gene_ids)
+    if len(intersection)>0:
+        sys.exit('more genes which are not part of the sql lite DB')
+    # list_all_gene_ids=list(all_gene_ids).append(intersection)
+    # unique_gene_ids['geneId'] = list_all_gene_ids
+    # unique_gene_ids['geneId'] = list(set(unique_gene_ids['geneId']).union(*[set(file2['geneId']), set(gene_ids)]))
 
     unique_gene_ids_list = unique_gene_ids['geneId'].unique()
 
