@@ -176,9 +176,8 @@ def load_all_variants_and_finish_the_files():
                 for gene_infos in genes_infos:
                     gene_id = gene_infos['gene_id']
                     if gene_id in dict_gene_id_to_gene_node:
-                        resource = set(dict_gene_id_to_gene_node[gene_id]['resource'])
-                        resource.add('ClinVar')
-                        csv_rela.writerow([gene_id, identifier, '|'.join(resource)])
+                        csv_rela.writerow([gene_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_gene_node[gene_id]['resource'],
+                                                                           'ClinVar')])
 
 
 '''
@@ -188,6 +187,7 @@ prepare the last queries, where the variant nodes get an index and the query for
 
 def perpare_queries_index_and_relationships():
     cypher_file.write(pharmebinetutils.prepare_index_query('Variant', 'identifier'))
+    cypher_file.write(pharmebinetutils.prepare_index_query_text('Variant', 'name'))
 
     # relationship
     query = "Match (g:Gene{identifier:line.%s}), (v:Variant{identifier:line.%s}) Set g.resource=split(line.resource,'|'), g.clinvar='yes' Create  (g)-[:HAS_GhGV{source:'ClinVar', url:'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+line.%s, resource:['ClinVar'], clinvar:'yes', license:'https://www.ncbi.nlm.nih.gov/home/about/policies/'}]->(v)"
