@@ -652,8 +652,7 @@ def integrate_disease_into_pharmebinet():
     writer.writerow(['CTD_diseaseID', 'pharmebinetDiseaseId', 'mondos', 'resource', 'how_mapped'])
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = '''Match (d)-[r:equal_to_D_Disease_CTD]->(n) Delete r;\n '''
-    cypher_file.write(query)
+
     # go through all ctd disease
     for ctd_disease_id, ctd_disease in dict_CTD_disease.items():
         counter_all += 1

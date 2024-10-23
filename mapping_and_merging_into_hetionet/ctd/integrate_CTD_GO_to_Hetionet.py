@@ -303,10 +303,6 @@ def main():
         file_name, pharmebinet_label = dict_ctd_ontology_to_file_and_label[ontology]
         generate_files(file_name, pharmebinet_label, dict_ctd_in_pharmebinet, dict_ctd_in_pharmebinet_alternative)
 
-    # delete the node which did not mapped because they are obsoleted
-    cypher = 'MATCH (n:CTD_GO) where not (n)<-[:equal_to_CTD_go]-() Detach Delete n;\n'
-    cypher_file.write(cypher)
-
     driver.close()
     print(
         '###########################################################################################################################')
