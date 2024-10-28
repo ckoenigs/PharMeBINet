@@ -37,7 +37,7 @@ echo $import_tool
 
 echo integrate ptmd into neo4j
 
-java -jar ../$import_tool.jar -i sources/PTMD/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix PTMD_ --indices "PTMD_Protein.uniprot_id;PTMD_PTM.ptm_id;PTMD_Species.ncbiTaxId;PTMD_Disease.name" > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/PTMD/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix PTMD_ --indices "PTMD_Protein.uniprot_id;PTMD_Species.ncbiTaxId;PTMD_Disease.name" > output/import_tool_output.txt
 
 echo finished integration
 
