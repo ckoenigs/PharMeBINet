@@ -27,8 +27,8 @@ def generate_csv_file(labels, header, different_directory='', as_dict=False):
     dict_old_label_to_new_label = {}
     new_header = []
     for head in header:
-        dict_old_label_to_new_label[head] = head.replace(' ', '_').replace(u'\ufeff', '')
-        new_header.append(head.replace(' ', '_').replace(u'\ufeff', ''))
+        dict_old_label_to_new_label[head] = head.replace(' ', '_').replace(u'\ufeff', '').replace('.','_')
+        new_header.append(head.replace(' ', '_').replace(u'\ufeff', '').replace('.','_'))
 
     file_name = 'output/' + different_directory + '_'.join(labels) + '.tsv'
     file = open(file_name, 'w', encoding='utf-8')
