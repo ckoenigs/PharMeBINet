@@ -43,7 +43,7 @@ echo finished integration
 
 sleep 30
 
-python ../../restart_neo4j.py > output/neo4.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 
 
 sleep 30
