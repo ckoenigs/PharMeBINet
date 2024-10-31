@@ -17,7 +17,7 @@ if [ ! -d output ]; then
   mkdir output
 fi
 
-echo load latest version of PTMD and generate GraphML file
+echo load latest version of iPTMnet and generate GraphML file
 
 dir=./sources/
 
@@ -27,7 +27,7 @@ then
     echo generate workspace in directory
     java -jar ../$biodwh2.jar -c .
 
-    java -jar ../$biodwh2.jar --add-data-source . PTMD
+    java -jar ../$biodwh2.jar --add-data-source . iPTMnet
 
 fi
 
@@ -35,9 +35,9 @@ java -jar ../$biodwh2.jar -u .
 
 echo $import_tool
 
-echo integrate ptmd into neo4j
+echo integrate iPTMnet into neo4j
 
-java -jar ../$import_tool.jar -i sources/PTMD/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix PTMD_ --indices "PTMD_Protein.uniprot_accession;PTMD_Disease.name" > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/iPTMnet/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix iPTMnet_ --indices "iPTMnet_Protein.uniprot_id;iPTMnet_Organism.ncbi_taxid" > output/import_tool_output.txt
 
 echo finished integration
 

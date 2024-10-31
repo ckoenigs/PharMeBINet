@@ -17,27 +17,27 @@ if [ ! -d output ]; then
   mkdir output
 fi
 
-echo load latest version of PTMD and generate GraphML file
+echo load latest version of qPTM and generate GraphML file
 
 dir=./sources/
 
-# prepare workspace and add TTD to bioDWB2 tool
 if [ ! -d "$dir" ];
 then
     echo generate workspace in directory
     java -jar ../$biodwh2.jar -c .
 
-    java -jar ../$biodwh2.jar --add-data-source . PTMD
+    java -jar ../$biodwh2.jar --add-data-source . qPTM
 
+    java -jar ../$biodwh2.jar --set-config . "dataSourceProperties.qPTM.downloadUrl"
 fi
 
 java -jar ../$biodwh2.jar -u .
 
 echo $import_tool
 
-echo integrate ptmd into neo4j
+echo integrate qPTM into neo4j
 
-java -jar ../$import_tool.jar -i sources/PTMD/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix PTMD_ --indices "PTMD_Protein.uniprot_accession;PTMD_Disease.name" > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/qPTM/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix qPTM_ --indices "qPTM_Protein.uniprot_id;qPTM_ORGANISM.ncbi_taxid" > output/import_tool_output.txt
 
 echo finished integration
 
