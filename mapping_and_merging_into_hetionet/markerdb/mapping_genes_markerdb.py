@@ -68,16 +68,13 @@ def load_all_MarkerDB_genes_and_finish_the_files(csv_mapping):
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
-    query = "MATCH (n:MarkerDB_Gene) RETURN n"
+    query = "MATCH (n:MarkerDB_Gene) RETURN n.entrez_gene_id, n.id, n.gene_symbol"
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
     for record in results:
-        node = record.data()['n']
+        [identifier, unique_id, gene_symbol] = record.values()
         counter_all += 1
-        identifier = node['entrez_gene_id']
-        unique_id = node['id']
-        gene_symbol = node['gene_symbol']
 
         # mapping
         if identifier in dict_gene_id_to_resource:
