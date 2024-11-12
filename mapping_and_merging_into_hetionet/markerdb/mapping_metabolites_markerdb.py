@@ -6,6 +6,7 @@ import sys
 sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
+
 # import create_connection_to_database_metabolite
 
 # dictionary chemical id to resource
@@ -17,19 +18,18 @@ dict_chemical_id_to_metabolite_id = {}
 # dictionary metabolite name to chemical id
 dict_metabolite_name_to_chemical_id = {}
 
+
 def load_metabolites_from_database_and_add_to_dict():
     """
     Load all Genes from my database and add them into a dictionary
     """
-    query = "MATCH (n:Metabolite) RETURN n"
+    query = "MATCH (n:Metabolite) RETURN n.identifier, n.resource, n.name"
     results = g.run(query)
 
     for record in results:
-        node = record.data()['n']
-        identifier = node['identifier']
-        dict_metabolite_id_to_resource[identifier] = node['resource']
-        metabolite_name = node['name']
-        dict_metabolite_name_to_chemical_id[metabolite_name] = {"identifier": node['identifier'], "resource": node['resource']}
+        [identifier, resource, name] = record.values()
+        dict_metabolite_id_to_resource[identifier] = resource
+        pharmebinetutils.add_entry_to_dict_to_set(dict_metabolite_name_to_chemical_id, name.lower(), identifier)
 
 
 def generate_files(path_of_directory):
@@ -44,9 +44,7 @@ def generate_files(path_of_directory):
     file_name = 'MarkerDB_Chemical_to_Metabolite'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
     header = ['MarkerDB_chemical_id', 'metabolite_id', 'resource', 'mapping_method']
-    # 'w+' creates file, 'w' opens file for writing
-    mode = 'a' if os.path.exists(file_path) else 'w'
-    file = open(file_path, mode, encoding='utf-8')
+    file = open(file_path, "w", encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
 
@@ -64,6 +62,7 @@ def generate_files(path_of_directory):
 
     return csv_mapping
 
+
 def load_all_MarkerDB_chemicals_and_finish_the_files(csv_mapping):
     """
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
@@ -76,9 +75,9 @@ def load_all_MarkerDB_chemicals_and_finish_the_files(csv_mapping):
     for record in results:
         node = record.data()['n']
         counter_all += 1
-        identifier = node.get('hmdb_id',None)
+        identifier = node.get('hmdb_id', None)
         unique_id = node['id']
-        name_chemical = node['name']
+        name_chemical = node['name'].lower()
 
         # mapping
         if identifier in dict_metabolite_id_to_resource:
@@ -86,18 +85,31 @@ def load_all_MarkerDB_chemicals_and_finish_the_files(csv_mapping):
                 [unique_id, identifier,
                  pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[identifier], "MarkerDB"),
                  'id'])
-        elif name_chemical in dict_metabolite_name_to_chemical_id:
+        # manual mapping
+        elif unique_id == 5048:
             csv_mapping.writerow(
-                [unique_id, dict_metabolite_name_to_chemical_id[name_chemical]["identifier"],
-                 pharmebinetutils.resource_add_and_prepare(dict_metabolite_name_to_chemical_id[name_chemical]["resource"],"MarkerDB"),
-                'name'])
+                [unique_id, 'HMDB0036559',
+                 pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource['HMDB0036559'], "MarkerDB"),
+                 'manual'])
+        # manual mapping
+        elif unique_id == 5734:
+            csv_mapping.writerow(
+                [unique_id, 'HMDB0035196',
+                 pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource['HMDB0035196'], "MarkerDB"),
+                 'manual'])
+        elif name_chemical in dict_metabolite_name_to_chemical_id:
+            for metabolite_id in dict_metabolite_name_to_chemical_id[name_chemical]:
+                csv_mapping.writerow(
+                    [unique_id, metabolite_id,
+                     pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[metabolite_id],
+                                                               "MarkerDB"), 'name'])
         else:
             counter_not_mapped += 1
             print(identifier, name_chemical)
 
-
     print('number of not-mapped chemicals:', counter_not_mapped)
     print('number of all chemicals:', counter_all)
+
 
 def create_connection_with_neo4j():
     """
@@ -108,6 +120,7 @@ def create_connection_with_neo4j():
     # driver = create_connection_to_database_metabolite.database_connection_neo4j_driver()
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session(database='graph')
+
 
 def main():
     global path_of_directory
@@ -123,7 +136,6 @@ def main():
     home = os.getcwd()
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'chemical/')
-
 
     print('##########################################################################')
     print(datetime.datetime.now())
