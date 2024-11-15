@@ -15,7 +15,7 @@ password=$4
 # path to external save position of data
 path_to_other_place_of_data=$5
 
-name_of_biodwh2_tool='BioDWH2-v0.5.0'
+name_of_biodwh2_tool='BioDWH2-v0.6.5'
 
 echo $name_of_import_tool
 
@@ -59,7 +59,7 @@ echo "Current time: $now"
 cd gwas
 echo gwas
 
-# ./script_gwas_integration.sh $path_neo4j $path_to_project $password > output/script_output.txt
+./integrate_gwas.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > script_output.txt
 
 
 cd ..
@@ -70,7 +70,7 @@ echo "Current time: $now"
 cd gencc
 echo gencc
 
-./integrate_gencc.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+./integrate_gencc.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > script_output.txt
 
 
 cd ..
@@ -251,7 +251,7 @@ echo RNAdisease
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-./script_rnadisease.sh $path_neo4j $path_to_project $password > output/script_output.txt
+./script_rnadisease.sh $path_neo4j $path_to_project $password > script_output.txt
 
 cd ..
 
@@ -288,16 +288,16 @@ echo EFO
 
 cd ..
 
-#now=$(date +"%F %T")
-#echo "Current time: $now"
-#
-#
-#cd  adrecs_target
-#echo adrecs-target
-#
-#./script_adrecs_target.sh $path_neo4j $path_to_project $password > output_script.txt
-#
-#cd ..
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+
+cd  adrecs_target
+echo adrecs-target
+
+./script_adrecs_target.sh $path_neo4j $path_to_project $password > output_script.txt
+
+cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -337,7 +337,7 @@ echo "Current time: $now"
 cd  PharmGKB
 echo PharmGKB
 
-./script_pharmGKB.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+./script_pharmGKB.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > script_output.txt
 
 cd ..
 
@@ -347,7 +347,7 @@ echo "Current time: $now"
 cd  drugcentral
 echo drugcentral
 
-./integrate_drugcentral.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password $path_to_other_place_of_data > output/script_output.txt
+./integrate_drugcentral.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password $path_to_other_place_of_data > script_output.txt
 
 cd ..
 
@@ -357,7 +357,7 @@ echo "Current time: $now"
 cd  adrecs
 echo ADReCS
 
-./integrate_adrecs.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+./integrate_adrecs.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > script_output.txt
 
 cd ..
 
@@ -367,7 +367,37 @@ echo "Current time: $now"
 cd  ttd
 echo TTD
 
-./integrate_ttd.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+./integrate_ttd.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > script_output.txt
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd  PTMD
+echo PTMD
+
+./integrate_ptmd.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > script_output.txt
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd  iPTMnet
+echo iPTMnet
+
+./integrate_iptmnet.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > script_output.txt
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd  qptm
+echo qptm
+
+./integrate_qptm.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > script_output.txt
 
 cd ..
 
@@ -377,7 +407,7 @@ echo "Current time: $now"
 cd  miRBase
 echo miRBase
 
-./integrate_mirbase.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+./integrate_mirbase.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > script_output.txt
 
 cd ..
 
@@ -387,7 +417,7 @@ echo "Current time: $now"
 cd  hgnc
 echo HGNC
 
-./integrate_hgnc.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+./integrate_hgnc.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > script_output.txt
 
 cd ..
 
@@ -398,7 +428,7 @@ echo "Current time: $now"
 cd  markerdb
 echo markerdb
 
-#./integrate_markerdb.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+./integrate_markerdb.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > script_output.txt
 
 cd ..
 
@@ -408,7 +438,7 @@ echo "Current time: $now"
 cd  refseq
 echo refseq
 
-./integrate_refseq.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password $path_to_other_place_of_data > output/script_output.txt
+./integrate_refseq.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password $path_to_other_place_of_data > script_output.txt
 
 cd ..
 
@@ -419,6 +449,18 @@ cd  pathway
 echo pathway
 
 ./script_pathway.sh $path_neo4j $path_to_project $password > output.txt
+
+cd ..
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+
+cd  Hetionet
+echo hetionet
+
+./script_import_hetionet_with_graphml.sh $path_neo4j $name_of_import_tool $password $path_to_project > output_hetionet.txt
 
 cd ..
 
@@ -465,7 +507,7 @@ cd  OMIM
 echo omim
 
 
-./script_to_execute_omim.sh $path_to_project $path_neo4j $password > output/output_integration_of_everything.txt
+./script_to_execute_omim.sh $path_to_project $path_neo4j $password > output_integration_of_everything.txt
 
 
 cd ..
