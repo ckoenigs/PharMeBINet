@@ -38,6 +38,10 @@ sleep 60
 python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
 sleep 60
 
+rm -r $path_neo4j/../data/transactions/graph
+
+sleep 30
+
 python ../../restart_neo4j.py $path_neo4j > output/neo4j3.txt
 
 sleep 180
