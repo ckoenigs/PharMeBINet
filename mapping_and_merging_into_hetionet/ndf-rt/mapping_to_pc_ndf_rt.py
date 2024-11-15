@@ -97,7 +97,7 @@ def load_all_label_and_map(label, csv_mapped):
             for pc_id in dict_name_to_pharmacologic_class_id[name]:
                 xrefs=xrefs.union(dict_pharmacologic_class_id_to_resource_xrefs[pc_id][1])
                 csv_mapped.writerow([identifier, pc_id, pharmebinetutils.resource_add_and_prepare(
-                    dict_pharmacologic_class_id_to_resource_xrefs[pc_id], 'NDF-RT'), 'name', '|'.join(xrefs)])
+                    dict_pharmacologic_class_id_to_resource_xrefs[pc_id][0], 'NDF-RT'), 'name', '|'.join(xrefs)])
 
     print(label, 'number of nodes', counter)
     print(label, 'number of mapped nodes', counter_mapped)

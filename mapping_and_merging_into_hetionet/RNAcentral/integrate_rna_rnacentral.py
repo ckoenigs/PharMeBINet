@@ -159,6 +159,7 @@ def cypher(keys, file_name, label, unique_identifier):
     cypher_file.write(query)
 
     cypher_file.write(pharmebinetutils.prepare_index_query(label, unique_identifier))
+    cypher_file.write(pharmebinetutils.prepare_index_query_text(label, 'name'))
 
 
 def main():

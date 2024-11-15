@@ -300,6 +300,8 @@ def generate_rela_tsv_and_cypher_queries():
                                                    f'mapping_and_merging_into_hetionet/pathway/output/node.tsv',
                                                    query_node)
     cypher_file.write(query_node)
+    cypher_file.write(pharmebinetutils.prepare_index_query('Pathway','identifier'))
+    cypher_file.write(pharmebinetutils.prepare_index_query_text('Pathway', 'name'))
 
     # query equal to
     query_equal = ' Match (b:%s ), (n:Pathway{identifier:line.identifier}) Where b.identifier in split(line.%s,"|") Create (n)-[:equal_to_multi_pathways]->(b)'

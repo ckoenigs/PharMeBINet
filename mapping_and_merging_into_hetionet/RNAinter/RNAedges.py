@@ -42,7 +42,7 @@ def cypher_edge(file_name, label1, label2, properties, edge_name):
         else:
             query += f'{header}:line.{header}, '
 
-    query = query + ' source:"RNAInter", resource:["RNAInter"], license:"Provide data for non-commercial use, distribution, or reproduction in any medium, only if you properly cite the original work.",rnainter:"yes", url:"http://www.rnainter.org/"}]->(p2)'
+    query = query + ' source:"RNAInter", resource:["RNAInter"], license:"Provide data for non-commercial use, distribution, or reproduction in any medium, only if you properly cite the original work.",rnainter:"yes", url:"http://www.rnainter.org/showMore/?raid="+split(line.RNAInterID,"|")[0]}]->(p2)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/RNAinter/{file_name}',
                                               query)
@@ -72,6 +72,7 @@ def edges_new():
             writer.writerow(["id1", "id2", "score", "strong", "weak", "predict", "RNAInterID"])
             current_counter = LIMIT
             index = 0
+            tuple_only_one=set()
             while current_counter == LIMIT:
                 query = 'MATCH z=(m:RNA)--(:rna_RNAInter)-[r]-(:%s_RNAInter)--(n:%s) WHERE toFloat(r.score) >= %s WITH m, collect(r) as edge, n  SKIP %s Limit %s  RETURN n.identifier, m.identifier, edge' % (
                     names[i], names[i + 1], score, str(index * LIMIT), str(LIMIT))
@@ -103,8 +104,10 @@ def edges_new():
                         list_id = list_id + "|" + e["RNAInterID"]
                         entry_score = entry_score + float(e["score"])
 
-                    writer.writerow([entry['n.identifier'], entry['m.identifier'], (entry_score / len(entry["edge"])),
-                                     list_strong[1:], list_weak[1:], list_predict[1:], list_id[1:]])
+                    if not (entry['m.identifier'], entry['n.identifier']) in tuple_only_one:
+                        writer.writerow([entry['n.identifier'], entry['m.identifier'], (entry_score / len(entry["edge"])),
+                                         list_strong[1:], list_weak[1:], list_predict[1:], list_id[1:]])
+                        tuple_only_one.add((entry['n.identifier'], entry['m.identifier']))
 
                     if counter % 500000 == 0:
                         print(counter)

@@ -103,7 +103,7 @@ def get_all_disease_information_from_pharmebinet():
                 elif xref[0:5] == 'UMLS:':
                     umls_cui = xref.split(':')[1]
                     if not umls_cui in dict_umls_cui_to_mondo:
-                        dict_umls_cui_to_mondo[umls_cui] = set[mondo]
+                        dict_umls_cui_to_mondo[umls_cui] = set([mondo])
                     else:
                         dict_umls_cui_to_mondo[umls_cui].add(mondo)
 

@@ -21,7 +21,8 @@ def create_connection_to_neo4j():
 
 
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-cypher_file.write('Match (n:PharmacologicClass) Detach Delete n;\n')
+cypher_file.write(pharmebinetutils.prepare_index_query('PharmacologicClass', 'identifier'))
+cypher_file.write(pharmebinetutils.prepare_index_query_text('PharmacologicClass', 'name'))
 
 
 def write_files(path_of_directory, addition_name, label):
