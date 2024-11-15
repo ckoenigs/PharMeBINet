@@ -32,16 +32,14 @@ def generate_files(path_of_directory, file_name, source, label_hgnc, label_pharm
     file_path = os.path.join(path_of_directory, file_name)
     header = ['hgnc_id', 'pharmebinet_node_id', 'resource', 'gene_symbols', 'xrefs', 'mapping_method']
     # 'w+' creates file, 'w' opens file for writing
-    mode = 'w' if os.path.exists(file_path) else 'w+'
-    file = open(file_path, mode, encoding='utf-8')
+    file = open(file_path, 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/DisGeNet/
     query = f' Match (n:{label_hgnc}{{ {id_property_hgncs}:line.hgnc_id}}), (v:{label_pharmebinet}{{identifier:line.pharmebinet_node_id}}) Set v.hgnc="yes", v.pubMed_ids=n.pubmed_ids ,v.resource=split(line.resource,"|"), v.gene_symbols=split(line.gene_symbols,"|"), v.xrefs=split(line.xrefs,"|") Create (v)-[:equal_to_hgnc_{label_pharmebinet.lower()}{{mapped_with:line.mapping_method}}]->(n)'
-    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
-    cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name,
                                               query)

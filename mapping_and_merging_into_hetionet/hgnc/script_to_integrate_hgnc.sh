@@ -14,8 +14,6 @@ if [ ! -d output ]; then
   mkdir gene
 fi
 
-rm output/cypher.cypher
-
 
 now=$(date +"%F %T")
 echo "Current time: $now"
