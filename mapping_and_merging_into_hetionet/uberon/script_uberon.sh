@@ -19,10 +19,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 echo Uberon anatomy mapping
-python3 map_anatomy_uberon.py $path_to_project > output/output_anatomy.txt
+python3 create_Anatomy_Uberon.py $path_to_project > output/output_anatomy.txt
 
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
+
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
+
 
 sleep 20
 python ../../restart_neo4j.py $path_neo4j > output/neo4.txt

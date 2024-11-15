@@ -315,6 +315,7 @@ def compound_ttd_mapping():
                         if new_id in dict_pubchem_id_to_synonyms:
                             synonyms = dict_pubchem_id_to_synonyms[new_id]
                         else:
+                            print('pubchem id',new_id)
                             c = pcp.Compound.from_cid(int(new_id))
                             synonyms = c.synonyms
                             csv_writer_already_downloaded.writerow([new_id, '|'.join(synonyms)])

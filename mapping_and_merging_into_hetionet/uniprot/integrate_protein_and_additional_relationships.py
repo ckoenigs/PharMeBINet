@@ -345,6 +345,7 @@ def write_cypher_file():
                                               query)
     file_cypher.write(query)
     file_cypher.write(pharmebinetutils.prepare_index_query('Protein', 'identifier'))
+    file_cypher.write(pharmebinetutils.prepare_index_query_text('Protein', 'name'))
 
     query = ''' MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:"yes" ,resource:['UniProt'],license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source:"UniProt", how_mapped:line.how_mapped}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
