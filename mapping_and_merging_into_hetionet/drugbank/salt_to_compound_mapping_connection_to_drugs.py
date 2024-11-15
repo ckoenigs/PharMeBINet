@@ -18,33 +18,6 @@ def create_connection_with_neo4j():
     g = driver.session(database='graph')
 
 
-# dictionary of not mapped compound inchikey to node
-dict_not_mapped_compound = {}
-
-# dictionary not mapped compound names to node
-dict_not_mapped_compound_name = {}
-
-
-def find_not_mapped_compounds_and_add_to_dict():
-    """
-    Load all compounds which did not mapped and upload them into a dictionary with inchikey as key
-    and also in a dictionary where the name is the key
-    :return:
-    """
-    query = '''MATCH (n:Compound) WHere n.drugbank is NULL RETURN n'''
-    result = g.run(query)
-    for record in result:
-        node = record.data()['n']
-        # print(node)
-        inchikey = node['inchikey'] if 'inchikey' in node else ''
-        # print(inchikey)
-        inchikey = inchikey.split('=')[1] if '=' in inchikey else inchikey
-        dict_not_mapped_compound[inchikey] = dict(node)
-        if 'name' in node:
-            dict_not_mapped_compound_name[node['name'].lower()] = dict(node)
-    print(len(dict_not_mapped_compound))
-
-
 # label of salt
 label_of_salt = 'Salt_DrugBank'
 
@@ -105,38 +78,11 @@ def create_cypher_and_tsv_files():
     cypher_delete_file.close()
 
 
-# bash shell for merge doids into the mondo nodes
-bash_shell = open('merge_nodes_salt.sh', 'w')
-bash_start = '''#!/bin/bash
-#define path to neo4j bin
-path_neo4j=$1\n\n
-password=$2\n\n'''
-bash_shell.write(bash_start)
-
 # the new table for unii drugbank pairs
 unii_drugbank_table_file = open('data/map_unii_to_drugbank_id.tsv', 'a')
 csv_unii_drugbank_table = csv.writer(unii_drugbank_table_file, delimiter='\t')
 
 
-def add_merge_to_sh_file(dict_not_mapped, mapped_value, node_id):
-    """
-    Add a merge to the bash file
-    :param dict_not_mapped:
-    :param mapped_value:
-    :param node_id:
-    :return:
-    """
-    compound = dict_not_mapped[mapped_value]
-    print(compound)
-    compound_id = compound['identifier']
-    # if it mapped to a not mapped compound
-    text = 'python3 ../add_info_from_removed_node_to_other_node.py %s %s %s\n' % (
-        compound_id, node_id, 'Compound')
-    bash_shell.write(text)
-    text = '$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_merge.cypher \n\n'
-    bash_shell.write(text)
-    text = '''now=$(date +"%F %T")\n echo "Current time: $now"\n'''
-    bash_shell.write(text)
 
 
 def prepare_node_tsv():
@@ -152,17 +98,9 @@ def prepare_node_tsv():
         node = record.data()['n']
         csv_node.writerow(node)
         node_id = node['identifier']
-        inchikey = node['inchikey'] if 'inchikey' in node else ''
-        name = node['name'].lower()
         if 'unii' in node:
             unii = node['unii']
             csv_unii_drugbank_table.writerow([unii, node_id])
-        # check if this salt is as a drugbank id  already included
-        # if so merge this nodes together
-        if inchikey in dict_not_mapped_compound:
-            add_merge_to_sh_file(dict_not_mapped_compound, inchikey, node_id)
-        elif name in dict_not_mapped_compound_name:
-            add_merge_to_sh_file(dict_not_mapped_compound_name, name, node_id)
 
 
 def fill_rela_tsv():
@@ -189,14 +127,6 @@ def main():
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
-
-    print(
-        '#################################################################################################################################################################')
-
-    print(datetime.datetime.now())
-    print('get compound which are not ind drugbank drugs')
-
-    find_not_mapped_compounds_and_add_to_dict()
 
     print(
         '#################################################################################################################################################################')
