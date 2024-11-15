@@ -21,6 +21,9 @@ echo load latest version of qPTM and generate GraphML file
 
 dir=./sources/
 
+
+
+
 if [ ! -d "$dir" ];
 then
     echo generate workspace in directory
@@ -28,7 +31,11 @@ then
 
     java -jar ../$biodwh2.jar --add-data-source . qPTM
 
-    java -jar ../$biodwh2.jar --set-config . "dataSourceProperties.qPTM.downloadUrl"
+    file="url.txt"
+    url=$(cat "$file")
+    echo $url 
+
+    java -jar ../$biodwh2.jar --set-config . "dataSourceProperties.qPTM.downloadUrl" $url
 fi
 
 java -jar ../$biodwh2.jar -u .
