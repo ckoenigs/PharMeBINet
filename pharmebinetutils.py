@@ -130,6 +130,9 @@ def prepare_index_query(label: str, prop: str, additional_index: str = '') -> st
     else:
         return 'Create Constraint On (node:%s) Assert node.%s Is Unique;\n' % (label, prop)
 
+def prepare_index_query_text(label: str, prop: str, additional_index: str = '') -> str:
+    return 'CREATE TEXT INDEX indexText%s%s FOR (node:%s) ON (node.%s);\n' % (label, additional_index, label, prop)
+
 
 def resource_add_and_prepare(resource, source):
     """
