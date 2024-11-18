@@ -12,7 +12,7 @@ dict_identifier_to_resource = {}
 # dictionary protein name to identifier
 dict_protein_name_to_identifier = {}
 
-# dictionary for gene_symbol to protein gene_name
+# dictionary for identifier to alternative_ids
 dict_identifier_to_alternative_ids = {}
 
 
@@ -106,7 +106,6 @@ def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    # driver = create_connection_to_database_metabolite.database_connection_neo4j_driver()
     g = driver.session(database='graph')
 
 
@@ -114,8 +113,6 @@ def main():
     global path_of_directory
     global source
     global home
-
-    # path_of_directory = "/Users/ann-cathrin/Documents/Master_4_Semester/Forschungsmodul_Heyer/Projekt_Cassandra/Test"
 
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
