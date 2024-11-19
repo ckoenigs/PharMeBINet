@@ -54,10 +54,9 @@ def generate_files(path_of_directory):
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/DisGeNet/
     query = f' Match (n:MarkerDB_Chemical{{id:toInteger(line.MarkerDB_chemical_id)}}), (v:Metabolite{{identifier:line.metabolite_id}}) Set v.markerdb="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_MarkerDB_chemical{{mapped_with:line.mapping_method}}]->(n)'
-    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
-    print(mode)
+
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
-    cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
     cypher_file.write(query)
 
     return csv_mapping
