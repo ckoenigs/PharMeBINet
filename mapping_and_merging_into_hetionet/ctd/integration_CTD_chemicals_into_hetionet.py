@@ -413,7 +413,8 @@ def find_cui_for_ctd_drugs():
                 if synonym in dict_synonym_to_drugbank_id:
                     drugbank_ids = drugbank_ids.union(dict_synonym_to_drugbank_id[synonym])
 
-            if len(drugbank_ids.intersection(dict_mesh_to_drugbank_with_umls[mesh_id])) > 0:
+            intersection_drugbank_ids=drugbank_ids.intersection(dict_mesh_to_drugbank_with_umls[mesh_id])
+            if len(intersection_drugbank_ids) > 0:
                 dict_drugs_CTD_with_drugbankIDs[mesh_id] = dict_drugs_CTD_without_drugbankIDs[mesh_id]
                 dict_drugs_CTD_with_drugbankIDs[mesh_id].set_drugbankIDs(dict_mesh_to_drugbank_with_umls[mesh_id])
                 dict_drugs_CTD_with_drugbankIDs[mesh_id].set_how_mapped('use umls cui to map to drugbank ids')
@@ -923,6 +924,7 @@ def generate_cypher_file():
                                               query)
     cypher_file.write(query)
     cypher_file.write(pharmebinetutils.prepare_index_query('Chemical', 'identifier'))
+    cypher_file.write(pharmebinetutils.prepare_index_query_text('Chemical', 'name'))
     cypher_file.close()
 
 
