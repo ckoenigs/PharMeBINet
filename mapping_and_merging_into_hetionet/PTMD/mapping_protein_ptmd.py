@@ -12,7 +12,7 @@ dict_identifier_to_resource = {}
 # dictionary protein name to identifier
 dict_protein_name_to_identifier = {}
 
-# dictionary for identifier to alternative_ids
+# dictionary for gene_symbol to protein gene_name
 dict_identifier_to_alternative_ids = {}
 
 
@@ -86,7 +86,6 @@ def load_all_PTMD_proteins_and_finish_the_files(csv_mapping):
         elif identifier not in dict_identifier_to_alternative_ids:
             for main_id, alternatives in dict_identifier_to_alternative_ids.items():
                 if identifier in alternatives:
-                    print(main_id, alternatives)
                     csv_mapping.writerow(
                         [identifier, main_id,
                          pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id], "PTMD"),
@@ -106,6 +105,7 @@ def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
+    # driver = create_connection_to_database_metabolite.database_connection_neo4j_driver()
     g = driver.session(database='graph')
 
 
@@ -113,6 +113,8 @@ def main():
     global path_of_directory
     global source
     global home
+
+    # path_of_directory = "/Users/ann-cathrin/Documents/Master_4_Semester/Forschungsmodul_Heyer/Projekt_Cassandra/Test"
 
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]

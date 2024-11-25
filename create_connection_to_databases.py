@@ -1,9 +1,9 @@
 import time
 import MySQLdb as mdb
 import neo4j
-import pymysql
-mysql_user='ckoenigs'
-mysql_pw='Za8p7Tf$'
+#import pymysql
+mysql_user='root'
+mysql_pw='test1234'
 
 # connect with the neo4j database
 def database_connection_neo4j_driver() -> neo4j.Driver:
@@ -26,7 +26,7 @@ def database_connection_neo4j_driver() -> neo4j.Driver:
             else:
                 time.sleep(30)
     return driver
-
+"""
 def mysqlconnect_bindingDB():
     # To connect MySQL database
     conn = pymysql.connect(
@@ -36,7 +36,7 @@ def mysqlconnect_bindingDB():
         db='bindingDB',
     )
     return conn
-
+"""
 
 def database_connection_RxNorm():
     conRxNorm = mdb.connect('127.0.0.1', mysql_user, mysql_pw, 'RxNorm', charset='utf8')
