@@ -1,16 +1,13 @@
 #!/bin/bash
 
 #define path to neo4j bin
-path_neo4j="/Users/ann-cathrin/Downloads/neo4j-community-5.19.0/bin"
-#path_neo4j=$1
+path_neo4j=$1
 
 # path to project
-path_to_project="/Users/ann-cathrin/Documents/Master_4_Semester/Forschungsmodul_Heyer/Projekt_Cassandra/PharMeBINet/"
 #path_to_project=$2
 
 #password
-password="test1234"
-#password=$3
+password=$3
 
 
 now=$(date +"%F %T")
@@ -81,7 +78,6 @@ echo "Current time: $now"
 echo restarting neo4j
 
 sleep 10
-# python restart_neo4j.py $path_neo4j > output/neo4j1.txt
 python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 sleep 10
 
