@@ -175,7 +175,7 @@ def main():
 
     home = os.getcwd()
     source = os.path.join(home, 'output')
-    path_of_directory = os.path.join(home, 'ptm_phenotyphe_edge/')
+    path_of_directory = os.path.join(home, 'ptm_phenotype_edge/')
 
     print(datetime.datetime.now())
     print('create connection with neo4j')
