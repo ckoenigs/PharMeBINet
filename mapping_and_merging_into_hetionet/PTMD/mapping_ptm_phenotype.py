@@ -124,7 +124,7 @@ def get_PTMD_information():
 
     # 2. Create new edges, write cypher queries
     query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Disease{{identifier:line.phenotype_id}}) Create ('
-             f'p)-[:is_ASSOCIATES_WITH_PiD{{resource:["PTMD"],ptmd:"yes", '
+             f'p)-[:ASSOCIATES_PTMaD{{resource:["PTMD"],ptmd:"yes", '
              f'is_experimental_verification:line.is_experimental_verification, '
              f'mutation_site_impacts:line.mutation_site_impacts, '
              f'mutation_sites:line.mutation_sites, regulation:line.regulation, sources:line.sources}}]->(d)')
@@ -133,7 +133,7 @@ def get_PTMD_information():
                                               query)
     file_cypher.write(query)
     query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:SideEffect{{identifier:line.phenotype_id}}) Create '
-             f'(p)-[:is_ASSOCIATES_WITH_PiD{{resource:["PTMD"],ptmd:"yes", '
+             f'(p)-[:iASSOCIATES_PTMaSE{{resource:["PTMD"],ptmd:"yes", '
              f'is_experimental_verification:line.is_experimental_verification, '
              f'mutation_site_impacts:line.mutation_site_impacts, '
              f'mutation_sites:line.mutation_sites, regulation:line.regulation, sources:line.sources}}]->(d)')
@@ -142,7 +142,7 @@ def get_PTMD_information():
                                               query)
     file_cypher.write(query)
     query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Symptom{{identifier:line.phenotype_id}}) Create ('
-             f'p)-[:is_ASSOCIATES_WITH_PiD{{resource:["PTMD"],ptmd:"yes", '
+             f'p)-[:ASSOCIATES_PTMaS{{resource:["PTMD"],ptmd:"yes", '
              f'is_experimental_verification:line.is_experimental_verification, '
              f'mutation_site_impacts:line.mutation_site_impacts, '
              f'mutation_sites:line.mutation_sites, regulation:line.regulation, sources:line.sources}}]->(d)')
@@ -151,7 +151,7 @@ def get_PTMD_information():
                                               query)
     file_cypher.write(query)
     query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Phenotype{{identifier:line.phenotype_id}}) Create '
-             f'(p)-[:is_ASSOCIATES_WITH_PiD{{resource:["PTMD"],ptmd:"yes", '
+             f'(p)-[:ASSOCIATES_PTMaPT{{resource:["PTMD"],ptmd:"yes", '
              f'is_experimental_verification:line.is_experimental_verification, '
              f'mutation_site_impacts:line.mutation_site_impacts, '
              f'mutation_sites:line.mutation_sites, regulation:line.regulation, sources:line.sources}}]->(d)')
