@@ -44,13 +44,14 @@ def load_all_PTMD_ptms_and_finish_the_files(csv_mapping):
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
-    query = "MATCH (n:PTMD_PTM) RETURN id(n) AS nodeId, n.position, n.residue, n.type AS ptm_type"
+    query = ("MATCH (n:PTMD_PTM)--(v:PTMD_Protein)--(p:Protein) RETURN id(n) AS nodeId, n.position, n.residue, "
+             "n.type AS ptm_type, v.uniprot_accession, p.identifier")
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
-    for nodeId, position, residue, ptm_type in results:
-        if ptm_type is not None and position is not None and residue is not None:
-            unique_identifier = residue + str(position) + ptm_type
+    for nodeId, position, residue, ptm_type, uniprot_accession, identifier in results:
+        if position is not None and residue is not None:
+            unique_identifier = str(identifier) + "_" + str(position) + "_" + str(residue) + "_" + str(ptm_type)
             csv_mapping.writerow(
                 [nodeId, unique_identifier, "PTMD", position, residue, ptm_type])
             counter_all += 1
