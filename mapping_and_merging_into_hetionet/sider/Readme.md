@@ -3,7 +3,7 @@ License: Attribution 4.0 International (CC BY 4.0)
 https://www.biostars.org/p/155342/
 
 The SIDER script prepares the mapping and the integration of SE-drug relationships.
-First, the SIDER SEs are mapped, and add new nodes to the database.
+First, the SIDER SEs add new nodes to the database.
                First, the TSV files for the new nodes are generated.
                Next, the SIDER SE information is prepared and written into the new node TSV file.
                In the last step, the cypher file and cypher query are generated.

@@ -1,7 +1,6 @@
 GO script contains multiple steps.
-First, the old GOs (biological process, cellular component, and molecular function) are removed and the new GOs nodes are prepared :
-               First, all properties are extracted from the GO nodes and prepared in a cypher string. Also, a cypher file is generated for the cypher query to delete old GO nodes which do not exists anymore.
-               The next step is to generate for each label  (BP, CC, MF) a new node TSV file, and the fitting cypher file is generated and add to the cypher file.
+The GOs (biological process, cellular component, and molecular function) are prepared and added:
+               The first step is to generate for each label  (BP, CC, MF) a new node TSV file, and the fitting cypher file is generated and add to the cypher file.
                In the following, the BP, CC, and MF information from the database is added to a dictionary. Also, the is_a relationships of GO are extracted and wrote into TSV files. Additionally, cypher queries for integrate these relationships are generated and add to the cypher file.
                All nodes are written into the new node TSV file.
 Then the old nodes are deleted and the new information is integrated into the database with the cypher-shell.
