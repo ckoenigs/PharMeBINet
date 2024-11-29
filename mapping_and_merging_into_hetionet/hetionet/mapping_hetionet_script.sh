@@ -42,7 +42,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-python3 map_and_add_symptom_hetionet.py $path_to_project > output/output_map_disease.txt
+python3 add_symptom_hetionet.py $path_to_project > output/output_map_disease.txt
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")

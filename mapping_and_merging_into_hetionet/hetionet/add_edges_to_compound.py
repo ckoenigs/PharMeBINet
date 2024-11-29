@@ -52,7 +52,6 @@ def load_pharmebinet_pharmebinet_node_in(csv_file, pharmebinet_node_label1, phar
             dict_all=rela_infos[0]
             dict_all['id1']=node1
             dict_all['id2']=node2
-        new_dict={}
         for key, value in dict_all.items():
             if type(value) in [list, set]:
                 dict_all[key]='|'.join(value)

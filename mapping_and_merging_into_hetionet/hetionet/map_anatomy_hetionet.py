@@ -17,7 +17,7 @@ def create_connection_with_neo4j():
     g = driver.session(database='graph')
 
 
-def get_properties_and_generate_tsv_files_and_cypher_file():
+def generate_tsv_files_and_cypher_file():
     """
     Create TSV files for new nodes and update nodes. Prepare the additional cypher queries for the nodes and the is-a
     relationship.
@@ -110,7 +110,7 @@ def main():
     print(datetime.datetime.now())
     print('load all properties of compound and drugbank compound and use the information to generate tsv files')
 
-    get_properties_and_generate_tsv_files_and_cypher_file()
+    generate_tsv_files_and_cypher_file()
 
     print(
         '#################################################################################################################################################################')
