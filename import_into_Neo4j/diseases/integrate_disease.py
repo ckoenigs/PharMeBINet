@@ -57,10 +57,10 @@ def generate_node_file(label, cypher_file):
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(['id', 'name'])
 
-    query = f' Create (d:DISEASE_{label}{{identifier:line.id, name:line.name}})'
+    query = f' Create (d:DISEASES_{label}{{identifier:line.id, name:line.name}})'
     query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/disease/' + file_name, query)
     cypher_file.write(query)
-    cypher_file.write(pharmebinetutils.prepare_index_query(f'DISEASE_{label}', 'identifier'))
+    cypher_file.write(pharmebinetutils.prepare_index_query(f'DISEASES_{label}', 'identifier'))
     return csv_writer
 
 def generate_files():
@@ -82,7 +82,7 @@ def generate_files():
     cypher_file.close()
     cypher_file = open('output/cypher_edge.cypher', 'w', encoding='utf-8')
 
-    query = f' Match (a:DISEASE_Gene{{identifier:line.gene_id}}), (d:DISEASE_Disease{{identifier:line.disease_id}}) Create (a)-[:association{{source:line.source,sourceScore:line.sourceScore,confidenceScore:line.confidenceScore}}]->(d)'
+    query = f' Match (a:DISEASES_Gene{{identifier:line.gene_id}}), (d:DISEASES_Disease{{identifier:line.disease_id}}) Create (a)-[:association{{source:line.source,sourceScore:line.sourceScore,confidenceScore:line.confidenceScore}}]->(d)'
     query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/disease/' + file_name, query)
     cypher_file.write(query)
     cypher_file.close()
