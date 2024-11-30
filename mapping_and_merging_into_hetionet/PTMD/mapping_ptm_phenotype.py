@@ -66,7 +66,9 @@ def get_PTMD_information():
     counter_all = 0
     dict_all_mappings = {}
 
-    query = "Match (n:PTM)--(p:PTMD_PTM)-[r]-(:PTMD_Disease)--(m:Phenotype) Return n.identifier, m.identifier, labels(m), r.is_experimental_verification, r.mutation_site_impacts, r.mutation_sites, r.regulation, r.sources"
+    query = ("Match (n:PTM)--(p:PTMD_PTM)-[r]-(:PTMD_Disease)--(m:Phenotype) Return n.identifier, m.identifier, "
+             "labels(m), r.is_experimental_verification, r.mutation_site_impacts, r.mutation_sites, "
+             "r.regulation, r.sources")
     results = g.run(query)
 
     for record in results:
