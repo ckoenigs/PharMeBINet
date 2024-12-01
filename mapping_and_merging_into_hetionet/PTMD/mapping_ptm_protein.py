@@ -40,23 +40,23 @@ def get_PTMD_information():
     counter_all = 0
     dict_all_mappings = {}
 
-    query = "Match (n:PTM)--(p:PTMD_PTM)-[r]-(:PTMD_Protein)--(m:Protein) Return id(n) AS nodeId, m.identifier"
+    query = "Match (n:PTM)--(p:PTMD_PTM)-[r]-(:PTMD_Protein)--(m:Protein) Return n.identifier, m.identifier"
     results = g.run(query)
 
     for record in results:
-        [nodeId, protein_id] = record.values()
+        [ptm_id, protein_id] = record.values()
         counter_all += 1
 
         # mapping of new edges
-        if (nodeId, protein_id) not in dict_all_mappings:
-            dict_all_mappings[(nodeId, protein_id)] = "Protein"
+        if (ptm_id, protein_id) not in dict_all_mappings:
+            dict_all_mappings[(ptm_id, protein_id)] = "Protein"
             writer_protein.writerow(
-                [nodeId, protein_id])
+                [ptm_id, protein_id])
             counter_protein += 1
 
         # when edge is already integrated
         else:
-            print("Already mapped edge:", nodeId, protein_id, dict_all_mappings[(nodeId, protein_id)])
+            print("Already mapped edge:", ptm_id, protein_id, dict_all_mappings[(ptm_id, protein_id)])
             counter_not_mapped += 1
     file_protein.close()
 
@@ -71,8 +71,7 @@ def get_PTMD_information():
 
     # Create new edges, write cypher queries
     query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Protein{{identifier:line.protein_id}}) '
-             f'WHERE id(p) = toInteger(line.ptm_id) Create ('
-             f'p)-[:HAS_PhPTM{{resource:["PTMD"],ptmd:"yes"}}]->(d)')
+             f'Create (p)-[:HAS_PhPTM{{resource:["PTMD"],ptmd:"yes"}}]->(d)')
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_not_mapped_protein,
                                               query)
