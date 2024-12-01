@@ -115,7 +115,7 @@ def get_PTMD_information():
     print('number of sideEffect edges:', counter_sideEffect)
     print('number of symptom edges:', counter_symptom)
     print('number of phenotype edges:', counter_phenotype)
-    print('number of not mapped edges:', counter_not_mapped)
+    print('number of not mapped (already mapped) edges:', counter_not_mapped)
     print('number of all edges:', counter_all)
 
     # cypher queries

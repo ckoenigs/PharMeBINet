@@ -59,7 +59,7 @@ def generate_files(path_of_directory):
     new_file_path = os.path.join(path_of_directory, new_file_name) + '.tsv'
     new_file = open(new_file_path, 'w+', encoding='utf-8')
     csv_mapping_new = csv.writer(new_file, delimiter='\t')
-    csv_mapping_new.writerow(['identifier', 'resource', 'sequence_window', 'type', 'residue', 'position'])
+    csv_mapping_new.writerow(['nodeId','identifier', 'resource', 'sequence_window', 'type', 'residue', 'position'])
 
     if not os.path.exists(source):
         os.mkdir(source)
@@ -67,15 +67,15 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/PTMD/
-    query = f' Match (n:qPTM_PTM), (v:PTM{{identifier:line.ptm_identifier}}) WHERE id(n) = toInteger(line.nodeId) Set v.qptm="yes", v.resource=split(line.resource,"|"), v.sequence_window=line.sequence_window Create (v)-[:equal_to_qPTM_ptm{{mapped_with:line.mapping_method}}]->(n)'
+    query = f' Match (n:qPTM_PTM), (v:PTM{{identifier:line.ptm_identifier}}) WHERE id(n) = toInteger(line.nodeId) Set v.qptm="yes", v.resource=split(line.resource,"|"), v.sequence_window=line.sequence_window MERGE (v)-[:equal_to_qPTM_ptm{{mapped_with:line.mapping_method}}]->(n)'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
-    cypher_file.write(query)
+    #cypher_file.write(query)
 
     query = f' Match (n:qPTM_PTM) WHERE id(n) = toInteger(line.nodeId) MERGE (v:PTM{{identifier:line.identifier}}) Set v.qptm="yes", v.resource=split(line.resource,"|"), v.residue=line.residue, v.position=line.position, v.type=line.type, v.sequence_window=line.sequence_window Create (v)-[:equal_to_qPTM_ptm]->(n)'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
-    query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
+    query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
 
@@ -103,7 +103,7 @@ def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_ne
                  'ptm_identifier', sequence_window])
         else:
             csv_mapping_new.writerow([
-                identifier, "qPTM", sequence_window, ptm_type, residue, position
+                nodeId, identifier, "qPTM", sequence_window, ptm_type, residue, position
             ])
             counter_not_mapped += 1
             print(identifier)
