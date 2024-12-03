@@ -48,16 +48,11 @@ def load_disease_from_database_and_add_to_dict():
     results = g.run(query)
 
     for identifier, name, synonyms, xrefs, resource, in results:
-        # node = record.data()['n']
-        # identifier = node['identifier']
-        # dict_disease_id_to_resource[identifier] = node['resource']
         dict_disease_id_to_resource[identifier] = resource
-        # name = node['name'].lower()
         name = name.lower()
         dict_disease_id_to_name[identifier] = name
         dict_disease_name_to_id[name] = identifier
         pharmebinetutils.add_entry_to_dict_to_set(dict_synonym_to_ids, name, identifier)
-        # synonyms = node['synonyms'] if 'synonyms' in node else []
         if synonyms:
             for synonym in synonyms:
                 synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
@@ -119,7 +114,9 @@ def generate_files(path_of_directory):
         os.mkdir(source)
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
-    query = f' MATCH (n:PTMD_Disease), (v:Phenotype{{identifier: line.identifier}}) WHERE id(n) = toInteger(line.PTMD_disease_name) SET v.ptmd = "yes", v.resource = split(line.resource, "|") CREATE (v)-[:equal_to_PTMD_disease {{mapped_with: line.mapping_method}}]->(n)'
+    query = (f' MATCH (n:PTMD_Disease), (v:Phenotype{{identifier: line.identifier}}) WHERE id(n) = '
+             f'toInteger(line.PTMD_disease_name) SET v.ptmd = "yes", v.resource = split(line.resource, "|") '
+             f'CREATE (v)-[:equal_to_PTMD_disease {{mapped_with: line.mapping_method}}]->(n)')
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')

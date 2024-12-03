@@ -78,7 +78,6 @@ echo "Current time: $now"
 echo restarting neo4j
 
 sleep 10
-# python restart_neo4j.py $path_neo4j > output/neo4j1.txt
 python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 sleep 10
 
