@@ -6,6 +6,7 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
+# import create_connection_to_database_metabolite
 
 
 # dictionary disease name to resource
@@ -35,7 +36,7 @@ def create_connection_with_neo4j():
     g = driver.session(database='graph')
 
     # create connection with mysql database
-    #global con
+    global con
     con = create_connection_to_databases.database_connection_umls()
 
 
@@ -47,16 +48,11 @@ def load_disease_from_database_and_add_to_dict():
     results = g.run(query)
 
     for identifier, name, synonyms, xrefs, resource, in results:
-        # node = record.data()['n']
-        # identifier = node['identifier']
-        # dict_disease_id_to_resource[identifier] = node['resource']
         dict_disease_id_to_resource[identifier] = resource
-        # name = node['name'].lower()
         name = name.lower()
         dict_disease_id_to_name[identifier] = name
         dict_disease_name_to_id[name] = identifier
         pharmebinetutils.add_entry_to_dict_to_set(dict_synonym_to_ids, name, identifier)
-        # synonyms = node['synonyms'] if 'synonyms' in node else []
         if synonyms:
             for synonym in synonyms:
                 synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
@@ -81,7 +77,6 @@ def try_to_get_umls_ids_with_UMLS(name):
     :param name:
     :return:
     """
-    
     cur = con.cursor()
     query = ('Select Distinct CUI From MRCONSO Where STR = "%s";')
     query = query % (name)
@@ -93,8 +88,9 @@ def try_to_get_umls_ids_with_UMLS(name):
         # add found cuis
         for (cui,) in cur:
             list_of_cuis.append(cui)
-
+    print(list_of_cuis)
     return list_of_cuis
+
 
 def generate_files(path_of_directory):
     """
@@ -118,7 +114,9 @@ def generate_files(path_of_directory):
         os.mkdir(source)
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
-    query = f' MATCH (n:PTMD_Disease) WHERE toLower(n.name) = toLower(line.PTMD_disease_name) MATCH (v:Phenotype{{identifier: line.identifier}}) SET v.ptmd = "yes", v.resource = split(line.resource, "|") CREATE (v)-[:equal_to_PTMD_disease {{mapped_with: line.mapping_method}}]->(n)'
+    query = (f' MATCH (n:PTMD_Disease), (v:Phenotype{{identifier: line.identifier}}) WHERE id(n) = '
+             f'toInteger(line.PTMD_disease_name) SET v.ptmd = "yes", v.resource = split(line.resource, "|") '
+             f'CREATE (v)-[:equal_to_PTMD_disease {{mapped_with: line.mapping_method}}]->(n)')
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
@@ -132,32 +130,37 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping):
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
-    query = "MATCH (n:PTMD_Disease) RETURN n"
+    query = "MATCH (n:PTMD_Disease) RETURN id(n) AS nodeId, n.name"
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
-    for record in results:
-        node = record.data()['n']
+    for nodeId, name, in results:
+        #node = record.data()['n']
         counter_all += 1
-        name = node['name'].lower()
-        if '\xa0' in name:
-            name = name.replace(u'\xa0', u' ')
+        #name = node['name'].lower()
+        name_lower = name.lower()
+
+
         mapped = False
         # mapping
-        if name in dict_disease_name_to_id:
+        if name_lower in dict_disease_name_to_id:
             mapped = True
-            identifier = dict_disease_name_to_id[name]
+            identifier = dict_disease_name_to_id[name_lower]
             csv_mapping.writerow(
-                [name, identifier,
+                [nodeId, identifier,
                  pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "PTMD"),
                  'name'])
-        elif name in dict_synonym_to_ids:
+        if mapped:
+            continue
+
+        if name_lower in dict_synonym_to_ids:
             mapped = True
-            for identifier in dict_synonym_to_ids[name]:
+            for identifier in dict_synonym_to_ids[name_lower]:
                 csv_mapping.writerow(
-                    [name, identifier,
+                    [nodeId, identifier,
                      pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "PTMD"),
                      'synonym'])
+
 
         if mapped:
             continue
@@ -165,13 +168,13 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping):
         # manual mapping
 
 
-        umls_cui_list = try_to_get_umls_ids_with_UMLS(name)
+        umls_cui_list = try_to_get_umls_ids_with_UMLS(name_lower)
         for umls_cui in umls_cui_list:
             if umls_cui in dict_disease_umls_cui_to_id:
                 mapped = True
                 for disease_id in dict_disease_umls_cui_to_id[umls_cui]:
                     csv_mapping.writerow(
-                        [name, disease_id,
+                        [nodeId, disease_id,
                          pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "PTMD"),
                          'umls'])
 
@@ -191,7 +194,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping):
                         mapped = True
                         for identifier in dict_disease_nci_id_to_id[nci_id]:
                             csv_mapping.writerow(
-                                [name, identifier,
+                                [nodeId, identifier,
                                  pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier],
                                                                            "PTMD"),
                                  'umls_nci'])
@@ -212,7 +215,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping):
                         mapped = True
                         for identifier in dict_disease_omim_id_to_id[omim_id]:
                             csv_mapping.writerow(
-                                [name, identifier,
+                                [nodeId, identifier,
                                  pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier],
                                                                            "PTMD"),
                                  'umls_omim'])
@@ -234,13 +237,13 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping):
                         mapped = True
                         identifier = dict_disease_name_to_id[name_umls]
                         csv_mapping.writerow(
-                            [name, identifier,
+                            [nodeId, identifier,
                              pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "PTMD"),
                              'umls_name'])
 
         if not mapped:
             counter_not_mapped += 1
-            print(name)
+            print(name_lower)
 
 
     print('number of not-mapped conditions:', counter_not_mapped)
@@ -280,7 +283,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.now())
-    print('Load all PTMD genes from database')
+    print('Load all PTMD diseases from database')
     load_all_PTMD_diseases_and_finish_the_files(csv_mapping)
 
     driver.close()

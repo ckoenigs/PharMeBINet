@@ -40,9 +40,9 @@ def generate_files(path_of_directory):
     if not os.path.exists(path_of_directory):
         os.mkdir(path_of_directory)
 
-    file_name = 'PTMD_protein_to_Protein'
+    file_name = 'qptm_protein_to_Protein'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['ptmd_identifier', 'identifier', 'resource', 'mapping_method']
+    header = ['qptm_identifier', 'identifier', 'resource', 'mapping_method']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
@@ -53,8 +53,8 @@ def generate_files(path_of_directory):
         os.mkdir(source)
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
-    # mapping_and_merging_into_hetionet/PTMD/
-    query = f' Match (n:PTMD_Protein{{uniprot_accession:line.ptmd_identifier}}), (v:Protein{{identifier:line.identifier}}) Set v.ptmd="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_PTMD_protein{{mapped_with:line.mapping_method}}]->(n)'
+    # mapping_and_merging_into_hetionet/qptm/
+    query = f' Match (n:qPTM_Protein{{uniprot_id:line.qptm_identifier}}), (v:Protein{{identifier:line.identifier}}) Set v.qptm="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_qPTM_protein{{mapped_with:line.mapping_method}}]->(n)'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
@@ -63,32 +63,33 @@ def generate_files(path_of_directory):
     return csv_mapping
 
 
-def load_all_PTMD_proteins_and_finish_the_files(csv_mapping):
+def load_all_qptm_proteins_and_finish_the_files(csv_mapping):
     """
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
-    query = "MATCH (n:PTMD_Protein) RETURN n"
+    query = "MATCH (n:qPTM_Protein) RETURN n"
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
     for record in results:
         node = record.data()['n']
         counter_all += 1
-        identifier = node.get('uniprot_accession', None)
+        identifier = node.get('uniprot_id', None)
+        gene_name = node.get('gene_name', None)
 
         # mapping
         if identifier in dict_identifier_to_resource:
             csv_mapping.writerow(
                 [identifier, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "PTMD"),
-                 'uniprot_accession'])
+                 pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "qPTM"),
+                 'uniprot_id'])
         elif identifier not in dict_identifier_to_alternative_ids:
             for main_id, alternatives in dict_identifier_to_alternative_ids.items():
                 if identifier in alternatives:
                     csv_mapping.writerow(
                         [identifier, main_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id], "PTMD"),
+                         pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id], "qPTM"),
                          'alternative_id'])
         else:
             counter_not_mapped += 1
@@ -143,8 +144,8 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.now())
-    print('Load all PTMD proteins from database')
-    load_all_PTMD_proteins_and_finish_the_files(csv_mapping)
+    print('Load all qPTM proteins from database')
+    load_all_qptm_proteins_and_finish_the_files(csv_mapping)
 
     driver.close()
 
