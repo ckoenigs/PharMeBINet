@@ -27,14 +27,14 @@ def generate_files(path_of_directory):
     if not os.path.exists(source):
         os.mkdir(source)
 
-    cypher_file_path = os.path.join(source, 'cypher.cypher')
+    cypher_file_path = os.path.join(source, 'cypher2.cypher')
     # mapping_and_merging_into_hetionet/PTMD/
-    query = (f' Match (n:PTMD_PTM) WHERE id(n) = toInteger(line.nodeId) MERGE (v:PTM{{identifier:line.identifier}})'
-             f' Set v.ptmd="yes", v.resource=split(line.resource,"|"), v.identifier=line.identifier, '
-             f'v.residue=line.residue, v.position=line.position, v.type=line.type Create (v)-[:equal_to_PTMD_ptm]->(n)')
-    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
+    query = (f' Match (n:PTMD_PTM) WHERE id(n) = toInteger(line.nodeId) MERGE (v:PTM{{identifier:line.identifier}})  '
+             f'On Create Set  v.ptmd="yes", v.resource=split(line.resource,"|"), v.residue=line.residue, '
+             f'v.position=line.position, v.type=line.type Create (v)-[:equal_to_PTMD_ptm]->(n)')
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
-    cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
+    cypher_file.write(pharmebinetutils.prepare_index_query('PTM','identifier'))
     cypher_file.write(query)
 
     return csv_mapping

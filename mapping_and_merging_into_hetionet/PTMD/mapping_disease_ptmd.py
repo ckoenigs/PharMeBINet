@@ -117,9 +117,8 @@ def generate_files(path_of_directory):
     query = (f' MATCH (n:PTMD_Disease), (v:Phenotype{{identifier: line.identifier}}) WHERE id(n) = '
              f'toInteger(line.PTMD_disease_name) SET v.ptmd = "yes", v.resource = split(line.resource, "|") '
              f'CREATE (v)-[:equal_to_PTMD_disease {{mapped_with: line.mapping_method}}]->(n)')
-    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
-    cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
     cypher_file.write(query)
 
     return csv_mapping

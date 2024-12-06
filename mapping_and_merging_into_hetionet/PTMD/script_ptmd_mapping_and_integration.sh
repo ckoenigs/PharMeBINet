@@ -10,6 +10,7 @@ path_to_project=$2
 password=$3
 
 
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo map and integrate disease
@@ -30,9 +31,25 @@ fi
 
 python3 mapping_protein_ptmd.py $path_to_project > protein/output_protein.txt
 
+
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo map and integrate ptms
+echo integrate mappings into neo4j
+
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo restarting neo4j
+
+sleep 20
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+sleep 20
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo map and integrate ptm
 
 if [ ! -d ptm ]; then
   mkdir ptm
@@ -44,7 +61,16 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate mappings into neo4j
 
-python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher2.cypher > output/cypher.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo restarting neo4j
+
+sleep 20
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+sleep 20
 
 now=$(date +"%F %T")
 echo "Current time: $now"
