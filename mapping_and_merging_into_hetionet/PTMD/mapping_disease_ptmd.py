@@ -10,20 +10,7 @@ import pharmebinetutils
 
 
 # dictionary disease name to resource
-dict_disease_id_to_resource = {}
-
-dict_disease_id_to_name = {}
-
-dict_disease_name_to_id = {}
-# dictionary umls cui to disease id
-dict_disease_umls_cui_to_id = {}
-# dictionary omim id to disease id
-dict_disease_omim_id_to_id = {}
-# dictionary nci id to disease id
-dict_disease_nci_id_to_id = {}
-
-# dictionary gene symbol to gene id
-dict_synonym_to_ids = {}
+dict_phenotype_id_to_resource = {}
 
 
 def create_connection_with_neo4j():
@@ -40,35 +27,40 @@ def create_connection_with_neo4j():
     con = create_connection_to_databases.database_connection_umls()
 
 
-def load_disease_from_database_and_add_to_dict():
+def load_disease_from_database_and_add_to_dict(label, condition=''):
     """
     Load all Genes from my database and add them into a dictionary
     """
-    query = "MATCH (n:Phenotype) RETURN n.identifier, n.name, n.synonyms, n.xrefs, n.resource"
+    query = f"MATCH (n:{label}) {condition} RETURN n.identifier, n.name, n.synonyms, n.xrefs, n.resource"
     results = g.run(query)
 
+    dict_different_mappings_for_a_label = {'name': {}, 'synonyms': {}, 'umls': {}, 'omim': {}, 'ncit': {}}
+
     for identifier, name, synonyms, xrefs, resource, in results:
-        dict_disease_id_to_resource[identifier] = resource
+        dict_phenotype_id_to_resource[identifier] = resource
         name = name.lower()
-        dict_disease_id_to_name[identifier] = name
-        dict_disease_name_to_id[name] = identifier
-        pharmebinetutils.add_entry_to_dict_to_set(dict_synonym_to_ids, name, identifier)
+        pharmebinetutils.add_entry_to_dict_to_set(dict_different_mappings_for_a_label['name'], name, identifier)
         if synonyms:
             for synonym in synonyms:
                 synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
-                pharmebinetutils.add_entry_to_dict_to_set(dict_synonym_to_ids, synonym, identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_different_mappings_for_a_label['synonyms'], synonym,
+                                                          identifier)
 
         if xrefs:
             for xref in xrefs:
                 if xref.startswith('UMLS'):
-                    pharmebinetutils.add_entry_to_dict_to_set(dict_disease_umls_cui_to_id, xref.split(':')[1],
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_different_mappings_for_a_label['umls'],
+                                                              xref.split(':')[1],
                                                               identifier)
                 elif xref.startswith('OMIM'):
-                    pharmebinetutils.add_entry_to_dict_to_set(dict_disease_omim_id_to_id, xref.split(':')[1],
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_different_mappings_for_a_label['omim'],
+                                                              xref.split(':')[1],
                                                               identifier)
                 elif xref.startswith('NCIT:'):
-                    pharmebinetutils.add_entry_to_dict_to_set(dict_disease_nci_id_to_id, xref.split(':')[1],
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_different_mappings_for_a_label['ncit'],
+                                                              xref.split(':')[1],
                                                               identifier)
+    return dict_different_mappings_for_a_label
         
 
 def try_to_get_umls_ids_with_UMLS(name):
@@ -124,7 +116,7 @@ def generate_files(path_of_directory):
     return csv_mapping
 
 
-def load_all_PTMD_diseases_and_finish_the_files(csv_mapping):
+def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_symptom, dict_phenotype):
     """
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
@@ -133,49 +125,129 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping):
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
-    for nodeId, name, in results:
-        #node = record.data()['n']
+    for neo4j_id, name, in results:
         counter_all += 1
-        #name = node['name'].lower()
-        name_lower = name.lower()
+        name = name.lower()
 
 
         mapped = False
         # mapping
-        if name_lower in dict_disease_name_to_id:
+        if name in dict_disease['name']:
             mapped = True
-            identifier = dict_disease_name_to_id[name_lower]
-            csv_mapping.writerow(
-                [nodeId, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "PTMD"),
-                 'name'])
+            for identifier in dict_disease['name'][name]:
+                csv_mapping.writerow(
+                    [neo4j_id, identifier,
+                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "PTMD"),
+                     'name'])
+
+        if mapped:
+            continue
+        # mapping
+        if name in dict_symptom['name']:
+            mapped = True
+            for identifier in dict_symptom['name'][name]:
+                csv_mapping.writerow(
+                    [neo4j_id, identifier,
+                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "PTMD"),
+                     'name'])
+
+        if mapped:
+            continue
+        # mapping
+        if name in dict_phenotype['name']:
+            mapped = True
+            for identifier in dict_phenotype['name'][name]:
+                csv_mapping.writerow(
+                    [neo4j_id, identifier,
+                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "PTMD"),
+                     'name'])
+
+        if mapped:
+            continue
+        # manual mapping
+        # if name in dict_manual_mapping:
+        #     print('manual')
+        #     mapped = True
+        #     csv_mapping.writerow(
+        #         [neo4j_id, dict_manual_mapping[name],
+        #          pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[dict_manual_mapping[name]],
+        #                                                    "PTMD"),
+        #          'manual'])
+        #
+        # if mapped:
+        #     continue
+
+        umls_cui_list = try_to_get_umls_ids_with_UMLS(name)
+        for umls_cui in umls_cui_list:
+            if umls_cui in dict_disease['umls']:
+                mapped = True
+                for identifier in dict_disease['umls'][umls_cui]:
+                    csv_mapping.writerow(
+                        [neo4j_id, identifier,
+                         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
+                                                                   "PTMD"),
+                         'umls'])
+
         if mapped:
             continue
 
-        if name_lower in dict_synonym_to_ids:
+        if name in dict_disease['synonyms']:
             mapped = True
-            for identifier in dict_synonym_to_ids[name_lower]:
+            for identifier in dict_disease['synonyms'][name]:
                 csv_mapping.writerow(
-                    [nodeId, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "PTMD"),
+                    [neo4j_id, identifier,
+                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "PTMD"),
                      'synonym'])
 
+        if mapped:
+            continue
+
+        umls_cui_list = try_to_get_umls_ids_with_UMLS(name)
+        for umls_cui in umls_cui_list:
+            if umls_cui in dict_symptom['umls']:
+                mapped = True
+                for identifier in dict_symptom['umls'][umls_cui]:
+                    csv_mapping.writerow(
+                        [neo4j_id, identifier,
+                         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
+                                                                   "PTMD"),
+                         'umls'])
 
         if mapped:
             continue
 
-        # manual mapping
+        if name in dict_symptom['synonyms']:
+            mapped = True
+            for identifier in dict_symptom['synonyms'][name]:
+                csv_mapping.writerow(
+                    [neo4j_id, identifier,
+                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "PTMD"),
+                     'synonym'])
 
+        if mapped:
+            continue
 
-        umls_cui_list = try_to_get_umls_ids_with_UMLS(name_lower)
+        umls_cui_list = try_to_get_umls_ids_with_UMLS(name)
         for umls_cui in umls_cui_list:
-            if umls_cui in dict_disease_umls_cui_to_id:
+            if umls_cui in dict_phenotype['umls']:
                 mapped = True
-                for disease_id in dict_disease_umls_cui_to_id[umls_cui]:
+                for identifier in dict_phenotype['umls'][umls_cui]:
                     csv_mapping.writerow(
-                        [nodeId, disease_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "PTMD"),
+                        [neo4j_id, identifier,
+                         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
+                                                                   "PTMD"),
                          'umls'])
+
+        if mapped:
+            continue
+
+        if name in dict_phenotype['synonyms']:
+            mapped = True
+            for identifier in dict_phenotype['synonyms'][name]:
+                csv_mapping.writerow(
+                    [neo4j_id, identifier,
+                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "PTMD"),
+                     'synonym'])
 
         if mapped:
             continue
@@ -189,40 +261,19 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping):
             if rows_counter > 0:
                 # add found cuis
                 for (nci_id,) in cur:
-                    if nci_id in dict_disease_nci_id_to_id:
+                    if nci_id in dict_disease['ncit']:
                         mapped = True
-                        for identifier in dict_disease_nci_id_to_id[nci_id]:
+                        for identifier in dict_disease['ncit'][nci_id]:
                             csv_mapping.writerow(
-                                [nodeId, identifier,
-                                 pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier],
+                                [neo4j_id, identifier,
+                                 pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
                                                                            "PTMD"),
                                  'umls_nci'])
 
         if mapped:
             continue
-
+        set_umls_names = set()
         if len(umls_cui_list) > 0:
-            cur = con.cursor()
-            query = ('Select Distinct CODE From MRCONSO Where CUI in  ("%s") and SAB="OMIM" ;')
-            query = query % ('","'.join(umls_cui_list))
-            rows_counter = cur.execute(query)
-
-            if rows_counter > 0:
-                # add found cuis
-                for (omim_id,) in cur:
-                    if omim_id in dict_disease_omim_id_to_id:
-                        mapped = True
-                        for identifier in dict_disease_omim_id_to_id[omim_id]:
-                            csv_mapping.writerow(
-                                [nodeId, identifier,
-                                 pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier],
-                                                                           "PTMD"),
-                                 'umls_omim'])
-
-        if mapped:
-            continue
-
-        if len(umls_cui_list)>0:
             cur = con.cursor()
             query = ('Select Distinct STR From MRCONSO Where CUI in  ("%s");')
             query = query % ('","'.join(umls_cui_list))
@@ -232,17 +283,47 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping):
                 # add found cuis
                 for (name_umls,) in cur:
                     name_umls = name_umls.lower()
-                    if name_umls in dict_disease_name_to_id:
+                    set_umls_names.add(name_umls)
+                    if name_umls in dict_disease['name']:
                         mapped = True
-                        identifier = dict_disease_name_to_id[name_umls]
+                        for identifier in dict_disease['name'][name_umls]:
+                            csv_mapping.writerow(
+                                [neo4j_id, identifier,
+                                 pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
+                                                                           "PTMD"),
+                                 'umls_name'])
+
+        if mapped:
+            continue
+
+        if len(set_umls_names) > 0:
+            for name_umls in set_umls_names:
+                if name_umls in dict_symptom['name']:
+                    mapped = True
+                    for identifier in dict_symptom['name'][name_umls]:
                         csv_mapping.writerow(
-                            [nodeId, identifier,
-                             pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[identifier], "PTMD"),
+                            [neo4j_id, identifier,
+                             pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
+                                                                       "PTMD"),
+                             'umls_name'])
+
+        if mapped:
+            continue
+
+        if len(set_umls_names) > 0:
+            for name_umls in set_umls_names:
+                if name_umls in dict_phenotype['name']:
+                    mapped = True
+                    for identifier in dict_phenotype['name'][name_umls]:
+                        csv_mapping.writerow(
+                            [neo4j_id, identifier,
+                             pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
+                                                                       "PTMD"),
                              'umls_name'])
 
         if not mapped:
             counter_not_mapped += 1
-            print(name_lower)
+            print(name)
 
 
     print('number of not-mapped conditions:', counter_not_mapped)
@@ -272,7 +353,10 @@ def main():
 
     print(datetime.datetime.now())
     print('Load all disease from database')
-    load_disease_from_database_and_add_to_dict()
+    dict_disease = load_disease_from_database_and_add_to_dict('Disease')
+    dict_symptom = load_disease_from_database_and_add_to_dict('Symptom')
+    dict_phenotype = load_disease_from_database_and_add_to_dict('Phenotype', 'Where not ( n:Disease or n:Symptom)')
+
     print('##########################################################################')
 
     print(datetime.datetime.now())
@@ -283,7 +367,7 @@ def main():
 
     print(datetime.datetime.now())
     print('Load all PTMD diseases from database')
-    load_all_PTMD_diseases_and_finish_the_files(csv_mapping)
+    load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_symptom, dict_phenotype)
 
     driver.close()
 
