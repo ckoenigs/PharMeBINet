@@ -17,9 +17,14 @@ if [ ! -d output ]; then
   mkdir mapping_symptom_sideeffect
 fi
 
-echo mapp se, symptom, disease and phenotypes to each other
+echo map se, symptom, disease and phenotypes to each other
 
 python3 connect_sideeffect_symptom_disease.py $path_to_project > output/output_symptoms_to_sideEffects_disease.txt
+
+
+echo map metabolite and chemicals
+
+python3 connection_metabolite_chemical.py $path_to_project > output/output_chemical_metabolite.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

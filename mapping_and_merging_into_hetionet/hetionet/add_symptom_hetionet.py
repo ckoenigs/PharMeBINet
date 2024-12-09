@@ -15,15 +15,13 @@ def database_connection():
     g = driver.session(database='graph')
 
 
-'''
-Get all properties of the mondo symptom and create the tsv files
-'''
-
-
-def get_mondo_properties_and_generate_csv_files():
-
+def generate_csv_files():
+    """
+    Generate TSV file for new added nodes
+    :return:
+    """
     # generate tsv files
-    global  tsv_map_nodes
+    global tsv_map_nodes
 
     # tsv with nodes which needs to be updated
     map_node_file = open('output/symptoms.tsv', 'w', encoding='utf-8')
@@ -31,11 +29,8 @@ def get_mondo_properties_and_generate_csv_files():
     tsv_map_nodes.writerow(['id'])
 
 
-
-
 # dictionary mondo id to mondo name
 dict_mondo_id_to_name = {}
-
 
 '''
 generate cypher queries to integrate and merge symptom nodes and create the subclass relationships
@@ -51,29 +46,29 @@ def generate_cypher_queries():
                     RETURN allfields as l;''' % ("Symptom_hetionet")
         result = g.run(query)
         query = ''' Match (a:Symptom_hetionet{identifier:line.id}) Create (b:Symptom{identifier:line.id, hetionet:"yes", resource:["Hetionet"], source:"MeSH via Hetionet", %s}) Create (b)-[:equal_to_hetionet_symptom]->(a) '''
-        list_prop=[]
+        list_prop = []
         for record in result:
             prop = record.data()['l']
-            if not prop in ['identifier','source']:
+            if not prop in ['identifier', 'source']:
                 list_prop.append(f'{prop}:a.{prop}')
 
-        query = query %(", ".join(list_prop))
-        query= pharmebinetutils.get_query_import(path_of_directory,'mapping_and_merging_into_hetionet/hetionet/output/symptoms.tsv',query)
+        query = query % (", ".join(list_prop))
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  'mapping_and_merging_into_hetionet/hetionet/output/symptoms.tsv',
+                                                  query)
         cypher_file.write(query)
-        cypher_file.write(pharmebinetutils.prepare_index_query('Symptom','identifier'))
+        cypher_file.write(pharmebinetutils.prepare_index_query('Symptom', 'identifier'))
         cypher_file.write(pharmebinetutils.prepare_index_query_text('Symptom', 'name'))
         cypher_file.close()
 
 
 def mapping_hetionet_symptom():
-    query= 'MATCH (n:Symptom_hetionet) RETURN n.identifier'
+    query = 'MATCH (n:Symptom_hetionet) RETURN n.identifier'
     results = g.run(query)
     for record in results:
         [identifier] = record.values()
 
         tsv_map_nodes.writerow([identifier])
-
-
 
 
 # path to directory
@@ -100,7 +95,7 @@ def main():
     print(datetime.datetime.now())
     print('gather all properties from mondo and put them as header into the tsv files ')
 
-    get_mondo_properties_and_generate_csv_files()
+    generate_csv_files()
 
     print('##########################################################################')
 

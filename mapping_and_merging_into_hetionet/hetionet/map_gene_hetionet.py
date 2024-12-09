@@ -19,23 +19,21 @@ def create_connetion_with_neo4j():
 
 
 # dictionary with all gene ids to there name
-dict_pharmebinet_gene_ids_to_name = {}
+dict_pharmebinet_gene_ids_to_resource = {}
 
 '''
 load all ncbi identifier from the gene ides into a dictionary (or list)
 '''
 
 
-def get_all_ncbi_ids_form_pharmebinet_genes():
-    query = '''Match (g:Gene) Return g;'''
+def get_all_ncbi_ids_from_pharmebinet_genes():
+    query = '''Match (g:Gene) Return g.identifier, g.resource;'''
     results = g.run(query)
-    for record in results:
-        node = record.data()['g']
-        identifier = node['identifier']
+    for identifier, resource, in results:
 
-        dict_pharmebinet_gene_ids_to_name[identifier] = dict(node)
+        dict_pharmebinet_gene_ids_to_resource[identifier] = resource
 
-    print('number of genes in pharmebinet:' + str(len(dict_pharmebinet_gene_ids_to_name)))
+    print('number of genes in pharmebinet:' + str(len(dict_pharmebinet_gene_ids_to_resource)))
 
 
 
@@ -62,22 +60,20 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     cypher_file.write(query)
     cypher_file.close()
 
-    query = '''MATCH (n:Gene_Ncbi) RETURN n.identifier, n.full_name_from_nomenclature_authority, n;'''
+    query = '''MATCH (n:Gene_hetionet) RETURN n.identifier;'''
     results = g.run(query)
     counter_not_same_name = 0
     counter_all = 0
     counter_all_in_pharmebinet = 0
     counter_mapped_and_similar_names=0
     for record in results:
-        [gene_id, name, node] = record.values()
+        [gene_id] = record.values()
         counter_all += 1
-        # make a dictionary from the node
-        node = dict(node)
 
 
-        if gene_id in dict_pharmebinet_gene_ids_to_name:
+        if gene_id in dict_pharmebinet_gene_ids_to_resource:
             counter_all_in_pharmebinet += 1
-            writer.writerow([gene_id,gene_id, pharmebinetutils.resource_add_and_prepare(dict_pharmebinet_gene_ids_to_name[gene_id]['resource'],
+            writer.writerow([gene_id,gene_id, pharmebinetutils.resource_add_and_prepare(dict_pharmebinet_gene_ids_to_resource[gene_id],
                                                                            'Hetionet')])
 
         else:
@@ -110,7 +106,7 @@ def main():
     print(datetime.datetime.now())
     print('gather all information of the pharmebinet genes')
 
-    get_all_ncbi_ids_form_pharmebinet_genes()
+    get_all_ncbi_ids_from_pharmebinet_genes()
 
     print(
         '#################################################################################################################################################################')

@@ -151,7 +151,7 @@ def create_cypher_query(header, from_label, to_label, file_name):
     query = query % (from_label, header[0], to_label, header[1], short_first, short_second, header[2],
                      dict_label_to_url_label[from_label], header[0])
     query = pharmebinetutils.get_query_import(path_of_directory,
-                                              f'mapping_and_merging_into_hetionet/connectSideEffect_Sympom_Disease/{file_name}',
+                                              f'mapping_and_merging_into_hetionet/connect_equal_edges/{file_name}',
                                               query)
     cypher.write(query)
 

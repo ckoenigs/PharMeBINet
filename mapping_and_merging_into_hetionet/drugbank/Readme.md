@@ -2,21 +2,17 @@ The DrugBank merging has two scripts because of the order in how the data are me
 
 Script one defines the license of DrugBank. Following steps:
 Mapping of drug and preparation of drug interaction:
-    First, get all properties of the DrugBank drug to generate the TSV files (mapped and new nodes) with the different properties.
-    Then, load all existing compounds and write information into the dictionary.
-    Next, the DrugBank compounds are loaded and written into a dictionary.
+    First, get all properties of the DrugBank drug to generate the TSV files ( new nodes) with the different properties.
+    Next, the DrugBank compounds are loaded and written into the TSV file.
     In the following, all interaction edges of DrugBank are loaded and written into a dictionary.
-    Then, the DrugBank compounds are mapped to the compounds with DrugBank ID and alternative ID. All pairs are written in TSV files. If one DrugBank node is mapped to multiple nodes one pair is written in the TSV file and the rest are added to a merge script so that all information from one node is integrated into another with additional also add the relationships from this node. If no mapping appears they are written into the TSV file for new nodes.
-    Next, the cypher queries to integrate the mapped node information and the new node are generated and written into the cypher file.
-    In the last step, the cypher query to integrate drug-drug interaction (DDI) is generated. Also, the DDIs are integrated into a TSV file.
+    Then, prepare a cypher file and write creation cypher query into it.
+    In the last step, the cypher query to integrate drug-drug interaction (DDI) is generated and added to another cypher file. Also, the DDIs are integrated into a new generated TSV file.
 
 Next, the drug information and edges are integrated into the database with the Neo4j cypher-shell.
-In the following, the merge node script is executed.
 
 Then, Salt mapping to Compound:
-    First, find all compounds that did not map to DrugBank drugs and write information into dictionaries.
-    Next, get all properties of salt nodes and prepare a cypher query to integrate salt nodes into the database. Also, TSV files for the nodes and relationships are generated. Furthermore, the cypher query for integrating the relationships between compound and salt is added to the cypher file. Additionally, a cypher file is generated to delete all Compounds which are not mapped.
-    Then, all salt nodes are written into the TSV file. All compounds that map with InChIKey and or name are added to the merge script to be combined into the salt node.
+    First, get all properties of salt nodes and prepare a cypher query to integrate salt nodes into the database. Also, TSV files for the nodes and relationships are generated. Furthermore, the cypher query for integrating the relationships between compound and salt is added to the cypher file.
+    Then, all salt nodes are written into the TSV file. 
     In the last step, the relationship pairs between salt and compound are written into the TSV file.
 
 Next, the Product:

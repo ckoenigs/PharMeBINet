@@ -52,7 +52,6 @@ def load_pharmebinet_pharmebinet_node_in(csv_file, pharmebinet_node_label1, phar
             dict_all=rela_infos[0]
             dict_all['id1']=node1
             dict_all['id2']=node2
-        new_dict={}
         for key, value in dict_all.items():
             if type(value) in [list, set]:
                 dict_all[key]='|'.join(value)
@@ -60,23 +59,6 @@ def load_pharmebinet_pharmebinet_node_in(csv_file, pharmebinet_node_label1, phar
 
     print(f'number of {pharmebinet_node_label1}-{pharmebinet_node_label2} relationships in pharmebinet:' + str(
         len(dict_pair_to_edges)))
-
-
-def create_cypher_file(directory, file_path, node_label, rela_name):
-    """
-    generate new relationships between pathways of pharmebinet and reactionLikeEvent of pharmebinet nodes that mapped to reactome
-    :param directory:
-    :param file_path:
-    :param node_label:
-    :param rela_name:
-    :return:
-    """
-    query = ''' MATCH (d:ReactionLikeEvent{identifier:line.id_pharmebinet_reactionLikeEvent}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.id_pharmebinet_reactionLikeEvent, source:"Reactome"}]->(c)'''
-    query = query % (node_label, rela_name, license)
-    query = pharmebinetutils.get_query_import(path_of_directory,
-                                              f'mapping_and_merging_into_hetionet/reactome/{file_path}',
-                                              query)
-    cypher_file.write(query)
 
 
 def check_relationships_and_generate_file(pharmebinet_label1, pharmebinet_label2, hetionet_label1, hetionet_label2,
@@ -133,7 +115,7 @@ def main():
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
-        sys.exit('need a path and license reactome edge')
+        sys.exit('need a path and license hetionet edge')
 
     global cypher_file
     print(datetime.datetime.now())

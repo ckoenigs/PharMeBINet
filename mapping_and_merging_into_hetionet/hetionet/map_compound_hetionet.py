@@ -26,19 +26,16 @@ def prepare_tsv_file():
     """
 
     # generate tsv files
-    global  tsv_map_nodes
+    global tsv_map_nodes
 
     # tsv with nodes which needs to be updated
     map_node_file = open('output/map_compounds.tsv', 'w', encoding='utf-8')
     tsv_map_nodes = csv.writer(map_node_file, delimiter='\t')
-    tsv_map_nodes.writerow(['id','hetionet_id','how_mapped', 'resource'])
-
-
+    tsv_map_nodes.writerow(['id', 'hetionet_id', 'how_mapped', 'resource'])
 
 
 # dictionary mondo id to mondo name
 dict_mondo_id_to_name = {}
-
 
 '''
 generate cypher queries to integrate and merge compound nodes
@@ -50,20 +47,23 @@ def generate_cypher_queries():
     with open('output/cypher_drug.cypher', 'w', encoding='utf-8') as cypher_file:
         query = ''' Match (a:Compound_hetionet{identifier:line.hetionet_id}), (b:Compound{identifier:line.id})  Set b.resource=split(line.resource,"|") Create (b)-[:equal_to_hetionet_compound{how_mapped:line.how_mapped}]->(a) '''
 
-        query= pharmebinetutils.get_query_import(path_of_directory,'mapping_and_merging_into_hetionet/hetionet/output/map_compounds.tsv',query)
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  'mapping_and_merging_into_hetionet/hetionet/output/map_compounds.tsv',
+                                                  query)
         cypher_file.write(query)
 
+
 # dictionary mondo to resource
-dict_compound_to_resource={}
+dict_compound_to_resource = {}
 
 # dictionary alternative_ids to ids
-dict_alternative_id_to_ids={}
+dict_alternative_id_to_ids = {}
 
 # dictionary name to mondo
-dict_name_to_identifier ={}
+dict_name_to_identifier = {}
 
 # dictionary inchikey to mondo
-dict_inchikey_to_identifier ={}
+dict_inchikey_to_identifier = {}
 
 
 def load_in_all_compound_in_dictionary():
@@ -75,7 +75,7 @@ def load_in_all_compound_in_dictionary():
     results = g.run(query)
     for record in results:
         [identifier, resource, alternative_ids, inchikey, name] = record.values()
-        dict_compound_to_resource[identifier]=set(resource)
+        dict_compound_to_resource[identifier] = set(resource)
 
         alternative_ids = alternative_ids if alternative_ids else []
         for alternative_id in alternative_ids:
@@ -90,26 +90,27 @@ def mapping_hetionet_Compound():
     Map hetionet compound to compounds
     :return:
     """
-    query= 'MATCH (n:Compound_hetionet) RETURN n.identifier, n.name, n.inchikey'
+    query = 'MATCH (n:Compound_hetionet) RETURN n.identifier, n.name, n.inchikey'
     results = g.run(query)
-    counter=0
-    counter_mapped=0
+    counter = 0
+    counter_mapped = 0
     for record in results:
-        counter+=1
+        counter += 1
         [identifier, name, inchikey] = record.values()
 
-        is_mapped=False
+        is_mapped = False
 
-        name=name.lower()
-        inchikey= inchikey.split('=')[1]
+        name = name.lower()
+        inchikey = inchikey.split('=')[1]
 
         if identifier in dict_compound_to_resource:
-            is_mapped=True
-            tsv_map_nodes.writerow([identifier,identifier,'id', pharmebinetutils.resource_add_and_prepare(dict_compound_to_resource[identifier],
-                                                                           'Hetionet')])
+            is_mapped = True
+            tsv_map_nodes.writerow([identifier, identifier, 'id',
+                                    pharmebinetutils.resource_add_and_prepare(dict_compound_to_resource[identifier],
+                                                                              'Hetionet')])
 
         if is_mapped:
-            counter_mapped+=1
+            counter_mapped += 1
             continue
 
         if inchikey in dict_inchikey_to_identifier:
@@ -146,8 +147,7 @@ def mapping_hetionet_Compound():
             continue
 
     print('all hetionet compound:', counter)
-    print('mapped:',counter_mapped)
-
+    print('mapped:', counter_mapped)
 
 
 # path to directory

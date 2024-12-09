@@ -20,7 +20,7 @@ Get all properties of the mondo disease and create the tsv files
 '''
 
 
-def get_mondo_properties_and_generate_csv_files():
+def generate_csv_files():
 
     # generate tsv files
     global  tsv_map_nodes
@@ -60,11 +60,6 @@ dict_doid_to_mondo ={}
 # dictionary name to mondo
 dict_name_to_mondo ={}
 
-'''
-Load in all disease ontology ids with external identifier and alternative id
-also check for mapping between do and mondo
-'''
-
 
 def load_in_all_disease_in_dictionary():
     """
@@ -88,15 +83,13 @@ def load_in_all_disease_in_dictionary():
 
 
 def mapping_hetionet_disease():
-    query= 'MATCH (n:Disease_hetionet) RETURN n'
+    query= 'MATCH (n:Disease_hetionet) RETURN n.identifier, n.name'
     results = g.run(query)
     counter=0
     counter_mapped=0
-    for record in results:
+    for doid, name, in results:
         counter+=1
-        disease = record.data()['n']
-        doid=disease['identifier']
-        name= disease['name'].lower()
+        name= name.lower()
 
         is_mapped=False
 
@@ -149,7 +142,7 @@ def main():
     print(datetime.datetime.now())
     print('gather all properties from mondo and put them as header into the tsv files ')
 
-    get_mondo_properties_and_generate_csv_files()
+    generate_csv_files()
 
     print('##########################################################################')
 
