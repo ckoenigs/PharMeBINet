@@ -71,7 +71,7 @@ def get_PTMD_information():
 
     # Create new edges, write cypher queries
     query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Protein{{identifier:line.protein_id}}) '
-             f'Create (p)-[:HAS_PhPTM{{resource:["PTMD"],ptmd:"yes"}}]->(d)')
+             f'Create (d)-[:HAS_PhPTM{{resource:["PTMD"],ptmd:"yes"}}]->(p)')
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_not_mapped_protein,
                                               query)
