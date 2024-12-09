@@ -7,6 +7,11 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
+# dictionary ptm id to resource
+dict_identifier_to_resource = {}
+
+# dictionary ptm name to identifier
+dict_protein_name_to_identifier = {}
 
 def create_connection_with_neo4j():
     '''
@@ -16,86 +21,115 @@ def create_connection_with_neo4j():
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session(database='graph')
 
+def load_ptms_from_database_and_add_to_dict():
+    """
+    Load all Proteins from pharmebinet and add them into a dictionary
+    """
+    query = "MATCH (n:PTM)-[r]-(p:Protein) RETURN n.identifier, r.resource, p.identifier"
+    results = g.run(query)
 
-def get_qPTM_information():
-    '''
-    Load all qPTM ptm-protein and save to tsv
-    '''
+    for ptm_identifier, resource, protein_identifer in results:
+        dict_identifier_to_resource[(ptm_identifier, protein_identifer)] = resource
 
+def generate_files(path_of_directory):
+    """
+    generate cypher file and tsv file
+    :return: tsv file
+    """
     # make sure folder exists
     if not os.path.exists(path_of_directory):
         os.mkdir(path_of_directory)
-    columns = ['ptm_id','protein_id','relationshipId','condition','fdr_peptide','log2ratio_peptide','pmid',
-               'raw_peptide','reliability','sample']
 
-    # Create tsv for ptm-protein edges
-    file_name_not_mapped_protein = 'new_ptm_protein_edges.tsv'
-    not_mapped_path_protein = os.path.join(path_of_directory, file_name_not_mapped_protein)
-    mode = 'w' if os.path.exists(not_mapped_path_protein) else 'w+'
-    file_protein = open(not_mapped_path_protein, mode, encoding='utf-8')
-    writer_protein = csv.writer(file_protein, delimiter='\t')
-    writer_protein.writerow(columns)
+    file_name = 'qPTM_edges_to_edges'
+    file_path = os.path.join(path_of_directory, file_name) + '.tsv'
+    header = ['ptm_identifier', 'protein_identifer','resource']
+    # 'w+' creates file, 'w' opens file for writing
+    mode = 'w' if os.path.exists(file_path) else 'w+'
+    file = open(file_path, mode, encoding='utf-8')
+    csv_mapping_existing = csv.writer(file, delimiter='\t')
+    csv_mapping_existing.writerow(header)
 
-    counter_protein = 0
-    counter_not_mapped = 0
-    counter_all = 0
-    all_edges = []
-    dict_all_mappings = {}
+    if not os.path.exists(source):
+        os.mkdir(source)
 
-    query = ("Match (n:PTM)--(p:qPTM_PTM)-[r]-(:qPTM_Protein)--(m:Protein) Return n.identifier, m.identifier, "
-             "id(r) AS relationshipId, r.condition, r.fdr_peptide, r.log2ratio_peptide, r.pmid, r.raw_peptide, "
-             "r.reliability, r.sample")
+    new_file_name = 'new_edges'
+    new_file_path = os.path.join(path_of_directory, new_file_name) + '.tsv'
+    new_file = open(new_file_path, 'w+', encoding='utf-8')
+    csv_mapping_new = csv.writer(new_file, delimiter='\t')
+    csv_mapping_new.writerow(['ptm_identifier', 'protein_identifier','resource'])
+
+    if not os.path.exists(source):
+        os.mkdir(source)
+
+
+    cypher_file_path = os.path.join(source, 'cypher_edge.cypher')
+    query = (f' Match (n:Protein{{identifier:line.protein_identifier}})-[r]-(v:PTM{{identifier:line.ptm_identifier}}) '
+             f'Set r.qptm="yes", r.resource=split(line.resource,"|")')
+    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
+    query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
+    cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    cypher_file.write(query)
+
+    query = (f' Match (n:Protein{{identifier:line.protein_identifier}}), (v:PTM{{identifier:line.ptm_identifier}})  '
+             f' Create (v)-[:HAS_PhPTM{{resource:["qPTM"],qptm:"yes"}}]->(n)')
+    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
+    query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
+    cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    cypher_file.write(query)
+
+    return csv_mapping_existing, csv_mapping_new
+
+
+def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_new):
+    """
+    Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
+    """
+
+    query = (
+        "MATCH (ptm:PTM)--(n:qPTM_PTM)-[r]-(v:qPTM_Protein)--(p:Protein) "
+        "RETURN id(r) as relationshipId, p.identifier as protein_identifier, ptm.identifier as ptm_identifier"
+    )
     results = g.run(query)
 
-    for record in results:
-        [ptm_id, protein_id, relationshipId, condition, fdr_peptide, log2ratio_peptide, pmid, raw_peptide, reliability,
-         sample] = record.values()
+    counter_new_edges = 0
+    counter_mapped = 0
+    counter_all = 0
+
+    all_edges_qptm = set()
+
+    for relationshipId, protein_identifier, ptm_identifier in results:
         counter_all += 1
 
-        # mapping of new edges
-        if relationshipId not in all_edges:
-            #dict_all_mappings[(ptm_id, protein_id)] = "Protein"
-            all_edges.append(relationshipId)
-            writer_protein.writerow(
-                [ptm_id, protein_id, relationshipId, condition, fdr_peptide, log2ratio_peptide, pmid, raw_peptide,
-                 reliability, sample])
-            counter_protein += 1
+        edge = (ptm_identifier, protein_identifier)
+        if edge in all_edges_qptm:
+            continue
 
-        # when edge is already integrated
+        if edge in dict_identifier_to_resource:
+            csv_mapping_existing.writerow([
+                ptm_identifier, protein_identifier,
+                pharmebinetutils.resource_add_and_prepare(
+                    dict_identifier_to_resource[edge], "qPTM"
+                )
+            ])
+            counter_mapped += 1
         else:
-            print("Already mapped edge:", ptm_id, protein_id, relationshipId)
-            counter_not_mapped += 1
-    file_protein.close()
+            csv_mapping_new.writerow([ptm_identifier, protein_identifier, "qPTM"])
+            counter_new_edges += 1
+            print(f"New edge: {ptm_identifier}, {protein_identifier}")
 
-    print('number of protein edges:', counter_protein)
-    print('number of not mapped edges:', counter_not_mapped)
-    print('number of all edges:', counter_all)
+        all_edges_qptm.add(edge)
 
-    # cypher queries
-    cypher_path = os.path.join(source, 'cypher_edge.cypher')
-    mode = 'a' if os.path.exists(cypher_path) else 'w'
-    file_cypher = open(cypher_path, mode, encoding='utf-8')
-
-    # Create new edges, write cypher queries
-    # Informationen die in eine Kante gepackt werden, vorher in tabelle zusammenpacken (JSON)
-    query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Protein{{identifier:line.protein_id}}) MERGE ('
-             f'p)-[e:HAS_PhPTM]->(d) '
-             f'ON CREATE SET e.resource=["qPTM"],e.qptm="yes",e.condition=line.condition,'
-             f' e.fdr_peptide=line.fdr_peptide,'
-             f' e.log2ratio_peptide=line.log2ratio_peptide, e.pmid=line.pmid, e.raw_peptide=line.raw_peptide, '
-             f' e.reliability=line.reliability, e.sample=line.sample')
-    query = pharmebinetutils.get_query_import(path_of_directory,
-                                              file_name_not_mapped_protein,
-                                              query)
-    file_cypher.write(query)
-    file_cypher.close()
+    print(f'Number of new ptm_protein edges: {counter_new_edges}')
+    print(f'Number of extended ptm_protein edges: {counter_mapped}')
+    print(f'Number of all ptms: {counter_all}')
 
 
-######### MAIN #########
 def main():
     global path_of_directory
     global source
     global home
+
+    # path_of_directory = "/Users/ann-cathrin/Documents/Master_4_Semester/Forschungsmodul_Heyer/Projekt_Cassandra/Test"
 
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
@@ -106,21 +140,28 @@ def main():
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'ptm_protein_edge/')
 
+    print('##########################################################################')
     print(datetime.datetime.now())
-    print('create connection with neo4j')
-
+    print('connection to db')
     create_connection_with_neo4j()
+    print('##########################################################################')
+
+    print(datetime.datetime.now())
+    print('Load all PTMs from database')
+    load_ptms_from_database_and_add_to_dict()
+    print('##########################################################################')
+
+    print(datetime.datetime.now())
+    print('Generate cypher and tsv file')
+    csv_mapping_existing, csv_mapping_new = generate_files(path_of_directory)
 
     print('##########################################################################')
-    print('gather all information of the qPTM ptms/protein')
 
-    get_qPTM_information()
+    print(datetime.datetime.now())
+    print('Load all qPTM ptms from database')
+    load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_new)
 
     driver.close()
-
-    print('##########################################################################')
-    print(datetime.datetime.now())
-
 
 if __name__ == "__main__":
     main()
