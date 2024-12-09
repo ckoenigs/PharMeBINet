@@ -14,7 +14,6 @@ dict_identifier_to_resource = {}
 # dictionary ptm name to identifier
 dict_protein_name_to_identifier = {}
 
-
 def create_connection_with_neo4j():
     '''
     create a connection with neo4j
@@ -22,7 +21,6 @@ def create_connection_with_neo4j():
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session(database='graph')
-
 
 def load_ptms_from_database_and_add_to_dict():
     """
@@ -33,7 +31,6 @@ def load_ptms_from_database_and_add_to_dict():
 
     for ptm_identifier, resource, protein_identifer in results:
         dict_identifier_to_resource[(ptm_identifier, protein_identifer)] = resource
-
 
 def generate_files(path_of_directory):
     """
@@ -46,7 +43,7 @@ def generate_files(path_of_directory):
 
     file_name = 'qPTM_edges_to_edges'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['ptm_identifier', 'protein_identifer', 'resource', 'conditions', 'reliabilities', 'pmids']
+    header = ['ptm_identifier', 'protein_identifer','resource', 'aggregated_properties']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
@@ -60,42 +57,34 @@ def generate_files(path_of_directory):
     new_file_path = os.path.join(path_of_directory, new_file_name) + '.tsv'
     new_file = open(new_file_path, 'w+', encoding='utf-8')
     csv_mapping_new = csv.writer(new_file, delimiter='\t')
-    csv_mapping_new.writerow(
-        ['ptm_identifier', 'protein_identifier', 'resource', 'conditions', 'reliabilities', 'pmids'])
+    csv_mapping_new.writerow(['ptm_identifier', 'protein_identifier','resource', 'aggregated_properties'])
+
+    if not os.path.exists(source):
+        os.mkdir(source)
+
 
     cypher_file_path = os.path.join(source, 'cypher_edge.cypher')
-
-    # Update the query to handle JSON-based information
     query = (f' Match (n:Protein{{identifier:line.protein_identifier}})-[r]-(v:PTM{{identifier:line.ptm_identifier}}) '
-             f'Set r.qptm="yes", '
-             f'r.resource=split(line.resource,"|"), '
-             f'r.conditions=line.conditions, '
-             f'r.reliabilities=line.reliabilities, '
-             f'r.pmids=line.pmids')
+             f'Set r.qptm="yes", r.resource=split(line.resource,"|"),r.properties_qptm=apoc.convert.fromJsonList(line.aggregated_properties)')
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
 
-    # Query for creating new edges
     query = (f' Match (n:Protein{{identifier:line.protein_identifier}}), (v:PTM{{identifier:line.ptm_identifier}})  '
-             f' Create (v)-[:HAS_PhPTM{{resource:["qPTM"], qptm:"yes", '
-             f'conditions:line.conditions, '
-             f'reliabilities:line.reliabilities, '
-             f'pmids:line.pmids}}]->(n)')
+             f' Create (v)-[:HAS_PhPTM{{resource:["qPTM"],qptm:"yes",r.properties_qptm: apoc.convert.fromJsonMap(line.aggregated_properties)}}]->(n)')
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
-    cypher_file.write(query)
+    #cypher_file.write(query)
 
     return csv_mapping_existing, csv_mapping_new
 
 
 def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_new):
     """
-    Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
+    Load all variation, sort the ids into the right tsv, generate the queries, and add relationships to the rela tsv.
     """
-
     query = (
         "MATCH (ptm:PTM)--(n:qPTM_PTM)-[r]-(v:qPTM_Protein)--(p:Protein) "
         "RETURN id(r) as relationshipId, p.identifier as protein_identifier, ptm.identifier as ptm_identifier, "
@@ -106,58 +95,44 @@ def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_ne
     counter_new_edges = 0
     counter_mapped = 0
     counter_all = 0
-
     all_edges_qptm = {}
 
     for relationshipId, protein_identifier, ptm_identifier, condition, reliability, pmid in results:
-        counter_all += 1
-
         edge = (ptm_identifier, protein_identifier)
-
-        # Initialize the edge entry if it doesn't exist
         if edge not in all_edges_qptm:
-            all_edges_qptm[edge] = {
-                'conditions': set(),
-                'reliabilities': set(),
-                'pmids': set()
-            }
+            all_edges_qptm[edge] = []
+        all_edges_qptm[edge].append({
+            "condition": condition or '',
+            "reliability": reliability or '',
+            "pmid": pmid or ''
+        })
 
-        # Add unique values to sets
-        if condition:
-            all_edges_qptm[edge]['conditions'].add(condition)
-        if reliability:
-            all_edges_qptm[edge]['reliabilities'].add(reliability)
-        if pmid:
-            all_edges_qptm[edge]['pmids'].add(pmid)
+    for edge, properties_list in all_edges_qptm.items():
+        ptm_identifier, protein_identifier = edge
+        cleaned_properties = [
+            {k: v for k, v in prop.items() if v}  # Remove empty values
+            for prop in properties_list
+        ]
 
-        # When processing the full set of results for this edge
-        if g.run(query).forward():  # This is a simplification and may need adjustment
-            # Convert sets to JSON for storage
-            conditions_json = json.dumps(list(all_edges_qptm[edge]['conditions']))
-            reliabilities_json = json.dumps(list(all_edges_qptm[edge]['reliabilities']))
-            pmids_json = json.dumps(list(all_edges_qptm[edge]['pmids']))
+        # Use json.dumps with separators to create a compact JSON
+        aggregated_properties = json.dumps(cleaned_properties, separators=(',', ':'))
+        #print(aggregated_properties)
+        # Write the existing edge or new edge based on presence in the dictionary
+        if edge in dict_identifier_to_resource:
+            csv_mapping_existing.writerow([
+                ptm_identifier, protein_identifier,
+                pharmebinetutils.resource_add_and_prepare(
+                    dict_identifier_to_resource[edge], "qPTM"
+                ), aggregated_properties
+            ])
+            counter_mapped += 1
+        else:
+            # New edge, add it to the CSV and Cypher file
+            csv_mapping_new.writerow([ptm_identifier, protein_identifier, "qPTM", aggregated_properties])
+            counter_new_edges += 1
+            print(f"New edge: {ptm_identifier}, {protein_identifier}")
 
-            if edge in dict_identifier_to_resource:
-                csv_mapping_existing.writerow([
-                    ptm_identifier, protein_identifier,
-                    pharmebinetutils.resource_add_and_prepare(
-                        dict_identifier_to_resource[edge], "qPTM"
-                    ),
-                    conditions_json,
-                    reliabilities_json,
-                    pmids_json
-                ])
-                counter_mapped += 1
-            else:
-                csv_mapping_new.writerow([
-                    ptm_identifier, protein_identifier,
-                    "qPTM",
-                    conditions_json,
-                    reliabilities_json,
-                    pmids_json
-                ])
-                counter_new_edges += 1
-                print(f"New edge: {ptm_identifier}, {protein_identifier}")
+
 
     print(f'Number of new ptm_protein edges: {counter_new_edges}')
     print(f'Number of extended ptm_protein edges: {counter_mapped}')
@@ -168,6 +143,8 @@ def main():
     global path_of_directory
     global source
     global home
+
+    # path_of_directory = "/Users/ann-cathrin/Documents/Master_4_Semester/Forschungsmodul_Heyer/Projekt_Cassandra/Test"
 
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
@@ -200,7 +177,6 @@ def main():
     load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_new)
 
     driver.close()
-
 
 if __name__ == "__main__":
     main()
