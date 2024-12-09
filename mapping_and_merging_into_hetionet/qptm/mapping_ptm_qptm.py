@@ -95,6 +95,7 @@ def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_ne
              "n.position, n.residue, n.type AS ptm_type, p.identifier")
     results = g.run(query)
     counter_not_mapped = 0
+    counter_mapped = 0
     counter_all = 0
     for nodeId, sequence_window, position, residue, ptm_type, identifier in results:
         counter_all += 1
@@ -105,6 +106,7 @@ def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_ne
                 [nodeId, identifier,
                  pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "qPTM"),
                  'ptm_identifier', sequence_window])
+            counter_mapped += 1
         else:
             csv_mapping_new.writerow([
                 nodeId, identifier, "qPTM", sequence_window, ptm_type, residue, position
@@ -112,7 +114,7 @@ def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_ne
             counter_not_mapped += 1
             print(identifier)
 
-    print('number of not-mapped ptms:', counter_not_mapped)
+    print('number of new ptms:', counter_not_mapped)
     print('number of all ptms:', counter_all)
 
 
