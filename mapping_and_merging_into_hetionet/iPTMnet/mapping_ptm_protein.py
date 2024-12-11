@@ -11,9 +11,6 @@ import pharmebinetutils
 # dictionary ptm id to resource
 dict_identifier_to_resource = {}
 
-# dictionary ptm name to identifier
-dict_protein_name_to_identifier = {}
-
 def create_connection_with_neo4j():
     '''
     create a connection with neo4j
@@ -105,6 +102,7 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
     all_edges_iptmnet = {}
     print(results)
     for relationshipId, protein_identifier, ptm_identifier, note, ptm_source, pmids in results:
+        counter_all += 1
         edge = (ptm_identifier, protein_identifier)
         if edge not in all_edges_iptmnet:
             all_edges_iptmnet[edge] = []
@@ -117,11 +115,10 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
     for edge, properties_list in all_edges_iptmnet.items():
         ptm_identifier, protein_identifier = edge
         cleaned_properties = [
-            {k: v for k, v in prop.items() if v}  # Remove empty values
+            {k: v for k, v in prop.items() if v}
             for prop in properties_list
         ]
 
-        # Write the existing edge or new edge based on presence in the dictionary
         if edge in dict_identifier_to_resource:
             csv_mapping_existing.writerow([
                 ptm_identifier, protein_identifier,
@@ -131,12 +128,10 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
             ])
             counter_mapped += 1
         else:
-            # New edge, add it to the CSV and Cypher file
+            # New edge
             csv_mapping_new.writerow([ptm_identifier, protein_identifier, "iPTMnet", cleaned_properties])
             counter_new_edges += 1
             print(f"New edge: {ptm_identifier}, {protein_identifier}")
-
-
 
     print(f'Number of new ptm_protein edges: {counter_new_edges}')
     print(f'Number of extended ptm_protein edges: {counter_mapped}')

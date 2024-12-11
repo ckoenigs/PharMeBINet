@@ -95,6 +95,7 @@ def load_all_iPTMnet_proteins_and_finish_the_files(csv_mapping):
         identifier = node.get('uniprot_accession', None)
         gene_names = node.get('gene_name', [])
         name = node.get('name', None)
+        name_lower = ""
         if name:
             name_lower = name.lower()
         uniprot_id = node.get('uniprot_id', None)
@@ -131,16 +132,14 @@ def load_all_iPTMnet_proteins_and_finish_the_files(csv_mapping):
                     counter_mapped_alternative_id += 1
                     mapped = True
                     break
-        if not mapped and name:
-            if name in dict_protein_name_to_identifier:
-                identifier_protein = dict_protein_name_to_identifier[name]
-                csv_mapping.writerow(
-                    [identifier, identifier_protein,
-                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier_protein], "iPTMnet"),
-                     'name'])
-                counter_mapped_name += 1
-                mapped = True
-                break
+        if not mapped and name_lower in dict_protein_name_to_identifier:
+            identifier_protein = dict_protein_name_to_identifier[name_lower]
+            csv_mapping.writerow(
+                [identifier, identifier_protein,
+                pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier_protein], "iPTMnet"),
+                'name'])
+            counter_mapped_name += 1
+            mapped = True
         if not mapped:
             counter_not_mapped += 1
             print(identifier)
