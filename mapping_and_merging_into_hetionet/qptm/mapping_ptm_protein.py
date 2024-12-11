@@ -64,19 +64,26 @@ def generate_files(path_of_directory):
 
 
     cypher_file_path = os.path.join(source, 'cypher_edge.cypher')
-    query = (f' Match (n:Protein{{identifier:line.protein_identifier}})-[r]-(v:PTM{{identifier:line.ptm_identifier}}) '
-             f'Set r.qptm="yes", r.resource=split(line.resource,"|"),r.properties_qptm=apoc.convert.fromJsonList(line.aggregated_properties)')
+    query = (f' MATCH (n:Protein {{identifier: line.protein_identifer}}), (v:PTM {{identifier: line.ptm_identifier}}) '
+             f'MATCH (n)-[r:HAS_PhPTM]-(v) SET r.qptm = "yes", '
+             f'r.resource = split(line.resource, "|"), r.properties_qptm = line.aggregated_properties')
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
 
-    query = (f' Match (n:Protein{{identifier:line.protein_identifier}}), (v:PTM{{identifier:line.ptm_identifier}})  '
-             f' Create (v)-[:HAS_PhPTM{{resource:["qPTM"],qptm:"yes",r.properties_qptm: apoc.convert.fromJsonMap(line.aggregated_properties)}}]->(n)')
+    query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
+             'CREATE (n)-[:HAS_PhPTM]->(v)')
+
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
-    #cypher_file.write(query)
+    cypher_file.write(query)
+    query = (f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
+             f'MATCH (n)-[r:HAS_PhPTM]-(v) SET r.qptm = "yes", '
+             f'r.resource = split(line.resource, "|"), r.properties_qptm = line.aggregated_properties')
+    query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
+    cypher_file.write(query)
 
     return csv_mapping_existing, csv_mapping_new
 
@@ -94,9 +101,9 @@ def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_ne
 
     counter_new_edges = 0
     counter_mapped = 0
-    counter_all = 0
     all_edges_qptm = {}
 
+    # Create dictionary for key: edge, value: properties
     for relationshipId, protein_identifier, ptm_identifier, condition, reliability, pmid in results:
         edge = (ptm_identifier, protein_identifier)
         if edge not in all_edges_qptm:
@@ -114,37 +121,33 @@ def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_ne
             for prop in properties_list
         ]
 
-        # Use json.dumps with separators to create a compact JSON
-        aggregated_properties = json.dumps(cleaned_properties, separators=(',', ':'))
-        #print(aggregated_properties)
-        # Write the existing edge or new edge based on presence in the dictionary
+        # Existing edge
         if edge in dict_identifier_to_resource:
             csv_mapping_existing.writerow([
                 ptm_identifier, protein_identifier,
                 pharmebinetutils.resource_add_and_prepare(
                     dict_identifier_to_resource[edge], "qPTM"
-                ), aggregated_properties
+                ), cleaned_properties
             ])
             counter_mapped += 1
         else:
-            # New edge, add it to the CSV and Cypher file
-            csv_mapping_new.writerow([ptm_identifier, protein_identifier, "qPTM", aggregated_properties])
+            # New edge
+            csv_mapping_new.writerow([ptm_identifier, protein_identifier, "qPTM", cleaned_properties])
             counter_new_edges += 1
-            print(f"New edge: {ptm_identifier}, {protein_identifier}")
+            #print(f"New edge: {ptm_identifier}, {protein_identifier}")
 
 
 
     print(f'Number of new ptm_protein edges: {counter_new_edges}')
     print(f'Number of extended ptm_protein edges: {counter_mapped}')
-    print(f'Number of all ptms: {counter_all}')
+
+
 
 
 def main():
     global path_of_directory
     global source
     global home
-
-    # path_of_directory = "/Users/ann-cathrin/Documents/Master_4_Semester/Forschungsmodul_Heyer/Projekt_Cassandra/Test"
 
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]

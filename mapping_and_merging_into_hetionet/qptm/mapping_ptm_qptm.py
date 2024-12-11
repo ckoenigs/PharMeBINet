@@ -112,9 +112,10 @@ def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_ne
                 nodeId, identifier, "qPTM", sequence_window, ptm_type, residue, position
             ])
             counter_not_mapped += 1
-            print(identifier)
+            #print(identifier)
 
     print('number of new ptms:', counter_not_mapped)
+    print('number of mapped ptms:', counter_mapped)
     print('number of all ptms:', counter_all)
 
 
