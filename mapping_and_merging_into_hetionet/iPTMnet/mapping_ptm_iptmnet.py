@@ -70,13 +70,15 @@ def generate_files(path_of_directory):
     query = f' Match (n:iPTMnet_PTM), (v:PTM{{identifier:line.ptm_identifier}}) WHERE id(n) = toInteger(line.nodeId) Set v.iptmnet="yes", v.resource=split(line.resource,"|"), v.score=line.score Create (v)-[:equal_to_iPTMnet_ptm{{mapped_with:line.mapping_method}}]->(n)'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
-    cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    # overwrite exiting queries
+    cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
     cypher_file.write(query)
 
     query = f' Match (n:iPTMnet_PTM) WHERE id(n) = toInteger(line.nodeId) MERGE (v:PTM{{identifier:line.identifier}}) On Create Set v.iptmnet="yes", v.resource=split(line.resource,"|"), v.residue=line.residue, v.position=line.position, v.type=line.type, v.score=line.score Create (v)-[:equal_to_iPTMnet_ptm]->(n)'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
-    cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    # append second query
+    cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
 
     return csv_mapping_existing, csv_mapping_new
@@ -91,6 +93,7 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
              "n.position, n.residue, n.type AS ptm_type, p.identifier")
     results = g.run(query)
     counter_not_mapped = 0
+    counter_mapped = 0
     counter_all = 0
     for nodeId, score, position, residue, ptm_type, identifier in results:
         counter_all += 1
@@ -101,6 +104,7 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
                 [nodeId, identifier,
                  pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "iPTMnet"),
                  'ptm_identifier', score])
+            counter_mapped += 1
         else:
             csv_mapping_new.writerow([
                 nodeId, identifier, "iPTMnet", score, ptm_type, residue, position
@@ -108,7 +112,7 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
             counter_not_mapped += 1
             print(identifier)
 
-    print('number of not-mapped ptms:', counter_not_mapped)
+    print('number of new ptms:', counter_not_mapped)
     print('number of all ptms:', counter_all)
 
 
