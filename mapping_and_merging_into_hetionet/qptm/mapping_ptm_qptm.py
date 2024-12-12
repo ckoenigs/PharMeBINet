@@ -70,17 +70,15 @@ def generate_files(path_of_directory):
     query = (f' Match (n:qPTM_PTM), (v:PTM{{identifier:line.ptm_identifier}}) WHERE id(n) = toInteger(line.nodeId) '
              f'Set v.qptm="yes", v.resource=split(line.resource,"|"), v.sequence_window=line.sequence_window '
              f'MERGE (v)-[:equal_to_qPTM_ptm{{mapped_with:line.mapping_method}}]->(n)')
-    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
-    cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
     cypher_file.write(query)
 
     query = (f' Match (n:qPTM_PTM) WHERE id(n) = toInteger(line.nodeId) MERGE (v:PTM{{identifier:line.identifier}}) '
              f'Set v.qptm="yes", v.resource=split(line.resource,"|"), v.residue=line.residue, v.position=line.position, '
              f'v.type=line.type, v.sequence_window=line.sequence_window Create (v)-[:equal_to_qPTM_ptm]->(n)')
-    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
-    cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
 
     return csv_mapping_existing, csv_mapping_new

@@ -67,7 +67,7 @@ def generate_files(path_of_directory):
     query = (f' MATCH (n:Protein {{identifier: line.protein_identifer}}), (v:PTM {{identifier: line.ptm_identifier}}) '
              f'MATCH (n)-[r:HAS_PhPTM]-(v) SET r.qptm = "yes", '
              f'r.resource = split(line.resource, "|"), r.properties_qptm = line.aggregated_properties')
-    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
+    mode = 'w' if os.path.exists(file_path) else 'w+'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
@@ -75,9 +75,8 @@ def generate_files(path_of_directory):
     query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
              'CREATE (n)-[:HAS_PhPTM]->(v)')
 
-    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
-    cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
     query = (f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
              f'MATCH (n)-[r:HAS_PhPTM]-(v) SET r.qptm = "yes", '
