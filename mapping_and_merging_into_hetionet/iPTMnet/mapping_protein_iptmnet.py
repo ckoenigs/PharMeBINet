@@ -68,7 +68,6 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     query = f' Match (n:iPTMnet_Protein{{uniprot_accession:line.iPTMnet_identifier}}), (v:Protein{{identifier:line.identifier}}) Set v.iptmnet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_iPTMnet_protein{{mapped_with:line.mapping_method}}]->(n)'
-    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
