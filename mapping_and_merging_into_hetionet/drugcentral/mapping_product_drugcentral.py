@@ -128,7 +128,7 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path dc product')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -159,7 +159,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

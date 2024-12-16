@@ -183,7 +183,7 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('dc go noods path')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()

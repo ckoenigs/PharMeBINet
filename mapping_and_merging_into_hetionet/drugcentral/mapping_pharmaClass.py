@@ -166,32 +166,32 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path dc pc')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
 
     print(20 * '##')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("load pharmacological Class in")
 
     load_pharmacological_class_in()
 
     print(20 * '##')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("load pharmaClass in")
 
     load_pharmaClass_in()
 
     print(20 * '##')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("generate cypher queries")
 
     generate_cypher_file('mapped_pharmaClass.tsv')
 
     print(20 * '##')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":
