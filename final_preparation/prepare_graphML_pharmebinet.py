@@ -3,9 +3,12 @@ import sys, datetime
 import lxml.etree as ET
 
 # dc = drugcentral
-TODELETE = {'adrecs', 'adrecstarget', 'aeolus', 'atc', 'biogrid', 'bindingdb', 'clinvar', 'ctd', 'dbsnp', 'dc', 'ddinter',
-            'disgenet', 'diseaseontology', 'drugbank', 'foodb', 'efo', 'gencc', 'go', 'gwas', 'hgnc', 'hippie', 'hmdb', 'hpo',
-            'iid', 'medrt', 'mirbase', 'mondo', 'ncbi', 'ndfrt', 'multi', 'omim', 'openfda', 'pharmgkb', 'reactome',
+TODELETE = {'adrecs', 'adrecstarget', 'aeolus', 'atc', 'biogrid', 'bindingdb', 'clinvar', 'ctd', 'dbsnp', 'dc',
+            'ddinter', 'diseases',
+            'disgenet', 'diseaseontology', 'drugbank', 'foodb', 'efo', 'gencc', 'go', 'gwas', 'gwascatalog', 'hgnc',
+            'hippie', 'hmdb', 'hpo',
+            'iid', 'iptmnet', 'markerdb', 'medrt', 'mirbase', 'mondo', 'ncbi', 'ndfrt', 'multi', 'omim', 'openfda',
+            'pharmgkb', 'ptmd', 'qptm', 'reactome',
             'refseq', 'rnacentral', 'rnadisease', 'rnainter', 'sider', 'smpdb', 'ttd', 'uberon', 'uniprot'}
 
 
