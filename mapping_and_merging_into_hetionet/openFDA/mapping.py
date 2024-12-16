@@ -8,7 +8,7 @@ import pharmebinetutils
 # Erstellt das Verzeichnis in dem der Output liegen wird.
 # Der Output sind alle mapping, nonmapping und cypher files.
 def make_dir():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("Creating directory \"FDA_mappings\" ...")
     # Das Verzeichnis wird nur erstellt, wenn es nicht schon existiert.
     if not os.path.exists("FDA_mappings"):
@@ -56,7 +56,7 @@ def make_cypher_file(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, cypher_file_n
 # _FDA: Array mit den openFDA Knoten Attributen als Array von Dicts. [[{"id": 1, "reaction": A}, ...], ...].
 # _CAT: Array mit den Kategorie Knoten Attributen als Dict. [{"reaction": ["id", "source"]}, ...].
 def fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, _FDA, _CAT):
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     # Alle mapping-attribute als string.
     m = ""
     for s in _map:
@@ -115,7 +115,7 @@ def fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonm
 # new_node_name: Name des files das die neuen SideEffect Knoten enthält.
 # map_name: Name des map files.
 def map_others(cur, _CAT, nonmap_name, map_name):
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("Mapping \"" + nonmap_name + "\" and \"" + "umls" + "\" by \"" + "reaction" + "\" ...")
     print("Making new \"SideEffect\" nodes ...")
     # Informationen aus dem nonmapped file auslesen.

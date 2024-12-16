@@ -10,7 +10,7 @@ else:
     sys.exit('need a path rnaCentral')
 make_dir()
 #######################################################################
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Connecting to database neo4j ...")
 global g, driver
 driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -31,12 +31,12 @@ map_file_name = "mapped_SubstanceData_relationships_substance_Chemical.tsv"
 # f = open("FDA_mappings/"+cypher_file_name, 'w')
 # f.close()
 #######################################################################
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Fetching data for SubstanceData_relationships_substance_openFDA ...")
 # FDA Daten abrufen und anschließend als Dictionary speichern.
 query = "MATCH (n:SubstanceData_relationships_substance_openFDA) RETURN n.id, n.unii, toLower(n.name);"
 a = list(g.run(query))
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Fetching data for Chemical ...")
 # Category Daten abrufen und anschließend als Dictionary speichern.
 query = "MATCH (n:Chemical) RETURN n.identifier, n.unii, toLower(n.name), n.synonyms, n.resource;"

@@ -12,7 +12,7 @@ else:
 
 make_dir()
 #######################################################################
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Connecting to database neo4j ...")
 global g, driver
 driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -36,12 +36,12 @@ map_file_name = "mapped_DrugAdverseEvent_drug_indication_Disease.tsv"
 # f = open("FDA_mappings/"+cypher_file_name, 'w')
 # f.close()
 #######################################################################
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Fetching data for DrugAdverseEvent_drug_indication_openFDA ...")
 # FDA Daten abrufen und anschließend als Dictionary speichern.
 query = "MATCH (n:DrugAdverseEvent_drug_indication_openFDA) RETURN n.id, toLower(n.drugindication);"
 a = list(g.run(query))
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Fetching data for Disease ...")
 # Category Daten abrufen und anschließend als Dictionary speichern.
 query = "MATCH (n:Disease) RETURN n.identifier, toLower(n.name), n.synonyms, n.resource, n.umls_cuis;"
@@ -89,7 +89,7 @@ make_cypher_file(FDA_name, CAT_name, "id", "identifier", "name_synonym", cypher_
                  path_of_directory)
 
 #######################################################################
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Fetching data for Symptom ...")
 # Category Daten abrufen und anschließend als Dictionary speichern.
 query = "MATCH (n:Symptom) RETURN n.identifier, toLower(n.name), n.synonyms, n.resource;"
@@ -139,11 +139,11 @@ FDA = {}
 for entry in reader:
     FDA[entry[1]] = entry[0]
 #######################################################################
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Connecting to database umls ...")
 c = create_connection_to_databases.database_connection_umls()
 #######################################################################
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Fetching data for umls ...")
 query = "SELECT CUI, STR FROM MRCONSO"
 global cur

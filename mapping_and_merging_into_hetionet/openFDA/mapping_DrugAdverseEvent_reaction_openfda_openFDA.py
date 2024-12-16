@@ -10,7 +10,7 @@ else:
     sys.exit('need a path rnaCentral')
 make_dir()
 #######################################################################
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Connecting to database neo4j ...")
 global g, driver
 driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -27,12 +27,12 @@ map_file_name = "mapped_DrugAdverseEvent_reaction_SideEffect.tsv"
 # f = open("FDA_mappings/"+cypher_file_name, 'w')
 # f.close()
 #######################################################################
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Fetching data for DrugAdverseEvent_reaction_openFDA ...")
 # FDA Daten abrufen und anschließend als Dictionary speichern.
 query = "MATCH (n:DrugAdverseEvent_reaction_openFDA) RETURN n.id, toLower(n.reactionmeddrapt);"
 a = list(g.run(query))
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Fetching data for SideEffect ...")
 # Category Daten abrufen und anschließend als Dictionary speichern.
 query = "MATCH (n:SideEffect) RETURN n.identifier, toLower(n.name), n.resource;"
@@ -63,11 +63,11 @@ make_mapping_file(map_file_name, "id", "identifier")
 fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, [FDA], [CAT])
 #######################################################################
 #######################################################################
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Connecting to database umls ...")
 c = create_connection_to_databases.database_connection_umls()
 #######################################################################
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Fetching data for umls ...")
 query = "SELECT CUI, STR FROM MRCONSO"
 global cur

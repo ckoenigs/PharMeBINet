@@ -11,13 +11,13 @@ if len(sys.argv) > 1:
 else:
     sys.exit('need a path openFDA')
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Connecting to database neo4j ...")
 global g, driver
 driver = create_connection_to_databases.database_connection_neo4j_driver()
 g = driver.session(database='graph')
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Fetching data ...")
 
 # create the tsv files for existing and not existing edges
