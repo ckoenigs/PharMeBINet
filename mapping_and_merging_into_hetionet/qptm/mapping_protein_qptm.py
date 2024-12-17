@@ -80,7 +80,7 @@ def load_all_qptm_proteins_and_finish_the_files(csv_mapping):
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
-    query = "MATCH (n:qPTM_Protein) RETURN n"
+    query = "MATCH (n:qPTM_Protein)--(o:qPTM_Organism) WHERE o.ncbi_taxid = 9606 RETURN n"
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0

@@ -23,7 +23,8 @@ def load_proteins_from_database_and_add_to_dict():
     """
     Load all Proteins from pharmebinet and add them into a dictionary
     """
-    query = "MATCH (n:Protein) RETURN n.identifier, n.name, n.resource, n.alternative_ids"
+    query = ("MATCH (n:Protein)--(o:iPTMnet_Organism) WHERE o.ncbi_taxid = 9606 "
+             "RETURN n.identifier, n.name, n.resource, n.alternative_ids")
     results = g.run(query)
 
     for identifier, name, resource, alternative_ids in results:
