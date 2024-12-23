@@ -16,6 +16,39 @@ def create_connection_with_neo4j():
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session(database='graph')
 
+def generate_tsv_file(label, columns, file_cypher):
+    """
+    Prepare TSV file and add cypher query to file
+    :param label:
+    :param columns:
+    :return:
+    """
+    file_name_not_mapped = f'new_ptm_{label}_edges.tsv'
+    not_mapped_path = os.path.join(path_of_directory, file_name_not_mapped)
+    mode = 'w' if os.path.exists(not_mapped_path) else 'w+'
+    file = open(not_mapped_path, mode, encoding='utf-8')
+    writer = csv.writer(file, delimiter='\t')
+    writer.writerow(columns)
+    prepare_query(label, file_name_not_mapped)
+
+    return  writer, file
+
+def prepare_query(label, file_name, file_cypher):
+    """
+    Prepare query and add information
+    :param label:
+    :param file_name:
+    :return:
+    """
+    query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:{label} {{identifier:line.phenotype_id}}) Create ('
+             f'p)-[:ASSOCIATES_PTMa{pharmebinetutils.dictionary_label_to_abbreviation[label]} {{resource:["PTMD"],ptmd:"yes", '
+             f'is_experimental_verification:line.is_experimental_verification, license:"ONLY freely available for academic research", '
+             f'mutation_site_impacts:line.mutation_site_impacts, url:"https://ptmd.biocuckoo.cn/index.php", source:"PTMD", '
+             f'mutation_sites:line.mutation_sites, regulation:line.regulation, sources:line.sources, url:"", license:"ONLY freely available for academic research"}}]->(d)')
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              file_name,
+                                              query)
+    file_cypher.write(query)
 
 def get_PTMD_information():
     '''
@@ -28,35 +61,21 @@ def get_PTMD_information():
     columns = ['ptm_id', 'phenotype_id', 'is_experimental_verification', 'mutation_site_impacts', 'mutation_sites',
                'regulation', 'sources']
 
-    # Create tsv for ptm-disease edges
-    file_name_not_mapped_disease = 'new_ptm_disease_edges.tsv'
-    not_mapped_path_disease = os.path.join(path_of_directory, file_name_not_mapped_disease)
-    mode = 'w' if os.path.exists(not_mapped_path_disease) else 'w+'
-    file_disease = open(not_mapped_path_disease, mode, encoding='utf-8')
-    writer_disease = csv.writer(file_disease, delimiter='\t')
-    writer_disease.writerow(columns)
-    # Create tsv for ptm-sideEffects edges
-    file_name_not_mapped_sideEffect = 'new_ptm_sideEffect_edges.tsv'
-    not_mapped_path_sideEffect = os.path.join(path_of_directory, file_name_not_mapped_sideEffect)
-    mode = 'w' if os.path.exists(not_mapped_path_sideEffect) else 'w+'
-    file_sideEffect = open(not_mapped_path_sideEffect, mode, encoding='utf-8')
-    writer_sideEffect = csv.writer(file_sideEffect, delimiter='\t')
-    writer_sideEffect.writerow(columns)
-    # Create tsv for ptm-symptoms edges
-    file_name_not_mapped_symptom = 'new_ptm_symptom_edges.tsv'
-    not_mapped_path_symptom = os.path.join(path_of_directory, file_name_not_mapped_symptom)
-    mode = 'w' if os.path.exists(not_mapped_path_symptom) else 'w+'
-    file_symptom = open(not_mapped_path_symptom, mode, encoding='utf-8')
-    writer_symptom = csv.writer(file_symptom, delimiter='\t')
-    writer_symptom.writerow(columns)
 
-    # Create tsv for ptm-phenotype edges
-    file_name_not_mapped_phenotype = 'new_ptm_phenotype_edges.tsv'
-    not_mapped_path_phenotype = os.path.join(path_of_directory, file_name_not_mapped_phenotype)
-    mode = 'w' if os.path.exists(not_mapped_path_phenotype) else 'w+'
-    file_phenotype = open(not_mapped_path_phenotype, mode, encoding='utf-8')
-    writer_phenotype = csv.writer(file_phenotype, delimiter='\t')
-    writer_phenotype.writerow(columns)
+    # cypher queries
+    cypher_path = os.path.join(source, 'cypher_edge.cypher')
+    # query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
+    file_cypher = open(cypher_path, 'w', encoding='utf-8')
+    # Create tsv for ptm-disease edges and add cypher query
+    writer_disease, file_disease = generate_tsv_file('Disease', columns, file_cypher)
+    # Create tsv for ptm-symptom edges and add cypher query
+    writer_symptom, file_symptom = generate_tsv_file('Symptom', columns, file_cypher)
+    # Create tsv for ptm-SE edges and add cypher query
+    writer_sideEffect, file_sideEffect = generate_tsv_file('SideEffect', columns, file_cypher)
+    # Create tsv for ptm-phenotype edges and add cypher query
+    writer_phenotype, file_phenotype = generate_tsv_file('Phenotype', columns, file_cypher)
+    file_cypher.close()
+
 
     counter_disease = 0
     counter_sideEffect = 0
@@ -106,10 +125,11 @@ def get_PTMD_information():
         else:
             print("Already mapped edge:", ptm_id, phenotype_id, dict_all_mappings[(ptm_id, phenotype_id)])
             counter_not_mapped += 1
-    file_disease.close()
-    file_symptom.close()
-    file_sideEffect.close()
-    file_phenotype.close()
+
+        file_disease.close()
+        file_symptom.close()
+        file_sideEffect.close()
+        file_phenotype.close()
 
     print('number of disease edges:', counter_disease)
     print('number of sideEffect edges:', counter_sideEffect)
@@ -118,50 +138,6 @@ def get_PTMD_information():
     print('number of not mapped (already mapped) edges:', counter_not_mapped)
     print('number of all edges:', counter_all)
 
-    # cypher queries
-    cypher_path = os.path.join(source, 'cypher_edge.cypher')
-    mode = 'a' if os.path.exists(cypher_path) else 'w'
-    # query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
-    file_cypher = open(cypher_path, mode, encoding='utf-8')
-
-    # 2. Create new edges, write cypher queries
-    query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Disease{{identifier:line.phenotype_id}}) Create ('
-             f'p)-[:ASSOCIATES_PTMaD{{resource:["PTMD"],ptmd:"yes", '
-             f'is_experimental_verification:line.is_experimental_verification, '
-             f'mutation_site_impacts:line.mutation_site_impacts, '
-             f'mutation_sites:line.mutation_sites, regulation:line.regulation, sources:line.sources}}]->(d)')
-    query = pharmebinetutils.get_query_import(path_of_directory,
-                                              file_name_not_mapped_disease,
-                                              query)
-    file_cypher.write(query)
-    query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:SideEffect{{identifier:line.phenotype_id}}) Create '
-             f'(p)-[:iASSOCIATES_PTMaSE{{resource:["PTMD"],ptmd:"yes", '
-             f'is_experimental_verification:line.is_experimental_verification, '
-             f'mutation_site_impacts:line.mutation_site_impacts, '
-             f'mutation_sites:line.mutation_sites, regulation:line.regulation, sources:line.sources}}]->(d)')
-    query = pharmebinetutils.get_query_import(path_of_directory,
-                                              file_name_not_mapped_sideEffect,
-                                              query)
-    file_cypher.write(query)
-    query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Symptom{{identifier:line.phenotype_id}}) Create ('
-             f'p)-[:ASSOCIATES_PTMaS{{resource:["PTMD"],ptmd:"yes", '
-             f'is_experimental_verification:line.is_experimental_verification, '
-             f'mutation_site_impacts:line.mutation_site_impacts, '
-             f'mutation_sites:line.mutation_sites, regulation:line.regulation, sources:line.sources}}]->(d)')
-    query = pharmebinetutils.get_query_import(path_of_directory,
-                                              file_name_not_mapped_symptom,
-                                              query)
-    file_cypher.write(query)
-    query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Phenotype{{identifier:line.phenotype_id}}) Create '
-             f'(p)-[:ASSOCIATES_PTMaPT{{resource:["PTMD"],ptmd:"yes", '
-             f'is_experimental_verification:line.is_experimental_verification, '
-             f'mutation_site_impacts:line.mutation_site_impacts, '
-             f'mutation_sites:line.mutation_sites, regulation:line.regulation, sources:line.sources}}]->(d)')
-    query = pharmebinetutils.get_query_import(path_of_directory,
-                                              file_name_not_mapped_phenotype,
-                                              query)
-    file_cypher.write(query)
-    file_cypher.close()
 
 
 ######### MAIN #########

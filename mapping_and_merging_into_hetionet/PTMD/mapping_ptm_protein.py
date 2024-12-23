@@ -66,12 +66,11 @@ def get_PTMD_information():
 
     # cypher queries
     cypher_path = os.path.join(source, 'cypher_edge.cypher')
-    mode = 'a' if os.path.exists(cypher_path) else 'w'
-    file_cypher = open(cypher_path, mode, encoding='utf-8')
+    file_cypher = open(cypher_path, 'a', encoding='utf-8')
 
     # Create new edges, write cypher queries
     query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Protein{{identifier:line.protein_id}}) '
-             f'Create (d)-[:HAS_PhPTM{{resource:["PTMD"],ptmd:"yes"}}]->(p)')
+             f'Create (d)-[:HAS_PhPTM{{resource:["PTMD"],ptmd:"yes", url:"https://ptmd.biocuckoo.cn/index.php",  source:"PTMD", license:"ONLY freely available for academic research"}}]->(p)')
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_not_mapped_protein,
                                               query)

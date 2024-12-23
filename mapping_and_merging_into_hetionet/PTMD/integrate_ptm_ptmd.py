@@ -30,7 +30,8 @@ def generate_files(path_of_directory):
     cypher_file_path = os.path.join(source, 'cypher2.cypher')
     # mapping_and_merging_into_hetionet/PTMD/
     query = (f' Match (n:PTMD_PTM) WHERE id(n) = toInteger(line.nodeId) MERGE (v:PTM{{identifier:line.identifier}})  '
-             f'On Create Set  v.ptmd="yes", v.resource=split(line.resource,"|"), v.residue=line.residue, '
+             f'On Create Set  v.ptmd="yes", v.source="PTMD", v.resource=split(line.resource,"|"), v.url="https://ptmd.biocuckoo.cn/index.php",'
+             f' v.residue=line.residue, v.license="ONLY freely available for academic research", '
              f'v.position=line.position, v.type=line.type Create (v)-[:equal_to_PTMD_ptm]->(n)')
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
