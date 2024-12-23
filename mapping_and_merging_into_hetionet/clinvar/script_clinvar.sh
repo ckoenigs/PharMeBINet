@@ -18,12 +18,14 @@ fi
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo "merge variant"
 
 python3 mapping_clinvar_variation.py $path_to_project > output/output_map_variant.txt
 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo "map disease"
 
 python3 mapping_disease_clinvar.py $path_to_project > output/output_map.txt
 
@@ -40,7 +42,9 @@ sleep 60
 
 rm -r $path_neo4j/../data/transactions/graph
 
-sleep 30
+$path_neo4j/neo4j stop
+
+sleep 120
 
 python ../../restart_neo4j.py $path_neo4j > output/neo4j3.txt
 
@@ -54,6 +58,7 @@ sleep 180
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo "add edges"
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
 

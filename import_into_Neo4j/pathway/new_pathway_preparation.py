@@ -188,7 +188,8 @@ def pathway_commons():
 
 
     # filter only the open source sources
-    keep = {'wikipathways', 'reactome', 'panther', 'netpath', 'pathbank','biofactoid'}
+    # 'netpath', is currently not available
+    keep = {'wikipathways', 'reactome', 'panther',  'pathbank','biofactoid'}
     pc_df = pc_df.query("source in @keep")
 
     # dictionary source to license

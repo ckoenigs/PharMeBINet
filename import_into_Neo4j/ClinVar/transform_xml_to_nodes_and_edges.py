@@ -1567,7 +1567,7 @@ def main():
 
         path_of_clinvar_data = sys.argv[1]+ 'clinvar/'
     else:
-        sys.exit('need a path nd clinvar path')
+        sys.exit('need a path to clinvar data')
 
     print('extract information from ClinVarVariationRelease')
     extract_node_info_for_variations()
