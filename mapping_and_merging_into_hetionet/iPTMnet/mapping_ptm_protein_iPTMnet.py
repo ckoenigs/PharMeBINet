@@ -70,15 +70,10 @@ def generate_files(path_of_directory):
     cypher_file.write(query)
 
     query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
-             'CREATE (n)-[:HAS_PhPTM]->(v)')
+             'CREATE (n)-[:HAS_PhPTM{url:"https://research.bioinformatics.udel.edu/iptmnet/entry/"+line.protein_identifier, properties_iptmnet = line.aggregated_properties, license:"CC BY-NC-SA 4.0 Deed", resource:["iPTMnet"], source:"iPTMnet", iptmnet:"yes"}]->(v)')
 
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
-    cypher_file.write(query)
-    query = (f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
-             f'MATCH (n)-[r:HAS_PhPTM]-(v) SET r.iptmnet = "yes", '
-             f'r.resource = split(line.resource, "|"), r.properties_iptmnet = line.aggregated_properties')
-    query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file.write(query)
 
     return csv_mapping_existing, csv_mapping_new
