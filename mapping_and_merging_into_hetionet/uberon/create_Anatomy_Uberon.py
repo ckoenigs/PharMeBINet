@@ -56,17 +56,12 @@ def get_properties_and_generate_tsv_files_and_cypher_file():
     :return:
     """
     # generate csv files
-    global csv_update, csv_new
+    global csv_new
 
     file_name_new = 'output/new_nodes.tsv'
     new_nodes = open(file_name_new, 'w', encoding='utf-8')
     csv_new = csv.writer(new_nodes, delimiter='\t')
     csv_new.writerow(['id', 'name', 'synonyms', 'xrefs'])
-
-    file_name_mapped = 'output/update_nodes.tsv'
-    update_nodes = open(file_name_mapped, 'w', encoding='utf-8')
-    csv_update = csv.writer(update_nodes, delimiter='\t')
-    csv_update.writerow(['id', 'synonyms', 'xrefs', 'resource'])
 
     # fill the list with all properties in drugbank and not in pharmebinet
     query = '''MATCH (p:uberon_extend) Where p.id starts with 'UBERON' and p.is_obsolete is null WITH DISTINCT keys(p) AS keys
