@@ -23,8 +23,7 @@ def load_proteins_from_database_and_add_to_dict():
     """
     Load all Proteins from pharmebinet and add them into a dictionary
     """
-    query = ("MATCH (n:Protein)--(o:iPTMnet_Organism) WHERE o.ncbi_taxid = 9606 "
-             "RETURN n.identifier, n.name, n.resource, n.alternative_ids")
+    query = ("MATCH (n:Protein) RETURN n.identifier, n.name, n.resource, n.alternative_ids")
     results = g.run(query)
 
     for identifier, name, resource, alternative_ids in results:
@@ -45,7 +44,8 @@ def load_proteins_from_database_and_add_to_dict():
                 if gene_symbol not in dict_gene_symbol_to_identifer:
                     dict_gene_symbol_to_identifer[gene_symbol.lower()] = identifier
 
-
+    print("dict_gene_symbol_to_identifer:",len(dict_gene_symbol_to_identifer))
+    print("dict_identifer_to_resource:",len(dict_identifier_to_resource))
 def generate_files(path_of_directory):
     """
     generate cypher file and tsv file
@@ -81,7 +81,7 @@ def load_all_iPTMnet_proteins_and_finish_the_files(csv_mapping):
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
-    query = "MATCH (n:iPTMnet_Protein) RETURN n"
+    query = "MATCH (n:iPTMnet_Protein)--(o:iPTMnet_Organism) WHERE o.ncbi_taxid = 9606 RETURN n"
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
