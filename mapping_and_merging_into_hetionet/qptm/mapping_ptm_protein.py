@@ -11,9 +11,6 @@ import pharmebinetutils
 # dictionary ptm id to resource
 dict_identifier_to_resource = {}
 
-# dictionary ptm name to identifier
-dict_protein_name_to_identifier = {}
-
 def create_connection_with_neo4j():
     '''
     create a connection with neo4j
@@ -65,7 +62,7 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher_edge.cypher')
     query = (f' MATCH (n:Protein {{identifier: line.protein_identifer}}), (v:PTM {{identifier: line.ptm_identifier}}) '
-             f'MATCH (n)-[r:HAS_PhPTM]-(v) SET r.qptm = "yes", '
+             f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.qptm = "yes", '
              f'r.resource = split(line.resource, "|"), r.properties_qptm = line.aggregated_properties')
     mode = 'w' if os.path.exists(file_path) else 'w+'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
@@ -79,7 +76,7 @@ def generate_files(path_of_directory):
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
     query = (f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
-             f'MATCH (n)-[r:HAS_PhPTM]-(v) SET r.qptm = "yes", '
+             f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.qptm = "yes", '
              f'r.resource = split(line.resource, "|"), r.properties_qptm = line.aggregated_properties')
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file.write(query)
@@ -87,32 +84,45 @@ def generate_files(path_of_directory):
     return csv_mapping_existing, csv_mapping_new
 
 
-def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_new):
+def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, csv_mapping_new):
     """
     Load all variation, sort the ids into the right tsv, generate the queries, and add relationships to the rela tsv.
     """
-    query = (
-        "MATCH (ptm:PTM)--(n:qPTM_PTM)-[r]-(v:qPTM_Protein)--(p:Protein) "
-        "RETURN id(r) as relationshipId, p.identifier as protein_identifier, ptm.identifier as ptm_identifier, "
-        "r.condition as condition, r.reliability as reliability, r.pmid as pmid"
-    )
-    results = g.run(query)
-
+    count_query = """
+        MATCH (ptm:PTM)--(n:qPTM_PTM)-[r]-(v:qPTM_Protein)--(p:Protein)
+        RETURN COUNT(DISTINCT r) AS total_count
+        """
+    count_result = g.run(count_query).single()
+    total_count = count_result["total_count"]
     counter_new_edges = 0
     counter_mapped = 0
     all_edges_qptm = {}
 
-    # Create dictionary for key: edge, value: properties
-    for relationshipId, protein_identifier, ptm_identifier, condition, reliability, pmid in results:
-        edge = (ptm_identifier, protein_identifier)
-        if edge not in all_edges_qptm:
-            all_edges_qptm[edge] = []
-        all_edges_qptm[edge].append({
-            "condition": condition or '',
-            "reliability": reliability or '',
-            "pmid": pmid or ''
-        })
+    #iterate over entries in batches
+    skip = 0
+    while skip < total_count:
 
+        query = f"""
+            MATCH (ptm:PTM)--(n:qPTM_PTM)-[r]-(v:qPTM_Protein)--(p:Protein)
+            RETURN id(r) as relationshipId, p.identifier as protein_identifier, ptm.identifier as ptm_identifier, 
+            r.condition as condition, r.reliability as reliability, r.pmid as pmid
+            SKIP {skip} LIMIT {batch_size}
+            """
+
+        results = g.run(query)
+
+        print("Skip:", skip)
+        for relationshipId, protein_identifier, ptm_identifier, condition, reliability, pmid in results:
+            edge = (ptm_identifier, protein_identifier)
+            if edge not in all_edges_qptm:
+                all_edges_qptm[edge] = []
+            all_edges_qptm[edge].append({
+                "condition": condition or '',
+                "reliability": reliability or '',
+                "pmid": pmid or ''
+            })
+        skip += batch_size
+    print("Finished edge_dictionary")
     for edge, properties_list in all_edges_qptm.items():
         ptm_identifier, protein_identifier = edge
         cleaned_properties = [
@@ -133,8 +143,6 @@ def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_ne
             # New edge
             csv_mapping_new.writerow([ptm_identifier, protein_identifier, "qPTM", cleaned_properties])
             counter_new_edges += 1
-            #print(f"New edge: {ptm_identifier}, {protein_identifier}")
-
 
 
     print(f'Number of new ptm_protein edges: {counter_new_edges}')
@@ -176,7 +184,7 @@ def main():
 
     print(datetime.datetime.now())
     print('Load all qPTM ptms from database')
-    load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_new)
+    load_all_qptm_ptms_and_finish_the_files(1000, csv_mapping_existing, csv_mapping_new)
 
     driver.close()
 
