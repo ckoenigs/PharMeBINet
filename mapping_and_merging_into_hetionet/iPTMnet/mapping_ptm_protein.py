@@ -2,13 +2,12 @@ import datetime
 import os
 import sys
 import csv
-import json
 
 sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-# dictionary ptm id to resource
+# dictionary ptm,protein edge to resource
 dict_identifier_to_resource = {}
 
 def create_connection_with_neo4j():
@@ -41,7 +40,6 @@ def generate_files(path_of_directory):
     file_name = 'iPTMnet_edges_to_edges'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
     header = ['ptm_identifier', 'protein_identifier','resource', 'aggregated_properties']
-    # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
     csv_mapping_existing = csv.writer(file, delimiter='\t')
@@ -62,7 +60,7 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher_edge.cypher')
     query = (f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
-             f'MATCH (n)-[r:HAS_PhPTM]-(v) SET r.iptmnet = "yes", '
+             f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.iptmnet = "yes", '
              f'r.resource = split(line.resource, "|"), r.properties_iptmnet = line.aggregated_properties')
     mode = 'w' if os.path.exists(cypher_file_path) else 'w+'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
@@ -76,7 +74,7 @@ def generate_files(path_of_directory):
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
     query = (f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
-             f'MATCH (n)-[r:HAS_PhPTM]-(v) SET r.iptmnet = "yes", '
+             f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.iptmnet = "yes", '
              f'r.resource = split(line.resource, "|"), r.properties_iptmnet = line.aggregated_properties')
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file.write(query)
@@ -117,7 +115,7 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
             {k: v for k, v in prop.items() if v}
             for prop in properties_list
         ]
-
+        # Existing edge
         if edge in dict_identifier_to_resource:
             csv_mapping_existing.writerow([
                 ptm_identifier, protein_identifier,
