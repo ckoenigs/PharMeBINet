@@ -67,9 +67,8 @@ def generate_files(path_of_directory):
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/qptm/
     query = f' Match (n:qPTM_Protein{{uniprot_id:line.qptm_identifier}}), (v:Protein{{identifier:line.identifier}}) Set v.qptm="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_qPTM_protein{{mapped_with:line.mapping_method}}]->(n)'
-    mode = 'w' if os.path.exists(file_path) else 'w+'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
-    cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
     cypher_file.write(query)
 
     return csv_mapping

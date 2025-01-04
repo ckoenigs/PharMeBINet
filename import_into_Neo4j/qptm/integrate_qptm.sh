@@ -44,7 +44,7 @@ echo $import_tool
 
 echo integrate qPTM into neo4j
 
-java -jar ../$import_tool.jar -i sources/qPTM/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix qPTM_ --indices "qPTM_Protein.uniprot_id;qPTM_ORGANISM.ncbi_taxid" > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/qPTM/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix qPTM_ --indices "qPTM_Protein.uniprot_id;qPTM_Organism.ncbi_taxid" > output/import_tool_output.txt
 
 echo finished integration
 

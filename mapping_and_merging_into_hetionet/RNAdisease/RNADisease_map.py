@@ -191,8 +191,7 @@ def rna_RNAdisease():
     query = "MATCH (n:RNA) RETURN n.identifier, n.gene, n.product, n.xrefs, n.resource"
     result = g.run(query)
 
-    for record in result:
-        [id, name, product, xrefs, resource] = record.values()
+    for id, name, product, xrefs, resource, in result:
         rna[id] = resource
 
         if xrefs is not None:

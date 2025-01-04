@@ -75,7 +75,8 @@ def generate_files(path_of_directory):
     cypher_file.write(query)
 
     query = (f' Match (n:qPTM_PTM) WHERE id(n) = toInteger(line.nodeId) MERGE (v:PTM{{identifier:line.identifier}}) '
-             f'Set v.qptm="yes", v.resource=split(line.resource,"|"), v.residue=line.residue, v.position=line.position, '
+             f'On Create Set v.qptm="yes", v.url="https://qptm.omicsbio.info/", v.license="ONLY freely available for academic research",'
+             f' v.resource=split(line.resource,"|"), v.residue=line.residue, v.position=line.position,  v.source="qPTM", '
              f'v.type=line.type, v.sequence_window=line.sequence_window Create (v)-[:equal_to_qPTM_ptm]->(n)')
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')

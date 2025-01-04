@@ -93,28 +93,31 @@ def load_all_MarkerDB_proteins_and_finish_the_files(csv_mapping):
         else:
             gene_name = ""
         ignored_id = ["P01860", "Q969X2", "Q13609"]
+
+        mapped=False
         # mapping
         if identifier not in ignored_id:
             if identifier in dict_identifier_to_resource:
+                mapped=True
                 csv_mapping.writerow(
                     [unique_id, identifier,
                      pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "MarkerDB"),
                         'id'])
-            elif protein_name in dict_protein_name_to_identifier:
-                for identifier in dict_protein_name_to_identifier[protein_name]:
-                    csv_mapping.writerow(
-                        [unique_id, identifier,
-                         pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
-                        'name'])
-            elif gene_name in dict_gene_symbol_to_gene_name and dict_gene_symbol_to_gene_name[gene_name]:
-                for identifier in dict_gene_symbol_to_gene_name[gene_name]:
-                    csv_mapping.writerow(
-                        [unique_id, identifier,
-                        pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
-                        'gene_symbol'])
-            else:
-                counter_not_mapped += 1
-                print(unique_id, protein_name, gene_name)
+        if mapped:
+            continue
+
+        if protein_name in dict_protein_name_to_identifier:
+            for identifier in dict_protein_name_to_identifier[protein_name]:
+                csv_mapping.writerow(
+                    [unique_id, identifier,
+                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
+                    'name'])
+        elif gene_name in dict_gene_symbol_to_gene_name and dict_gene_symbol_to_gene_name[gene_name]:
+            for identifier in dict_gene_symbol_to_gene_name[gene_name]:
+                csv_mapping.writerow(
+                    [unique_id, identifier,
+                    pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
+                    'gene_symbol'])
         else:
             counter_not_mapped += 1
             print(identifier, protein_name)

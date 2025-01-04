@@ -59,20 +59,23 @@ def generate_files(path_of_directory):
     new_file_path = os.path.join(path_of_directory, new_file_name) + '.tsv'
     new_file = open(new_file_path, 'w+', encoding='utf-8')
     csv_mapping_new = csv.writer(new_file, delimiter='\t')
-    csv_mapping_new.writerow(['nodeId','identifier', 'resource', 'score', 'type', 'residue', 'position'])
+    csv_mapping_new.writerow(['nodeId','identifier', 'resource', 'score', 'type', 'residue', 'position', 'protein_id'])
 
     if not os.path.exists(source):
         os.mkdir(source)
 
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
-    query = f' Match (n:iPTMnet_PTM), (v:PTM{{identifier:line.ptm_identifier}}) WHERE id(n) = toInteger(line.nodeId) Set v.iptmnet="yes", v.resource=split(line.resource,"|"), v.score=line.score MERGE (v)-[:equal_to_iPTMnet_ptm{{mapped_with:line.mapping_method}}]->(n)'
+    # mapping_and_merging_into_hetionet/iPTMnet/
+    query = f' Match (n:iPTMnet_PTM), (v:PTM{{identifier:line.ptm_identifier}}) WHERE id(n) = toInteger(line.nodeId) Set v.iptmnet="yes", v.resource=split(line.resource,"|"), v.score=line.score Create (v)-[:equal_to_iPTMnet_ptm{{mapped_with:line.mapping_method}}]->(n)'
+    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     # overwrite exiting queries
     cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
     cypher_file.write(query)
 
-    query = f' Match (n:iPTMnet_PTM) WHERE id(n) = toInteger(line.nodeId) MERGE (v:PTM{{identifier:line.identifier}}) Set v.iptmnet="yes", v.resource=split(line.resource,"|"), v.residue=line.residue, v.position=line.position, v.type=line.type, v.score=line.score Create (v)-[:equal_to_iPTMnet_ptm]->(n)'
+    query = f' Match (n:iPTMnet_PTM) WHERE id(n) = toInteger(line.nodeId) MERGE (v:PTM{{identifier:line.identifier}}) On Create Set v.iptmnet="yes", v.url="https://research.bioinformatics.udel.edu/iptmnet/entry/"+ line.protein_id, v.license="CC BY-NC-SA 4.0 Deed", v.source="iPTMnet", v.resource=split(line.resource,"|"), v.residue=line.residue, v.position=line.position, v.type=line.type, v.score=line.score Create (v)-[:equal_to_iPTMnet_ptm]->(n)'
+    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     # append second query
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
@@ -86,13 +89,13 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
-    query = ("MATCH (n:iPTMnet_PTM)--(v:iPTMnet_Protein)--(p:Protein) RETURN id(n) AS nodeId, n.score,"
+    query = ("MATCH (n:iPTMnet_PTM)--(v:iPTMnet_Protein)--(p:Protein) RETURN Distinct id(n) AS nodeId, n.score,"
              "n.position, n.residue, n.type AS ptm_type, p.identifier")
     results = g.run(query)
     counter_not_mapped = 0
     counter_mapped = 0
     counter_all = 0
-    for nodeId, score, position, residue, ptm_type, identifier in results:
+    for nodeId, score, position, residue, ptm_type, protein_id in results:
         counter_all += 1
         identifier = f"{identifier}_{position}_{residue}_{ptm_type}"
         # mapping
@@ -104,7 +107,7 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
             counter_mapped += 1
         else:
             csv_mapping_new.writerow([
-                nodeId, identifier, "iPTMnet", score, ptm_type, residue, position
+                nodeId, identifier, "iPTMnet", score, ptm_type, residue, position, protein_id
             ])
             counter_not_mapped += 1
             print(identifier)

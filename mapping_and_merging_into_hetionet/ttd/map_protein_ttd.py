@@ -197,32 +197,32 @@ def main():
         sys.exit('need a path ttd protein')
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
 
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("load protein in")
     load_protein_in()
 
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("load gene to protein")
     load_gene_to_protein_ids()
 
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("create tsv and cypher files")
     csv_mapped, csv_not_mapped = create_tsv_and_cypher_query()
 
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("load and map ttd protein")
     load_and_map_ttd_protein(csv_mapped, csv_not_mapped)
 
@@ -231,7 +231,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

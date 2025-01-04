@@ -116,13 +116,8 @@ def load_in_all_monDO_in_dictionary():
         monDo_id = disease['id']
         if monDo_id in set_of_non_human_ids:
             continue
-        # name = disease['name'].lower()
-        name = disease['names'][0].lower()
         if len(disease['names'])>1:
             sys.exit('multiple names')
-        synonyms = disease['synonyms'] if 'synonyms' in disease else []
-        for synonym in synonyms:
-            synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
         disease_info = dict(disease)
         xrefs = disease_info['xrefs'] if 'xrefs' in disease_info else []
         xrefs.append(monDo_id)
@@ -152,7 +147,6 @@ def generate_cypher_queries():
     query_start = ''' Match (a:disease{id:line.id}) '''
 
     query_end = '''Create (n)-[:equal_to_monDO]->(a)'''
-    query_update = ''
     query_new = ''
     for property in mondo_prop:
         if property not in list_of_list_prop:

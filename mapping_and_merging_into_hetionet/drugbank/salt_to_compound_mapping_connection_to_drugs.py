@@ -70,12 +70,6 @@ def create_cypher_and_tsv_files():
     csv_rela = csv.writer(rela_file, delimiter='\t')
     csv_rela.writerow(rela_header)
 
-    # delete compound nodes which are whether drugbank compound nor salt
-    # this must be the last step of the compound integration, because else the merge nodes are also removed and this would be a problem
-    cypher_delete_file = open('cypher_delete_compound.cypher', 'w')
-    query = '''Match (c:Compound) Where c.drugbank is NULL Detach Delete c;\n'''
-    cypher_delete_file.write(query)
-    cypher_delete_file.close()
 
 
 # the new table for unii drugbank pairs

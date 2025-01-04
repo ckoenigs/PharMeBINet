@@ -235,33 +235,33 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path dc protein')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
 
     print(20 * '##')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("load protein in")
     load_protein_in()
 
     print(20 * '##')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("load biodiversity")
     load_bioactivity_in()
 
     print(20 * '##')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("load target component in")
     load_target_in()
 
     print(20 * '##')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create cypher queries')
 
     generate_cypher_file("mapped_protein.tsv", "mapped_target.tsv")
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

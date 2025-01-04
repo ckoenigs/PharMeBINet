@@ -60,7 +60,7 @@ python3 generate_connection_from_pathway_smpdb.py $path_to_project > edge_pathwa
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo integration of smpdb mapping and nodes into hetionet
+echo integration of smpdb edges into pharmebinet
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
 

@@ -43,7 +43,7 @@ def load_data(letter, csv_writer):
     :param csv_writer: csv writer
     """
     url = 'http://ddinter.scbdd.com/static/media/download/ddinter_downloads_code_%s.csv' % (letter)
-    response = get(url)
+    response = get(url, verify=False)
     decode_response = response.content.decode('utf-8')
     csv_reader = csv.reader(decode_response.splitlines(), delimiter=',')
 

@@ -53,7 +53,7 @@ def get_properties_and_generate_tsv_files():
     result = g.run(query)
     for record in result:
         property = record.data()['l']
-        if property =='external_identifiers':
+        if property == 'external_identifiers':
             continue
         list_new_properties.append(property)
 
@@ -66,9 +66,7 @@ def get_properties_and_generate_tsv_files():
 
     new_nodes = open('output/new_nodes.tsv', 'w', encoding='utf-8')
     csv_new = csv.writer(new_nodes, delimiter='\t')
-    csv_new.writerow(['identifier','xrefs'])
-
-
+    csv_new.writerow(['identifier', 'xrefs'])
 
 
 def load_all_DrugBank_compound_in_dictionary():
@@ -81,9 +79,9 @@ def load_all_DrugBank_compound_in_dictionary():
     results = g.run(query)
     for record in results:
         [id, external_ids] = record.values()
-        external_ids =external_ids if external_ids else []
-        xrefs=go_through_xrefs_and_change_if_needed_source_name(external_ids,'chemical')
-        csv_new.writerow([id,'|'.join(xrefs)])
+        external_ids = external_ids if external_ids else []
+        xrefs = go_through_xrefs_and_change_if_needed_source_name(external_ids, 'chemical')
+        csv_new.writerow([id, '|'.join(xrefs)])
 
     print('size of drugbank: ' + str(len(dict_compounds)))
 
@@ -121,8 +119,6 @@ def load_in_all_interaction_connection_from_drugbank_in_dict():
     print('number of interaction:' + str(len(dict_interact_relationships_with_infos)))
 
 
-
-
 def create_cypher_file():
     # cypher file
     cypher_file = open('compound_interaction/cypher.cypher', 'w', encoding='utf-8')
@@ -141,8 +137,6 @@ def create_cypher_file():
         # else:
         query_create += property + ':a.' + property + ', '
 
-
-
     query_create = query_start + 'Create (b:Compound{identifier:line.identifier, drugbank:"yes", ' + query_create + 'resource:["DrugBank"], source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.identifier, license:"%s"}) Create (b)-[:equal_to_drugbank]->(a)'
     query_create = query_create % (neo4j_label_drugbank, license)
 
@@ -151,9 +145,8 @@ def create_cypher_file():
                                                      query_create)
     cypher_file.write(query_create)
 
-    cypher_file.write(pharmebinetutils.prepare_index_query('Compound','identifier'))
+    cypher_file.write(pharmebinetutils.prepare_index_query('Compound', 'identifier'))
     cypher_file.write(pharmebinetutils.prepare_index_query_text('Compound', 'name'))
-
 
 
 def generation_of_interaction_file():
@@ -180,11 +173,9 @@ def generation_of_interaction_file():
     cypherfile.write(query)
     cypherfile.close()
 
-    set_alt = set([])
     counter_all_interaction = 0
 
     for (compound1, compound2), description in dict_interact_relationships_with_infos.items():
-
         counter_all_interaction += len(description)
         description = list(set(description))
         description = '||'.join(description)
@@ -193,13 +184,11 @@ def generation_of_interaction_file():
         description = description
         csv_writer.writerow([compound1, compound2, description])
 
-
     print(counter_connection)
     print('one has the alternative id in pharmebinet:' + str(one_alternative))
     print('both have the alternative id in pharmebinet:' + str(counter_both_alternative))
     print('both are in pharmebinet with normal id:' + str(count_no_alternative))
     print('counter of all interaction:' + str(counter_all_interaction))
-    print(set_alt)
 
 
 # path to directory

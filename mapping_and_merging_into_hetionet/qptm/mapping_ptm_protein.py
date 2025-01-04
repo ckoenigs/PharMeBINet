@@ -62,8 +62,8 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher_edge.cypher')
     query = (f' MATCH (n:Protein {{identifier: line.protein_identifer}}), (v:PTM {{identifier: line.ptm_identifier}}) '
-             f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.qptm = "yes", '
-             f'r.resource = split(line.resource, "|"), r.properties_qptm = line.aggregated_properties')
+             f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.qptm = "yes", r.url="https://qptm.omicsbio.info/", r.license="ONLY freely available for academic research", '
+             f'r.resource = split(line.resource, "|"), r.source="qPTM", r.properties_qptm = line.aggregated_properties')
     mode = 'w' if os.path.exists(file_path) else 'w+'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')

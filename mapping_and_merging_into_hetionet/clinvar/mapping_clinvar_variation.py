@@ -172,6 +172,7 @@ def load_all_variants_and_finish_the_files():
 
             if 'genes' in node:
                 possible_genes_rela = node["genes"].replace('\\"', '"')
+                print(identifier,possible_genes_rela)
                 genes_infos = json.loads(possible_genes_rela)
                 for gene_infos in genes_infos:
                     gene_id = gene_infos['gene_id']

@@ -141,7 +141,7 @@ def main():
 
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -149,14 +149,14 @@ def main():
     print(
         '###########################################################################################################################')
     print("generate files")
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     generate_files()
 
     print(
         '###########################################################################################################################')
     print("load protein in")
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     load_protein_in()
 
@@ -165,11 +165,11 @@ def main():
     print(
         '###########################################################################################################################')
     print("load and mapp hippie protein ")
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     load_and_map_hippie_protein()
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

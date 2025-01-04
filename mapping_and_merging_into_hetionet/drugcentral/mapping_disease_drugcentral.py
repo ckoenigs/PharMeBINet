@@ -535,7 +535,7 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path dc disease')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -554,7 +554,7 @@ def main():
     generate_cypher_file(file_name_mapped_disease_doi, file_name_mapped_disease, "Disease")
     generate_cypher_file(file_name_mapped_symptom_doid, file_name_mapped_symptom, "Symptom")
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

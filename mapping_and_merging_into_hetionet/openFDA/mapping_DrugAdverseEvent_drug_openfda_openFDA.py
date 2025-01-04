@@ -11,7 +11,7 @@ else:
 
 make_dir()
 #######################################################################
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Connecting to database neo4j ...")
 global g, driver
 driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -34,12 +34,12 @@ map_file_name = "mapped_DrugAdverseEvent_drug_openfda_Chemical.tsv"
 # f = open("FDA_mappings/"+cypher_file_name, 'w')
 # f.close()
 #######################################################################
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Fetching data for DrugAdverseEvent_drug_openfda_openFDA ...")
 # FDA Daten abrufen und anschließend als Dictionary speichern.
 query = "MATCH (n:DrugAdverseEvent_drug_openfda_openFDA) RETURN n.id, n.generic_name,  n.product_ndc;"
 a = list(g.run(query))
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Fetching data for Chemical ...")
 # Category Daten abrufen und anschließend als Dictionary speichern.
 query = "MATCH (n:Chemical) RETURN n.identifier, toLower(n.name), n.synonyms, n.resource;"
@@ -85,7 +85,7 @@ fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_f
 make_cypher_file(FDA_name, CAT_name, "id", "identifier", "name_synonym", cypher_file_name, map_file_name,
                  path_of_directory)
 #######################################################################
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print("Fetching data for Product ...")
 # Category Daten abrufen und anschließend als Dictionary speichern.
 query = "MATCH (n:Product) RETURN n.identifier, n.ndc_product_code, n.resource;"

@@ -2,8 +2,6 @@
 import datetime
 import sys, csv
 
-sys.path.append("..")
-from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
 sys.path.append("../..")
 import create_connection_to_databases

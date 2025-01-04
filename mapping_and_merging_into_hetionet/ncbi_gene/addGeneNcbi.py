@@ -20,10 +20,8 @@ def create_connetion_with_neo4j():
     g = driver.session(database='graph')
 
 
-
 # list of properties  which have a list element
 list_properties_with_list_elements = ['gene_symbols', 'synonyms', 'xrefs', 'map_location', 'feature_type']
-
 
 # dictionary from ncbi property to pharmebinet property name
 dict_ncbi_property_to_pharmebinet_property = {
@@ -80,24 +78,21 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                 part += 'line.' + head + ', '
             query += part
             on_create_string += part
-    query =query %on_create_string
+    query = query % on_create_string
     query += 'ncbi:"yes", resource:["NCBI"], source:"Entrez Gene",  license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", url:"http://identifiers.org/ncbigene/"+line.identifier, ncbi:"yes"}) Create (n)<-[:equal_to_ncbi_gene]-(g)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ncbi_gene/output/genes.tsv',
                                               query)
     cypher_file.write(query)
-    cypher_file.write(pharmebinetutils.prepare_index_query('Gene','identifier'))
+    cypher_file.write(pharmebinetutils.prepare_index_query('Gene', 'identifier'))
     cypher_file.write(pharmebinetutils.prepare_index_query_text('Gene', 'name'))
     cypher_file.close()
 
-    query = '''MATCH (n:Gene_Ncbi) RETURN n.identifier, n.full_name_from_nomenclature_authority, n;'''
+    query = '''MATCH (n:Gene_Ncbi) RETURN n.full_name_from_nomenclature_authority, n;'''
     results = g.run(query)
-    counter_not_same_name = 0
     counter_all = 0
-    counter_all_in_pharmebinet = 0
-    counter_mapped_and_similar_names=0
     for record in results:
-        [gene_id, name, node] = record.values()
+        [name, node] = record.values()
         counter_all += 1
         # make a dictionary from the node
         node = dict(node)
@@ -130,10 +125,6 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
 
         # make one list
         node['symbol_from_nomenclature_authority'] = list(gene_symbol)
-        symbols_ncbi = [x.lower() for x in list(gene_symbol)]
-        synonyms = node['synonyms'] if 'synonyms' in node else []
-        synonyms = list(set_of_synoynmys_from_designation.union(synonyms))
-        synonyms = [x.lower() for x in synonyms]
 
         if name is None or name == '-':
             # print('has no name')
@@ -141,7 +132,6 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                 print('description is also empty')
                 node['description'] = ''
             node['full_name_from_nomenclature_authority'] = node['description']
-
 
         dict_for_insert_into_tsv = {}
         for head in header:
@@ -156,8 +146,6 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         writer.writerow(dict_for_insert_into_tsv)
 
     print('number of all genes:' + str(counter_all))
-    print('counter of all genes already in pharmebinet:' + str(counter_all_in_pharmebinet))
-    print('counter not the same name:' + str(counter_not_same_name))
 
 
 # path to directory

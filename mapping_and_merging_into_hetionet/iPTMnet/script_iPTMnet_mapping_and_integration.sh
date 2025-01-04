@@ -69,13 +69,13 @@ if [ ! -d ptm_protein_edge ]; then
   mkdir ptm_protein_edge
 fi
 
-python3 mapping_ptm_protein.py $path_to_project > ptm_protein_edge/output.txt
+#python3 mapping_ptm_protein_iPTMnet.py $path_to_project > ptm_protein_edge/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate edges into neo4j
 
-python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher_edge.txt
+#python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher_edge.txt
 
 
 now=$(date +"%F %T")
