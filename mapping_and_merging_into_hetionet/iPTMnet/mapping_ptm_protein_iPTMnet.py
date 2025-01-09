@@ -59,17 +59,20 @@ def generate_files(path_of_directory):
         os.mkdir(source)
 
 
+
     cypher_file_path = os.path.join(source, 'cypher_edge.cypher')
     query = (f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
              f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.iptmnet = "yes", '
-             f'r.resource = split(line.resource, "|"), r.properties_iptmnet = line.aggregated_properties')
+             f'r.resource = split(line.resource, "|"), r.properties_iptmnet = split(line.aggregated_properties,"|")')
     mode = 'w' if os.path.exists(cypher_file_path) else 'w+'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
 
     query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
-             'CREATE (n)-[:HAS_PhPTM{url:"https://research.bioinformatics.udel.edu/iptmnet/entry/"+line.protein_identifier, properties_iptmnet = line.aggregated_properties, license:"CC BY-NC-SA 4.0 Deed", resource:["iPTMnet"], source:"iPTMnet", iptmnet:"yes"}]->(v)')
+             'CREATE (n)-[:HAS_PhPTM{url:"https://research.bioinformatics.udel.edu/iptmnet/entry/"+line.protein_identifier, '
+             'license:"CC BY-NC-SA 4.0 Deed", properties_iptmnet = split(line.aggregated_properties,"|"), resource:["iPTMnet"], '
+             'source:"iPTMnet", iptmnet:"yes"}]->(v)')
 
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
@@ -83,8 +86,8 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
     Load all variation, sort the ids into the right tsv, generate the queries, and add relationships to the rela tsv.
     """
     query = (
-        "MATCH (ptm:PTM)--(n:iPTMnet_PTM)-[r]-(v:iPTMnet_Protein)--(p:Protein) "
-        "RETURN id(r) as relationshipId, p.identifier as protein_identifier, ptm.identifier as ptm_identifier, "
+        "MATCH (ptm:PTM)--(n:iPTMnet_PTM)-[r]-(v:iPTMnet_Protein)--(p:Protein) WHERE not r.pmids is Null "
+        "RETURN p.identifier as protein_identifier, ptm.identifier as ptm_identifier, "
         "r.note as note, r.source as ptm_source, r.pmids as pmids"
     )
     results = g.run(query)
@@ -94,7 +97,7 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
     counter_all = 0
     all_edges_iptmnet = {}
     print(results)
-    for relationshipId, protein_identifier, ptm_identifier, note, ptm_source, pmids in results:
+    for protein_identifier, ptm_identifier, note, ptm_source, pmids in results:
         counter_all += 1
         edge = (ptm_identifier, protein_identifier)
         if edge not in all_edges_iptmnet:
@@ -102,27 +105,27 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
         all_edges_iptmnet[edge].append({
             "note": note or '',
             "source": ptm_source or '',
-            "pmids": pmids or ''
+            "pmids": pmids
         })
 
     for edge, properties_list in all_edges_iptmnet.items():
         ptm_identifier, protein_identifier = edge
-        cleaned_properties = [
-            {k: v for k, v in prop.items() if v}
-            for prop in properties_list
-        ]
+        clean=[]
+        for prop in properties_list:
+            if len(prop)>0:
+                clean.append(json.dumps(prop))
         # Existing edge
         if edge in dict_identifier_to_resource:
             csv_mapping_existing.writerow([
                 ptm_identifier, protein_identifier,
                 pharmebinetutils.resource_add_and_prepare(
                     dict_identifier_to_resource[edge], "iPTMnet"
-                ), cleaned_properties
+                ), "|".join(clean)
             ])
             counter_mapped += 1
         else:
             # New edge
-            csv_mapping_new.writerow([ptm_identifier, protein_identifier, "iPTMnet", cleaned_properties])
+            csv_mapping_new.writerow([ptm_identifier, protein_identifier, "iPTMnet", "|".join(clean)])
             counter_new_edges += 1
             print(f"New edge: {ptm_identifier}, {protein_identifier}")
 
