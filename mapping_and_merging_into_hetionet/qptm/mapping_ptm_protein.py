@@ -104,7 +104,7 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
 
         query = f"""
             MATCH (ptm:PTM)--(n:qPTM_PTM)-[r]-(v:qPTM_Protein)--(p:Protein)
-            RETURN id(r) as relationshipId, p.identifier as protein_identifier, ptm.identifier as ptm_identifier, 
+            RETURN p.identifier as protein_identifier, ptm.identifier as ptm_identifier, 
             r.condition as condition, r.reliability as reliability, r.pmid as pmid, r.sample as sample
             SKIP {skip} LIMIT {batch_size}
             """
@@ -112,7 +112,7 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
         results = g.run(query)
 
         print("Skip:", skip)
-        for relationshipId, protein_identifier, ptm_identifier, condition, reliability, pmid, sample in results:
+        for protein_identifier, ptm_identifier, condition, reliability, pmid, sample in results:
             edge = (ptm_identifier, protein_identifier)
             if edge not in all_edges_qptm:
                 all_edges_qptm[edge] = []
