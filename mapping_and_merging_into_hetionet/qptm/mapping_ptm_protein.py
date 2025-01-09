@@ -89,7 +89,7 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
     Load all variation, sort the ids into the right tsv, generate the queries, and add relationships to the rela tsv.
     """
     count_query = """
-        MATCH (ptm:PTM)--(n:qPTM_PTM)-[r]-(v:qPTM_Protein)--(p:Protein)
+        MATCH (ptm:PTM)--(n:qPTM_PTM)-[r:qPTM_HAS_PTM]-(v:qPTM_Protein)--(p:Protein)
         RETURN COUNT(DISTINCT r) AS total_count
         """
     count_result = g.run(count_query).single()
@@ -103,7 +103,7 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
     while skip < total_count:
 
         query = f"""
-            MATCH (ptm:PTM)--(n:qPTM_PTM)-[r]-(v:qPTM_Protein)--(p:Protein)
+            MATCH (ptm:PTM)--(n:qPTM_PTM)-[r:qPTM_HAS_PTM]-(v:qPTM_Protein)--(p:Protein)
             RETURN p.identifier as protein_identifier, ptm.identifier as ptm_identifier, 
             r.condition as condition, r.reliability as reliability, r.pmid as pmid, r.sample as sample
             SKIP {skip} LIMIT {batch_size}
@@ -116,20 +116,21 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
             edge = (ptm_identifier, protein_identifier)
             if edge not in all_edges_qptm:
                 all_edges_qptm[edge] = []
-            all_edges_qptm[edge].append({
-                "condition": condition or '',
-                "sample": sample or '',
-                "reliability": reliability or '',
-                "pmid": pmid or ''
-            })
+            if condition or sample or reliability or pmid:
+                all_edges_qptm[edge].append({
+                    "condition": condition or '',
+                    "sample": sample or '',
+                    "reliability": reliability or '',
+                    "pmid": pmid or ''
+                })
         skip += batch_size
     print("Finished edge_dictionary")
     for edge, properties_list in all_edges_qptm.items():
         ptm_identifier, protein_identifier = edge
-        cleaned_properties = [
-            {k: v for k, v in prop.items() if v}  # Remove empty values
-            for prop in properties_list
-        ]
+        clean = []
+        for prop in properties_list:
+            if len(prop) > 0:
+                clean.append(json.dumps(prop))
 
         # Existing edge
         if edge in dict_identifier_to_resource:
@@ -137,12 +138,12 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
                 ptm_identifier, protein_identifier,
                 pharmebinetutils.resource_add_and_prepare(
                     dict_identifier_to_resource[edge], "qPTM"
-                ), cleaned_properties
+                ), "|".join(clean)
             ])
             counter_mapped += 1
         else:
             # New edge
-            csv_mapping_new.writerow([ptm_identifier, protein_identifier, "qPTM", cleaned_properties])
+            csv_mapping_new.writerow([ptm_identifier, protein_identifier, "qPTM", "|".join(clean)])
             counter_new_edges += 1
 
 

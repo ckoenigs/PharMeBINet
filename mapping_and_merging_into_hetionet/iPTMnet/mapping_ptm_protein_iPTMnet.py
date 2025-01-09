@@ -86,7 +86,7 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
     Load all variation, sort the ids into the right tsv, generate the queries, and add relationships to the rela tsv.
     """
     query = (
-        "MATCH (ptm:PTM)--(n:iPTMnet_PTM)-[r]-(v:iPTMnet_Protein)--(p:Protein) WHERE not r.pmids is Null "
+        "MATCH (ptm:PTM)--(n:iPTMnet_PTM)-[r:iPTMnet_HAS_PTM]-(v:iPTMnet_Protein)--(p:Protein) WHERE not r.pmids is Null "
         "RETURN p.identifier as protein_identifier, ptm.identifier as ptm_identifier, "
         "r.note as note, r.source as ptm_source, r.pmids as pmids"
     )

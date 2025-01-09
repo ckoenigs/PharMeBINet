@@ -40,7 +40,7 @@ def get_PTMD_information():
     counter_all = 0
     dict_all_mappings = {}
 
-    query = "Match (n:PTM)--(p:PTMD_PTM)-[r]-(:PTMD_Protein)--(m:Protein) Return n.identifier, m.identifier"
+    query = "Match (n:PTM)--(p:PTMD_PTM)-[r:PTMD_HAS_PTM]-(:PTMD_Protein)--(m:Protein) Return n.identifier, m.identifier"
     results = g.run(query)
 
     for record in results:
