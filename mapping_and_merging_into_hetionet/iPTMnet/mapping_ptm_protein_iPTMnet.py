@@ -29,7 +29,7 @@ def load_ptms_from_database_and_add_to_dict():
     for ptm_identifier, resource, protein_identifer in results:
         dict_identifier_to_resource[(ptm_identifier, protein_identifer)] = resource
 
-def generate_files(path_of_directory):
+def generate_files(path_of_directory, edge_type):
     """
     generate cypher file and tsv file
     :return: tsv file
@@ -38,7 +38,7 @@ def generate_files(path_of_directory):
     if not os.path.exists(path_of_directory):
         os.mkdir(path_of_directory)
 
-    file_name = 'iPTMnet_edges_to_edges'
+    file_name = f'iPTMnet_edges_to_edges_{edge_type}'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
     header = ['ptm_identifier', 'protein_identifier','resource', 'aggregated_properties']
     mode = 'w' if os.path.exists(file_path) else 'w+'
@@ -49,7 +49,7 @@ def generate_files(path_of_directory):
     if not os.path.exists(source):
         os.mkdir(source)
 
-    new_file_name = 'new_edges'
+    new_file_name = f'new_edges_{edge_type}'
     new_file_path = os.path.join(path_of_directory, new_file_name) + '.tsv'
     new_file = open(new_file_path, 'w+', encoding='utf-8')
     csv_mapping_new = csv.writer(new_file, delimiter='\t')
@@ -61,19 +61,31 @@ def generate_files(path_of_directory):
 
 
     cypher_file_path = os.path.join(source, 'cypher_edge.cypher')
-    query = (f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
-             f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.iptmnet = "yes", '
-             f'r.resource = split(line.resource, "|"), r.properties_iptmnet = split(line.aggregated_properties,"|")')
+    query = ''
+    if edge_type == 'iPTMnet_HAS_PTM':
+        query = (f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
+                 f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.iptmnet = "yes", '
+                 f'r.resource = split(line.resource, "|"), r.properties_iptmnet = split(line.aggregated_properties,"|")')
+    elif edge_type == 'iPTMnet_INVOLVES':
+        query = (
+            f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
+            f'MATCH (v)-[r:INVOLVES]->(n) SET r.iptmnet = "yes", '
+            f'r.resource = split(line.resource, "|")')
     mode = 'w' if os.path.exists(cypher_file_path) else 'w+'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
 
-    query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
-             'CREATE (n)-[:HAS_PhPTM{url:"https://research.bioinformatics.udel.edu/iptmnet/entry/"+line.protein_identifier, '
-             'license:"CC BY-NC-SA 4.0 Deed", properties_iptmnet = split(line.aggregated_properties,"|"), resource:["iPTMnet"], '
-             'source:"iPTMnet", iptmnet:"yes"}]->(v)')
-
+    if edge_type == 'iPTMnet_HAS_PTM':
+        query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
+                 'CREATE (n)-[:HAS_PhPTM{url:"https://research.bioinformatics.udel.edu/iptmnet/entry/"+line.protein_identifier, '
+                 'license:"CC BY-NC-SA 4.0 Deed", properties_iptmnet = split(line.aggregated_properties,"|"), resource:["iPTMnet"], '
+                 'source:"iPTMnet", iptmnet:"yes"}]->(v)')
+    elif edge_type == 'iPTMnet_INVOLVES':
+        query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
+                 'CREATE (v)-[:INVOLVES{url:"https://research.bioinformatics.udel.edu/iptmnet/entry/"+line.protein_identifier, '
+                 'license:"CC BY-NC-SA 4.0 Deed", resource:["iPTMnet"], '
+                 'source:"iPTMnet", iptmnet:"yes"}]->(n)')
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
@@ -81,32 +93,42 @@ def generate_files(path_of_directory):
     return csv_mapping_existing, csv_mapping_new
 
 
-def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_new):
+def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_new, edge_type):
     """
     Load all variation, sort the ids into the right tsv, generate the queries, and add relationships to the rela tsv.
     """
-    query = (
-        "MATCH (ptm:PTM)--(n:iPTMnet_PTM)-[r:iPTMnet_HAS_PTM]-(v:iPTMnet_Protein)--(p:Protein) WHERE not r.pmids is Null "
-        "RETURN p.identifier as protein_identifier, ptm.identifier as ptm_identifier, "
-        "r.note as note, r.source as ptm_source, r.pmids as pmids"
-    )
-    results = g.run(query)
 
     counter_new_edges = 0
     counter_mapped = 0
     counter_all = 0
     all_edges_iptmnet = {}
-    print(results)
-    for protein_identifier, ptm_identifier, note, ptm_source, pmids in results:
-        counter_all += 1
-        edge = (ptm_identifier, protein_identifier)
-        if edge not in all_edges_iptmnet:
-            all_edges_iptmnet[edge] = []
-        all_edges_iptmnet[edge].append({
-            "note": note or '',
-            "source": ptm_source or '',
-            "pmids": pmids
-        })
+    if edge_type == 'iPTMnet_HAS_PTM':
+        query = (
+            "MATCH (ptm:PTM)--(n:iPTMnet_PTM)-[r]-(v:iPTMnet_Protein)--(p:Protein) WHERE not r.pmids is Null AND type(r) = $edge_type "
+            "RETURN p.identifier as protein_identifier, ptm.identifier as ptm_identifier, "
+            "r.note as note, r.source as ptm_source, r.pmids as pmids"
+        )
+        results = g.run(query, parameters={"edge_type": edge_type})
+        for protein_identifier, ptm_identifier, note, ptm_source, pmids in results:
+            counter_all += 1
+            edge = (ptm_identifier, protein_identifier)
+            if edge not in all_edges_iptmnet:
+                all_edges_iptmnet[edge] = []
+            all_edges_iptmnet[edge].append({
+                "note": note or '',
+                "source": ptm_source or '',
+                "pmids": pmids
+            })
+    elif edge_type == 'iPTMnet_INVOLVES':
+        query = (
+            "MATCH (ptm:PTM)--(n:iPTMnet_PTM)-[r]-(v:iPTMnet_Protein)--(p:Protein) WHERE type(r) = $edge_type "
+            "RETURN p.identifier as protein_identifier, ptm.identifier as ptm_identifier")
+        results = g.run(query, parameters={"edge_type": edge_type})
+        for protein_identifier, ptm_identifier in results:
+            counter_all += 1
+            edge = (ptm_identifier, protein_identifier)
+            if edge not in all_edges_iptmnet:
+                all_edges_iptmnet[edge] = []
 
     for edge, properties_list in all_edges_iptmnet.items():
         ptm_identifier, protein_identifier = edge
@@ -127,8 +149,8 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
             # New edge
             csv_mapping_new.writerow([ptm_identifier, protein_identifier, "iPTMnet", "|".join(clean)])
             counter_new_edges += 1
-            print(f"New edge: {ptm_identifier}, {protein_identifier}")
 
+    print(f'Edge type: {edge_type}')
     print(f'Number of new ptm_protein edges: {counter_new_edges}')
     print(f'Number of extended ptm_protein edges: {counter_mapped}')
     print(f'Number of all ptms: {counter_all}')
@@ -162,15 +184,28 @@ def main():
     load_ptms_from_database_and_add_to_dict()
     print('##########################################################################')
 
+    print("Edge: iPTMnet_HAS_PTM")
     print(datetime.datetime.now())
     print('Generate cypher and tsv file')
-    csv_mapping_existing, csv_mapping_new = generate_files(path_of_directory)
+    csv_mapping_existing, csv_mapping_new = generate_files(path_of_directory, "iPTMnet_HAS_PTM")
 
     print('##########################################################################')
 
     print(datetime.datetime.now())
     print('Load all iPTMnet ptms from database')
-    load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_new)
+    load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_new, 'iPTMnet_HAS_PTM')
+
+    print('##########################################################################')
+    print("Edge: iPTMnet_INVOLVES")
+    print(datetime.datetime.now())
+    print('Generate cypher and tsv file')
+    csv_mapping_existing_involve, csv_mapping_new_involve = generate_files(path_of_directory, "iPTMnet_INVOLVES")
+
+    print('##########################################################################')
+
+    print(datetime.datetime.now())
+    print('Load all iPTMnet ptms from database')
+    load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing_involve, csv_mapping_new_involve, 'iPTMnet_INVOLVES')
 
     driver.close()
 

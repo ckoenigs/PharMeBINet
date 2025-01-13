@@ -17,7 +17,7 @@ def create_connection_with_neo4j():
     g = driver.session(database='graph')
 
 
-def get_PTMD_information():
+def get_PTMD_information(edge_type):
     '''
     Load all PTMD ptm-protein and save to tsv
     '''
@@ -28,7 +28,7 @@ def get_PTMD_information():
     columns = ['ptm_id', 'protein_id']
 
     # Create tsv for ptm-protein edges
-    file_name_not_mapped_protein = 'new_ptm_protein_edges.tsv'
+    file_name_not_mapped_protein = f'new_ptm_protein_edges_{edge_type}.tsv'
     not_mapped_path_protein = os.path.join(path_of_directory, file_name_not_mapped_protein)
     mode = 'w' if os.path.exists(not_mapped_path_protein) else 'w+'
     file_protein = open(not_mapped_path_protein, mode, encoding='utf-8')
@@ -40,8 +40,8 @@ def get_PTMD_information():
     counter_all = 0
     dict_all_mappings = {}
 
-    query = "Match (n:PTM)--(p:PTMD_PTM)-[r:PTMD_HAS_PTM]-(:PTMD_Protein)--(m:Protein) Return n.identifier, m.identifier"
-    results = g.run(query)
+    query = ("Match (n:PTM)--(p:PTMD_PTM)-[r]-(:PTMD_Protein)--(m:Protein) WHERE type(r) = $edge_type Return n.identifier, m.identifier")
+    results = g.run(query, parameters={"edge_type": edge_type})
 
     for record in results:
         [ptm_id, protein_id] = record.values()
@@ -60,6 +60,7 @@ def get_PTMD_information():
             counter_not_mapped += 1
     file_protein.close()
 
+    print('Edge: ', edge_type)
     print('number of protein edges:', counter_protein)
     print('number of not mapped edges:', counter_not_mapped)
     print('number of all edges:', counter_all)
@@ -69,8 +70,13 @@ def get_PTMD_information():
     file_cypher = open(cypher_path, 'a', encoding='utf-8')
 
     # Create new edges, write cypher queries
-    query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Protein{{identifier:line.protein_id}}) '
-             f'Create (d)-[:HAS_PhPTM{{resource:["PTMD"],ptmd:"yes", url:"https://ptmd.biocuckoo.cn/index.php",  source:"PTMD", license:"ONLY freely available for academic research"}}]->(p)')
+    query = ''
+    if edge_type == 'PTMD_HAS_PTM':
+        query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Protein{{identifier:line.protein_id}}) '
+                 f'Create (d)-[:HAS_PhPTM{{resource:["PTMD"],ptmd:"yes", url:"https://ptmd.biocuckoo.cn/index.php",  source:"PTMD", license:"ONLY freely available for academic research"}}]->(p)')
+    elif edge_type == 'PTMD_INVOLVES':
+        query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Protein{{identifier:line.protein_id}}) '
+             f'Create (p)-[:INVOLVES{{resource:["PTMD"],ptmd:"yes", url:"https://ptmd.biocuckoo.cn/index.php",  source:"PTMD", license:"ONLY freely available for academic research"}}]->(d)')
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_not_mapped_protein,
                                               query)
@@ -101,7 +107,8 @@ def main():
     print('##########################################################################')
     print('gather all information of the PTMD ptms/protein')
 
-    get_PTMD_information()
+    get_PTMD_information("PTMD_HAS_PTM")
+    get_PTMD_information("PTMD_INVOLVES")
 
     driver.close()
 
