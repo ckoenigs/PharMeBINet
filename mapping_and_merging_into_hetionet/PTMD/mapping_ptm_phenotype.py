@@ -29,7 +29,7 @@ def generate_tsv_file(label, columns, file_cypher):
     file = open(not_mapped_path, mode, encoding='utf-8')
     writer = csv.writer(file, delimiter='\t')
     writer.writerow(columns)
-    prepare_query(label, file_name_not_mapped)
+    prepare_query(label, file_name_not_mapped, file_cypher)
 
     return  writer, file
 
@@ -126,10 +126,10 @@ def get_PTMD_information():
             print("Already mapped edge:", ptm_id, phenotype_id, dict_all_mappings[(ptm_id, phenotype_id)])
             counter_not_mapped += 1
 
-        file_disease.close()
-        file_symptom.close()
-        file_sideEffect.close()
-        file_phenotype.close()
+    file_disease.close()
+    file_symptom.close()
+    file_sideEffect.close()
+    file_phenotype.close()
 
     print('number of disease edges:', counter_disease)
     print('number of sideEffect edges:', counter_sideEffect)

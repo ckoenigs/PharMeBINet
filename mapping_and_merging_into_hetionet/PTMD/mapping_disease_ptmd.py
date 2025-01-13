@@ -116,6 +116,12 @@ def generate_files(path_of_directory):
 
     return csv_mapping
 
+# dictionary_manual_mapping
+dict_manual_mapping={
+    "mitochondrial complex iv deficiency":'MONDO:0033885'
+}
+
+set_not_map_with_disease=set(["lactate dehydrogenase b deficiency","pyrin-associated autoinflammatory disease", "keratosis follicularis"])
 
 def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_symptom, dict_phenotype):
     """
@@ -166,31 +172,34 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
         if mapped:
             continue
         # manual mapping
-        # if name in dict_manual_mapping:
-        #     print('manual')
-        #     mapped = True
-        #     csv_mapping.writerow(
-        #         [neo4j_id, dict_manual_mapping[name],
-        #          pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[dict_manual_mapping[name]],
-        #                                                    "PTMD"),
-        #          'manual'])
-        #
-        # if mapped:
-        #     continue
-
-        umls_cui_list = try_to_get_umls_ids_with_UMLS(name)
-        for umls_cui in umls_cui_list:
-            if umls_cui in dict_disease['umls']:
-                mapped = True
-                for identifier in dict_disease['umls'][umls_cui]:
-                    csv_mapping.writerow(
-                        [neo4j_id, identifier,
-                         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                   "PTMD"),
-                         'umls'])
+        if name in dict_manual_mapping:
+            print('manual')
+            mapped = True
+            csv_mapping.writerow(
+                [neo4j_id, dict_manual_mapping[name],
+                 pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[dict_manual_mapping[name]],
+                                                           "PTMD"),
+                 'manual'])
 
         if mapped:
             continue
+
+        set_umls_names = set()
+        umls_cui_list = try_to_get_umls_ids_with_UMLS(name)
+        if not name in set_umls_names:
+            for umls_cui in umls_cui_list:
+                if umls_cui in dict_disease['umls']:
+                    mapped = True
+                    for identifier in dict_disease['umls'][umls_cui]:
+                        csv_mapping.writerow(
+                            [neo4j_id, identifier,
+                             pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
+                                                                       "PTMD"),
+                             'umls'])
+
+        if mapped:
+            continue
+
 
         if name in dict_disease['synonyms']:
             mapped = True
@@ -273,7 +282,6 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
 
         if mapped:
             continue
-        set_umls_names = set()
         if len(umls_cui_list) > 0:
             cur = con.cursor()
             query = ('Select Distinct STR From MRCONSO Where CUI in  ("%s");')
@@ -296,6 +304,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
 
         if mapped:
             continue
+
 
         if len(set_umls_names) > 0:
             for name_umls in set_umls_names:
