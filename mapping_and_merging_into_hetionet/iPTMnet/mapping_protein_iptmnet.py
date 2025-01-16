@@ -89,13 +89,19 @@ def load_all_iPTMnet_proteins_and_finish_the_files(csv_mapping):
     counter_mapped_alternative_id = 0
     counter_gene_names = 0
     counter_mapped_name = 0
+    counter_mapped_isoform_id = 0
     for record in results:
         node = record.data()['n']
         counter_all += 1
         identifier = node.get('uniprot_accession', None)
-        gene_names = node.get('gene_name', [])
+        gene_name = node.get('gene_name', None)
         name = node.get('name', None)
         name_lower = ""
+        isoform_identifier = None
+        if "-" in identifier:
+            split_identifier = identifier.split("-")
+            isoform_identifier = split_identifier[0]
+            print("Isoform", identifier)
         if name:
             name_lower = name.lower()
         uniprot_id = node.get('uniprot_id', None)
@@ -109,19 +115,25 @@ def load_all_iPTMnet_proteins_and_finish_the_files(csv_mapping):
                  'uniprot_accession'])
             counter_mapped_id += 1
             mapped = True
-        if not mapped and gene_names:
-            for gene_name in gene_names:
-                lower_gene_name = gene_name.lower()
-                if lower_gene_name in dict_gene_symbol_to_identifer:
-                    main_id = dict_gene_symbol_to_identifer[lower_gene_name]
-                    csv_mapping.writerow(
-                        [identifier, main_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id],
-                                                                   "iPTMnet"),
-                         'gene_symbol'])
-                    mapped = True
-                    counter_gene_names += 1
-                    break
+        if not mapped and isoform_identifier in dict_identifier_to_resource:
+            csv_mapping.writerow(
+                [identifier, isoform_identifier,
+                 pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[isoform_identifier], "iPTMnet"),
+                 'isoform_identifier']
+            )
+            counter_mapped_isoform_id += 1
+            mapped = True
+        if not mapped and gene_name:
+            lower_gene_name = gene_name.lower()
+            if lower_gene_name in dict_gene_symbol_to_identifer:
+                main_id = dict_gene_symbol_to_identifer[lower_gene_name]
+                csv_mapping.writerow(
+                    [identifier, main_id,
+                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id],
+                                                               "iPTMnet"),
+                     'gene_symbol'])
+                mapped = True
+                counter_gene_names += 1
         if not mapped:
             for main_id, alternatives in dict_identifier_to_alternative_ids.items():
                 if identifier in alternatives:
@@ -148,6 +160,7 @@ def load_all_iPTMnet_proteins_and_finish_the_files(csv_mapping):
     print('number of mapped alternative id protein:', counter_mapped_alternative_id)
     print('number of mapped gene name protein:', counter_gene_names)
     print('number of mapped name protein:', counter_mapped_name)
+    print('number of mapped isoform id protein:', counter_mapped_isoform_id)
     print('number of not-mapped proteins:', counter_not_mapped)
     print('number of all proteins:', counter_all)
 

@@ -15,8 +15,6 @@ dict_protein_name_to_identifier = {}
 # dictionary for gene_symbol to protein gene_name
 dict_identifier_to_alternative_ids = {}
 
-dict_gene_symbol_to_identifer = {}
-
 
 def load_proteins_from_database_and_add_to_dict():
     """
@@ -31,17 +29,6 @@ def load_proteins_from_database_and_add_to_dict():
         pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_to_identifier, name, identifier)
         if alternative_ids is not None:
             dict_identifier_to_alternative_ids[identifier] = alternative_ids
-
-    query2 = "MATCH (g:Gene)--(p:Protein) RETURN g.gene_symbol, g.gene_symbols, p.identifier"
-    results2 = g.run(query2)
-
-    for gene_symbol, gene_symbols, identifier, in results2:
-        dict_gene_symbol_to_identifer[gene_symbol.lower()] = identifier
-        if gene_symbols:
-            for gene_symbol in gene_symbols:
-                if gene_symbol not in dict_gene_symbol_to_identifer:
-                    dict_gene_symbol_to_identifer[gene_symbol.lower()] = identifier
-
 
 def generate_files(path_of_directory):
     """
@@ -85,12 +72,10 @@ def load_all_PTMD_proteins_and_finish_the_files(csv_mapping):
     counter_all = 0
     counter_mapped_id = 0
     counter_mapped_alternative_id = 0
-    counter_gene_names = 0
     for record in results:
         node = record.data()['n']
         counter_all += 1
         identifier = node.get('uniprot_accession', None)
-        gene_names= node.get('gene_names', [])
         mapped = False
 
         # mapping
@@ -111,7 +96,7 @@ def load_all_PTMD_proteins_and_finish_the_files(csv_mapping):
                          'alternative_id'])
                     counter_mapped_alternative_id += 1
                     mapped = True
-                    break
+
 
         if not mapped:
             counter_not_mapped += 1
@@ -120,7 +105,6 @@ def load_all_PTMD_proteins_and_finish_the_files(csv_mapping):
 
     print('number of mapped id protein:', counter_mapped_id)
     print('number of mapped alternative id protein:', counter_mapped_alternative_id)
-    print('number of mapped gene name protein:', counter_gene_names)
     print('number of not-mapped proteins:', counter_not_mapped)
     print('number of all proteins:', counter_all)
 
