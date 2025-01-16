@@ -99,6 +99,7 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
     all_edges_qptm = {}
 
     counter=1
+    counter_total=0
 
     #iterate over entries in batchesc
     skip = 0
@@ -144,8 +145,9 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
             #         "pmid": pmid or ''
             #     })
         skip += batch_size
-        if counter%10000==0:
-            print(counter, datetime.datetime.now())
+        counter_total+=counter
+        if counter_total%10000==0:
+            print(counter_total, datetime.datetime.now())
     print("Finished edge_dictionary")
     for edge, properties_list in all_edges_qptm.items():
         ptm_identifier, protein_identifier = edge
@@ -191,7 +193,7 @@ def main():
 
     print(datetime.datetime.now())
     print('Load all qPTM ptms from database')
-    load_all_qptm_ptms_and_finish_the_files(1000, csv_mapping_existing, csv_mapping_new)
+    load_all_qptm_ptms_and_finish_the_files(2000, csv_mapping_existing, csv_mapping_new)
 
     driver.close()
 

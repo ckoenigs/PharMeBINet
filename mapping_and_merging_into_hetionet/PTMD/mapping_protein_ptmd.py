@@ -101,19 +101,6 @@ def load_all_PTMD_proteins_and_finish_the_files(csv_mapping):
                  'uniprot_accession'])
             counter_mapped_id += 1
             mapped = True
-        if not mapped and gene_names:
-            for gene_name in gene_names:
-                lower_gene_name = gene_name.lower()
-                if lower_gene_name in dict_gene_symbol_to_identifer:
-                    main_id = dict_gene_symbol_to_identifer[lower_gene_name]
-                    csv_mapping.writerow(
-                        [identifier, main_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id],
-                                                                   "PTMD"),
-                         'gene_symbol'])
-                    mapped = True
-                    counter_gene_names += 1
-                    break
         if not mapped:
             #if identifier not in dict_identifier_to_alternative_ids:
             for main_id, alternatives in dict_identifier_to_alternative_ids.items():
