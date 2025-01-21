@@ -1,0 +1,228 @@
+import datetime
+import sys, csv
+from collections import defaultdict
+
+sys.path.append("../..")
+import create_connection_to_databases
+import pharmebinetutils
+
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
+# disease ontology license
+license = 'CC BY 4.0'
+
+'''
+create a connection with neo4j
+'''
+
+
+def create_connection_with_neo4j():
+    # set up authentication parameters and connection
+    # authenticate("localhost:7474", "neo4j", "test")
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session(database='graph')
+
+
+# label of co nodes
+label_co = 'Cell_type_CO'
+# new label
+label='CellType'
+
+# dictionary new co
+dict_new_co_to_node = {}
+
+# dictionary of the new nodes
+dict_new_nodes = {}
+
+# header of tsv file
+header = []
+
+# header to property name
+dict_header_to_property = {}
+
+
+
+'''
+Get the  properties of co
+'''
+
+
+def get_co_properties():
+    query = f'''MATCH (p:{label_co}) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields as l;'''
+    result = g.run(query)
+
+    part = ''' Match (b:%s{id:line.identifier})''' % (label_co)
+    query_nodes_start = part
+    query_middle_new = ' Create (a:%s{'
+    for record in result:
+        property = record.data()['l']
+        if property in ['def', 'id', 'alt_ids', 'xrefs', 'names']:
+            if property == 'id':
+                query_middle_new += 'identifier:b.' + property + ', '
+            elif property == 'alt_ids':
+                query_middle_new += 'alternative_ids:b.' + property + ', '
+            elif property == 'xrefs':
+                query_middle_new += 'xrefs:split(line.' + property + ',"|"), '
+            elif property == 'names':
+                query_middle_new += 'name:b.' + property + '[0], '
+
+            else:
+                query_middle_new += 'definition:b.' + property + ', '
+        elif property in ["namespace", "is_obsolete", "replaced_by"]:
+            continue
+        else:
+            query_middle_new += property + ':b.' + property + ', '
+    query_end = ''' Create (a)-[:equal_to_co]->(b)'''
+    global query_new
+
+    # combine the important parts of node creation
+    query_new = query_nodes_start + query_middle_new + 'resource:["CO"], co:"yes", source:"Cell Ontology", url:"https://www.ebi.ac.uk/ols4/ontologies/cl/classes?obo_id="+line.identifier, license:"' + license + '"})' + query_end
+
+
+
+
+
+'''
+create the tsv files
+'''
+
+def create_tsv_files():
+    # prepare file and queries for new nodes
+    file_name = 'output/integrate_co.tsv'
+    query = query_new % (label)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/CL/{file_name}',
+                                              query)
+
+    # cypher file
+    with open('output/cypher.cypher', 'w', encoding='utf-8') as cypher_file:
+        cypher_file.write(query)
+        cypher_file.write(pharmebinetutils.prepare_index_query(label,'identifier'))
+        cypher_file.write(pharmebinetutils.prepare_index_query_text(label, 'name'))
+    file = open(file_name, 'w')
+    tsv_file = csv.writer(file, delimiter='\t')
+    tsv_file.writerow(['identifier', 'xrefs'])
+    return tsv_file
+
+
+'''
+check if id is in a dictionary
+'''
+
+
+def write_into_tsv_if_not_obsolete(identifier, label_co, node, xrefs, tsv_file):
+    found_id = False
+    xref_string = "|".join(go_through_xrefs_and_change_if_needed_source_name(xrefs, label_co))
+
+    if 'is_obsolete' in node:
+        print('need to be delete')
+        return found_id
+
+    tsv_file.writerow([identifier, xref_string])
+    return True
+
+
+'''
+Get all is_a relationships for bp, cc and mf and add the into a tsv file
+'''
+
+
+def get_is_a_relationships_and_add_to_tsv(cypher_file):
+    query = f'''Match (n:{label_co})-[:is_a]->(m:{label_co})  Where 'human_subset' in n.subsets and  'human_subset' in m.subsets Return n.id,m.id;'''
+    results = g.run(query)
+    file_name = 'output/integrate_co_relationship.tsv'
+    file = open(file_name, 'w')
+    tsv_file = csv.writer(file, delimiter='\t')
+    tsv_file.writerow(['identifier_1', 'identifier_2'])
+
+    query = '''Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{license:"%s", source:"Cell Ontology", unbiased:false, resource:["CO"], co:'yes', url:"https://www.ebi.ac.uk/ols4/ontologies/cl/classes?obo_id="+line.identifier_1}]->(a2)'''
+    query = query % ( label, label,
+                     'CLiaCL', license)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/CL/{file_name}',
+                                              query)
+    cypher_file.write(query)
+
+    # go through the results
+    for record in results:
+        [id1, id2] = record.values()
+        tsv_file.writerow([id1, id2])
+
+
+
+'''
+go through all co nodes and sort them into the dictionary 
+'''
+
+
+def go_through_co():
+    tsv_file = create_tsv_files()
+    query = '''Match (n:%s) Where 'human_subset' in n.subsets Return n''' % (label_co)
+    results = g.run(query)
+    for record in results:
+        node = record.data()['n']
+        identifier = node['id']
+        xrefs = node['xrefs'] if 'xrefs' in node else []
+        new_xref = set()
+        for xref in xrefs:
+            splitted_xref = xref.split(' ')
+            if len(splitted_xref) > 1:
+                new_xref.add(splitted_xref[0])
+            else:
+                new_xref.add(xref)
+        write_into_tsv_if_not_obsolete(identifier, label_co,  node, new_xref, tsv_file)
+
+
+# path to directory
+path_of_directory = ''
+
+
+def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
+    print(datetime.datetime.now())
+    print('create connection with neo4j')
+
+    create_connection_with_neo4j()
+
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.now())
+    print('get co properties and generate queries')
+
+    get_co_properties()
+
+    print(
+        '#################################################################################################################################################################')
+    print(datetime.datetime.now())
+    print('go through all cos in dictionary')
+
+    go_through_co()
+
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.now())
+    print('generate pharmebinet dictionary')
+
+    with open('output/cypher_edge.cypher','w',encoding='utf-8') as cypher_file:
+        get_is_a_relationships_and_add_to_tsv(cypher_file)
+
+    driver.close()
+
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.now())
+
+
+if __name__ == "__main__":
+    # execute only if run as a script
+    main()
