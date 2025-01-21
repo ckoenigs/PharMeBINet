@@ -97,7 +97,7 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
     counter_all = 0
     for nodeId, score, position, residue, ptm_type, protein_id in results:
         counter_all += 1
-        identifier = f"{identifier}_{position}_{residue}_{ptm_type}"
+        identifier = f"{protein_id}_{position}_{residue}_{ptm_type}"
         # mapping
         if identifier in dict_identifier_to_resource:
             csv_mapping_existing.writerow(

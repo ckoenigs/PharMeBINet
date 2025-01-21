@@ -60,7 +60,6 @@ def generate_files(path_of_directory, edge_type):
 
 
 
-    cypher_file_path = os.path.join(source, 'cypher_edge.cypher')
     query = ''
     if edge_type == 'iPTMnet_HAS_PTM':
         query = (f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
@@ -71,9 +70,8 @@ def generate_files(path_of_directory, edge_type):
             f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
             f'MATCH (v)-[r:INVOLVES]->(n) SET r.iptmnet = "yes", '
             f'r.resource = split(line.resource, "|")')
-    mode = 'w' if os.path.exists(cypher_file_path) else 'w+'
+
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
-    cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
 
     if edge_type == 'iPTMnet_HAS_PTM':
@@ -161,7 +159,7 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
 def main():
     global path_of_directory
     global source
-    global home
+    global home, cypher_file
 
 
     if len(sys.argv) > 1:
@@ -172,6 +170,8 @@ def main():
     home = os.getcwd()
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'ptm_protein_edge/')
+    cypher_file_path = os.path.join(source, 'cypher_edge.cypher')
+    cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
 
     print('##########################################################################')
     print(datetime.datetime.now())
