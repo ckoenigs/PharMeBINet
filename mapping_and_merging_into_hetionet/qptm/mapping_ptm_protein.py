@@ -65,7 +65,7 @@ def generate_files(path_of_directory):
     cypher_file_path = os.path.join(source, 'cypher_edge.cypher')
     query = (f' MATCH (n:Protein {{identifier: line.protein_identifer}}), (v:PTM {{identifier: line.ptm_identifier}}) '
              f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.qptm = "yes", '
-             f'r.resource = split(line.resource, "|"), r.properties_qptm = line.aggregated_properties, r.pubMed_ids =split(line.pmids,°|)')
+             f'r.resource = split(line.resource, "|"), r.properties_qptm = line.aggregated_properties, r.pubMed_ids =split(line.pmids,"|")')
     mode = 'w' if os.path.exists(file_path) else 'w+'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
@@ -73,7 +73,7 @@ def generate_files(path_of_directory):
 
     query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
              'CREATE (n)-[:HAS_PhPTM {qptm : "yes", url:"https://qptm.omicsbio.info/", license:"ONLY freely available for academic research", '
-             'resource : split(line.resource, "|"), source:"qPTM", properties_qptm : line.aggregated_properties, pubMed_ids :split(line.pmids,°|)}]->(v)')
+             'resource : split(line.resource, "|"), source:"qPTM", properties_qptm : line.aggregated_properties, pubMed_ids :split(line.pmids,"|")}]->(v)')
 
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
@@ -104,7 +104,7 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
     while counter > 0:
 
         query = f"""
-            MATCH (ptm:PTM)--(n:qPTM_PTM)-[r:qPTM_HAS_PTM]-(v:qPTM_Protein)--(p:Protein) 
+            MATCH (ptm:PTM)-[:equal_to_qPTM_ptm]-(n)-[r:qPTM_HAS_PTM]-(v)-[:equal_to_qPTM_protein]-(p:Protein) 
             WITH ptm, collect(r) as edge, p SKIP {skip} Limit {batch_size}
             RETURN p.identifier as protein_identifier, ptm.identifier as ptm_identifier, edge
             """
@@ -121,7 +121,7 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
             set_pubmed = set()
             for prop in edge_info:
                 if 'pmid' in prop:
-                    set_pubmed.add(prop['pmid'])
+                    set_pubmed.add(str(prop['pmid']))
                 if len(prop) > 0:
                     clean.append(json.dumps(dict(prop)))
 
@@ -191,7 +191,7 @@ def main():
 
     print(datetime.datetime.now())
     print('Load all qPTM ptms from database')
-    load_all_qptm_ptms_and_finish_the_files(10000, csv_mapping_existing, csv_mapping_new)
+    load_all_qptm_ptms_and_finish_the_files(1000, csv_mapping_existing, csv_mapping_new)
 
     driver.close()
 
