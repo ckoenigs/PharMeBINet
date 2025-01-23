@@ -85,7 +85,6 @@ def generate_files(path_of_directory, edge_type):
                  'license:"CC BY-NC-SA 4.0 Deed", resource:["iPTMnet"], '
                  'source:"iPTMnet", iptmnet:"yes"}]->(n)')
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
-    cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
 
     return csv_mapping_existing, csv_mapping_new
