@@ -25,7 +25,7 @@ def load_ptms_from_database_and_add_to_dict():
     """
     Load all Proteins from pharmebinet and add them into a dictionary
     """
-    query = "MATCH (n:PTM)-[r]-(p:Protein) RETURN n.identifier, r.resource, p.identifier"
+    query = "MATCH (n:PTM)-[r:HAS_PhPTM]-(p:Protein) RETURN n.identifier, r.resource, p.identifier"
     results = g.run(query)
 
     for ptm_identifier, resource, protein_identifer in results:
@@ -191,7 +191,7 @@ def main():
 
     print(datetime.datetime.now())
     print('Load all qPTM ptms from database')
-    load_all_qptm_ptms_and_finish_the_files(1000, csv_mapping_existing, csv_mapping_new)
+    load_all_qptm_ptms_and_finish_the_files(5000, csv_mapping_existing, csv_mapping_new)
 
     driver.close()
 

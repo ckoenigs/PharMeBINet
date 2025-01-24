@@ -77,7 +77,7 @@ def generate_files(path_of_directory, edge_type):
     if edge_type == 'iPTMnet_HAS_PTM':
         query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
                  'CREATE (n)-[:HAS_PhPTM{url:"https://research.bioinformatics.udel.edu/iptmnet/entry/"+line.protein_identifier, '
-                 'license:"CC BY-NC-SA 4.0 Deed", properties_iptmnet = split(line.aggregated_properties,"|"), resource:["iPTMnet"], '
+                 'license:"CC BY-NC-SA 4.0 Deed", properties_iptmnet : split(line.aggregated_properties,"|"), resource:["iPTMnet"], '
                  'source:"iPTMnet", iptmnet:"yes"}]->(v)')
     elif edge_type == 'iPTMnet_INVOLVES':
         query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
