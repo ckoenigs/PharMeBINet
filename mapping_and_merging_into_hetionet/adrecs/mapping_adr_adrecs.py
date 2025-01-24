@@ -71,8 +71,8 @@ def prepare_query(file_name, file_name_new_mapped, file_name_new, db_label, adre
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = ''' MATCH (n:%s{identifier:line.%s}), (g:%s{%s:line.%s, adrecs_id:line.other_adrecs_id}) Set n.resource=split(line.resource,"|"), n.adrecs='yes', n.xrefs=split(line.xrefs,"|") Create (n)-[:equal_adrecs_%s{how_mapped:line.how_mapped}]->(g)'''
-    query = query % (db_label, db_id, adrecs_label, adrecs_id_internal, adrecs_id, db_label.lower())
+    query = ''' MATCH (n:%s{identifier:line.%s}), (g:%s{%s:line.%s, adrecs_id:line.other_adrecs_id}) Set n.resource=split(line.resource,"|"), n.adrecs='yes', n.xrefs=split(line.xrefs,"|") Create (n)-[:equal_to_adrecs_adr{how_mapped:line.how_mapped}]->(g)'''
+    query = query % (db_label, db_id, adrecs_label, adrecs_id_internal, adrecs_id)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/{director}/{file_name}', query)
     cypher_file.write(query)
