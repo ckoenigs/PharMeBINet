@@ -169,7 +169,7 @@ def disease_RNAdisease():
                                               query)
     cypher_file.write(query)
 
-    query = f'Match (p1:disease_RNADisease{{Disease_Name:line.id1}}),(p2:Symptom{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"), p2.rnadisease = "yes" Create (p1)-[:associateRNADisease_Symptom{{how_mapped:line.how_mapped}}]->(p2)'
+    query = f'Match (p1:disease_RNADisease{{Disease_Name:line.id1}}),(p2:Symptom{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"), p2.rnadisease = "yes" Create (p1)-[:associateRNADisease_disease{{how_mapped:line.how_mapped}}]->(p2)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/RNAdisease/{file_name_symptom}',
                                               query)

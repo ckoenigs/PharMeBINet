@@ -68,7 +68,7 @@ def edges():
             current_counter = LIMIT
             index = 0
             while current_counter == LIMIT:
-                query = "MATCH (n:RNA)--(:rna_RNADisease)-[r]-(:disease_RNADisease)--(m:%s) WHERE toFloat(r.score) >= %s WITH n, collect(r) as edge, m SKIP %s Limit %s RETURN n.identifier, m.identifier, edge " % (
+                query = "MATCH (n:RNA)-[:associateRNADisease_rna]-()-[r:associate_rna_disease]-()-[:associateRNADisease_disease]-(m:%s) WHERE toFloat(r.score) >= %s WITH n, collect(r) as edge, m SKIP %s Limit %s RETURN n.identifier, m.identifier, edge " % (
                     name, score, str(index * LIMIT), str(LIMIT))
 
                 a = list(g.run(query))
