@@ -89,12 +89,14 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
-    query = ("MATCH (n:iPTMnet_PTM)--(v:iPTMnet_Protein)--(p:Protein) RETURN Distinct id(n) AS nodeId, n.score,"
+    query = ("MATCH (n:iPTMnet_PTM)-[:iPTMnet_HAS_PTM]-(v:iPTMnet_Protein)--(p:Protein) RETURN Distinct id(n) AS nodeId, n.score,"
              "n.position, n.residue, n.type AS ptm_type, p.identifier")
     results = g.run(query)
     counter_not_mapped = 0
     counter_mapped = 0
+    counter_new = 0
     counter_all = 0
+    new_identifier = set()
     for nodeId, score, position, residue, ptm_type, protein_id in results:
         counter_all += 1
         identifier = f"{protein_id}_{position}_{residue}_{ptm_type}"
@@ -105,14 +107,18 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
                  pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "iPTMnet"),
                  'ptm_identifier', score])
             counter_mapped += 1
-        else:
+        elif identifier not in new_identifier and position is not None and residue is not None:
             csv_mapping_new.writerow([
                 nodeId, identifier, "iPTMnet", score, ptm_type, residue, position, protein_id
             ])
+            counter_new += 1
+            new_identifier.add(identifier)
+        else:
             counter_not_mapped += 1
-            print(identifier)
 
-    print('number of new ptms:', counter_not_mapped)
+    print('number mapped ptms:', counter_mapped)
+    print('number of new ptms:', counter_new)
+    print('number of not integrated ptms:', counter_not_mapped)
     print('number of all ptms:', counter_all)
 
 
