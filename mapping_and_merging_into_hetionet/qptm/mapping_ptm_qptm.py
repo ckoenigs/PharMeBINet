@@ -76,10 +76,11 @@ def generate_files(path_of_directory):
     query = (f' Match (n:qPTM_PTM) WHERE id(n) = toInteger(line.nodeId) MERGE (v:PTM{{identifier:line.identifier}}) '
              f'On Create Set v.qptm="yes", v.url="https://qptm.omicsbio.info/", v.license="ONLY freely available for academic research",'
              f' v.resource=split(line.resource,"|"), v.residue=line.residue, v.position=line.position,  v.source="qPTM", '
-             f'v.type=line.type, v.sequence_window=line.sequence_window Create (v)-[:equal_to_qPTM_ptm]->(n)')
+             f'v.type=line.type, v.sequence_window=line.sequence_window MERGE (v)-[:equal_to_qPTM_ptm]->(n)')
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
+    cypher_file.close()
 
     return csv_mapping_existing, csv_mapping_new
 
@@ -101,19 +102,23 @@ def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_ne
         counter_all += 1
         identifier = f"{identifier}_{position}_{residue}_{ptm_type}"
         # mapping
+        # Check if the identifier exists in dict_identifier_to_resource
         if identifier in dict_identifier_to_resource:
-            csv_mapping_existing.writerow(
-                [nodeId, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "qPTM"),
-                 'ptm_identifier', sequence_window])
+            csv_mapping_existing.writerow([
+                nodeId, identifier,
+                pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "qPTM"),
+                'ptm_identifier', sequence_window
+            ])
             counter_mapped += 1
-        elif identifier not in new_identifiers and position is not None and residue is not None:
+            continue  # Skip to the next entry as it is already mapped
+
+        # If not mapped and valid, add to the new file
+        if identifier not in new_identifiers and position is not None and residue is not None:
             csv_mapping_new.writerow([
                 nodeId, identifier, "qPTM", sequence_window, ptm_type, residue, position
             ])
             new_identifiers.add(identifier)
             counter_new += 1
-            #print(identifier)
         else:
             counter_not_mapped += 1
 
