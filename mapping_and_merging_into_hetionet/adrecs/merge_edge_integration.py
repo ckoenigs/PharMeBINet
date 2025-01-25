@@ -27,7 +27,7 @@ def load_chemical_SE_edge_info(csv_file ):
     """
 
     dict_pair_to_edge = {}
-    query = '''MATCH (p:Chemical)-[]-(r:ADReCS_Drug)-[v]-(n:ADReCS_ADR)-[]-(b:SideEffect) Where not v.frequency_faers is null RETURN p.identifier, b.identifier, v, r.id'''
+    query = '''MATCH (p:Chemical)-[:equal_adrecs_chemical]-(r)-[v]-(n)-[:equal_to_adrecs_adr]-(b:SideEffect) Where not v.frequency_faers is null RETURN p.identifier, b.identifier, v, r.id'''
     print(query)
     results = graph_database.run(query)
     for record in results:

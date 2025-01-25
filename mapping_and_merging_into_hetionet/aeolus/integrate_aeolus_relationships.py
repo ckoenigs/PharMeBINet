@@ -86,7 +86,7 @@ def get_indications(label, set_of_tuples):
     get all pair which has an indication connection and add to set
     :param label: string
     """
-    query = ''' Match (c)-[:equal_to_Aeolus_drug]-(r:Aeolus_Drug)-[l:Indicates]-(:Aeolus_Outcome)--(d:%s)  Return  c.identifier,  d.identifier '''
+    query = ''' Match (c:Chemical)-[:equal_to_Aeolus_drug]-(r)-[l:Indicates]-()-[:equal_to_Aeolus_SE]-(d:%s)  Return  c.identifier,  d.identifier '''
     query = query % (label)
     results = g.run(query)
 
