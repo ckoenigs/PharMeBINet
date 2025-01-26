@@ -57,6 +57,7 @@ def generate_files(path_of_directory):
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
+    cypher_file.close()
 
     return csv_mapping
 
