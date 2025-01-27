@@ -100,19 +100,16 @@ def load_all_iptmnet_ptms_and_finish_the_files(batch_size, csv_mapping_existing,
     """
     allowed_sources = ["unip", "sign", "psp", "pro", "rlim+", "rlim", "pomb", "nrpo"]
     # Choose the appropriate dictionary for the edge type
-    dict_edge_identifier_to_resource = (
-        dict_has_ptm_identifier_to_resource
-        if edge_type == 'iPTMnet_HAS_PTM' else dict_involves_identifier_to_resource
-    )
 
     counter_new_edges = 0
     counter_mapped = 0
     counter_all = 0
     all_edges_iptmnet = {}
 
+    # Choose dictionary based on edge_type
     dict_edge_identifier_to_resource = (
         dict_has_ptm_identifier_to_resource
-        if edge_type == 'HAS_PhPTM' else dict_involves_identifier_to_resource
+        if edge_type == 'iPTMnet_HAS_PTM' else dict_involves_identifier_to_resource
     )
 
     skip = 0
@@ -122,11 +119,12 @@ def load_all_iptmnet_ptms_and_finish_the_files(batch_size, csv_mapping_existing,
 
     while True:
         query = f"""
-                MATCH (ptm:PTM)-[:equal_to_qPTM_ptm]-(n)-[r:{edge_type}]-(v)-[:equal_to_qPTM_protein]-(p:Protein)
-                WITH ptm, collect(r) AS edges, p SKIP {skip} LIMIT {batch_size}
-                RETURN p.identifier AS protein_identifier, ptm.identifier AS ptm_identifier, edges
-            """
-        results = g.run(query)
+            MATCH (ptm:PTM)-[:equal_to_iPTMnet_ptm]-(n)-[r]-(v)-[:equal_to_iPTMnet_protein]-(p:Protein)
+            WHERE type(r) = $edge_type
+            WITH ptm, p, collect(properties(r)) AS edges_properties SKIP {skip} LIMIT {batch_size}
+            RETURN p.identifier AS protein_identifier, ptm.identifier AS ptm_identifier, edges_properties
+        """
+        results = g.run(query, parameters={"edge_type": edge_type})
         batch_count = 0
 
         for protein_identifier, ptm_identifier, edges in results:
@@ -148,7 +146,7 @@ def load_all_iptmnet_ptms_and_finish_the_files(batch_size, csv_mapping_existing,
                     aggregated_properties.append(json.dumps(edge_properties))
 
             # Determine whether to include the edge
-            include_edge = bool(pubmed_ids) or edge_has_allowed_source
+            include_edge = bool(pubmed_ids) or edge_has_allowed_source or edge_type == 'iPTMnet_INVOLVES'
 
             if not include_edge:
                 continue
@@ -157,7 +155,7 @@ def load_all_iptmnet_ptms_and_finish_the_files(batch_size, csv_mapping_existing,
             if edge in dict_edge_identifier_to_resource:
                 csv_mapping_existing.writerow([
                     ptm_identifier, protein_identifier,
-                    pharmebinetutils.resource_add_and_prepare(dict_edge_identifier_to_resource[edge], "qPTM"),
+                    pharmebinetutils.resource_add_and_prepare(dict_edge_identifier_to_resource[edge], "iPTMnet"),
                     "|".join(aggregated_properties),
                     "|".join(pubmed_ids)
                 ])
@@ -165,7 +163,7 @@ def load_all_iptmnet_ptms_and_finish_the_files(batch_size, csv_mapping_existing,
             else:
                 # New edge
                 csv_mapping_new.writerow([
-                    ptm_identifier, protein_identifier, "qPTM"
+                    ptm_identifier, protein_identifier, "iPTMnet"
                     "|".join(aggregated_properties), "|".join(pubmed_ids)
                 ])
                 counter_new_edges += 1
@@ -176,8 +174,8 @@ def load_all_iptmnet_ptms_and_finish_the_files(batch_size, csv_mapping_existing,
 
     print(f'Edge type: {edge_type}')
     print(f'Number of new ptm_protein edges: {counter_new_edges}')
-    print(f'Number of extended ptm_protein edges: {counter_mapped}')
-    print(f'Number of all ptms: {counter_all}')
+    print(f'Number of extended ptm_protein edges: {counter_mapped_edges}')
+    print(f'Number of all ptms: {counter_total}')
 
 
 
