@@ -57,7 +57,7 @@ def generate_files(path_of_directory, edge_type):
     new_file_path = os.path.join(path_of_directory, new_file_name) + '.tsv'
     new_file = open(new_file_path, 'w+', encoding='utf-8')
     csv_mapping_new = csv.writer(new_file, delimiter='\t')
-    csv_mapping_new.writerow(['ptm_identifier', 'protein_identifier','resource', 'aggregated_properties'])
+    csv_mapping_new.writerow(['ptm_identifier', 'protein_identifier','resource', 'aggregated_properties', 'pmids'])
 
     if not os.path.exists(source):
         os.mkdir(source)
@@ -68,12 +68,12 @@ def generate_files(path_of_directory, edge_type):
     if edge_type == 'iPTMnet_HAS_PTM':
         query = (f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
                  f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.iptmnet = "yes", '
-                 f'r.resource = split(line.resource, "|"), r.properties_iptmnet = split(line.aggregated_properties,"|")')
+                 f'r.resource = split(line.resource, "|"), r.properties_iptmnet = split(line.aggregated_properties,"|"), r.pubMed_ids =split(line.pmids,"|")')
     elif edge_type == 'iPTMnet_INVOLVES':
         query = (
             f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
             f'MATCH (v)-[r:INVOLVES]->(n) SET r.iptmnet = "yes", '
-            f'r.resource = split(line.resource, "|")')
+            f'r.resource = split(line.resource, "|"), r.pubMed_ids =split(line.pmids,"|")')
 
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file.write(query)
@@ -82,12 +82,12 @@ def generate_files(path_of_directory, edge_type):
         query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
                  'CREATE (n)-[:HAS_PhPTM{url:"https://research.bioinformatics.udel.edu/iptmnet/entry/"+line.protein_identifier, '
                  'license:"CC BY-NC-SA 4.0 Deed", properties_iptmnet : split(line.aggregated_properties,"|"), resource:["iPTMnet"], '
-                 'source:"iPTMnet", iptmnet:"yes"}]->(v)')
+                 'source:"iPTMnet", iptmnet:"yes", pubMed_ids :split(line.pmids,"|")}]->(v)')
     elif edge_type == 'iPTMnet_INVOLVES':
         query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
                  'CREATE (v)-[:INVOLVES{url:"https://research.bioinformatics.udel.edu/iptmnet/entry/"+line.protein_identifier, '
                  'license:"CC BY-NC-SA 4.0 Deed", resource:["iPTMnet"], '
-                 'source:"iPTMnet", iptmnet:"yes"}]->(n)')
+                 'source:"iPTMnet", iptmnet:"yes", pubMed_ids :split(line.pmids,"|")}]->(n)')
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file.write(query)
 

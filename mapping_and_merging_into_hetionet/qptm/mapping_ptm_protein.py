@@ -86,12 +86,7 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
     """
     Load all variation, sort the ids into the right tsv, generate the queries, and add relationships to the rela tsv.
     """
-    # count_query = """
-    #     MATCH (ptm:PTM)--(n:qPTM_PTM)-[r:qPTM_HAS_PTM]-(v:qPTM_Protein)--(p:Protein)
-    #     RETURN COUNT(DISTINCT r) AS total_count
-    #     """
-    # count_result = g.run(count_query).single()
-    # total_count = count_result["total_count"]
+
     counter_new_edges = 0
     counter_mapped = 0
     all_edges_qptm = {}
@@ -99,7 +94,7 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
     counter = 1
     counter_total = 0
 
-    # iterate over entries in batchesc
+    # iterate over entries in batches and collect edges
     skip = 0
     while counter > 0:
 
@@ -139,13 +134,7 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
                 csv_mapping_new.writerow(
                     [ptm_identifier, protein_identifier, "qPTM", "|".join(clean), "|".join(set_pubmed)])
                 counter_new_edges += 1
-            # if condition or sample or reliability or pmid:
-            #     all_edges_qptm[edge].append({
-            #         "condition": condition or '',
-            #         "sample": sample or '',
-            #         "reliability": reliability or '',
-            #         "pmid": pmid or ''
-            #     })
+
         skip += batch_size
         counter_total += counter
         if counter_total % 10000 == 0:
