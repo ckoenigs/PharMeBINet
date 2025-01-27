@@ -66,7 +66,7 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/qptm/
-    query = f' Match (n:qPTM_Protein{{uniprot_id:line.qptm_identifier}}), (v:Protein{{identifier:line.identifier}}) Set v.qptm="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_qPTM_protein{{mapped_with:line.mapping_method}}]->(n)'
+    query = f' Match (n:qPTM_Protein{{uniprot_id:line.qptm_identifier}}), (v:Protein{{identifier:line.identifier}}) Set v.qptm="yes", v.resource=split(line.resource,"|") MERGE (v)-[:equal_to_qPTM_protein{{mapped_with:line.mapping_method}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
     cypher_file.write(query)
@@ -93,39 +93,45 @@ def load_all_qptm_proteins_and_finish_the_files(csv_mapping):
         gene_name = node.get('gene_name', None)
         mapped = False
 
-        # mapping
+        # Direct mapping by identifier
         if identifier in dict_identifier_to_resource:
-            csv_mapping.writerow(
-                [identifier, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "qPTM"),
-                 'uniprot_id'])
+            csv_mapping.writerow([
+                identifier, identifier,
+                pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "qPTM"),
+                'uniprot_id'
+            ])
             counter_mapped_id += 1
-            mapped = True
+            continue
+
+        # Mapping by gene name
         if not mapped and gene_name:
             lower_gene_name = gene_name.lower()
             if lower_gene_name in dict_gene_symbol_to_identifer:
                 main_id = dict_gene_symbol_to_identifer[lower_gene_name]
-                csv_mapping.writerow(
-                    [identifier, main_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id],
-                                                               "qPTM"),
-                     'gene_symbol'])
-                mapped = True
+                csv_mapping.writerow([
+                    identifier, main_id,
+                    pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id], "qPTM"),
+                    'gene_symbol'
+                ])
                 counter_gene_names += 1
-        if not mapped:
-            # if identifier not in dict_identifier_to_alternative_ids:
-            for main_id, alternatives in dict_identifier_to_alternative_ids.items():
-                if identifier in alternatives:
-                    csv_mapping.writerow(
-                        [identifier, main_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id], "qPTM"),
-                         'alternative_id'])
-                    counter_mapped_alternative_id += 1
-                    mapped = True
+                continue
 
+        # Mapping by alternative IDs
+        for main_id, alternatives in dict_identifier_to_alternative_ids.items():
+            if identifier in alternatives:
+                csv_mapping.writerow([
+                    identifier, main_id,
+                    pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id], "qPTM"),
+                    'alternative_id'
+                ])
+                counter_mapped_alternative_id += 1
+                mapped = True
+                break
+
+        # Log unmapped identifiers
         if not mapped:
             counter_not_mapped += 1
-            print(identifier)
+            print(f"Unmapped identifier: {identifier}")
 
     print('number of mapped id protein:', counter_mapped_id)
     print('number of mapped alternative id protein:', counter_mapped_alternative_id)

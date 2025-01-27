@@ -66,7 +66,6 @@ def generate_files(path_of_directory):
 
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
-    # mapping_and_merging_into_hetionet/PTMD/
     query = (f' Match (n:qPTM_PTM), (v:PTM{{identifier:line.ptm_identifier}}) WHERE id(n) = toInteger(line.nodeId) '
              f'Set v.qptm="yes", v.resource=split(line.resource,"|"), v.sequence_window=line.sequence_window '
              f'MERGE (v)-[:equal_to_qPTM_ptm{{mapped_with:line.mapping_method}}]->(n)')
@@ -77,10 +76,11 @@ def generate_files(path_of_directory):
     query = (f' Match (n:qPTM_PTM) WHERE id(n) = toInteger(line.nodeId) MERGE (v:PTM{{identifier:line.identifier}}) '
              f'On Create Set v.qptm="yes", v.url="https://qptm.omicsbio.info/", v.license="ONLY freely available for academic research",'
              f' v.resource=split(line.resource,"|"), v.residue=line.residue, v.position=line.position,  v.source="qPTM", '
-             f'v.type=line.type, v.sequence_window=line.sequence_window Create (v)-[:equal_to_qPTM_ptm]->(n)')
+             f'v.type=line.type, v.sequence_window=line.sequence_window MERGE (v)-[:equal_to_qPTM_ptm]->(n)')
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
+    cypher_file.close()
 
     return csv_mapping_existing, csv_mapping_new
 
@@ -90,31 +90,42 @@ def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_ne
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
-    query = ("MATCH (n:qPTM_PTM)--(v:qPTM_Protein)--(p:Protein) RETURN id(n) AS nodeId, n.sequence_window,"
+    query = ("MATCH (n:qPTM_PTM)-[:qPTM_HAS_PTM]-(v:qPTM_Protein)--(p:Protein) RETURN DISTINCT id(n) AS nodeId, n.sequence_window,"
              "n.position, n.residue, n.type AS ptm_type, p.identifier")
     results = g.run(query)
+    new_identifiers = set()
     counter_not_mapped = 0
     counter_mapped = 0
+    counter_new = 0
     counter_all = 0
     for nodeId, sequence_window, position, residue, ptm_type, identifier in results:
         counter_all += 1
         identifier = f"{identifier}_{position}_{residue}_{ptm_type}"
         # mapping
+        # Check if the identifier exists in dict_identifier_to_resource
         if identifier in dict_identifier_to_resource:
-            csv_mapping_existing.writerow(
-                [nodeId, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "qPTM"),
-                 'ptm_identifier', sequence_window])
+            csv_mapping_existing.writerow([
+                nodeId, identifier,
+                pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "qPTM"),
+                'ptm_identifier', sequence_window
+            ])
             counter_mapped += 1
-        else:
+            continue  # Skip to the next entry as it is already mapped
+
+        # If not mapped and valid, add to the new file
+        if identifier not in new_identifiers and position is not None and residue is not None:
             csv_mapping_new.writerow([
                 nodeId, identifier, "qPTM", sequence_window, ptm_type, residue, position
             ])
+            new_identifiers.add(identifier)
+            counter_new += 1
+        else:
             counter_not_mapped += 1
-            #print(identifier)
 
-    print('number of new ptms:', counter_not_mapped)
+
+    print('number of new ptms:', counter_new)
     print('number of mapped ptms:', counter_mapped)
+    print('number of not integrated ptms:', counter_not_mapped)
     print('number of all ptms:', counter_all)
 
 

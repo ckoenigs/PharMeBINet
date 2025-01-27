@@ -191,7 +191,7 @@ def main():
 
     print(datetime.datetime.now())
     print('Load all qPTM ptms from database')
-    load_all_qptm_ptms_and_finish_the_files(5000, csv_mapping_existing, csv_mapping_new)
+    load_all_qptm_ptms_and_finish_the_files(10000, csv_mapping_existing, csv_mapping_new)
 
     driver.close()
 

@@ -9,7 +9,8 @@ import create_connection_to_databases
 import pharmebinetutils
 
 # dictionary ptm,protein edge to resource
-dict_identifier_to_resource = {}
+dict_has_ptm_identifier_to_resource = {}
+dict_involves_identifier_to_resource = {}
 
 def create_connection_with_neo4j():
     '''
@@ -23,11 +24,14 @@ def load_ptms_from_database_and_add_to_dict():
     """
     Load all Proteins from pharmebinet and add them into a dictionary
     """
-    query = "MATCH (n:PTM)-[r]-(p:Protein) RETURN n.identifier, r.resource, p.identifier"
+    query = "MATCH (n:PTM)-[r]-(p:Protein) RETURN type(r) as edge_type, n.identifier, r.resource, p.identifier"
     results = g.run(query)
 
-    for ptm_identifier, resource, protein_identifer in results:
-        dict_identifier_to_resource[(ptm_identifier, protein_identifer)] = resource
+    for edge_type, ptm_identifier, resource, protein_identifer in results:
+        if edge_type == "HAS_PhPTM":
+            dict_has_ptm_identifier_to_resource[(ptm_identifier, protein_identifer)] = resource
+        elif edge_type == "INVOLVES":
+            dict_involves_identifier_to_resource[(ptm_identifier, protein_identifer)] = resource
 
 def generate_files(path_of_directory, edge_type):
     """
@@ -90,67 +94,88 @@ def generate_files(path_of_directory, edge_type):
     return csv_mapping_existing, csv_mapping_new
 
 
-def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_new, edge_type):
+def load_all_iptmnet_ptms_and_finish_the_files(batch_size, csv_mapping_existing, csv_mapping_new, edge_type):
     """
     Load all variation, sort the ids into the right tsv, generate the queries, and add relationships to the rela tsv.
     """
+    allowed_sources = ["unip", "sign", "psp", "pro", "rlim+", "rlim", "pomb", "nrpo"]
+    # Choose the appropriate dictionary for the edge type
 
     counter_new_edges = 0
     counter_mapped = 0
     counter_all = 0
     all_edges_iptmnet = {}
-    if edge_type == 'iPTMnet_HAS_PTM':
-        query = (
-            "MATCH (ptm:PTM)--(n:iPTMnet_PTM)-[r]-(v:iPTMnet_Protein)--(p:Protein) WHERE not r.pmids is Null AND type(r) = $edge_type "
-            "RETURN p.identifier as protein_identifier, ptm.identifier as ptm_identifier, "
-            "r.note as note, r.source as ptm_source, r.pmids as pmids"
-        )
-        results = g.run(query, parameters={"edge_type": edge_type})
-        for protein_identifier, ptm_identifier, note, ptm_source, pmids in results:
-            counter_all += 1
-            edge = (ptm_identifier, protein_identifier)
-            if edge not in all_edges_iptmnet:
-                all_edges_iptmnet[edge] = []
-            all_edges_iptmnet[edge].append({
-                "note": note or '',
-                "source": ptm_source or '',
-                "pmids": pmids
-            })
-    elif edge_type == 'iPTMnet_INVOLVES':
-        query = (
-            "MATCH (ptm:PTM)--(n:iPTMnet_PTM)-[r]-(v:iPTMnet_Protein)--(p:Protein) WHERE type(r) = $edge_type "
-            "RETURN p.identifier as protein_identifier, ptm.identifier as ptm_identifier")
-        results = g.run(query, parameters={"edge_type": edge_type})
-        for protein_identifier, ptm_identifier in results:
-            counter_all += 1
-            edge = (ptm_identifier, protein_identifier)
-            if edge not in all_edges_iptmnet:
-                all_edges_iptmnet[edge] = []
 
-    for edge, properties_list in all_edges_iptmnet.items():
-        ptm_identifier, protein_identifier = edge
-        clean=[]
-        for prop in properties_list:
-            if len(prop)>0:
-                clean.append(json.dumps(prop))
-        # Existing edge
-        if edge in dict_identifier_to_resource:
-            csv_mapping_existing.writerow([
-                ptm_identifier, protein_identifier,
-                pharmebinetutils.resource_add_and_prepare(
-                    dict_identifier_to_resource[edge], "iPTMnet"
-                ), "|".join(clean)
-            ])
-            counter_mapped += 1
-        else:
-            # New edge
-            csv_mapping_new.writerow([ptm_identifier, protein_identifier, "iPTMnet", "|".join(clean)])
-            counter_new_edges += 1
+    # Choose dictionary based on edge_type
+    dict_edge_identifier_to_resource = (
+        dict_has_ptm_identifier_to_resource
+        if edge_type == 'iPTMnet_HAS_PTM' else dict_involves_identifier_to_resource
+    )
+
+    skip = 0
+    counter_new_edges = 0
+    counter_mapped_edges = 0
+    counter_total = 0
+
+    while True:
+        query = f"""
+            MATCH (ptm:PTM)-[:equal_to_iPTMnet_ptm]-(n)-[r]-(v)-[:equal_to_iPTMnet_protein]-(p:Protein)
+            WHERE type(r) = $edge_type
+            WITH ptm, p, collect(properties(r)) AS edges_properties SKIP {skip} LIMIT {batch_size}
+            RETURN p.identifier AS protein_identifier, ptm.identifier AS ptm_identifier, edges_properties
+        """
+        results = g.run(query, parameters={"edge_type": edge_type})
+        batch_count = 0
+
+        for protein_identifier, ptm_identifier, edges in results:
+            batch_count += 1
+            counter_total += 1
+            edge = (ptm_identifier, protein_identifier)
+
+            aggregated_properties = []
+            pubmed_ids = set()
+            edge_has_allowed_source = False
+
+            # Process properties
+            for edge_properties in edges:
+                if 'pmid' in edge_properties:
+                    pubmed_ids.add(str(edge_properties['pmid']))
+                if 'source' in edge_properties and edge_properties['source'] in (allowed_sources or []):
+                    edge_has_allowed_source = True
+                if edge_properties:
+                    aggregated_properties.append(json.dumps(edge_properties))
+
+            # Determine whether to include the edge
+            include_edge = bool(pubmed_ids) or edge_has_allowed_source or edge_type == 'iPTMnet_INVOLVES'
+
+            if not include_edge:
+                continue
+
+            # Existing edge
+            if edge in dict_edge_identifier_to_resource:
+                csv_mapping_existing.writerow([
+                    ptm_identifier, protein_identifier,
+                    pharmebinetutils.resource_add_and_prepare(dict_edge_identifier_to_resource[edge], "iPTMnet"),
+                    "|".join(aggregated_properties),
+                    "|".join(pubmed_ids)
+                ])
+                counter_mapped_edges += 1
+            else:
+                # New edge
+                csv_mapping_new.writerow([
+                    ptm_identifier, protein_identifier, "iPTMnet"
+                    "|".join(aggregated_properties), "|".join(pubmed_ids)
+                ])
+                counter_new_edges += 1
+
+        if batch_count < batch_size:
+            break
+        skip += batch_size
 
     print(f'Edge type: {edge_type}')
     print(f'Number of new ptm_protein edges: {counter_new_edges}')
-    print(f'Number of extended ptm_protein edges: {counter_mapped}')
-    print(f'Number of all ptms: {counter_all}')
+    print(f'Number of extended ptm_protein edges: {counter_mapped_edges}')
+    print(f'Number of all ptms: {counter_total}')
 
 
 
@@ -192,7 +217,7 @@ def main():
 
     print(datetime.datetime.now())
     print('Load all iPTMnet ptms from database')
-    load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_new, 'iPTMnet_HAS_PTM')
+    load_all_iptmnet_ptms_and_finish_the_files(10000,csv_mapping_existing, csv_mapping_new, 'iPTMnet_HAS_PTM')
 
     print('##########################################################################')
     print("Edge: iPTMnet_INVOLVES")
@@ -204,7 +229,7 @@ def main():
 
     print(datetime.datetime.now())
     print('Load all iPTMnet ptms from database')
-    load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing_involve, csv_mapping_new_involve, 'iPTMnet_INVOLVES')
+    load_all_iptmnet_ptms_and_finish_the_files(10000,csv_mapping_existing_involve, csv_mapping_new_involve, 'iPTMnet_INVOLVES')
 
     cypher_file.close()
     driver.close()

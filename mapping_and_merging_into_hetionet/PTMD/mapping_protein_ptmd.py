@@ -53,10 +53,11 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/PTMD/
-    query = f' Match (n:PTMD_Protein{{uniprot_accession:line.ptmd_identifier}}), (v:Protein{{identifier:line.identifier}}) Set v.ptmd="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_PTMD_protein{{mapped_with:line.mapping_method}}]->(n)'
+    query = f' Match (n:PTMD_Protein{{uniprot_accession:line.ptmd_identifier}}), (v:Protein{{identifier:line.identifier}}) Set v.ptmd="yes", v.resource=split(line.resource,"|") MERGE (v)-[:equal_to_PTMD_protein{{mapped_with:line.mapping_method}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
+    cypher_file.close()
 
     return csv_mapping
 
@@ -76,32 +77,34 @@ def load_all_PTMD_proteins_and_finish_the_files(csv_mapping):
         node = record.data()['n']
         counter_all += 1
         identifier = node.get('uniprot_accession', None)
-        mapped = False
 
-        # mapping
+        # Check if identifier exists in dict_identifier_to_resource
         if identifier in dict_identifier_to_resource:
-            csv_mapping.writerow(
-                [identifier, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "PTMD"),
-                 'uniprot_accession'])
+            csv_mapping.writerow([
+                identifier, identifier,
+                pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "PTMD"),
+                'uniprot_accession'
+            ])
             counter_mapped_id += 1
-            mapped = True
-        if not mapped:
-            #if identifier not in dict_identifier_to_alternative_ids:
-            for main_id, alternatives in dict_identifier_to_alternative_ids.items():
-                if identifier in alternatives:
-                    csv_mapping.writerow(
-                        [identifier, main_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id], "PTMD"),
-                         'alternative_id'])
-                    counter_mapped_alternative_id += 1
-                    mapped = True
+            continue  # Go to the next entry, skipping alternative ID checks
 
+        # Check alternative IDs only if identifier is not mapped
+        mapped = False
+        for main_id, alternatives in dict_identifier_to_alternative_ids.items():
+            if identifier in alternatives:
+                csv_mapping.writerow([
+                    identifier, main_id,
+                    pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id], "PTMD"),
+                    'alternative_id'
+                ])
+                counter_mapped_alternative_id += 1
+                mapped = True
+                break  # Exit loop after finding a match
 
+        # Log unmapped identifiers
         if not mapped:
             counter_not_mapped += 1
-            print(identifier)
-
+            print(f"Unmapped identifier: {identifier}")
 
     print('number of mapped id protein:', counter_mapped_id)
     print('number of mapped alternative id protein:', counter_mapped_alternative_id)
