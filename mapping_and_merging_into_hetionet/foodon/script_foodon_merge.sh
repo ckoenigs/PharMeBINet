@@ -11,27 +11,24 @@ password=$3
 
 if [ ! -d output ]; then
   mkdir output
-  mkdir go
   mkdir edges
 fi
-
-python3 Add_Cell_line.py $path_to_project > output/output_add.txt
-
-
-echo map protein
+echo add food
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python3 map_cl_to_anatomy.py $path_to_project > output/output_map_anatomy.txt
+python3 add_food_from_foodon.py $path_to_project > output/output_add.txt
 
 
-echo map protein
+echo map anatomy
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python3 map_CL_to_go.py $path_to_project > go/output_map.txt
+python3 map_foodon_to_anatomy.py $path_to_project > output/output_map_anatomy.txt
 
-echo integrate connection with ne4j shell
+
+
+echo integrate connection with neo4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
@@ -47,8 +44,7 @@ echo add edges
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python3 CL_edges.py $path_to_project > go/output_map.txt
-
+python3 foodon_edges.py $path_to_project > output/output_edge.txt
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
 sleep 30
