@@ -10,6 +10,7 @@ import pharmebinetutils
 
 # dictionary ptm id to resource
 dict_identifier_to_resource = {}
+dict_identifer_to_pmids = {}
 
 
 def create_connection_with_neo4j():
@@ -25,11 +26,13 @@ def load_ptms_from_database_and_add_to_dict():
     """
     Load all Proteins from pharmebinet and add them into a dictionary
     """
-    query = "MATCH (n:PTM)-[r:HAS_PhPTM]-(p:Protein) RETURN n.identifier, r.resource, p.identifier"
+    query = "MATCH (n:PTM)-[r:HAS_PhPTM]-(p:Protein) RETURN n.identifier, r.resource, p.identifier, r.pubMed_ids "
     results = g.run(query)
 
-    for ptm_identifier, resource, protein_identifer in results:
+    for ptm_identifier, resource, protein_identifer, pubMed_ids in results:
         dict_identifier_to_resource[(ptm_identifier, protein_identifer)] = resource
+        if pubMed_ids is not None:
+            dict_identifer_to_pmids[(ptm_identifier, protein_identifer)] = set(pubMed_ids)
 
 
 def generate_files(path_of_directory):
@@ -113,10 +116,20 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
             counter += 1
             edge = (ptm_identifier, protein_identifier)
             clean = []
-            set_pubmed = set()
+            pubmed_ids = set()
             for prop in edge_info:
                 if 'pmid' in prop:
-                    set_pubmed.add(str(prop['pmid']))
+
+                    if isinstance(prop['pmid'], list):
+                        pubmed_ids = [str(x) for x in prop['pmid']]  # If it's a list, iterate over it
+                    else:
+                        pubmed_ids = [str(prop['pmid'])]  # If it's a single value, convert it to a list
+                    if edge in dict_identifer_to_pmids:
+                        dict_identifer_to_pmids[edge].update(pubmed_ids)
+                        pubmed_ids = list(dict_identifer_to_pmids[edge])
+                    else:
+                        pubmed_ids = set(pubmed_ids)
+                    #set_pubmed.add(str(prop['pmid']))
                 if len(prop) > 0:
                     clean.append(json.dumps(dict(prop)))
 
@@ -126,13 +139,13 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
                     ptm_identifier, protein_identifier,
                     pharmebinetutils.resource_add_and_prepare(
                         dict_identifier_to_resource[edge], "qPTM"
-                    ), "|".join(clean), "|".join(set_pubmed)
+                    ), "|".join(clean), "|".join(pubmed_ids)
                 ])
                 counter_mapped += 1
             else:
                 # New edge
                 csv_mapping_new.writerow(
-                    [ptm_identifier, protein_identifier, "qPTM", "|".join(clean), "|".join(set_pubmed)])
+                    [ptm_identifier, protein_identifier, "qPTM", "|".join(clean), "|".join(pubmed_ids)])
                 counter_new_edges += 1
 
         skip += batch_size
