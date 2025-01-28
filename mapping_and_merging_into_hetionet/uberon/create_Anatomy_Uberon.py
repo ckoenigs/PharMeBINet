@@ -149,7 +149,7 @@ def add_nodes_to_different_files(results, set_not_considered_nodes, dict_nodes, 
     :return:
     """
     for record in results:
-        [node_id, names, xrefs_uberon, synonyms] = record.values()
+        [node_id, names, xrefs_uberon, synonyms, subsets] = record.values()
         if node_id in dict_nodes or node_id in set_not_considered_nodes:
             continue
         counter += 1
@@ -161,12 +161,13 @@ def add_nodes_to_different_files(results, set_not_considered_nodes, dict_nodes, 
         set_xrefs = {x.split(':')[0] for x in xrefs_uberon}
         has_human_xref= bool(set_xrefs & set_human_xrefs)
         # consider no human nodes as next generation node but only add nodes to tsv if they are human or without reference
-        if (node_id in dict_anatomy_id_to_human and dict_anatomy_id_to_human[node_id] == False and not has_human_xref ):
+        if (node_id in dict_anatomy_id_to_human and dict_anatomy_id_to_human[node_id] == False and not has_human_xref and 'human_reference_atlas' in subsets  ):
             continue
 
         # if not has human xref but xrefs from other taxonomies continue
         if (not has_human_xref and bool(set_xrefs & set_not_human_xrefs)):
-            continue
+            if subsets is None or not 'human_reference_atlas' in subsets:
+                continue
 
         names = set(names)
         # print(type(synonyms), synonyms)
@@ -185,7 +186,7 @@ def load_all_uberon_anatomy_nodes():
     Load all nodes below anatomical structure as anatomy nodes. COnsider the below nodes is-a and part-of.
     :return:
     """
-    query_nodes = 'MATCH (n:uberon_extend)-[:%s]->(m:uberon_extend ) Where n.is_obsolete is NULL and m.id in ["%s"] and n.id starts with "UBERON" RETURN n.id, n.names, n.xrefs, n.synonyms'
+    query_nodes = 'MATCH (n:uberon_extend)-[:%s]->(m:uberon_extend ) Where n.is_obsolete is NULL and m.id in ["%s"] and n.id starts with "UBERON" RETURN n.id, n.names, n.xrefs, n.synonyms, n.subsets'
 
     dict_nodes = {}
 
