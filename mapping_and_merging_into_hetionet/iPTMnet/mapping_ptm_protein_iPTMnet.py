@@ -22,7 +22,7 @@ def create_connection_with_neo4j():
 
 def load_ptms_from_database_and_add_to_dict():
     """
-    Load all Proteins from pharmebinet and add them into a dictionary
+    Load all pairs from pharmebinet and add them into a dictionary
     """
     query = "MATCH (n:PTM)-[r]-(p:Protein) RETURN type(r) as edge_type, n.identifier, r.resource, p.identifier"
     results = g.run(query)
@@ -101,11 +101,6 @@ def load_all_iptmnet_ptms_and_finish_the_files(batch_size, csv_mapping_existing,
     allowed_sources = ["unip", "sign", "psp", "pro", "rlim+", "rlim", "pomb", "nrpo"]
     # Choose the appropriate dictionary for the edge type
 
-    counter_new_edges = 0
-    counter_mapped = 0
-    counter_all = 0
-    all_edges_iptmnet = {}
-
     # Choose dictionary based on edge_type
     dict_edge_identifier_to_resource = (
         dict_has_ptm_identifier_to_resource
@@ -138,8 +133,8 @@ def load_all_iptmnet_ptms_and_finish_the_files(batch_size, csv_mapping_existing,
 
             # Process properties
             for edge_properties in edges:
-                if 'pmid' in edge_properties:
-                    pubmed_ids.add(str(edge_properties['pmid']))
+                if 'pmids' in edge_properties:
+                    pubmed_ids= pubmed_ids.union([str(x) for x in edge_properties['pmids']])
                 if 'source' in edge_properties and edge_properties['source'] in (allowed_sources or []):
                     edge_has_allowed_source = True
                 if edge_properties:
