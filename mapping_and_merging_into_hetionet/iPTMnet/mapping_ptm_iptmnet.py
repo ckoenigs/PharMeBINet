@@ -88,18 +88,25 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
     """
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
+    allowed_sources = ["unip", "sign", "psp", "pro", "rlim+", "rlim", "pomb", "nrpo"]
 
-    query = ("MATCH (n:iPTMnet_PTM)-[:iPTMnet_HAS_PTM]-(v:iPTMnet_Protein)--(p:Protein) RETURN Distinct id(n) AS nodeId, n.score,"
-             "n.position, n.residue, n.type AS ptm_type, p.identifier")
+    query = ("MATCH (n:iPTMnet_PTM)-[r:iPTMnet_HAS_PTM]-(v:iPTMnet_Protein)--(p:Protein) RETURN Distinct id(n) AS nodeId, n.score,"
+             "n.position, n.residue, n.type AS ptm_type, p.identifier, r.pmids, r.source")
     results = g.run(query)
+
     counter_not_mapped = 0
     counter_mapped = 0
     counter_new = 0
     counter_all = 0
     new_identifier = set()
-    for nodeId, score, position, residue, ptm_type, protein_id in results:
+
+    for nodeId, score, position, residue, ptm_type, protein_id, pmids, source in results:
         counter_all += 1
         identifier = f"{protein_id}_{position}_{residue}_{ptm_type}"
+
+        #Skip the ptm nodes when no pmids or source not in allowed_sources
+        if not pmids and source not in allowed_sources:
+            continue
         # mapping
         if identifier in dict_identifier_to_resource:
             csv_mapping_existing.writerow(
@@ -108,6 +115,7 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
                  'ptm_identifier', score])
             counter_mapped += 1
             continue
+        # new ptm node
         if identifier not in new_identifier and position is not None and residue is not None:
             csv_mapping_new.writerow([
                 nodeId, identifier, "iPTMnet", score, ptm_type, residue, position, protein_id
