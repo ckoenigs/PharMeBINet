@@ -9,10 +9,8 @@ import create_connection_to_databases
 import pharmebinetutils
 
 # dictionary ptm,protein edge to resource
-dict_has_ptm_identifier_to_resource = {}
-dict_involves_identifier_to_resource = {}
-dict_has_ptm_identifier_to_pmids = {}
-dict_involves_identifier_to_pmids = {}
+dict_has_ptm_identifier_to_resource_pubmeds = {}
+dict_involves_identifier_to_resource_pubmeds = {}
 
 def create_connection_with_neo4j():
     '''
@@ -31,13 +29,11 @@ def load_ptms_from_database_and_add_to_dict():
 
     for edge_type, ptm_identifier, resource, protein_identifer, pubMed_ids in results:
         if edge_type == "HAS_PhPTM":
-            dict_has_ptm_identifier_to_resource[(ptm_identifier, protein_identifer)] = resource
-            if pubMed_ids is not None:
-                dict_has_ptm_identifier_to_pmids[(ptm_identifier, protein_identifer)] = set(pubMed_ids)
+            pubMed_ids = set(pubMed_ids) if pubMed_ids else set()
+            dict_has_ptm_identifier_to_resource_pubmeds[(ptm_identifier, protein_identifer)] = [resource, pubMed_ids]
         elif edge_type == "INVOLVES":
-            dict_involves_identifier_to_resource[(ptm_identifier, protein_identifer)] = resource
-            if pubMed_ids is not None:
-                dict_involves_identifier_to_pmids[(ptm_identifier, protein_identifer)] = set(pubMed_ids)
+            pubMed_ids = set(pubMed_ids) if pubMed_ids else set()
+            dict_involves_identifier_to_resource_pubmeds[(ptm_identifier, protein_identifer)] = [resource, pubMed_ids]
 
 def generate_files(path_of_directory, edge_type):
     """
@@ -109,12 +105,8 @@ def load_all_iptmnet_ptms_and_finish_the_files(batch_size, csv_mapping_existing,
 
     # Choose dictionary based on edge_type
     dict_edge_identifier_to_resource = (
-        dict_has_ptm_identifier_to_resource
-        if edge_type == 'iPTMnet_HAS_PTM' else dict_involves_identifier_to_resource
-    )
-    dict_edge_identifier_to_pmids = (
-        dict_has_ptm_identifier_to_pmids
-        if edge_type == 'iPTMnet_HAS_PTM' else dict_involves_identifier_to_pmids
+        dict_has_ptm_identifier_to_resource_pubmeds
+        if edge_type == 'iPTMnet_HAS_PTM' else dict_involves_identifier_to_resource_pubmeds
     )
 
     skip = 0
@@ -145,8 +137,6 @@ def load_all_iptmnet_ptms_and_finish_the_files(batch_size, csv_mapping_existing,
             for edge_properties in edges:
                 if 'pmids' in edge_properties:
                     pubmed_ids= pubmed_ids.union([str(x) for x in edge_properties['pmids']]) # Ensure the PubMed IDs are strings
-
-
                 if 'source' in edge_properties and edge_properties['source'] in allowed_sources:
                     edge_has_allowed_source = True
                 if edge_properties:
@@ -160,10 +150,10 @@ def load_all_iptmnet_ptms_and_finish_the_files(batch_size, csv_mapping_existing,
 
             # Existing edge
             if edge in dict_edge_identifier_to_resource:
-                pubMed_ids = pubMed_ids.union(dict_edge_identifier_to_pmids[edge])
+                pubmed_ids = pubmed_ids.union(dict_edge_identifier_to_resource[edge][1])
                 csv_mapping_existing.writerow([
                     ptm_identifier, protein_identifier,
-                    pharmebinetutils.resource_add_and_prepare(dict_edge_identifier_to_resource[edge], "iPTMnet"),
+                    pharmebinetutils.resource_add_and_prepare(dict_edge_identifier_to_resource[edge][0], "iPTMnet"),
                     "|".join(aggregated_properties),
                     "|".join(pubmed_ids)
                 ])
