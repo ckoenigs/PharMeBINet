@@ -59,7 +59,7 @@ def generate_files(path_of_directory, edge_type):
     new_file_path = os.path.join(path_of_directory, new_file_name) + '.tsv'
     new_file = open(new_file_path, 'w+', encoding='utf-8')
     csv_mapping_new = csv.writer(new_file, delimiter='\t')
-    csv_mapping_new.writerow(['ptm_identifier', 'protein_identifier','resource', 'aggregated_properties', 'pmids'])
+    csv_mapping_new.writerow(['ptm_identifier', 'protein_identifier', 'aggregated_properties', 'pmids'])
 
     if not os.path.exists(source):
         os.mkdir(source)
