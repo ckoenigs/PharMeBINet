@@ -9,6 +9,10 @@ path_to_project=$2
 #password
 password=$3
 
+
+#path to project
+path_to_databases=$3
+
 # prepare directories
 if [ ! -d output ]; then
   mkdir output
@@ -25,7 +29,7 @@ echo "Current time: $now"
 echo parse dbSNP
 
 
-python3 parse_json_to_tsv_dbsnp.py "/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/dbSNP" $path_to_project  > output/output_generate_integration_file.txt
+python3 parse_json_to_tsv_dbsnp.py $path_to_databases"dbSNP" $path_to_project  > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

@@ -20,10 +20,10 @@ fi
 
 
 #download co
-wget  -O data/cl.obo "https://purl.obolibrary.org/obo/cl.obo"
+wget  -O data/chebi.obo "https://ftp.ebi.ac.uk/pub/databases/chebi/ontology/chebi.obo"
 
 
-python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/cl.obo CO CellType_CO $path_to_project > output/output_generate_integration_file.txt
+python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/chebi.obo chebi_ontology Chemical_ChebiOntology $path_to_project > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
