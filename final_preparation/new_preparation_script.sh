@@ -9,8 +9,11 @@ import_tool=$2
 # define import tool
 password=$3
 
+# define path to databases directory
+path_to_databases=$4
+
 # path to pharMeBiNet graphml
-path_to_pharMeBiNet='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/'
+path_to_pharMeBiNet=$path_to_databases"PharMeBiNet/"
 
 sleep 60
 
@@ -48,7 +51,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'remove not used data'
 
-python3 prepare_graphML_pharmebinet.py > output/output_preparation.txt
+python3 prepare_graphML_pharmebinet.py $path_to_pharMeBiNet > output/output_preparation.txt
 
 
 

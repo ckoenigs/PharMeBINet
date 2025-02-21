@@ -3,13 +3,11 @@ import sys, datetime
 import lxml.etree as ET
 
 # dc = drugcentral
-TODELETE = {'adrecs', 'adrecstarget', 'aeolus', 'atc', 'biogrid', 'bindingdb', 'clinvar', 'ctd', 'dbsnp', 'dc',
-            'ddinter', 'diseases',
-            'disgenet', 'diseaseontology', 'drugbank', 'foodb', 'efo', 'gencc', 'go', 'gwas', 'gwascatalog', 'hgnc',
-            'hippie', 'hmdb', 'hpo',
-            'iid', 'iptmnet', 'markerdb', 'medrt', 'mirbase', 'mondo', 'ncbi', 'ndfrt', 'multi', 'omim', 'openfda',
-            'pharmgkb', 'ptmd', 'qptm', 'reactome',
-            'refseq', 'rnacentral', 'rnadisease', 'rnainter', 'sider', 'smpdb', 'ttd', 'uberon', 'uniprot'}
+TODELETE = {'adrecs', 'adrecstarget', 'aeolus', 'atc', 'biogrid', 'bindingdb', 'chebiontology', 'clinvar', 'ctd', 'co',
+            'dbsnp', 'dc', 'ddinter', 'diseases', 'disgenet', 'diseaseontology', 'drugbank', 'fideo', 'foodb', 'foodon',
+            'efo', 'gencc', 'go', 'gwas', 'gwascatalog', 'hetionet', 'hgnc', 'hippie', 'hmdb', 'hpo', 'iid', 'iptmnet', 'markerdb',
+            'medrt', 'mirbase', 'mondo', 'ncbi', 'ndfrt', 'multi', 'omim', 'openfda', 'pharmgkb', 'ptmd', 'qptm',
+            'reactome', 'refseq', 'rnacentral', 'rnadisease', 'rnainter', 'sider', 'smpdb', 'ttd', 'uberon', 'uniprot'}
 
 
 # def
@@ -57,7 +55,11 @@ counter_key = 0
 counter_all_edges = 0
 counter_selected_edge = 0
 
-file_name_from = '/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/wholedata.graphml'
+path_start='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/'
+if len(sys.argv) > 1:
+    path_start=sys.argv[1]
+
+file_name_from = path_start+'wholedata.graphml'
 
 
 # file_name_from='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/query.graphml'
@@ -68,7 +70,7 @@ def clear_attributes(text: str) -> str:
         'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"', '').replace('  ', ' ').replace('  ', ' ')
 
 
-filename = "/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/PharMeBiNet_finished.graphml"
+filename = path_start+ "PharMeBiNet_finished.graphml"
 with open(filename, 'w', encoding='utf-8') as xf:
     xf.write('<?xml version="1.0" encoding="utf-8"?>\n')
     xf.write('<graphml>\n')
