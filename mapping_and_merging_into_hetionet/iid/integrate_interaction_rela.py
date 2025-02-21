@@ -229,13 +229,13 @@ def load_and_prepare_IID_human_data():
     write only rela with exp into file
     and p1.identifier in ['Q9NRW4', 'P45985'] and p2.identifier in ['Q9NRW4', 'P45985']
     """
-    query = "Match l=(p1:Protein)-[:equal_to_iid_protein]-(d:protein_IID)-[r:interacts]->(:protein_IID)-[:equal_to_iid_protein]-(p2:Protein) Where 'exp' in r.evidence_types Return count(l)"
+    query = "Match l=(p1:Protein)-[:equal_to_iid_protein]-(d)-[r:interacts]->()-[:equal_to_iid_protein]-(p2:Protein) Where 'exp' in r.evidence_types Return count(l)"
     number_of_edges = g.run(query).single().values()[0]
     print(number_of_edges)
     max_number_of_results = 50000
     counter = 0
     while counter < number_of_edges:
-        query = f'Match (p1:Protein)-[:equal_to_iid_protein]-(d:protein_IID)-[r:interacts]->(:protein_IID)-[:equal_to_iid_protein]-(p2:Protein) Where "exp" in r.evidence_types With p1,r,p2 Skip {counter} Limit {max_number_of_results} Return p1.identifier, r, p2.identifier '
+        query = f'Match (p1:Protein)-[:equal_to_iid_protein]-(d)-[r:interacts]->()-[:equal_to_iid_protein]-(p2:Protein) Where "exp" in r.evidence_types With p1,r,p2 Skip {counter} Limit {max_number_of_results} Return p1.identifier, r, p2.identifier '
         print(query)
         results = g.run(query)
         run_through_results_and_add_to_dictionary(results)
@@ -243,11 +243,11 @@ def load_and_prepare_IID_human_data():
         print(counter)
 
     # to check for selfloops interaction
-    query = "Match l=(a:Protein)-[:equal_to_iid_protein]->(d:protein_IID)-[r:interacts]-(d) Where 'exp' in r.evidence_types Return count(l)"
+    query = "Match l=(a:Protein)-[:equal_to_iid_protein]->(d)-[r:interacts]-(d) Where 'exp' in r.evidence_types Return count(l)"
     number_of_edges = g.run(query).single().values()[0]
     counter = 0
     while counter < number_of_edges:
-        query = f'Match p=(a:Protein)-[:equal_to_iid_protein]->(d:protein_IID)-[r:interacts]-(d) Where "exp" in r.evidence_types With a,r Skip {counter} Limit {max_number_of_results} Return  a.identifier as p1 , r, a.identifier as p2 '
+        query = f'Match p=(a:Protein)-[:equal_to_iid_protein]->(d)-[r:interacts]-(d) Where "exp" in r.evidence_types With a,r Skip {counter} Limit {max_number_of_results} Return  a.identifier as p1 , r, a.identifier as p2 '
         results = g.run(query)
         run_through_results_and_add_to_dictionary(results)
         counter += max_number_of_results
