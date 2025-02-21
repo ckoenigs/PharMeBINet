@@ -114,10 +114,9 @@ def generate_cypher_file(file_name, file_name_new):
 
 def main():
     global path_of_directory, license
-    license = ''
+    license = 'CC BY 4.0 Deed'
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        license = sys.argv[2]
     else:
         sys.exit('need a path and license ')
 
