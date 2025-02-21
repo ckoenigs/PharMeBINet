@@ -26,7 +26,7 @@ def create_connection_with_neo4j():
 
 
 # label of co nodes
-label_co = 'Cell_type_CO'
+label_co = 'CellType_CO'
 # new label
 label='CellType'
 
@@ -130,26 +130,31 @@ Get all is_a relationships for bp, cc and mf and add the into a tsv file
 
 
 def get_is_a_relationships_and_add_to_tsv(cypher_file):
-    query = f'''Match (n:{label_co})-[:is_a]->(m:{label_co})  Where 'human_subset' in n.subsets and  'human_subset' in m.subsets Return n.id,m.id;'''
+    query = f'''Match (n:{label_co})-[r]->(m:{label_co})  Where 'human_subset' in n.subsets and n.id starts with "CL:" and m.id starts with "CL:" and  'human_subset' in m.subsets Return n.id,m.id, type(r)'''
     results = g.run(query)
-    file_name = 'output/integrate_co_relationship.tsv'
-    file = open(file_name, 'w')
-    tsv_file = csv.writer(file, delimiter='\t')
-    tsv_file.writerow(['identifier_1', 'identifier_2'])
 
-    query = '''Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{license:"%s", source:"Cell Ontology", unbiased:false, resource:["CO"], co:'yes', url:"https://www.ebi.ac.uk/ols4/ontologies/cl/classes?obo_id="+line.identifier_1}]->(a2)'''
-    query = query % ( label, label,
-                     'CLiaCL', license)
-    query = pharmebinetutils.get_query_import(path_of_directory,
-                                              f'mapping_and_merging_into_hetionet/CL/{file_name}',
-                                              query)
-    cypher_file.write(query)
+    dict_type_to_tsv = {}
 
     # go through the results
     for record in results:
-        [id1, id2] = record.values()
-        tsv_file.writerow([id1, id2])
+        [id1, id2, rela_type] = record.values()
+        if rela_type not in dict_type_to_tsv:
+            print(rela_type)
+            file_name = f'output/integrate_co_relationship_{rela_type}.tsv'
+            file = open(file_name, 'w')
+            tsv_file = csv.writer(file, delimiter='\t')
+            tsv_file.writerow(['identifier_1', 'identifier_2'])
 
+            query = '''Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:%s{license:"%s", source:"Cell Ontology", unbiased:false, resource:["Cell Ontology"], co:'yes', url:"https://www.ebi.ac.uk/ols4/ontologies/cl/classes?obo_id="+line.identifier_1}]->(a2)'''
+            query = query % (label, label,
+                             pharmebinetutils.prepare_rela_great(rela_type, label, label), license)
+            query = pharmebinetutils.get_query_import(path_of_directory,
+                                                      f'mapping_and_merging_into_hetionet/CL/{file_name}',
+                                                      query)
+            cypher_file.write(query)
+            dict_type_to_tsv[rela_type] = tsv_file
+
+        dict_type_to_tsv[rela_type].writerow([id1, id2])
 
 
 '''
@@ -159,7 +164,7 @@ go through all co nodes and sort them into the dictionary
 
 def go_through_co():
     tsv_file = create_tsv_files()
-    query = '''Match (n:%s) Where 'human_subset' in n.subsets Return n''' % (label_co)
+    query = '''Match (n:%s) Where  n.id starts with "CL:" and 'human_subset' in n.subsets Return n''' % (label_co)
     results = g.run(query)
     for record in results:
         node = record.data()['n']

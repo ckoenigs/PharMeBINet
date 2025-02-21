@@ -26,10 +26,10 @@ def create_cypher_file(file_name, node_label, rela_name, to_CT):
     '''
     if to_CT:
         rela= pharmebinetutils.prepare_rela_great(rela_name, node_label, 'CellType')
-        query = ''' MATCH (d:CellType{identifier:line.CT_id}),(c:%s{identifier:line.other_id}) CREATE (d)<-[: %s{resource: ['CL'], cl: "yes", source:"CL", license:"%s", url:"https://www.ebi.ac.uk/ols4/ontologies/cl/classes?obo_id="+line.CT_id}]-(c)'''
+        query = ''' MATCH (d:CellType{identifier:line.CT_id}),(c:%s{identifier:line.other_id}) CREATE (d)<-[: %s{resource: ['Cell Ontology'], co: "yes", source:"Cell Ontology", license:"%s", url:"https://www.ebi.ac.uk/ols4/ontologies/cl/classes?obo_id="+line.CT_id}]-(c)'''
     else:
         rela= pharmebinetutils.prepare_rela_great(rela_name, 'CellType', node_label)
-        query = ''' MATCH (d:CellType{identifier:line.CT_id}),(c:%s{identifier:line.other_id}) CREATE (d)-[: %s{resource: ['CL'], cl: "yes", source:"CL", license:"%s", url:"https://www.ebi.ac.uk/ols4/ontologies/cl/classes?obo_id="+line.CT_id}]->(c)'''
+        query = ''' MATCH (d:CellType{identifier:line.CT_id}),(c:%s{identifier:line.other_id}) CREATE (d)-[: %s{resource: ['Cell Ontology'], co: "yes", source:"Cell Ontology", license:"%s", url:"https://www.ebi.ac.uk/ols4/ontologies/cl/classes?obo_id="+line.CT_id}]->(c)'''
     query = query % (node_label, rela, license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/CL/{file_name}',
@@ -62,7 +62,7 @@ def load_all_pair_and_add_to_files(label):
 
     for [direction_one, direction_two, to_cT] in [['','>',False], ['<','',True]]:
         dict_type_direction_to_tsv = {}
-        query = f'''MATCH (p:CellType)-[]-(r:Cell_type_CO){direction_one}-[v]-{direction_two}(n:Cell_type_CO)-[]-(b:{label}) RETURN p.identifier, b.identifier, type(v)'''
+        query = f'''MATCH (p:CellType)-[]-(r:CellType_CO){direction_one}-[v]-{direction_two}(n:CellType_CO)-[]-(b:{label}) RETURN p.identifier, b.identifier, type(v)'''
         results = graph_database.run(query)
         counter=0
         set_edge_types=set()

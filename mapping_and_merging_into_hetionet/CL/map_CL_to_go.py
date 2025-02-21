@@ -6,7 +6,7 @@ import create_connection_to_databases
 import pharmebinetutils
 
 # label of co nodes
-label_co = 'Cell_type_CO'
+label_co = 'CellType_CO'
 
 '''
 create connection to neo4j and mysql
@@ -63,13 +63,13 @@ def load_CL_data_in_an_map_to_database(namespace, dict_pharmebinet, dict_alterna
 
         if go_id in dict_pharmebinet:
             csv_writer.writerow([go_id, go_id, 'identifier',
-                                 pharmebinetutils.resource_add_and_prepare(dict_pharmebinet[go_id], 'CL')])
+                                 pharmebinetutils.resource_add_and_prepare(dict_pharmebinet[go_id], 'Cell Ontology')])
             counter_mapped += 1
         elif go_id in dict_alternative_ids_pharmebinet:
             counter_mapped += 1
             for real_go_id in dict_alternative_ids_pharmebinet[go_id]:
                 csv_writer.writerow([go_id, real_go_id, 'alternative_id',
-                                     pharmebinetutils.resource_add_and_prepare(dict_pharmebinet[real_go_id], 'CL')])
+                                     pharmebinetutils.resource_add_and_prepare(dict_pharmebinet[real_go_id], 'Cell Ontology')])
         else:
             counter_not_mapped += 1
 
@@ -94,7 +94,7 @@ def generate_files(label,namespace):
     writer = csv.writer(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GOIDCL', 'GOIDpharmebinet', 'how_mapped', 'resource'])
 
-    query = ''' Match (c:%s{ identifier:line.GOIDpharmebinet}), (n:%s{id:line.GOIDCL}) SET  c.cl="yes", c.resource=split(line.resource,"|") Create (c)-[:equal_to_cl_go{how_mapped:line.how_mapped}]->(n)'''
+    query = ''' Match (c:%s{ identifier:line.GOIDpharmebinet}), (n:%s{id:line.GOIDCL}) SET  c.co="yes", c.resource=split(line.resource,"|") Create (c)-[:equal_to_cl_go{how_mapped:line.how_mapped}]->(n)'''
     query = query % (label, label_co)
 
     query = pharmebinetutils.get_query_import(path_of_directory,

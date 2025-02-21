@@ -6,7 +6,7 @@ import create_connection_to_databases
 import pharmebinetutils
 
 # label of co nodes
-label_co = 'Cell_type_CO'
+label_co = 'CellType_CO'
 
 def create_connection_with_neo4j():
     """
@@ -34,7 +34,7 @@ def generate_tsv_files_and_cypher_file():
     csv_update.writerow(['id', 'resource'])
 
     query_start = f' Match (a:{label_co}{{id:line.id}})'
-    query_match = query_start + ' , (l:Anatomy{identifier:line.id}) Set l.cl="yes", l.resource=split(line.resource,"|") Create (l)-[:equal_anatomy_cl]->(a)'
+    query_match = query_start + ' , (l:Anatomy{identifier:line.id}) Set l.co="yes", l.resource=split(line.resource,"|") Create (l)-[:equal_anatomy_cl]->(a)'
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
