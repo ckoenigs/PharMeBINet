@@ -303,14 +303,15 @@ def cypher_node(keys, file_name, label, unique_identifier):
     cypher_file.write(pharmebinetutils.prepare_index_query(label + '_RNACentral', unique_identifier))
 
 
-path = '/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/RNAcentral/'
+
 
 
 def main():
-    global path_of_directory
+    global path_of_directory, path
     path_of_directory = ""
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 2:
         path_of_directory = sys.argv[1]
+        path = sys.argv[2]+'RNAcentral/'
     else:
         sys.exit('need a path rnaCentral')
 

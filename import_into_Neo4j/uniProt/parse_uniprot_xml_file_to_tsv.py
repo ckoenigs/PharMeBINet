@@ -8,7 +8,8 @@ import lxml.etree as etree
 sys.path.append("../..")
 import pharmebinetutils
 
-ns = '{http://uniprot.org/uniprot}'
+# ns = '{http://uniprot.org/uniprot}'
+ns = '{https://uniprot.org/uniprot}'
 
 # dictionary keywords
 dict_keyword = {}

@@ -9,6 +9,8 @@ path_to_project=$2
 #password
 password=$3
 
+#path to project
+path_to_databases=$4
 
 # prepare directories
 if [ ! -d output ]; then
@@ -24,7 +26,7 @@ echo "Current time: $now"
 echo prepare rnaCentral
 
 
-python3 integrate_RNAcentral.py $path_to_project > output/output_integration_rnacentral.txt
+python3 integrate_RNAcentral.py $path_to_project $path_to_databases > output/output_integration_rnacentral.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
