@@ -27,14 +27,14 @@ load uniprot information into dictionary
 
 
 def load_uniprot_info_into_dictionary():
-    file_uniprot = open('../uniProt/output/uniprot.tsv', 'r', encoding='utf-8')
+    file_uniprot = open('../uniProt/output/protein.tsv', 'r', encoding='utf-8')
     csv_reader = csv.DictReader(file_uniprot, delimiter='\t')
     counter_row = 0
     counter_ac_number_multiple = 0
     for row in csv_reader:
         counter_row += 1
-        ac_numbers = row['second_ac_numbers']
-        ac_number_list = ac_numbers.split('|')
+        ac_numbers = row['accession']
+        ac_number_list = ac_numbers.split('||')
         ac_number_list.append(row['identifier'])
         for ac_number in ac_number_list:
             copy_ac_list = ac_number_list[:]
@@ -55,11 +55,9 @@ def load_uniprot_info_into_dictionary():
                 else:
                     dict_ac_number_to_count[ac_number] += 1
                 dict_uniprot[ac_number].append(row)
-        ncbi_tax_ids = row['ncbi_taxid']
 
     print('number of multiple ac-numbers:' + str(counter_ac_number_multiple))
-    # print(dict_ac_number_to_count)
-    # for
+
 
 
 # increase the csv max size
@@ -135,10 +133,10 @@ def check_for_properties(property_value, xml_property_list, property_name, synon
                     synonyms.add(property)
                 elif property_name in ['SALTS']:
                     synonyms.add(property)
-                    print('new salt found')
-                    print(property_name)
-                    print(property)
-                    print(xml_property_list)
+                    # print('new salt found')
+                    # print(property_name)
+                    # print(property)
+                    # print(xml_property_list)
                 else:
                     print(property_name)
                     print(property)
@@ -200,7 +198,7 @@ def check_on_property(property, dict_external, value, drugbank_id, error_massage
         if value != '':
             for value_part in value.split('; '):
                 if not value_part in dict_external[property]:
-                    print(dict_external)
+                    print('check on property',dict_external)
                     print(drugbank_id)
                     print(property)
                     print(value)
@@ -291,9 +289,7 @@ def drugs_combination_and_check(neo4j_label):
     # properties: ALOGPS_LOGP	ALOGPS_LOGS	ALOGPS_SOLUBILITY	DATABASE_ID	DATABASE_NAME	DRUGBANK_ID	DRUG_GROUPS	EXACT_MASS	FORMULA	GENERIC_NAME	ID	INCHI_IDENTIFIER	INCHI_KEY	INTERNATIONAL_BRANDS	JCHEM_ACCEPTOR_COUNT	JCHEM_ATOM_COUNT	JCHEM_AVERAGE_POLARIZABILITY	JCHEM_BIOAVAILABILITY	JCHEM_DONOR_COUNT	JCHEM_FORMAL_CHARGE	JCHEM_GHOSE_FILTER	JCHEM_IUPAC	JCHEM_LOGP	JCHEM_MDDR_LIKE_RULE	JCHEM_NUMBER_OF_RINGS	JCHEM_PHYSIOLOGICAL_CHARGE	JCHEM_PKA	JCHEM_PKA_STRONGEST_ACIDIC	JCHEM_PKA_STRONGEST_BASIC	JCHEM_POLAR_SURFACE_AREA	JCHEM_REFRACTIVITY	JCHEM_ROTATABLE_BOND_COUNT	JCHEM_RULE_OF_FIVE	JCHEM_TRADITIONAL_IUPAC	JCHEM_VEBER_RULE	MOLECULAR_WEIGHT	Molecule	PRODUCTS	SALTS	SECONDARY_ACCESSION_NUMBERS	SMILES	SYNONYMS
     with open('sdf/structure.tsv') as csvfile:
         spamreader = csv.DictReader(csvfile, delimiter='\t')
-        properties = spamreader.fieldnames
-        i = 0
-        properties = []
+
         for row in spamreader:
             dict_drug_structure[row['DRUGBANK_ID']] = row
         print(len(dict_drug_structure))
@@ -481,7 +477,6 @@ def drugs_combination_and_check(neo4j_label):
                     dict_external[link_combination.split('::', 1)[0]].append(link_combination.split('::', 1)[1])
                 else:
                     dict_external[link_combination.split('::', 1)[0]] = [link_combination.split('::', 1)[1]]
-
             dict_from_drug = dict_drug_external_ids[drugbank_id]
             if name != dict_from_drug['Name']:
                 print(dict_external)
@@ -490,7 +485,8 @@ def drugs_combination_and_check(neo4j_label):
                 sys.exit('name ' + name)
             if cas_number != dict_from_drug['CAS Number']:
                 print(drugbank_id)
-                print(dict_external)
+                print(dict_from_drug['CAS Number'])
+                print(cas_number)
                 sys.exit('cas_number ')
             if not drug_type in dict_from_drug['Drug Type'].lower():
                 print(dict_external)
@@ -499,18 +495,11 @@ def drugs_combination_and_check(neo4j_label):
                 print(drug_type)
                 sys.exit('type ')
             for property, value in dict_from_drug.items():
-                # print(property)
-                # print(property in ['Name','CAS Number','Drug Type'])
-                # print('Name' in ['Name', 'CAS Number','Drug Type'])
                 if property in ['Name', 'CAS Number', 'Drug Type']:
                     continue
                 elif (property == 'UniProt Title') and value != '':
                     counter_uniprot_title += 1
                     synonyms.add(value)
-                    # print(dict_external)
-                    # print(drugbank_id)
-                    # print(property +'###########################################')
-                    # print(value)
                     continue
                 elif property in dict_changed_external_identifier_source_name:
                     property = dict_changed_external_identifier_source_name[property]
@@ -518,10 +507,10 @@ def drugs_combination_and_check(neo4j_label):
                 if check_on_property(property, dict_external, value, drugbank_id, 'external identifier') or value == '':
                     continue
                 else:
-                    print(dict_external)
                     print(drugbank_id)
                     print(property)
                     print(value)
+                    print(dict_external)
                     sys.exit('external identifier not existing')
 
             groups = []
@@ -539,7 +528,6 @@ def drugs_combination_and_check(neo4j_label):
                     split_prop_value_source = property_value_source.split('::')
                     dict_experimental_properties[split_prop_value_source[0]] = 1
                     if split_prop_value_source[0] in dict_experimental_property_value:
-                        print('ohje')
                         sys.exit('experimental property')
                     else:
                         dict_experimental_property_value[split_prop_value_source[0]] = split_prop_value_source[1]
@@ -575,7 +563,8 @@ def drugs_combination_and_check(neo4j_label):
                     sys.exit('structure link name ' + name)
                 if cas_number != dict_from_drug['CAS Number']:
                     print(drugbank_id)
-                    print(dict_external)
+                    print(dict_from_drug['CAS Number'])
+                    print(cas_number)
                     sys.exit('structure link cas_number ')
                 for property, value in dict_from_drug.items():
                     if property in ['Name', 'CAS Number', 'Drug Groups']:
@@ -608,6 +597,7 @@ def drugs_combination_and_check(neo4j_label):
                             print(property)
                             print(dict_experimental_property_value)
                             print(dict_calculated_property_value)
+                            print(value)
                             sys.exit('not in experimental or calculated')
                     else:
                         print(drugbank_id)
@@ -637,7 +627,6 @@ def drugs_combination_and_check(neo4j_label):
                         salts_name_list.add(dict_salts[salt_id]['name'])
 
                 products_name_list = set([])
-                print(drugbank_id)
                 if drugbank_id in dict_drug_product:
                     for product in dict_drug_product[drugbank_id]:
                         # # print(drugbank_id)
@@ -660,8 +649,6 @@ def drugs_combination_and_check(neo4j_label):
                 }
 
                 synonyms_lower = [x.lower() for x in synonyms]
-                if drugbank_id == 'DB09496':
-                    print('huh')
 
                 # go through all drugbank entries in the structure file and campare the values with the one in the xml file and maybe update the values
                 for property_name, property_value in dict_drug_structure_properties.items():
@@ -687,11 +674,8 @@ def drugs_combination_and_check(neo4j_label):
                     # some properties have multiple values and all need to be checked
                     elif property_name in ['SYNONYMS', 'SECONDARY_ACCESSION_NUMBERS', 'DRUG_GROUPS', 'PRODUCTS',
                                            'INTERNATIONAL_BRANDS', 'SALTS']:
-                        # print(property_name)
-                        # print(drugbank_id)
                         if property_name == 'SECONDARY_ACCESSION_NUMBERS':
                             if property_value == drugbank_id:
-                                print('same ids')
                                 continue
                         check_for_properties(property_value, dict_property_name_to_list[property_name], property_name,
                                              synonyms)
@@ -746,11 +730,11 @@ def drugs_combination_and_check(neo4j_label):
                                     else:
                                         dict_accurate_calculated_values[property_name].append(
                                             {'value': property_value, 'tool': tool_name})
-                                    print(drugbank_id)
-                                    print(property_name)
-                                    print(dict_calculated_property_value[property_name])
-                                    print(tool_name)
-                                    print(property_value)
+                                    # print(drugbank_id)
+                                    # print(property_name)
+                                    # print(dict_calculated_property_value[property_name])
+                                    # print(tool_name)
+                                    # print(property_value)
                                 # by inchikey, inchi, smiles are somtimes some different version of the same
                                 # test !!!!!!
                                 elif property_name in ['SMILES', 'InChIKey', 'InChI']:
@@ -760,9 +744,9 @@ def drugs_combination_and_check(neo4j_label):
                                             dict_calculated_property_value_to_tool[(property_name, value)]})
                                     dict_accurate_calculated_values[property_name].append(
                                         {'value': property_value, 'tool': tool_name})
-                                    print(property_name)
-                                    print(drugbank_id)
-                                    print(dict_accurate_calculated_values[property_name])
+                                    # print(property_name)
+                                    # print(drugbank_id)
+                                    # print(dict_accurate_calculated_values[property_name])
 
                                 # if property_name in ['SMILES','Polar Surface Area (PSA)','logS','pKa (strongest basic)','pKa (strongest acidic)','Polarizability', 'Refractivity','logP']:
                                 else:
@@ -772,10 +756,10 @@ def drugs_combination_and_check(neo4j_label):
                                         if drugbank_id == 'DB07702' and property_name == 'IUPAC Name':
                                             dict_calculated_property_value[property_name].append(property_value)
                                             continue
-                                        print(drugbank_id)
-                                        print(property_name)
-                                        print(dict_calculated_property_value[property_name])
-                                        print(property_name + ':' + property_value)
+                                        # print(drugbank_id)
+                                        # print(property_name)
+                                        # print(dict_calculated_property_value[property_name])
+                                        # print(property_name + ':' + property_value)
                                         # sys.exit(property_name + ':' + property_value)
 
                         # if the property is not in the xml it is add to the new file
@@ -791,10 +775,10 @@ def drugs_combination_and_check(neo4j_label):
                                 continue
                             elif property_name in ['InChIKey', 'InChI']:
                                 dict_inchi_inchikey[property_name.lower()] = property_value
-                            print(drugbank_id)
-                            print(property_name)
-                            print(property_value)
-                            print(tool_name)
+                            # print(drugbank_id)
+                            # print(property_name)
+                            # print(property_value)
+                            # print(tool_name)
                             # print(row['calculated_properties_kind_value_source'])
                             dict_accurate_calculated_values[property_name] = [
                                 {'value': property_value, 'tool': tool_name}]
@@ -806,8 +790,6 @@ def drugs_combination_and_check(neo4j_label):
                 dict_drug_sequences = {}  #
 
                 for sequence in sequences:
-                    # print(drugbank_id)
-                    # print(sequence)
                     dict_drug_sequences[sequence.split(' ')[1]] = 1
 
                 for sequence_seq_file in dict_drug_sequence[drugbank_id]:
@@ -841,9 +823,6 @@ def drugs_combination_and_check(neo4j_label):
                             property_parts_string += part + ';'
                         new_entry.append(part[0:-1])
 
-                    # if drugbank_id == 'DB00315':
-                    #     print(head)
-                    #     print(len(row[head]))
                 elif head == 'synonyms':
                     string_synonyms = '||'.join(synonyms)
                     property_parts_string = ''
@@ -852,16 +831,11 @@ def drugs_combination_and_check(neo4j_label):
                         property_parts_string += part + ';'
                     new_entry.append(part[0:-1])
                     output_list.append(string_synonyms)
-                    if drugbank_id == 'DB00315':
-                        print(head)
-                        print(len(string_synonyms))
+
                 elif head in ['inchikey', 'inchi']:
                     if head in dict_inchi_inchikey:
                         output_list.append(dict_inchi_inchikey[head])
                         new_entry.append(dict_inchi_inchikey[head])
-                        if drugbank_id == 'DB00315':
-                            print(head)
-                            print(len(dict_inchi_inchikey[head]))
                     else:
                         output_list.append(row[head])
                         new_entry.append(row[head])
@@ -876,8 +850,8 @@ def drugs_combination_and_check(neo4j_label):
                     if row['calculated_properties_kind_value_source'] != '':
                         new_calculated_property_list = []
                         used_new_calculated_values = {}
+
                         for property_with_value_tool in row['calculated_properties_kind_value_source'].split('||'):
-                            # print(property_with_value_tool)
                             [property_name, property_value, tool] = property_with_value_tool.split('::')
                             tool_found = False
                             if property_name in dict_accurate_calculated_values:
@@ -906,17 +880,11 @@ def drugs_combination_and_check(neo4j_label):
 
                         new_entry.append(import_tool_string[0:-1])
                         output_list.append(string_calculated_update)
-                        if drugbank_id == 'DB00315':
-                            print(head)
-                            print(len(string_calculated_update))
                     else:
                         output_list.append(row['calculated_properties_kind_value_source'])
                         new_entry.append(row['calculated_properties_kind_value_source'])
                         if row['calculated_properties_kind_value_source'] != '':
                             print('huhu')
-                        if drugbank_id == 'DB09495':
-                            print(head)
-                            print(len(row[head]))
             new_entry.append(drugbank_license)
             new_entry.append(neo4j_label)
 
@@ -1078,7 +1046,6 @@ def check_and_maybe_generate_a_new_target_file(file, dict_targets_info_external,
                                                neo4j_general_label):
     header_new = []
     with open(file) as csvfile:
-        # print(file)
         reader = csv.DictReader(csvfile, delimiter='\t')
         header = reader.fieldnames
         # output_file_csv = open(output_file, 'w')
@@ -1092,7 +1059,6 @@ def check_and_maybe_generate_a_new_target_file(file, dict_targets_info_external,
         # writer_output.writerow(header_new)
 
         list_of_all_used_uniprot_ids = set([])
-        # print(header)
         counter_total_number_of_nodes = 0
         counter_same_id_different_label = 0
         counter_same_id_different_label_not_same_properties = 0
@@ -1121,8 +1087,6 @@ def check_and_maybe_generate_a_new_target_file(file, dict_targets_info_external,
                     # sys.exit('uniprot name not the same ' + uniprot_id)
 
             if uniprot_id in dict_targets_info_sequence:
-                # print(row)
-                # print(uniprot_id)
                 gene_sequence = row['gene_sequence'].split(' ')[1] if row['gene_sequence'] != '' else ''
                 amino_acid_sequence = row['amino_acid_sequence'].split(' ')[1] if row[
                                                                                       'amino_acid_sequence'] != '' else ''
@@ -1178,7 +1142,6 @@ def check_and_maybe_generate_a_new_target_file(file, dict_targets_info_external,
             if uniprot_id in dict_targets_info_identifier:
                 if row['xrefs'] != '':
                     for xref_source_value in row['xrefs'].split('||'):
-                        # print(xref_source_value)
                         source = xref_source_value.split('::')[0]
                         value = xref_source_value.split('::')[1]
                         if source in xrefs:
@@ -1193,14 +1156,11 @@ def check_and_maybe_generate_a_new_target_file(file, dict_targets_info_external,
                         for value in values:
                             if value not in synonyms or value == name:
                                 synonyms.append((value))
-                                # print(uniprot_id)
-                                # print(value)
-                                # sys.exit('not in synonyms:' + property + ' ' + ';'.join(value) + '(' + uniprot_id)
                     elif property not in ['ID', 'Name', 'Species']:
                         if property in xrefs:
                             for value in values:
                                 if value not in xrefs[property]:
-                                    print(dict_targets_info_identifier[uniprot_id])
+                                    print(xrefs)
                                     print(property)
                                     print(value)
                                     sys.exit('value are not the same:' + uniprot_id)
@@ -1208,22 +1168,29 @@ def check_and_maybe_generate_a_new_target_file(file, dict_targets_info_external,
                             continue
                         elif property == 'PDB ID':
                             xrefs[property] = values
-                            # print(uniprot_id)
-                            # print(values)
-                            # print('PDB ID to xref')
+                        elif property == 'GeneCard ID':
+                            for value in values:
+                                if value not in xrefs['GeneCards']:
+                                    print(xrefs)
+                                    print(property)
+                                    print(value)
+                                    sys.exit('value are not the same GeneCard ID:' + uniprot_id)
+
                         else:
                             print(dict_targets_info_identifier[uniprot_id])
                             print(property)
                             print(values)
+                            print(uniprot_id)
+                            print('here????')
                             sys.exit('xref property is not there:' + uniprot_id)
 
             list_properties = []
             identifier = uniprot_id
-            if identifier in dict_ac_number_to_count:
-                print(
-                    '#s#s#s#s#s#s#s#s#s#s#s#s#s#s#s#s#s#s#s#s#s#ss#s##s#ss#s#s#s#s#s#s#s#s#s#s#s#s#s##ss#s#s#s#s#s#s#s#s#s#s#s##s')
-                print(dict_ac_number_to_count[identifier])
-                print(drugbank_id)
+            # if identifier in dict_ac_number_to_count:
+            #     print(
+            #         '#s#s#s#s#s#s#s#s#s#s#s#s#s#s#s#s#s#s#s#s#s#ss#s##s#ss#s#s#s#s#s#s#s#s#s#s#s#s#s##ss#s#s#s#s#s#s#s#s#s#s#s##s')
+            #     print(dict_ac_number_to_count[identifier])
+            #     print(drugbank_id)
             for head in header:
                 if head not in ['synonyms', 'xrefs', 'gene_sequence', 'alternative_uniprot_id']:
                     if head == 'id' and row[head] == '':
@@ -1268,14 +1235,14 @@ def check_and_maybe_generate_a_new_target_file(file, dict_targets_info_external,
                             set_of_infos = list(filter(bool, set_of_infos))
                             before_properties[i] = '||'.join(set_of_infos)
                         else:
-                            print(identifier)
-                            print(before_properties)
-                            print(list_properties)
-                            print(property)
-                            print(before_properties[i])
-                            print(label_list)
-                            print(neo4j_label)
-                            print(identifier)
+                            # print(identifier)
+                            # print(before_properties)
+                            # print(list_properties)
+                            # print(property)
+                            # print(before_properties[i])
+                            # print(label_list)
+                            # print(neo4j_label)
+                            # print(identifier)
                             set_of_infos = set(before_properties[i].split('||'))
                             set_of_infos.add(property)
                             set_of_infos = list(filter(bool, set_of_infos))
@@ -1491,14 +1458,20 @@ def check_and_maybe_generate_a_new_drug_target_file(file, dict_drug_targets_exte
 
             if not (drugbank_id, target_id) in dict_drug_targe_pairs_xml:
                 dict_drug_targe_pairs_xml[(drugbank_id, target_id)] = [{}]
+                not_human=False
                 for property_name, value in row.items():
+                    if property_name =='organism':
+                        if value !='Humans':
+                            not_human=True
+                            dict_drug_targe_pairs_xml.pop((drugbank_id, target_id))
+                            break
                     if property_name == 'targets_id' and value == '':
                         dict_drug_targe_pairs_xml[(drugbank_id, target_id)][0][property_name] = target_db_id
                     else:
                         dict_drug_targe_pairs_xml[(drugbank_id, target_id)][0][property_name] = value
 
                 if (drugbank_id, target_id) in dict_all_target_drug_pairs:
-                    print('multi in different')
+                    # print('multi in different')
                     # print(dict_all_target_drug_pairs[(drugbank_id, target_id)])
                     # print(row)
                     list_before = dict_all_target_drug_pairs[(drugbank_id, target_id)]
@@ -1517,8 +1490,9 @@ def check_and_maybe_generate_a_new_drug_target_file(file, dict_drug_targets_exte
                     if not different:
                         print('the same all types')
                 else:
-                    dict_all_target_drug_pairs[(drugbank_id, target_id)] = dict_drug_targe_pairs_xml[
-                        (drugbank_id, target_id)]
+                    if not not_human:
+                        dict_all_target_drug_pairs[(drugbank_id, target_id)] = dict_drug_targe_pairs_xml[
+                            (drugbank_id, target_id)]
             else:
                 print('multi in one')
                 print(dict_drug_targe_pairs_xml[(drugbank_id, target_id)])
@@ -1793,12 +1767,10 @@ def gather_all_metabolite_information_and_generate_a_new_file(neo4j_label):
 
             dict_sfd_metabolite_ids[drugbank_metabolite_id] = ''
             if drugbank_metabolite_id not in dict_with_all_metabolite_from_reactions:
-                print(drugbank_metabolite_id)
                 counter_not_in += 1
             else:
                 if dict_with_all_metabolite_from_reactions[drugbank_metabolite_id] != row['NAME']:
                     print(drugbank_metabolite_id)
-                    name = dict_with_all_metabolite_from_reactions[drugbank_metabolite_id]
                     print(dict_with_all_metabolite_from_reactions[drugbank_metabolite_id])
                     print(row['NAME'])
                     # sys.exit('not the same name')
@@ -1808,13 +1780,11 @@ def gather_all_metabolite_information_and_generate_a_new_file(neo4j_label):
             counter_all_metabolites += 1
             writer_drug.writerow(entries)
 
-        print(';):)++++++++++++++++++')
         print('metaboliten with sdf:' + str(counter_all_metabolites))
         counter_metabolites_in_xml_and_not_in_sdf = 0
         for db_metabolite_id in dict_with_all_metabolite_from_reactions.keys():
             if not db_metabolite_id in dict_sfd_metabolite_ids:
                 counter_metabolites_in_xml_and_not_in_sdf += 1
-                print(db_metabolite_id)
                 entries = []
 
                 for head in header_new:
@@ -2078,12 +2048,12 @@ dict_drugbank_to_uniprot_label = {
     'synonyms': 'synonyms',
     'amino_acid_sequence': 'as_sequence',
     'gene_name': 'gene_name',
-    'general_function': 'general_function',
+    # 'general_function': 'general_function',
     'chromosome_location': 'chromosome_location',
     'pfams': 'pfam',
     'go_classifiers': 'go_classifiers',
     # 'xrefs':'xref',
-    'cellular_location': 'subcellular_location'
+    #'cellular_location': 'subcellular_location'
 }
 
 '''
@@ -2105,12 +2075,10 @@ def add_additional_enzymes(uniprot_id, header_new, counter_multiple_information,
                 # the information should be removed.
                 if len(information_to_this_uniprot_entry) > 1:
                     print('mmultiprot ' + uniprot_id)
-                    # print(information_to_this_uniprot_entry)
                     counter_multiple_information += 1
                     return False, ""
                     # sys.exit(uniprot_id)
                 if head in dict_drugbank_to_uniprot_label:
-                    # print(information_to_this_uniprot_entry[0])
                     entries.append(information_to_this_uniprot_entry[0][dict_drugbank_to_uniprot_label[head]])
                 elif head == 'id_source':
                     entries.append('Swiss-Prot')
@@ -2261,8 +2229,6 @@ def add_the_other_rela_to_cypher(pathway_label, product_label, salt_label, mutat
             counter_all += 1
             pathway_id = row['pathway_id']
             uniprot_id = row['uniprot_id']
-            print('check pathway  enzymes')
-            print(uniprot_id)
             found, uniprot_id = add_additional_enzymes(uniprot_id, header_new, counter_multiple_information,
                                                        length_list, spamreader, spamreader_node, position_of_id,
                                                        enzyme_label, general_label)

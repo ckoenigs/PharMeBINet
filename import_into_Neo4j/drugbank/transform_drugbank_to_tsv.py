@@ -41,8 +41,6 @@ next(csv_reader)
 for row in csv_reader:
     if row[1] in dict_category_name_to_id:
         sys.exit('ohje')
-    if row[0] == 'DBCAT004682':
-        print('lala')
     name = html.unescape(row[1])
     dict_category_name_to_id[name] = row[0]
 
@@ -113,7 +111,7 @@ def add_information_into_dictionary(drug_targets, db_ID, db_targets, position, a
     return drug_targets
 
 
-def gather_target_infos(target, drug_targets_info, targets_info, dict_targets_ids, db_ID, is_enzyme, is_target):
+def gather_target_infos(drug_info, target, drug_targets_info, targets_info, dict_targets_ids, db_ID, is_enzyme, is_target):
     """
     This gather the information for carrier, enzyme, target and transporter node. First the information for the
     relationship are gathered. Then if the carrier, enzyme, target and transporter has peptides then generate for them
@@ -135,12 +133,12 @@ def gather_target_infos(target, drug_targets_info, targets_info, dict_targets_id
     :param is_target:boolean
     :return:
     """
-    for targets in drug.iterfind(target.format(ns=ns)):
+    for targets in drug_info.iterfind(target.format(ns=ns)):
         #        print('drinnen ;)')
 
         db_targets = targets.findtext("{ns}id".format(ns=ns))
 
-        name = targets.findtext("{ns}name".format(ns=ns))
+        name_target = targets.findtext("{ns}name".format(ns=ns))
 
         # gather relationships information
         position = targets.get('position')
@@ -299,7 +297,8 @@ def gather_target_infos(target, drug_targets_info, targets_info, dict_targets_id
             targets_dict = collections.OrderedDict()
 
             targets_dict['drugbank_id'] = db_targets
-            targets_dict['name'] = name
+            targets_dict['name'] = name_target
+            targets_dict['organism'] = organism
             if not targets_dict['drugbank_id'] in maybe_not_protein_set:
                 csv_decision_protein_file.writerow(
                     [targets_dict['name'], targets_dict['drugbank_id'], 'combined protein', 1])
@@ -996,16 +995,16 @@ for i, drug in enumerate(root):
         snp_adverse_drug_reactions.append(snp_adverse_drug_reaction)
 
     # target
-    gather_target_infos('{ns}targets/{ns}target', drug_targets, targets, dict_target_ids, db_ID, False, True)
+    gather_target_infos( drug,'{ns}targets/{ns}target', drug_targets, targets, dict_target_ids, db_ID, False, True)
 
     # enzymes
-    gather_target_infos('{ns}enzymes/{ns}enzyme', drug_enzymes, enzymes, dict_enzyme_ids, db_ID, True, False)
+    gather_target_infos(drug,'{ns}enzymes/{ns}enzyme', drug_enzymes, enzymes, dict_enzyme_ids, db_ID, True, False)
 
     # carries
-    gather_target_infos('{ns}carriers/{ns}carrier', drug_carriers, carriers, dict_carrier_ids, db_ID, False, False)
+    gather_target_infos(drug,'{ns}carriers/{ns}carrier', drug_carriers, carriers, dict_carrier_ids, db_ID, False, False)
 
     # transporter
-    gather_target_infos('{ns}transporters/{ns}transporter', drug_transporters, transporters, dict_transporter_ids,
+    gather_target_infos(drug,'{ns}transporters/{ns}transporter', drug_transporters, transporters, dict_transporter_ids,
                         db_ID, False, False)
 
     # Add drug aliases
