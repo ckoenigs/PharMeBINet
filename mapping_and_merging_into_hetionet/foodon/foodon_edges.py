@@ -98,7 +98,7 @@ def main():
 
 
     cypher_file = open('output/cypher_edge.cypher', 'a', encoding="utf-8")
-    list_label_edge_type=[['Anatomy','equal_anatomy_fo']]
+    list_label_edge_type=[['Anatomy','equal_anatomy_fo'],['Chemical','equal_foodon_chemical']]
 
     for [label, equal_type] in list_label_edge_type:
         load_all_pair_and_add_to_files(label, equal_type)

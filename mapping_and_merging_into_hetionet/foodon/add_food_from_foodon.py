@@ -73,11 +73,10 @@ def get_FO_properties():
         else:
             query_middle_new += property + ':b.' + property + ', '
     query_end = ''' Create (a)-[:equal_to_FO]->(b)'''
-    global query_new
 
     # combine the important parts of node creation
-    query_new = query_nodes_start + query_middle_new + 'resource:["FoodOn"], fo:"yes", source:"FoodON", url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.identifier, license:"' + license + '"})' + query_end
-
+    query_new = query_nodes_start + query_middle_new + 'resource:["FoodOn"], foodon:"yes", source:"FoodON", url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.identifier, license:"' + license + '"})' + query_end
+    return query_new
 
 '''
 create the tsv files
@@ -87,7 +86,7 @@ create the tsv files
 def create_tsv_files():
     # prepare file and queries for new nodes
     file_name = 'output/integrate_FO.tsv'
-    query = query_new % (label)
+    query = get_FO_properties() % (label)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/foodon/{file_name}',
                                               query)
@@ -135,12 +134,13 @@ def get_is_a_relationships_and_add_to_tsv(cypher_file):
     for record in results:
         [id1, id2, rela_type] = record.values()
         if rela_type not in dict_type_to_tsv:
-            file_name = f'output/integrate_FO_relationship_{rela_type}.tsv'
+            print(rela_type)
+            file_name = f'edges/integrate_FO_relationship_{rela_type}.tsv'
             file = open(file_name, 'w')
             tsv_file = csv.writer(file, delimiter='\t')
             tsv_file.writerow(['identifier_1', 'identifier_2'])
 
-            query = '''Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:%s{license:"%s", source:"FoodOn", unbiased:false, resource:["FoodOn"], fo:'yes', url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.identifier_1}]->(a2)'''
+            query = '''Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:%s{license:"%s", source:"FoodOn", unbiased:false, resource:["FoodOn"], foodon:'yes', url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.identifier_1}]->(a2)'''
             query = query % (label, label,
                              pharmebinetutils.prepare_rela_great(rela_type, label, label), license)
             query = pharmebinetutils.get_query_import(path_of_directory,
@@ -190,14 +190,6 @@ def main():
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
-
-    print(
-        '#################################################################################################################################################################')
-
-    print(datetime.datetime.now())
-    print('get FO properties and generate queries')
-
-    get_FO_properties()
 
     print(
         '#################################################################################################################################################################')
