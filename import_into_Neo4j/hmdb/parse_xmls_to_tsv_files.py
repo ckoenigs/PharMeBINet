@@ -5,6 +5,10 @@ import sys
 import lxml.etree as etree
 from zipfile import ZipFile
 
+from autograd.builtins import dict_
+
+import sdf_parser
+
 sys.path.append("../..")
 import pharmebinetutils
 
@@ -281,8 +285,8 @@ set_protein_pathway = set()
 
 
 def run_trough_xml_and_parse_data_protein():
-    # set_of_protein_properties
-    set_of_protein_propertie = set()
+    # set_of_protein_propertiess
+    set_of_protein_properties = set()
 
     if not os.path.exists('database/hmdb_proteins.zip'):
         print('download')
@@ -446,14 +450,14 @@ def run_trough_xml_and_parse_data_protein():
                 # dict_protein['synonyms'].extend(dict_protein['protein_name'][1:])
                 # del dict_protein['protein_name']
 
-                set_of_protein_propertie = set_of_protein_propertie.union(dict_protein.keys())
+                set_of_protein_properties = set_of_protein_properties.union(dict_protein.keys())
                 dict_protein = prepare_tsv_dictionary(dict_protein)
                 # print(dict_protein)
                 dict_node_type_to_tsv['protein'].writerow(dict_protein)
                 node.clear()
 
     print('set of protein properties')
-    print(set_of_protein_propertie)
+    print(set_of_protein_properties)
     print('pfams tags', subtags)
 
 
@@ -503,6 +507,127 @@ def go_trough_ontology_and_write_information(descendant, parent_node_id, node_id
     else:
         dict_node_type_to_tsv['metabolite_ontology'].writerow({'metabolite_id': node_id, 'identifier': ontology_id})
 
+dict_prop_to_xml_prop={
+    'DATABASE_ID': 'identifier',
+    'EXACT_MASS': 'monisotopic_molecular_weight',
+    'FORMULA':'chemical_formula',
+    'GENERIC_NAME': 'name',
+    'HMDB_ID': 'identifier',
+    'INCHI_IDENTIFIER': 'inchi',
+    'INCHI_KEY': 'inchikey',
+    'MOLECULAR_WEIGHT':'average_molecular_weight',
+    'SMILES': 'smiles',
+    'SYNONYMS':'synonyms'
+}
+
+set_not_considered_properties=set(['DATABASE_NAME'])
+
+def is_float(string):
+    """
+    Check if string is a float
+    :param string:
+    :return:
+    """
+    try:
+        float(string)
+        return True
+    except ValueError:
+        return False
+
+def compare_and_combiened_information(xml_dict, sdf_dict):
+    """
+    'ALOGPS_LOGP'
+    'ALOGPS_LOGS'
+    'ALOGPS_SOLUBILITY'
+    'JCHEM_ACCEPTOR_COUNT'
+    'JCHEM_ATOM_COUNT'
+    'JCHEM_AVERAGE_POLARIZABILITY'
+    'JCHEM_BIOAVAILABILITY'
+    'JCHEM_DONOR_COUNT'
+    'JCHEM_FORMAL_CHARGE'
+    'JCHEM_GHOSE_FILTER'
+    'JCHEM_IUPAC'
+    'JCHEM_LOGP'
+    'JCHEM_MDDR_LIKE_RULE'
+    'JCHEM_NUMBER_OF_RINGS'
+    'JCHEM_PHYSIOLOGICAL_CHARGE'
+    'JCHEM_PKA'
+    'JCHEM_PKA_STRONGEST_ACIDIC'
+    'JCHEM_PKA_STRONGEST_BASIC'
+    'JCHEM_POLAR_SURFACE_AREA'
+    'JCHEM_REFRACTIVITY'
+    'JCHEM_ROTATABLE_BOND_COUNT'
+    'JCHEM_RULE_OF_FIVE'
+    'JCHEM_TRADITIONAL_IUPAC'
+    'JCHEM_VEBER_RULE'
+    """
+    for key, value in sdf_dict.items():
+        if key in dict_prop_to_xml_prop:
+            if type(value) is not list:
+                if not dict_prop_to_xml_prop[key] in xml_dict:
+                    if key == 'SYNONYMS':
+                        xml_dict[dict_prop_to_xml_prop[key]] = value.split('; ')
+                        continue
+
+                    print('property not in xml??????')
+                    print(key, value)
+                    print(xml_dict)
+                if value!=xml_dict[dict_prop_to_xml_prop[key]]:
+                    if key == 'SYNONYMS':
+                        split_synonyms=value.split('; ')
+                        xml_dict[dict_prop_to_xml_prop[key]] = set(xml_dict[dict_prop_to_xml_prop[key]]).union(split_synonyms)
+                        continue
+                    print('ohno different values', key)
+                    print(value)
+                    print(xml_dict[dict_prop_to_xml_prop[key]])
+        elif key in set_not_considered_properties:
+            continue
+        else:
+
+            # get the tool name
+            tool_name = ''
+            if key[0:6] == 'ALOGPS':
+                tool_name = 'ALOGPS'
+            elif key[0:5] == 'JCHEM':
+                tool_name = 'ChemAxon'
+            original_prop=key.split('_',1)[1].lower()
+            found=False
+            for predicted_dict in xml_dict['predicted_properties']:
+                if predicted_dict['source']==tool_name and predicted_dict['kind'] == original_prop:
+                    found=True
+                    if value!=predicted_dict['value']:
+                        if predicted_dict['value'] in ['Yes','No']:
+                            if value=='0' and predicted_dict['value'] =='No':
+                                continue
+                            elif value=='1' and predicted_dict['value'] =='Yes':
+                                continue
+
+                        if is_float(value) and is_float(predicted_dict['value']):
+
+                            if '.' in predicted_dict['value']:
+                                number= len(predicted_dict['value'].split('.')[1])
+                                if round(float(value), number) == float(predicted_dict['value']):
+                                    continue
+                            else:
+                                if round(float(value)) == float(predicted_dict['value']):
+                                    continue
+                        if key=='ALOGPS_SOLUBILITY':
+                            float_value=float(value.split(' ')[0])
+                            float_predicted=float(predicted_dict['value'].split(' ')[0])
+                            number=2
+                            if '.' in predicted_dict['value']:
+                                number = len(predicted_dict['value'].split(' ')[0].split('.')[1])
+                            if round(float_value, number)== float_predicted:
+                                continue
+
+
+                        print('ohno different values prediction', key)
+                        print(value)
+                        print(predicted_dict['value'])
+            if not found:
+                xml_dict['predicted_properties'].append({'source':tool_name,'kind':original_prop,'value':value })
+
+
 
 def run_trough_xml_and_parse_data_metabolite():
     # set_of_metabolite_properties
@@ -516,6 +641,8 @@ def run_trough_xml_and_parse_data_metabolite():
 
     else:
         filename = 'database/hmdb_metabolites.zip'
+
+    dict_all_nodes_from_sdf = sdf_parser.prepare_sdf_file('database/structures.zip')
 
     with ZipFile(filename) as z:
         with z.open("hmdb_metabolites.xml") as file:
@@ -673,7 +800,12 @@ def run_trough_xml_and_parse_data_metabolite():
                             sys.exit('problem with hmdb metabolite')
 
                 set_of_metabolite_properties = set_of_metabolite_properties.union(dict_node.keys())
+
+                if dict_node['identifier'] in dict_all_nodes_from_sdf:
+                    other_props= dict_all_nodes_from_sdf[dict_node['identifier']]
+                    compare_and_combiened_information(dict_node,other_props)
                 dict_node = prepare_tsv_dictionary(dict_node)
+
                 # print(dict_node)
                 dict_node_type_to_tsv['metabolite'].writerow(dict_node)
                 node.clear()
