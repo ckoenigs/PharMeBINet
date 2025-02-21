@@ -140,7 +140,7 @@ def load_all_rela_drug_response_and_finish_the_files():
     global set_of_rela_properties
 
     # {identifier:'DB00860'} {identifier:'225969'} {identifier:'226021'} {identifier:'DB00864'}
-    query = "MATCH (v:Variant)--(:Variant_ClinVar)-[r]-(:trait_set_DrugResponse_ClinVar)--(n:trait_DrugResponse_ClinVar)--(a:Chemical) RETURN v.identifier, r, type(r), n.name, a.identifier"
+    query = "MATCH (v:Variant)-[:equal_to_clinvar_variant]-()-[r]-(:trait_set_DrugResponse_ClinVar)-[:has]-(n)-[:equal_to_clinvar_drug]-(a:Chemical) RETURN v.identifier, r, type(r), n.name, a.identifier"
     results = g.run(query)
     print(query)
     counter_rela = 0

@@ -35,14 +35,25 @@ echo "Current time: $now"
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
 
-sleep 60
+sleep 400
 
 python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
-sleep 60
+sleep 240
+sleep 400
+
+python ../../restart_neo4j.py $path_neo4j > output/neo4j4.txt
+sleep 400
+sleep 400
+
+python ../../restart_neo4j.py $path_neo4j > output/neo4j4.txt
+sleep 400
+
+$path_neo4j/neo4j stop
+
+sleep 400
 
 rm -r $path_neo4j/../data/transactions/graph
 
-$path_neo4j/neo4j stop
 
 sleep 120
 
@@ -52,7 +63,7 @@ sleep 180
 
 sleep 60
 
-python ../../restart_neo4j.py $path_neo4j > output/neo4j3.txt
+python ../../restart_neo4j.py $path_neo4j > output/neo4j5.txt
 
 sleep 180
 
