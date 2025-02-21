@@ -1,6 +1,6 @@
 http://www.bio-add.org/ADReCS/
 
-Version: 2023-03-16
+Version: 2024-06-07
 
 BioDWH2 prepare transformation into GraphML file and with the GraphmML importert the data are add to Neo4j.
 

@@ -1,6 +1,6 @@
 Disease Ontology (DO) was downloaded from http://disease-ontology.org/downloads/ human disease ontology.
 
-version: 2024-01-31
+version: 2025-02-03
 
 First, the script downloads the latest version of DO.
 Then the OBO file from the Disease Ontology will be transformed into node and relationship TSV with the program of EFO/transform_obo_to_tsv_and_cypher_file.py data/HumanDO.obo do diseaseontology

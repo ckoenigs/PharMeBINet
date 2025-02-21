@@ -1,7 +1,7 @@
 #ClinVar Parser
 https://www.ncbi.nlm.nih.gov/clinvar/
 
-Version: 2024-01-19
+Version: 2025-02-06
 
 The data are parsed to TSV and are integrated into Neo4j with cypher queries.
 

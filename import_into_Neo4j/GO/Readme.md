@@ -1,6 +1,6 @@
 http://geneontology.org/
 
-Version: 2024-01-17
+Version: 2024-10-27
 
 First, the script downloads the latest version of Gene Ontology (GO).
 
