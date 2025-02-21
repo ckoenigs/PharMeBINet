@@ -1,6 +1,6 @@
 The script to merge HMDB information into the database contains two scripts:
 First script:
-First, the HMDB metabolite the xrefs are prepared and written into a tsv file and the cypher query to integrate the data.
+First, the HMDB metabolite, filter after not predicted one, the xrefs are prepared and written into a tsv file and the cypher query to integrate the data.
 
 Next, the HMDB GO terms are mapped to Biological Process (BP), Molecular Function (MF), Cellular Component (CC):
     First, the BP, CC, and MF information are loaded.
