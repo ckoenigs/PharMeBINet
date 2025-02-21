@@ -59,7 +59,18 @@ echo "Current time: $now"
 cd gwas
 echo gwas
 
-./integrate_gwas.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > script_output.txt
+./integrate_gwas.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd diseases
+echo DISEASES
+
+./integrate_DISEASES.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > script_output.txt
 
 
 cd ..
@@ -98,16 +109,16 @@ echo DDinter
 
 cd ..
 
-#now=$(date +"%F %T")
-#echo "Current time: $now"
+now=$(date +"%F %T")
+echo "Current time: $now"
 
-#cd foodb 
-#echo Foodb
+cd foodb 
+echo Foodb
 
-#./script_foodb.sh $path_neo4j $path_to_project $password > output.txt
+./script_foodb.sh $path_neo4j $path_to_project $password > output.txt
 
 
-#cd ..
+cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -177,6 +188,54 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+
+cd  foodon
+echo FoodOn
+
+./script_import_foodon.sh $path_neo4j $path_to_project $password > output.txt
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+
+cd  FIDEO
+echo FIDEO
+
+./script_import_fideo.sh $path_neo4j $path_to_project $password > output.txt
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+
+cd  CO
+echo co
+
+./script_import_co.sh $path_neo4j $path_to_project $password > output.txt
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+
+cd  chebi_ontology
+echo chebi_ontology
+
+./script_import_chebi.sh $path_neo4j $path_to_project $password > output.txt
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 cd  Uberon
 echo Uberon
 
@@ -237,7 +296,7 @@ cd ..
 #cd RNAcentral
 #echo RNACentral
 
-#./script_rna_central.sh $path_neo4j $path_to_project $password > output_script.txt
+#./script_rna_central.sh $path_neo4j $path_to_project $password $path_to_other_place_of_data > output_script.txt
 
 
 #cd ..
@@ -288,16 +347,16 @@ echo EFO
 
 cd ..
 
-now=$(date +"%F %T")
-echo "Current time: $now"
+# now=$(date +"%F %T")
+# echo "Current time: $now"
 
 
-cd  adrecs_target
-echo adrecs-target
+# cd  adrecs_target
+# echo adrecs-target
 
-./script_adrecs_target.sh $path_neo4j $path_to_project $password > output_script.txt
+# ./script_adrecs_target.sh $path_neo4j $path_to_project $password > output_script.txt
 
-cd ..
+# cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
