@@ -45,7 +45,7 @@ def generate_cypher_queries():
                     UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
                     RETURN allfields as l;''' % ("Symptom_hetionet")
         result = g.run(query)
-        query = ''' Match (a:Symptom_hetionet{identifier:line.id}) Create (b:Symptom{identifier:line.id, hetionet:"yes", resource:["Hetionet"], source:"MeSH via Hetionet", %s}) Create (b)-[:equal_to_hetionet_symptom]->(a) '''
+        query = ''' Match (a:Symptom_hetionet{identifier:line.id}) Create (b:Symptom :Phenotype{identifier:line.id, hetionet:"yes", resource:["Hetionet"], source:"MeSH via Hetionet", %s}) Create (b)-[:equal_to_hetionet_symptom]->(a) '''
         list_prop = []
         for record in result:
             prop = record.data()['l']

@@ -64,14 +64,15 @@ set_not_existing_dbSNP_ids = set()
 set_dbSNP_already_from_api = set()
 
 
-def load_already_extracted_infos_from_file():
+def load_already_extracted_infos_from_file(path_start):
     """
     To avoid to many questions to the api a file with the information is generated and if generated the data are
-    add into a dictionary
+    add into a set, and the existing rs ids are writen into the tsv file.
     :return:
     """
     global file_already_downloaded, csv_file_not_existing_ids
-    file_name = '/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/dbSNP/api_infos.json'
+    file_name = path_start+'dbSNP/api_infos.json'
+    set_node_ids =set()
     try:
         file_already_downloaded = open(file_name, 'r')
         counter_line = 0
@@ -81,6 +82,11 @@ def load_already_extracted_infos_from_file():
             node_id = node['refsnp_id']
             # print(node_id)
             set_dbSNP_already_from_api.add(node_id)
+
+            if node_id in set_node_ids:
+                print('double api download', node_id)
+            if node_id in dict_rs_id_to_clinvar_ids:
+                prepare_a_single_node.prepare_json_information_to_tsv(node)
             # dict_nodes[node_id] = node
         file_already_downloaded.close()
         file_already_downloaded = open(file_name, 'a')
@@ -188,9 +194,6 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
     file. Else it ask the api for information about rs ids of group size 10.
     :return:
     """
-    # prepare cypher query and csv file for snp
-    prepare_a_single_node.path_to_data = path_of_directory_dbSNP
-    prepare_a_single_node.prepare_snp_file()
 
     file_name = 'output/rs_clinvar_rela.tsv'
     file = open(file_name, 'w', encoding='utf-8')
@@ -257,22 +260,26 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
     print('all not existing rs ids:', counter_not_existing)
 
 
-def go_through_downloaded_json_and_add_them_to_tsv():
-    """
-    open file to  were already api information are loaded from dbSNP. Then prepare the json information and write into
-    TSV file.
-    :return:
-    """
-    file_name = f'{path_to_data}dbSNP/api_infos.json'
-    file_already_downloaded = open(file_name, 'r')
-    counter_line = 0
-    for line in file_already_downloaded.readlines():
-        counter_line += 1
-        node = ujson.loads(line)
-        node_id = node['refsnp_id']
-        if node_id in set_dbSnp_in_PharMeBiNEt_and_already_downloaded:
-            prepare_a_single_node.prepare_json_information_to_tsv(node)
-    file_already_downloaded.close()
+# def go_through_downloaded_json_and_add_them_to_tsv():
+#     """
+#     open file to  were already api information are loaded from dbSNP. Then prepare the json information and write into
+#     TSV file.
+#     :return:
+#     """
+#     file_name = f'{path_to_data}dbSNP/api_infos.json'
+#     file_already_downloaded = open(file_name, 'r')
+#     counter_line = 0
+#     set_node_ids=set()
+#     for line in file_already_downloaded.readlines():
+#         counter_line += 1
+#         node = ujson.loads(line)
+#         node_id = node['refsnp_id']
+#         if node_id in set_node_ids:
+#             print('double api download', node_id)
+#         set_node_ids.add(node_id)
+#         if node_id in set_dbSnp_in_PharMeBiNEt_and_already_downloaded:
+#             prepare_a_single_node.prepare_json_information_to_tsv(node)
+#     file_already_downloaded.close()
 
 
 def main():
@@ -304,7 +311,13 @@ def main():
     print(datetime.datetime.now())
     print('Load dbSNP node info from file if possible else generate a new file')
 
-    load_already_extracted_infos_from_file()
+
+    # prepare cypher query and csv file for snp
+    prepare_a_single_node.path_to_data = path_of_directory_dbSNP
+    prepare_a_single_node.prepare_snp_file()
+
+
+    load_already_extracted_infos_from_file(path_to_data)
 
     print(
         '###########################################################################################################################')
@@ -320,7 +333,7 @@ def main():
     print(datetime.datetime.now())
     print('Write already found data into tsv file')
 
-    go_through_downloaded_json_and_add_them_to_tsv()
+    # go_through_downloaded_json_and_add_them_to_tsv()
 
     driver.close()
 

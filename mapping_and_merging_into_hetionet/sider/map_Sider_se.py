@@ -67,7 +67,7 @@ def generate_cypher_file():
             continue
             query_new += 'synonyms:[line.' + head + '], '
         query_new += head + ':line.' + head + ', '
-    query_new = ' Match (b:se_Sider{umlsIDmeddra:line.identifier}) Create (n:SideEffect{' + query_new + ' sider:"yes", url:"http://identifiers.org/umls/"+line.identifier, resource:["SIDER"],  source: "UMLS via SIDER 4.1", license:"CC BY-NC-SA 4.0"}) Create (n)-[:equal_to_SE]->(b)'
+    query_new = ' Match (b:se_Sider{umlsIDmeddra:line.identifier}) Create (n:SideEffect :Phenotype{' + query_new + ' sider:"yes", url:"http://identifiers.org/umls/"+line.identifier, resource:["SIDER"],  source: "UMLS via SIDER 4.1", license:"CC BY-NC-SA 4.0"}) Create (n)-[:equal_to_SE]->(b)'
     query_new = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/sider/output/se_new.tsv',
                                                   query_new)

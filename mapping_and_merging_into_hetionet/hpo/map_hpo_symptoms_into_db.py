@@ -109,7 +109,7 @@ def generate_cypher_queries_and_tsv_files():
     license = 'This service/product uses the Human Phenotype Ontology (January 2024). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.'
 
     query_start_match = '''Match (s:Symptom{identifier:line.pharmebinet_id }) , (n:HPO_symptom{id:line.hpo_id}) Set s.hpo='yes', s.umls_cuis=split(line.umls_cuis,"|"), s.highest_level=line.level,  s.resource=split(line.resource,"|") , s.hpo_release='%s', s.url_HPO="https://hpo.jax.org/app/browse/term/"+line.hpo_id, n.mesh_ids=split(line.mesh_ids,'|'), s.xrefs=s.xrefs + line.hpo_id, '''
-    query_start_create = '''Match (n:HPO_symptom{id:line.hpo_id}) Create (s:Symptom{identifier:line.pharmebinet_id, umls_cuis:split(line.umls_cuis,"|"), highest_level:line.level ,source:'HPO', resource:['HPO'], source:'HPO', hpo:'yes', hpo_release:'%s', license:'%s', url:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:split(line.xrefs,"|"), '''
+    query_start_create = '''Match (n:HPO_symptom{id:line.hpo_id}) Create (s:Symptom :Phenotype{identifier:line.pharmebinet_id, umls_cuis:split(line.umls_cuis,"|"), highest_level:line.level ,source:'HPO', resource:['HPO'], source:'HPO', hpo:'yes', hpo_release:'%s', license:'%s', url:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:split(line.xrefs,"|"), '''
 
     for record in results:
         property = record.data()['l']

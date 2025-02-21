@@ -666,7 +666,7 @@ def integrate_aeolus_into_pharmebinet():
     csv_new.writerow(['aSE', 'SE', 'cuis', 'meddras'])
 
     # query for the update nodes and relationship
-    query_new = query_start + ' Set a.cuis=split(line.cuis,"|") Merge (n:SideEffect{identifier:line.SE}) On Create Set  n.license="CC0 1.0", n.name=a.name , n.source="UMLS via AEOLUS", n.url="http://identifiers.org/umls/"+line.SE , n.resource=["AEOLUS"],  n.aeolus="yes", n.xrefs=split(line.meddras,"|")  Create (n)-[:equal_to_Aeolus_SE]->(a)'
+    query_new = query_start + ' Set a.cuis=split(line.cuis,"|") Merge (n:SideEffect {identifier:line.SE}) On Create Set n:Phenotype, n.license="CC0 1.0", n.name=a.name , n.source="UMLS via AEOLUS", n.url="http://identifiers.org/umls/"+line.SE , n.resource=["AEOLUS"],  n.aeolus="yes", n.xrefs=split(line.meddras,"|")  Create (n)-[:equal_to_Aeolus_SE]->(a)'
     query_new = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/aeolus/output/se_new.tsv',
                                                   query_new)

@@ -70,7 +70,7 @@ def prepare_query(file_name, file_name_new, db_label, adrecs_label, db_id, adrec
                                               f'mapping_and_merging_into_hetionet/{director}/{file_name}', query)
     cypher_file.write(query)
 
-    query = f' Match (g:{adrecs_label}{{{adrecs_id_internal}:line.{adrecs_id}}})  Merge (n:SideEffect{{identifier:line.umls_id}}) On Create Set  n.name=g.ADR_TERM, n.source="UMLS via ADReCS-Target", n.adrecs_target="yes", n.resource=["ADReCS-Target"], n.license="", n.url="" Create (n)<-[:equal_to_adrecs_target_adr]-(g)'
+    query = f' Match (g:{adrecs_label}{{{adrecs_id_internal}:line.{adrecs_id}}})  Merge (n:SideEffect :Phenotype{{identifier:line.umls_id}}) On Create Set  n.name=g.ADR_TERM, n.source="UMLS via ADReCS-Target", n.adrecs_target="yes", n.resource=["ADReCS-Target"], n.license="", n.url="" Create (n)<-[:equal_to_adrecs_target_adr]-(g)'
 
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/{director}/{file_name_new}', query)

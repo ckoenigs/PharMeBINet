@@ -78,12 +78,6 @@ set_disease_symptom = set()
 
 # generate cypher file
 cypher = open('output/cypher.cypher', 'w', encoding='utf-8')
-query = 'Match (n:Disease) Set n:Phenotype;\n'
-cypher.write(query)
-query = 'Match (n:Symptom) Set n:Phenotype;\n'
-cypher.write(query)
-query = 'Match (n:SideEffect) Set n:Phenotype;\n'
-cypher.write(query)
 
 
 def add_element_to_dictionary(property, identifier, dictionary):

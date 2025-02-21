@@ -77,7 +77,7 @@ def prepare_query(file_name, file_name_new_mapped, file_name_new, db_label, adre
                                               f'mapping_and_merging_into_hetionet/{director}/{file_name}', query)
     cypher_file.write(query)
 
-    query_start = f' Create (n:SideEffect{{identifier:line.umls_id, name:line.name, synonyms:split(line.synonyms,"|"), adrecs:"yes", source:"UMLS via ADReCS", resource:["ADReCS"], license:"CC BY-NC-SA 4.0", url:"http://bioinf.xmu.edu.cn/ADReCS/adrSummary.jsp?adr_id="+line.id, xrefs:split(line.xrefs,"|")}})'
+    query_start = f' Create (n:SideEffect :Phenotype{{identifier:line.umls_id, name:line.name, synonyms:split(line.synonyms,"|"), adrecs:"yes", source:"UMLS via ADReCS", resource:["ADReCS"], license:"CC BY-NC-SA 4.0", url:"http://bioinf.xmu.edu.cn/ADReCS/adrSummary.jsp?adr_id="+line.id, xrefs:split(line.xrefs,"|")}})'
     query_start = pharmebinetutils.get_query_import(path_of_directory,
                                                     f'mapping_and_merging_into_hetionet/{director}/{file_name_new}',
                                                     query_start)

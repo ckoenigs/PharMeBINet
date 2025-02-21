@@ -143,7 +143,7 @@ def prepare_rela_small(rela, label1, label2):
 
 def prepare_rela_great(rela, label1, label2):
     """
-    prepare rela type with rigth abbreviation
+    prepare rela type with right abbreviation
     :param rela:
     :param label1:
     :param label2:
