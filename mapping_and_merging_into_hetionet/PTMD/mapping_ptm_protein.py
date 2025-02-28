@@ -76,7 +76,7 @@ def get_PTMD_information(edge_type):
                  f'Create (d)-[:HAS_PhPTM{{resource:["PTMD"],ptmd:"yes", url:"https://ptmd.biocuckoo.cn/index.php",  source:"PTMD", license:"ONLY freely available for academic research"}}]->(p)')
     elif edge_type == 'PTMD_INVOLVES':
         query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Protein{{identifier:line.protein_id}}) '
-             f'Create (p)-[:INVOLVES{{resource:["PTMD"],ptmd:"yes", url:"https://ptmd.biocuckoo.cn/index.php",  source:"PTMD", license:"ONLY freely available for academic research"}}]->(d)')
+             f'Create (p)-[:INVOLVES_PTMiP{{resource:["PTMD"],ptmd:"yes", url:"https://ptmd.biocuckoo.cn/index.php",  source:"PTMD", license:"ONLY freely available for academic research"}}]->(d)')
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_not_mapped_protein,
                                               query)

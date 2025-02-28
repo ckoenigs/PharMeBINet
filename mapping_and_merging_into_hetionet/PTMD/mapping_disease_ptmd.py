@@ -118,7 +118,11 @@ def generate_files(path_of_directory):
 
 # dictionary_manual_mapping
 dict_manual_mapping={
-    "mitochondrial complex iv deficiency":'MONDO:0033885'
+    "mitochondrial complex iv deficiency":'MONDO:0033885',
+    'Biliary tract tumor':'MONDO:0005304',
+    'Autosomal dominant nonsyndromic deafness':'MONDO:0019587',
+    'Ovarian cancer/carcinoma':'MONDO:0005140',
+    'Sensory ataxic neuropathy dysarthria and ophthalmoparesis':'MONDO:0011835'
 }
 
 set_not_map_with_disease=set(["lactate dehydrogenase b deficiency","pyrin-associated autoinflammatory disease", "keratosis follicularis"])
@@ -251,85 +255,85 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
         if mapped:
             continue
 
-        if name in dict_phenotype['synonyms']:
-            mapped = True
-            for identifier in dict_phenotype['synonyms'][name]:
-                csv_mapping.writerow(
-                    [neo4j_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "PTMD"),
-                     'synonym'])
+        # if name in dict_phenotype['synonyms']:
+        #     mapped = True
+        #     for identifier in dict_phenotype['synonyms'][name]:
+        #         csv_mapping.writerow(
+        #             [neo4j_id, identifier,
+        #              pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "PTMD"),
+        #              'synonym'])
+        #
+        # if mapped:
+        #     continue
 
-        if mapped:
-            continue
-
-        if len(umls_cui_list) > 0:
-            cur = con.cursor()
-            query = ('Select Distinct CODE From MRCONSO Where CUI in  ("%s") and SAB="NCI" ;')
-            query = query % ('","'.join(umls_cui_list))
-            rows_counter = cur.execute(query)
-
-            if rows_counter > 0:
-                # add found cuis
-                for (nci_id,) in cur:
-                    if nci_id in dict_disease['ncit']:
-                        mapped = True
-                        for identifier in dict_disease['ncit'][nci_id]:
-                            csv_mapping.writerow(
-                                [neo4j_id, identifier,
-                                 pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                           "PTMD"),
-                                 'umls_nci'])
-
-        if mapped:
-            continue
-        if len(umls_cui_list) > 0:
-            cur = con.cursor()
-            query = ('Select Distinct STR From MRCONSO Where CUI in  ("%s");')
-            query = query % ('","'.join(umls_cui_list))
-            rows_counter = cur.execute(query)
-
-            if rows_counter > 0:
-                # add found cuis
-                for (name_umls,) in cur:
-                    name_umls = name_umls.lower()
-                    set_umls_names.add(name_umls)
-                    if name_umls in dict_disease['name']:
-                        mapped = True
-                        for identifier in dict_disease['name'][name_umls]:
-                            csv_mapping.writerow(
-                                [neo4j_id, identifier,
-                                 pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                           "PTMD"),
-                                 'umls_name'])
-
-        if mapped:
-            continue
-
-
-        if len(set_umls_names) > 0:
-            for name_umls in set_umls_names:
-                if name_umls in dict_symptom['name']:
-                    mapped = True
-                    for identifier in dict_symptom['name'][name_umls]:
-                        csv_mapping.writerow(
-                            [neo4j_id, identifier,
-                             pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                       "PTMD"),
-                             'umls_name'])
-
-        if mapped:
-            continue
-
-        if len(set_umls_names) > 0:
-            for name_umls in set_umls_names:
-                if name_umls in dict_phenotype['name']:
-                    mapped = True
-                    for identifier in dict_phenotype['name'][name_umls]:
-                        csv_mapping.writerow(
-                            [neo4j_id, identifier,
-                             pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                       "PTMD"),
-                             'umls_name'])
+        # if len(umls_cui_list) > 0:
+        #     cur = con.cursor()
+        #     query = ('Select Distinct CODE From MRCONSO Where CUI in  ("%s") and SAB="NCI" ;')
+        #     query = query % ('","'.join(umls_cui_list))
+        #     rows_counter = cur.execute(query)
+        #
+        #     if rows_counter > 0:
+        #         # add found cuis
+        #         for (nci_id,) in cur:
+        #             if nci_id in dict_disease['ncit']:
+        #                 mapped = True
+        #                 for identifier in dict_disease['ncit'][nci_id]:
+        #                     csv_mapping.writerow(
+        #                         [neo4j_id, identifier,
+        #                          pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
+        #                                                                    "PTMD"),
+        #                          'umls_nci'])
+        #
+        # if mapped:
+        #     continue
+        # if len(umls_cui_list) > 0:
+        #     cur = con.cursor()
+        #     query = ('Select Distinct STR From MRCONSO Where CUI in  ("%s");')
+        #     query = query % ('","'.join(umls_cui_list))
+        #     rows_counter = cur.execute(query)
+        #
+        #     if rows_counter > 0:
+        #         # add found cuis
+        #         for (name_umls,) in cur:
+        #             name_umls = name_umls.lower()
+        #             set_umls_names.add(name_umls)
+        #             if name_umls in dict_disease['name']:
+        #                 mapped = True
+        #                 for identifier in dict_disease['name'][name_umls]:
+        #                     csv_mapping.writerow(
+        #                         [neo4j_id, identifier,
+        #                          pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
+        #                                                                    "PTMD"),
+        #                          'umls_name'])
+        #
+        # if mapped:
+        #     continue
+        #
+        #
+        # if len(set_umls_names) > 0:
+        #     for name_umls in set_umls_names:
+        #         if name_umls in dict_symptom['name']:
+        #             mapped = True
+        #             for identifier in dict_symptom['name'][name_umls]:
+        #                 csv_mapping.writerow(
+        #                     [neo4j_id, identifier,
+        #                      pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
+        #                                                                "PTMD"),
+        #                      'umls_name'])
+        #
+        # if mapped:
+        #     continue
+        #
+        # if len(set_umls_names) > 0:
+        #     for name_umls in set_umls_names:
+        #         if name_umls in dict_phenotype['name']:
+        #             mapped = True
+        #             for identifier in dict_phenotype['name'][name_umls]:
+        #                 csv_mapping.writerow(
+        #                     [neo4j_id, identifier,
+        #                      pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
+        #                                                                "PTMD"),
+        #                      'umls_name'])
 
         if not mapped:
             counter_not_mapped += 1
