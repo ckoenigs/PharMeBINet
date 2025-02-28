@@ -17,6 +17,7 @@ if [ ! -d output ]; then
   mkdir compound_variant
   mkdir data
   mkdir protein
+  mkdir protein/uniprot_gene
   mkdir gene_variant
   mkdir metabolite
   mkdir pathway

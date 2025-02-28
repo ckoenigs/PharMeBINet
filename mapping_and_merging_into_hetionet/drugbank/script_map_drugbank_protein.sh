@@ -51,6 +51,12 @@ echo 'integrate Drugbank compound-pc '
 
 python3 integrate_compound_pc_rela.py $path_to_project "${license}" > compound_pc/output_integration_file_generation_rela.txt
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'integrate Drugbank complex_protein '
+
+python3 add_complex_protein_edges.py $path_to_project "${license}" > compound_pc/output_integration_file_generation_rela.txt
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
