@@ -3,6 +3,7 @@
 import datetime
 import sys, csv
 
+
 sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
@@ -55,6 +56,38 @@ def load_all_chemicals_and_generate_dictionary():
             for synonym in synonyms:
                 add_name_to_dict(synonym, chemical_id, dict_name_to_chemical_id)
 
+
+# set of complex nodes
+set_complex_nodes = set()
+
+
+def get_complex_nodes():
+    """
+    Extract all complex nodes of drugbank
+    :return:
+    """
+
+    query = "Match (n:Protein_DrugBank) Where (n)-[:has_component_POhcPO]->() and n.organism='Humans' Return n.identifier, n.name"
+    for identifier, name, in g.run(query):
+        set_complex_nodes.add(identifier)
+
+def write_complex_into_file():
+    """
+    generate complex tsv file and write only complex into tsv where all components are mapped
+    :return:
+    """
+    with open('protein/complex.tsv', 'w', encoding='utf8') as f:
+        csv_writer = csv.writer(f, delimiter='\t')
+        csv_writer.writerow(['identifier', 'name'])
+        query = "Match (n:Protein_DrugBank)-[:has_component_POhcPO]-(m:Protein_DrugBank) Where n.organism='Humans' Return n.identifier, n.name, collect(m.identifier)"
+
+        for identifier,name, component_list, in g.run(query):
+            has_all_component_mapped=True
+            for component_id in component_list:
+                if not component_id in set_of_mapped_proteins:
+                    has_all_component_mapped=False
+            if has_all_component_mapped:
+                csv_writer.writerow([identifier, name])
 
 # dictionary pharmebinet protein with uniprot identifier as key and value is the whole node as dictionary
 dict_pharmebinet_protein = {}
@@ -187,6 +220,24 @@ generate_csv_transporter = open('protein/proteins_transporter.tsv', 'w')
 writer_transporter = csv.writer(generate_csv_transporter, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_transporter.writerow(['id'])
 
+
+# generation of the tsv file for the different labels
+generate_csv_carrier_mc = open('protein/mc_carrier.tsv', 'w')
+writer_carrier_mc = csv.writer(generate_csv_carrier_mc, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+writer_carrier_mc.writerow(['id'])
+
+generate_csv_enzyme_mc = open('protein/mc_enzyme.tsv', 'w')
+writer_enzyme_mc = csv.writer(generate_csv_enzyme_mc, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+writer_enzyme_mc.writerow(['id'])
+
+generate_csv_target_mc = open('protein/mc_target.tsv', 'w')
+writer_target_mc = csv.writer(generate_csv_target_mc, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+writer_target_mc.writerow(['id'])
+
+generate_csv_transporter_mc = open('protein/mc_transporter.tsv', 'w')
+writer_transporter_mc = csv.writer(generate_csv_transporter_mc, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+writer_transporter_mc.writerow(['id'])
+
 # dictionary of drugbank labels to pharmebinet labels:
 dict_db_labels_to_tsv_label_file = {
     'Enzyme_DrugBank': writer_enzyme,
@@ -194,11 +245,16 @@ dict_db_labels_to_tsv_label_file = {
     'Carrier_DrugBank': writer_carrier,
     'Target_DrugBank': writer_target}
 
+dict_db_labels_to_tsv_label_file_mc = {
+    'Enzyme_DrugBank': writer_enzyme_mc,
+    'Transporter_DrugBank': writer_transporter_mc,
+    'Carrier_DrugBank': writer_carrier_mc,
+    'Target_DrugBank': writer_target_mc}
+
 # protein csv which should be updated
 generate_csv = open('protein/proteins.tsv', 'w')
 writer = csv.writer(generate_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer.writerow(['id', 'uniport', 'resource', 'sequences'])
-
 
 
 def integrate_infos_into_tsv(part_dict, protein_pharmebinet, list_input_protein):
@@ -210,7 +266,7 @@ def integrate_infos_into_tsv(part_dict, protein_pharmebinet, list_input_protein)
     :param list_input_protein:
     :return:
     """
-    list_input_protein.append(pharmebinetutils.resource_add_and_prepare(protein_pharmebinet['resource'],'DrugBank'))
+    list_input_protein.append(pharmebinetutils.resource_add_and_prepare(protein_pharmebinet['resource'], 'DrugBank'))
 
     as_seqs = part_dict['amino_acid_sequence'] if 'amino_acid_sequence' in part_dict else ''
 
@@ -226,8 +282,11 @@ def integrate_infos_into_tsv(part_dict, protein_pharmebinet, list_input_protein)
 
         if as_seq.startswith('>'):
             as_seq_part = as_seq.split(' ')[1]
-        else:
+        elif ':' in as_seq:
             as_seq_part = as_seq.split(':')[1]
+        else:
+            as_seq_part = as_seq
+
         if as_seq_part == '':
             print('empyt as')
             print(as_seq)
@@ -237,38 +296,11 @@ def integrate_infos_into_tsv(part_dict, protein_pharmebinet, list_input_protein)
     list_as_sequnces = '|'.join(list_as_sequnces)
     list_input_protein.append(list_as_sequnces)
 
-    # check on the pfams of both
-    # to many were not correct and around 230 have to be checked
-    # pfam_db= part_dict['pfams'] if 'pfams' in part_dict else []
-    # pfam_db= [ x.replace('::',':') for x in pfam_db]
-    # pfam_protein= protein_pharmebinet['pfam'] if 'pfam' in protein_pharmebinet else []
-    # pfam_protein= set(pfam_protein)
-    # #this were manual check pfams which were not correct
-    # if identifier not in ['Q6NUM9','P07307','O94760','P63151','O95865']:
-    #     length_before_union=len(pfam_protein)
-    #     pfam_protein=pfam_protein.union(pfam_db)
-    #     if len(pfam_protein)> length_before_union:
-    #         print(identifier)
-    #         print(pfam_db)
-    #         print('not the same pfams')
-    #
-    # pfam_protein='|'.join(pfam_protein)
-    # list_input_protein.append(pfam_protein)
-
-    # check on gene names are the same
-    # pharmebinet_gene_names=protein_pharmebinet['gene_name'] if 'gene_name' in protein_pharmebinet else []
-    # db_gene_name=part_dict['gene_name'] if 'gene_name' in part_dict else ''
-    # if not db_gene_name in pharmebinet_gene_names:
-    #     print(part_dict['identifier'])
-    #     print(pharmebinet_gene_names)
-    #     print(db_gene_name)
-    #     print('ohje gene name')
-
     writer.writerow(list_input_protein)
 
 
 def not_mapped_proteins(node, identifier, name, synonyms, labels, counter_not_a_protein, writer_not_mapped,
-                        counter_human_not_found):
+                        counter_human_not_found, set_of_mapped_proteins):
     """
     check if the not mapped "proteins are might be chemical target and if not write into not mapped file
     :param node: dictionary
@@ -301,8 +333,12 @@ def not_mapped_proteins(node, identifier, name, synonyms, labels, counter_not_a_
     counter_not_a_protein += 1
     if not found_chemical_map and not found_protein:
         writer_not_mapped.writerow(dict(node))
+    else:
+        set_of_mapped_proteins.add(identifier)
     return counter_not_a_protein
 
+# set of all mapped protein identifier
+set_of_mapped_proteins=set()
 
 def load_proteins_from_drugbank_into_dict():
     """
@@ -343,6 +379,32 @@ def load_proteins_from_drugbank_into_dict():
     query = ''' MATCH (g:Protein{identifier:line.id}) Set g:Transporter '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/protein/proteins_transporter.tsv',
+                                              query)
+    cypherfile.write(query)
+    query = f''' MATCH (n:Protein_DrugBank{{identifier:line.identifier}}) Create (p:MolecularComplex{{identifier:line.identifier, name:line.name, source:'DurgBank', resource: ['DrugBank'], drugbank:'yes', license:'{license}', url:'https://go.drugbank.com/bio_entities/'+line.identifier}}) Create (p)-[:equal_to_DB_protein]->(n) '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/protein/complex.tsv',
+                                              query)
+    cypherfile.write(query)
+    # all queries which are used to integrate Protein with the extra labels into pharmebinet
+    query = ''' MATCH (g:MolecularComplex{identifier:line.id}) Set g:Carrier '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/protein/mc_carrier.tsv',
+                                              query)
+    cypherfile.write(query)
+    query = ''' MATCH (g:MolecularComplex{identifier:line.id}) Set g:Enzyme '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/protein/mc_enzyme.tsv',
+                                              query)
+    cypherfile.write(query)
+    query = ''' MATCH (g:MolecularComplex{identifier:line.id}) Set g:Target '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/protein/mc_target.tsv',
+                                              query)
+    cypherfile.write(query)
+    query = ''' MATCH (g:MolecularComplex{identifier:line.id}) Set g:Transporter '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/protein/mc_transporter.tsv',
                                               query)
     cypherfile.write(query)
     cypherfile.close()
@@ -388,6 +450,14 @@ def load_proteins_from_drugbank_into_dict():
         name = node['name'] if 'name' in node else ''
         synonyms = node['synonyms'] if 'synonyms' in node else []
 
+        labels.remove('Protein_DrugBank')
+        if identifier not in set_complex_nodes:
+            for label in labels:
+                dict_db_labels_to_tsv_label_file[label].writerow([identifier])
+        else:
+            for label in labels:
+                dict_db_labels_to_tsv_label_file_mc[label].writerow([identifier])
+
         if not identifier in dict_be_identifier_sort_to_protein_or_not or dict_be_identifier_sort_to_protein_or_not[
             identifier]:
 
@@ -396,13 +466,11 @@ def load_proteins_from_drugbank_into_dict():
             part_dict = dict(node)
             part_dict['labels'] = labels
 
-            labels.remove('Protein_DrugBank')
-            for label in labels:
-                dict_db_labels_to_tsv_label_file[label].writerow([identifier])
             dict_proteins[identifier] = labels
 
             if identifier in dict_pharmebinet_protein:
                 counter_mapped += 1
+                set_of_mapped_proteins.add(identifier)
                 if len(dict_pharmebinet_protein[identifier]) == 1:
                     protein_pharmebinet = dict_pharmebinet_protein[identifier][0]
                     list_input_protein.append(protein_pharmebinet['identifier'])
@@ -433,15 +501,19 @@ def load_proteins_from_drugbank_into_dict():
                 # print(node)
 
             else:
+                if identifier in set_complex_nodes:
+                    continue
                 counter_not_a_protein = not_mapped_proteins(node, identifier, name, synonyms, labels,
                                                             counter_not_a_protein, writer_not_mapped,
-                                                            counter_human_not_found)
+                                                            counter_human_not_found, set_of_mapped_proteins)
 
 
         else:
+            if identifier in set_complex_nodes:
+                continue
             counter_not_a_protein = not_mapped_proteins(node, identifier, name, synonyms, labels, counter_not_a_protein,
                                                         writer_not_mapped,
-                                                        counter_human_not_found)
+                                                        counter_human_not_found, set_of_mapped_proteins)
 
     # print(dict_proteins)
     print('number of human proteins:' + str(counter_mapped))
@@ -454,33 +526,6 @@ def load_proteins_from_drugbank_into_dict():
 # file for all rela which should be integrated
 cypher_rela = open('protein/cypher_protein_rela.cypher', 'w')
 
-
-# def generate_tsv_componet_rela():
-#     """
-#     Generate tsv with component relationships
-#     :return:
-#     """
-#     query = 'MATCH p=(a:Protein_DrugBank)-[r:has_component_PIhcPI]->(b:Protein_DrugBank) RETURN a.identifier, b.identifier'
-#     result = g.run(query)
-#
-#     query = ''' MATCH (g:Protein{identifier:line.id1}),(b:Protein{identifier:line.id2}) Create (g)-[:HAS_COMPONENT_PRhcPR]->(b)'''
-#     query = pharmebinetutils.get_query_import(path_of_directory,
-#                                               f'mapping_and_merging_into_hetionet/drugbank/protein/proteins_rela_component.tsv',
-#                                               query)
-#     cypher_rela.write(query)
-#
-#     csv_file = open('protein/proteins_rela_component.tsv', 'w')
-#     writer_csv = csv.writer(csv_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-#     writer_csv.writerow(['id1', 'id2'])
-#
-#     counter_component_rela = 0
-#     for record in result:
-#         [identifier1, identifier2] = record.values()
-#         print(identifier1)
-#         counter_component_rela += 1
-#         writer_csv.writerow([identifier1, identifier2])
-#
-#     print('number of component rela:' + str(counter_component_rela))
 
 
 def main():
@@ -503,6 +548,14 @@ def main():
     print('load all chemicals in a dictionary name to chemical id')
 
     load_all_chemicals_and_generate_dictionary()
+
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.now())
+    print('load all complex nodes')
+
+    get_complex_nodes()
 
     print(
         '#################################################################################################################################################################')
@@ -535,9 +588,9 @@ def main():
 
     print(datetime.datetime.now())
 
-    print('load all DrugBank has component rela and write them in tsv and generate cypher file for integration')
+    print('write complex into file')
 
-    # generate_tsv_componet_rela()
+    write_complex_into_file()
 
     driver.close()
 

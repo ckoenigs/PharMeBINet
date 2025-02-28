@@ -67,13 +67,14 @@ In the last step, the similarity relationships are integrated into the database 
                
 The second script focused on mapping and merging the protein/targets into the database.
 
-The mapping of protein/target to Protein and chemical:
+The mapping of protein/target to protein and chemical or add as molecular complex:
     First, load all chemicals into the program.
+    Next, all drugbank proteins which have components for possible complex nodes.
     I did generate a manually checked list of all targets that do not have a Uniprot ID if they are a protein or not. This information is loaded into the program.
     Next, load all Proteins.
-    Then generate the cypher files to integrate the mapping between DrugBank protein and protein and DrugBank target and chemical. Also, cypher queries are generated to give the mapped node additional labels like Target, Enzyme, Carrier, and Transporter. Moreover, the TSV file for the different mappings is generated.
-    Next, the DrugBank proteins/targets are mapped to proteins with the UniProt identifier. If it is not mapped and in the human, it is mapped to chemicals by name. After that, it is tried to be mapped to protein by name. All, mapped pairs are written into the TSV file.
-    After this, I tried to integrate the component relationship of DrugBank but because the protein which has multiple components has no UniProt identifier information this information is not integrated.
+    Then generate the cypher files to integrate the mapping between DrugBank protein and protein and DrugBank target and chemical. A query to generate molecular complex nodes. Also, cypher queries are generated to give the mapped node additional labels like Target, Enzyme, Carrier, and Transporter. Moreover, the TSV file for the different mappings is generated.
+    Next, the DrugBank proteins/targets are mapped to proteins with the UniProt identifier. If it is not mapped and in the human, it is mapped to chemicals by name. After that, it is tried to be mapped to protein by name. All, mapped pairs are written into the TSV file. Excluded are all nodes which are possible complex nodes.
+    Last, all possible complex nodes and their connected components are check that the components are all mapped. Then the complex node is writtten into the TSV file.
 
 Next, is DrugBank PC mapping to PC:
     First, load all PC information into dictionaries.
@@ -87,8 +88,8 @@ Next, is DrugBank PC mapping to PC:
                
 Integrate the mapping of protein, PC, and target into the database with cypher-shell.
 
-Prepare the relationships between 'compound-protein/target':
-    First, take all  compound-protein/target (chemical) pairs where the relationship is in the human and have references and add them to a dictionary
+Prepare the relationships between 'compound-protein/target/molecuarl complex':
+    First, take all  compound-protein/target (chemical)/ molecular complex pairs where the relationship is in the human and have references and add them to a dictionary
     Then, go through all relationship pairs of the different relationship types and generate TSV files and cypher queries to integrate the information into the database. In the following, the pair information is written into the TSV file. If multiple edges with the same relationship type exist the information is combined and written into the TSV file.
 
 Prepare the DrugBank reaction between chemicals, and metabolites with the use of proteins:
@@ -102,5 +103,8 @@ Merge the pc-compound edge into PharMeBINet:
     First, generate the TSV file and the additional cypher query.
     Then, load all pairs and write them into the TSV file.
 
+Last add the protein-molecular complex edge into PharMeBINet:
+    First, generate the TSV file and the additional cypher query.
+    Then, load all pairs and write them into the TSV file.
 
 Integrate the protein/target-compound relationship with Neo4j cypher-shell.

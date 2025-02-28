@@ -42,8 +42,9 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
     :param from_chemical: boolean
     :return:
     '''
-    query = '''Match (p)--(:Protein_DrugBank)%s(:Compound_DrugBank)--(c:Compound) Where 'Protein' in labels(p) or 'Chemical' in labels(p) and r.organism in ["Humans","Humans and other mammals"] Return labels(p), p.identifier, r, type(r), c.identifier '''
+    query = '''Match (p)--(:Protein_DrugBank)%s(:Compound_DrugBank)--(c:Compound) Where ('Protein' in labels(p) or 'Chemical' in labels(p) or 'MolecularComplex' in labels(p))  and r.organism in ["Humans","Humans and other mammals"] Return labels(p), p.identifier, r, type(r), c.identifier '''
     query = query % (direction)
+    print(query)
     results = g.run(query)
 
     counter = 0
@@ -71,8 +72,10 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
 
         if 'Protein' in labels:
             label = 'Protein'
-        else:
+        elif 'Chemical' in labels:
             label = 'Chemical'
+        else:
+            label = 'MolecularComplex'
         short_cut = pharmebinetutils.dictionary_label_to_abbreviation[label]
         rela_name = rela_type_splitted[0].upper()
         abbreviaction_rela = ''.join([x[0].lower() for x in rela_name.split('_')])
