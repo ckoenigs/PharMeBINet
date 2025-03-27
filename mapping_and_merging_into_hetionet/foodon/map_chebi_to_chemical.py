@@ -49,12 +49,16 @@ def integrate_information_into_dict(dict_node_id_to_resource):
                 synonym = synonym.lower()
                 dict_synonyms_to_id[synonym].add(identifier)
 
-        if xrefs:
-            for xref in xrefs:
-                if xref.startswith('ChEBI'):
-                    dict_chebi_to_id[xref.split(':')[1]].add(identifier)
-                    if len(xref.split(':'))>2:
-                        print('ohno', xref)
+        # if xrefs:
+        #     for xref in xrefs:
+        #         if xref.startswith('ChEBI'):
+        #             dict_chebi_to_id[xref.split(':')[1]].add(identifier)
+        #             if len(xref.split(':'))>2:
+        #                 print('ohno', xref)
+
+    query = '''Match p=(n:Chemical)-[r]-(m:Chemical_ChebiOntology) Return m.id, n.identifier'''
+    for chebi_id, chemical_id, in g.run(query):
+        dict_chebi_to_id[chebi_id.split(':')[1]].add(chemical_id)
 
     print('number of Chemical in database', len(dict_node_id_to_resource))
 
@@ -88,6 +92,18 @@ def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_
          how_mapped])
 
 
+# dictionary manual mapping
+dict_manual_chebi_mapping = {
+    "CHEBI:23652": "D003912",
+    "CHEBI:25863": "C066957",
+    "CHEBI:28436": "C017185",
+    "CHEBI:31344": "DB15648",
+    'CHEBI:27007': 'D014001',
+    "CHEBI:30363": "D002073",
+    "CHEBI:48154":"C405951"
+}
+
+
 def get_all_foodon_and_map(dict_node_id_to_resource):
     """
     prepare files and write information into files
@@ -113,42 +129,53 @@ def get_all_foodon_and_map(dict_node_id_to_resource):
         node = record.data()['n']
         # rs or a name
         identifier = node['id']
-        only_number_id=identifier.split(':')[1]
+        only_number_id = identifier.split(':')[1]
 
         names = set(node['names']) if 'names' in node else set()
 
-        is_mapped=False
+        is_mapped = False
 
         if only_number_id in dict_chebi_to_id:
-            is_mapped=True
-            counter_mapping+=1
+            is_mapped = True
+            counter_mapping += 1
             for chemical_id in dict_chebi_to_id[only_number_id]:
                 add_to_file(dict_node_id_to_resource, chemical_id, identifier, csv_mapping, 'chebi')
 
         if is_mapped:
             continue
 
-        if names:
-            for name in names:
-                name=name.lower()
-                if name in dict_name_to_id:
-                    is_mapped=True
-                    counter_mapping += 1
-                    for drugbank_id in dict_name_to_id[name]:
-                        add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping, 'name_mapping')
-
+        if identifier in dict_manual_chebi_mapping:
+            is_mapped = True
+            counter_mapping += 1
+            add_to_file(dict_node_id_to_resource, dict_manual_chebi_mapping[identifier], identifier, csv_mapping,
+                        'manual')
 
         if is_mapped:
             continue
 
+        # if names:
+        #     for name in names:
+        #         name = name.lower()
+        #         if name in dict_name_to_id:
+        #             is_mapped = True
+        #             counter_mapping += 1
+        #             for drugbank_id in dict_name_to_id[name]:
+        #                 add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping, 'name_mapping')
+        #
+        # if is_mapped:
+        #     continue
+
         if names:
             for name in names:
-                name=name.lower()
+                name = name.lower()
                 if name in dict_synonyms_to_id:
-                    is_mapped=True
+                    is_mapped = True
                     counter_mapping += 1
                     for drugbank_id in dict_synonyms_to_id[name]:
-                        add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping, 'synonyms_mapping')
+                        if name +'s' in dict_name_to_id:
+                            if drugbank_id in dict_name_to_id[name+'s']:
+                                print(':)')
+                                add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping, 'synonyms_mapping')
 
         if not is_mapped:
             counter_not_mapped += 1

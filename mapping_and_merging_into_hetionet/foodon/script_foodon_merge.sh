@@ -19,13 +19,17 @@ echo "Current time: $now"
 
 python3 add_food_from_foodon.py $path_to_project > output/output_add.txt
 
-
 echo map anatomy
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 python3 map_foodon_to_anatomy.py $path_to_project > output/output_map_anatomy.txt
 
+echo map chemical
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+python3 map_chebi_to_chemical.py $path_to_project > output/output_map_anatomy.txt
 
 
 echo integrate connection with neo4j shell

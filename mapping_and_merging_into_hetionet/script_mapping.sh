@@ -15,9 +15,9 @@ path_to_other_place_of_data=$4
 cd monDO
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo 'change disease identifier to monDO identifier'
+echo 'add monDO'
 
-./integration_of_mondo.sh $path_neo4j $path_to_project $password > output_mapping_and_integration.txt
+./integration_of_mondo_new.sh $path_neo4j $path_to_project $password > output_mapping_and_integration.txt
 
 
 cd ..
@@ -50,7 +50,30 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo Ncbi genes
 
-./script_ncbi.sh $path_neo4j $path_to_project $password > output_script.txt
+./script_ncbi_new.sh $path_neo4j $path_to_project $password > output_script.txt
+
+
+cd ..
+
+
+
+cd uberon
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo Uberon
+
+./script_uberon.sh $path_neo4j/ $path_to_project $password > output_script.txt
+
+cd ..
+
+
+
+cd hetionet
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo Map hetionet
+
+./mapping_hetionet_script.sh $path_neo4j $path_to_project $password > output_script.txt
 
 
 cd ..
@@ -145,6 +168,16 @@ echo GO
 
 cd ..
 
+cd CL
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo cl
+
+./cl_integration.sh $path_neo4j $path_to_project $password > output_script.txt
+
+
+cd ..
+
 
 cd hippie
 now=$(date +"%F %T")
@@ -199,7 +232,7 @@ echo "Current time: $now"
 echo Clinvar 
 cd clinvar
 
-./script_clinvar.sh $path_neo4j $path_to_project $password > output_mapping_and_integration.txt 
+./script_clinvar.sh $path_neo4j $path_to_project $password #> output_mapping_and_integration.txt 
 
 cd ..
 
@@ -209,7 +242,7 @@ echo drugbank
 
 cd drugbank
 
-./script_mapping_drugbank.sh $path_neo4j/ $path_to_project $password > output_script.txt
+./script_mapping_drugbank_new.sh $path_neo4j/ $path_to_project $password > output_script.txt
 
 
 cd ..
@@ -221,6 +254,18 @@ echo mapping table rxcui drugbank
 cd RxNorm_to_DrugBank 
 
 ./execute_mapping_rxcui_to_drugbank.sh > output.txt
+
+cd ..
+
+
+
+cd hetionet
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo Map hetionet
+
+./mapping_hetionet_compound.sh $path_neo4j $path_to_project $password > output_script_compound.txt
+
 
 cd ..
 
@@ -264,6 +309,36 @@ cd ttd
 
 ./script_to_mapping_ttd.sh $path_neo4j $path_to_project $password > output_script.txt
 
+
+cd ..
+
+
+cd chebi
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo ChEBI
+
+./merge_chebi.sh $path_neo4j/ $path_to_project $password > output_script.txt
+
+cd ..
+
+
+cd foodon
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo FoodOn
+
+./script_foodon_merge.sh $path_neo4j/ $path_to_project $password > output_script.txt
+
+cd ..
+
+
+cd fideo
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo FIDEO
+
+./script_fideo_merge.sh $path_neo4j/ $path_to_project $password > output_script.txt
 
 cd ..
 
@@ -357,15 +432,6 @@ echo Sider
 
 cd ..
 
-cd uberon
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo Uberon
-
-./script_uberon.sh $path_neo4j/ $path_to_project $password > output_script.txt
-
-cd ..
-
 
 cd RNAinter
 now=$(date +"%F %T")
@@ -442,6 +508,7 @@ cd drugcentral
 
 ./script_to_map_and_integrate_drug_central_information.sh $path_neo4j $path_to_project $password > output_script.txt
 
+
 cd ..
 
 now=$(date +"%F %T")
@@ -475,13 +542,71 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo map symptoms to side effects
-cd connectSideEffect_Sympom_Disease/
+cd connect_equal_edges/
 
-./script_phenotyp_mapping.sh $path_neo4j/ $path_to_project $password > output_script.txt
+./script_phenotyp_mapping.sh $path_neo4j/ $path_to_project $password $path_to_other_place_of_data > output_script.txt
 
 
 cd ..
 
+cd markerdb
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo markerdb
+
+
+./script_markerdb_mapping_and_integration.sh $path_neo4j $path_to_project $password > output_script.txt
+
+cd ..
+
+cd diseases
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo diseases
+
+
+./script_DISEASES.sh $path_neo4j $path_to_project $password > output_script.txt
+
+cd ..
+
+cd PTMD
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo PTMD
+
+
+./script_ptmd_mapping_and_integration.sh $path_neo4j $path_to_project $password > output_script.txt
+
+cd ..
+
+cd iPTMnet
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo iPTMnet
+
+
+./script_iPTMnet_mapping_and_integration.sh $path_neo4j $path_to_project $password > output_script.txt
+
+cd ..
+
+cd qptm
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo qptm
+
+
+./script_qptm_mapping_and_integration.sh $path_neo4j $path_to_project $password > output_script.txt
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo gwas 
+cd gwas
+
+./script_gwas_mapping_and_merging.sh $path_neo4j $path_to_project $password > output_script.txt
+
+cd ..
 
 
 now=$(date +"%F %T")

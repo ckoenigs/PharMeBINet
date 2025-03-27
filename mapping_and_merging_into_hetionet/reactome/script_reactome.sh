@@ -68,6 +68,12 @@ python3 GO_CellComp.py $path_to_project > gocellcomp/output_map.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo CT
+
+python3 map_celltype_reactome.py $path_to_project > output/output_map_ct.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
 echo mf
 
 python3 MappingGO_MolecularFunction.py $path_to_project > gomolfunc/output_map.txt

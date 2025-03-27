@@ -15,7 +15,7 @@ password=$4
 # path to external save position of data
 path_to_other_place_of_data=$5
 
-name_of_biodwh2_tool='BioDWH2-v0.6.5'
+name_of_biodwh2_tool='BioDWH2-v0.6.7'
 
 echo $name_of_import_tool
 

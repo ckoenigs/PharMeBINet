@@ -18,3 +18,5 @@ This document outlines the selected databases utilized from iPTMnet for post-tra
 ### 7. **neXtProt (npro)**
 
 ---
+
+The edges between protein and PTM has and involves get a property as flag if only the isoforms have this connection.

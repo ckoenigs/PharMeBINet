@@ -126,7 +126,7 @@ def join_monomer_new(connection):
     dict_mono_id_to_name = {}
     print('start prepare dictionary', datetime.datetime.now())
     #
-    with ZipFile('data/BindingDB_All_202401_tsv.zip', 'r') as zipObj:
+    with ZipFile('data/BindingDB_All_202502_tsv.zip', 'r') as zipObj:
         f = zipObj.open(zipObj.filelist[0], 'r')
         csv_reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8'), delimiter='\t')
         for line in csv_reader:

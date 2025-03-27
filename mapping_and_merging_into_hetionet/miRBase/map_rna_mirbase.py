@@ -133,7 +133,6 @@ def main():
     load_pharmebinet_nodes_in('miRNA', dict_mirbase_id_to_miRNA, dict_node_id_mirna_to_resource)
     load_pharmebinet_nodes_in('PrimaryTranscript', dict_mirbase_id_to_pre_miRNA, dict_node_id_pre_mirna_to_resource)
 
-    print(dict_node_id_mirna_to_resource['rna-MIR2054'])
 
     print(
         '###########################################################################################################################')

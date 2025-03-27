@@ -141,7 +141,12 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
                            'coagulation factor vii deficiency': 'MONDO:0002244',
                            'coagulation factor x deficiency': 'MONDO:0002247',
                            'coagulation factor xi deficiency': 'MONDO:0020587',
-                           'coagulation factor xii deficiency': 'MONDO:0002241'}
+                           'coagulation factor xii deficiency': 'MONDO:0002241',
+                           'hypoxic ischemic encephalopathy':'MONDO:0006663',
+                           'congenital nongoitrous hypothyroidism':'MONDO:0000045',
+                           'charcot-marie-tooth disease, type 2':'MONDO:0018993',
+                           'classical ehlers-danlos syndrome':'MONDO:0007522',
+                           'd glyceric acidemia':'MONDO:0009070'}
     
     for name, neo4j_id, in results:
         counter_all += 1
@@ -195,19 +200,6 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
         if mapped:
             continue
 
-        umls_cui_list = try_to_get_umls_ids_with_UMLS(name)
-        for umls_cui in umls_cui_list:
-            if umls_cui in dict_disease['umls']:
-                mapped = True
-                for identifier in dict_disease['umls'][umls_cui]:
-                    csv_mapping.writerow(
-                        [neo4j_id, identifier,
-                         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "MarkerDB"),
-                         'umls'])
-
-        if mapped:
-            continue
-
         if name in dict_disease['synonyms']:
             mapped = True
             for identifier in dict_disease['synonyms'][name]:
@@ -221,9 +213,9 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
 
         umls_cui_list = try_to_get_umls_ids_with_UMLS(name)
         for umls_cui in umls_cui_list:
-            if umls_cui in dict_symptom['umls']:
+            if umls_cui in dict_disease['umls']:
                 mapped = True
-                for identifier in dict_symptom['umls'][umls_cui]:
+                for identifier in dict_disease['umls'][umls_cui]:
                     csv_mapping.writerow(
                         [neo4j_id, identifier,
                          pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "MarkerDB"),
@@ -243,7 +235,18 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
         if mapped:
             continue
 
-        umls_cui_list = try_to_get_umls_ids_with_UMLS(name)
+        for umls_cui in umls_cui_list:
+            if umls_cui in dict_symptom['umls']:
+                mapped = True
+                for identifier in dict_symptom['umls'][umls_cui]:
+                    csv_mapping.writerow(
+                        [neo4j_id, identifier,
+                         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "MarkerDB"),
+                         'umls'])
+
+        if mapped:
+            continue
+
         for umls_cui in umls_cui_list:
             if umls_cui in dict_phenotype['umls']:
                 mapped = True
@@ -267,7 +270,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
         if mapped:
             continue
 
-        if len(umls_cui_list) > 0:
+        if len(umls_cui_list) > 0 and name!='11 beta hydroxylase deficiency':
             cur = con.cursor()
             query = ('Select Distinct CODE From MRCONSO Where CUI in  ("%s") and SAB="NCI" ;')
             query = query % ('","'.join(umls_cui_list))

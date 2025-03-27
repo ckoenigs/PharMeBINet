@@ -259,6 +259,7 @@ def combine_spdi_to_string(spdi, dictionary: Dict[str, Set[str]]):
         dictionary['sequence_position_deletion_insertions'].add(spdi_string)
         set_headers_node.add('sequence_position_deletion_insertions')
 
+final_disease_counter=0
 
 def find_disease_id_generate_xref_name_and_synonyms(disease_names, disease_ids):
     """
@@ -267,6 +268,7 @@ def find_disease_id_generate_xref_name_and_synonyms(disease_names, disease_ids):
     :param disease_ids:
     :return:
     """
+    global final_disease_counter
     final_disease_id = ''
     xrefs = set()
     found_on_id_in_set = False
@@ -288,9 +290,13 @@ def find_disease_id_generate_xref_name_and_synonyms(disease_names, disease_ids):
             if name in dict_label_to_set_of_ids['disease']:
                 final_disease_id = name
                 found_on_id_in_set = True
-        if not found_on_id_in_set:
+        if not found_on_id_in_set and len(synonyms)>0:
             final_disease_id = synonyms.pop()
             name = final_disease_id
+        elif not found_on_id_in_set:
+            print('disease has no id and no name')
+            final_disease_id=final_disease_counter
+            final_disease_counter+=1
 
     if name == '' and len(synonyms) > 0:
         name = synonyms.pop()
@@ -340,6 +346,7 @@ def add_to_node_information(key, value, dict_node):
     if key in header_snp:
         dict_node[key] = value
 
+set_of_unique_snp_ids=set()
 
 def prepare_json_information_to_tsv(data, chromosome_number=None):
     """
@@ -360,6 +367,7 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
             if key == 'refsnp_id':
                 key = 'identifier'
                 snp_id = value
+                print(snp_id)
             add_to_node_information(key, value, dict_node)
             set_headers_node.add(key)
             continue
@@ -532,6 +540,7 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
                                                                                    'collection_method', 'citations',
                                                                                    'review_status'],
                                                                                   ['citations', 'origins'])
+
                                     disease_id, disease_xrefs, disease_name, disease_synonyms = find_disease_id_generate_xref_name_and_synonyms(
                                         clinical['disease_names'], clinical['disease_ids'])
 
@@ -792,6 +801,10 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
             print(value)
 
     prepare_dict_node_to_be_string(dict_node)
+    if dict_node['identifier'] in set_of_unique_snp_ids:
+        print('double',dict_node['identifier'] )
+        return
+    set_of_unique_snp_ids.add(dict_node['identifier'])
     dict_label_to_tsv_file['snp'].writerow(dict_node)
 
 

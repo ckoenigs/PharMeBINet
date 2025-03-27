@@ -218,7 +218,7 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
         [rs_id] = record.values()
         if rs_id in dict_rs_id_to_clinvar_ids:
             for clinvar_id in dict_rs_id_to_clinvar_ids[rs_id]:
-                csv_writer.writerow([rs_id, clinvar_id, 'clinvar license'])
+                csv_writer.writerow([rs_id, clinvar_id, 'https://www.ncbi.nlm.nih.gov/home/about/policies/'])
         # print(rs_id)
         counter_all += 1
         rs_id = rs_id.replace('rs', '')

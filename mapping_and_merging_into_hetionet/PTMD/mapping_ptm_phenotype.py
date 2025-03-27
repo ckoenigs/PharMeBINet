@@ -60,15 +60,17 @@ def prepare_query(label, file_name, file_cypher, rela_type):
                  f'p)-[:{rela_type_query} {{resource:["PTMD"],ptmd:"yes", '
                  f'is_experimental_verification:line.is_experimental_verification, license:"ONLY freely available for academic research", '
                  f'mutation_site_impacts:split(line.mutation_site_impacts,"|"), url:"https://ptmd.biocuckoo.cn/index.php", source:"PTMD", '
-                 f'mutation_sites:split(line.mutation_sites,"|"), regulation:line.regulation, sources:line.sources, url:"https://ptmd.biocuckoo.cn/index.php", license:"ONLY freely available for academic research"}}]->(d)')
+                 f'mutation_sites:split(line.mutation_sites,"|"), pubMed_ids:split(line.pmids,"|"), regulation:line.regulation, '
+                 f'sources:split(line.sources,"|"), ptmd_properties:split(line.ptmd_properties,"|"), url:"https://ptmd.biocuckoo.cn/index.php", license:"ONLY freely available for academic research"}}]->(d)')
     else:
         rela_type_query = pharmebinetutils.prepare_rela_great(dict_type_to_rela[rela_type], label, "PTM" )
 
         query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:{label} {{identifier:line.phenotype_id}}) Create ('
                  f'p)<-[:{rela_type_query} {{resource:["PTMD"],ptmd:"yes", '
                  f'is_experimental_verification:line.is_experimental_verification, license:"ONLY freely available for academic research", '
-                 f'mutation_site_impacts:line.mutation_site_impacts, url:"https://ptmd.biocuckoo.cn/index.php", source:"PTMD", '
-                 f'mutation_sites:line.mutation_sites, regulation:line.regulation, sources:line.sources, url:"https://ptmd.biocuckoo.cn/index.php", license:"ONLY freely available for academic research"}}]-(d)')
+                 f'mutation_site_impacts:split(line.mutation_site_impacts,"|"), url:"https://ptmd.biocuckoo.cn/index.php", source:"PTMD", '
+                 f'mutation_sites:split(line.mutation_sites,"|"), pubMed_ids:split(line.pmids,"|"), regulation:line.regulation, '
+                 f'sources:split(line.sources,"|"), ptmd_properties:split(line.ptmd_properties,"|"), url:"https://ptmd.biocuckoo.cn/index.php", license:"ONLY freely available for academic research"}}]-(d)')
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name,
                                               query)

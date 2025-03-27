@@ -73,9 +73,6 @@ def get_pathway_properties():
 
 # cypher file
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-# query to delete all old pathways
-query = 'MATCH (n:Pathway) Detach Delete n;\n'
-cypher_file.write(query)
 
 # dictionary pathway name from pathway list an the identifier plus the source
 dict_name_to_pc_or_wp_identifier = {}
@@ -184,6 +181,11 @@ def prepare_value(value, head, combined_node):
     return value
 
 
+dict_url = {'http://bioregistry.io/reactome': 'https://reactome.org/content/detail/',
+            'http://bioregistry.io/pathbank': 'https://pathbank.org/view/',
+            'https://identifiers.org/panther.pathway': 'https://www.pantherdb.org/pathway/pathwayDiagram.jsp?catAccession=',
+            'biofactoid': 'https://apps.pathwaycommons.org/pathways?uri=biofactoid:'}
+
 '''
 prepare the values for the list of properties
 '''
@@ -214,7 +216,20 @@ def fill_the_list_of_properties(head, value, identifiers, resource, name, list_i
         name = name if name != 'untitled' else ''
     elif head == 'url':
         if type(value) != str:
-            value = ' , '.join(value)
+            list_values=[]
+            for x in value:
+                front_end=x.rsplit(':', 1)
+                front=front_end[0]
+                if front in dict_url:
+                    list_values.append(dict_url[front]+front_end[1])
+                else:
+                    list_values.append(x)
+            value = ' , '.join(list_values)
+        else:
+            front_end = value.rsplit(':', 1)
+            front = front_end[0]
+            if front in dict_url:
+                value=dict_url[front] + front_end[1]
     elif head == 'name':
         value = name
     elif head == 'resource':

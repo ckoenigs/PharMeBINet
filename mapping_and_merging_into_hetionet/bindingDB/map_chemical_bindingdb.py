@@ -78,7 +78,10 @@ def generate_new_file_and_add_cypher_query(source):
     for result in results:
         [prop] = result.values()
         if prop not in ['monomerid', 'name', 'inchi_key', 'display_name', 'smiles_string',
-                        'cd_smiles'] and not prop.startswith('cd_fp'):
+                        'cd_smiles', 'cd_hash', 'cd_pre_calculated', 'cd_screen_descriptor',
+                        'cd_sortable_formula', 'cd_structure', 'cd_taut_hash'] and not prop.startswith('cd_fp'):
+            if prop.startswith('cd_'):
+                list_of_prop.append(prop.replace('cd_','') + ':n.' + prop)
             list_of_prop.append(prop + ':n.' + prop)
         elif prop == 'inchi_key':
             list_of_prop.append('inchikey:n.' + prop)

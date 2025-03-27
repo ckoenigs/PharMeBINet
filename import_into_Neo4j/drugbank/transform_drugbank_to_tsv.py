@@ -61,8 +61,8 @@ ns = '{http://www.drugbank.ca}'
 inchikey_template = "{ns}calculated-properties/{ns}property[{ns}kind='InChIKey']/{ns}value"
 inchi_template = "{ns}calculated-properties/{ns}property[{ns}kind='InChI']/{ns}value"
 smiles_template = "{ns}calculated-properties/{ns}property[{ns}kind='SMILES']/{ns}value"
-molecular_formular_template = "{ns}calculated-properties/{ns}property[{ns}kind='Molecular Formula']/{ns}value"
-molecular_formular_experimental_template = "{ns}experimental-properties/{ns}property[{ns}kind='Molecular Formula']/{ns}value"
+molecular_formula_template = "{ns}calculated-properties/{ns}property[{ns}kind='Molecular Formula']/{ns}value"
+molecular_formula_experimental_template = "{ns}experimental-properties/{ns}property[{ns}kind='Molecular Formula']/{ns}value"
 
 # reference id to source
 dict_reference_id_to_infos = {}
@@ -478,6 +478,9 @@ for i, drug in enumerate(root):
     row['inchi'] = drug.findtext(inchi_template.format(ns=ns))
     row['inchikey'] = drug.findtext(inchikey_template.format(ns=ns))
     row['smiles'] = drug.findtext(smiles_template.format(ns=ns))
+    formular_exp = drug.findtext(molecular_formula_experimental_template.format(ns=ns))
+    formular_calc = drug.findtext(molecular_formula_template.format(ns=ns))
+    row['formula'] = formular_exp if formular_exp else formular_calc
     row['synonyms'] = [salt.text for salt in
                        drug.findall("{ns}synonyms/{ns}synonym".format(ns=ns))]
     row['unii'] = drug.findtext(ns + "unii")
@@ -1128,7 +1131,7 @@ columns = ['drugbank_id', 'alternative_ids', 'name', 'cas_number', 'unii', 'atc_
            'experimental_properties_kind_value_source', 'external_identifiers',
            'external_links_resource_url', 'type',
            'classification_alternative_parent', 'classification_substituent', 'inchi',
-           'inchikey', 'smiles', 'description']
+           'inchikey', 'smiles', 'formula', 'description']
 # ['drugbank_id', 'drugbank_ids' ,'name', 'type', 'cas_number' , 'groups', 'atc_codes', 'categories', 'inchikey', 'inchi','inchikeys', 'synonyms', 'unii','uniis', 'external_identifiers','extra_names', 'brands', 'molecular_formula','molecular_formular_experimental','sequences','drug_interaction', 'drug_interaction_description','food_interaction', 'toxicity', 'targets', 'transporters','pathways', 'dosages','snps','enzymes','carriers', 'description']
 drugbank_df = pandas.DataFrame.from_dict(rows)[columns]
 drugbank_df.head()

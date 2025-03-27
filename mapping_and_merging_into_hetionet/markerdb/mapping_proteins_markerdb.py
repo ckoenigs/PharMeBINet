@@ -12,9 +12,11 @@ import pharmebinetutils
 # dictionary protein id to resource
 dict_identifier_to_resource = {}
 
-
 # dictionary protein name to identifier
 dict_protein_name_to_identifier = {}
+
+# dictionary protein name to identifier
+dict_protein_synonym_to_identifier = {}
 
 #dictionary for gene_symbol to protein gene_name
 dict_gene_symbol_to_gene_name = {}
@@ -33,7 +35,7 @@ def load_proteins_from_database_and_add_to_dict():
         if synonyms:
             for synonym in synonyms:
                 synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
-                pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_to_identifier, synonym, identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_protein_synonym_to_identifier, synonym, identifier)
 
     query2 = "MATCH (g:Gene)--(p:Protein) RETURN g.gene_symbol ,p.identifier"
     results2 = g.run(query2)
@@ -92,10 +94,40 @@ def load_all_MarkerDB_proteins_and_finish_the_files(csv_mapping):
             gene_name = node['gene_name'].lower()
         else:
             gene_name = ""
-        ignored_id = ["P01860", "Q969X2", "Q13609"]
+        ignored_id = ["P01860", "Q969X2", "Q13609","P08069","P05060"]
 
         mapped=False
-        # mapping
+
+        if protein_name in dict_protein_name_to_identifier:
+            mapped=True
+            for identifier in dict_protein_name_to_identifier[protein_name]:
+                csv_mapping.writerow(
+                    [unique_id, identifier,
+                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
+                    'name'])
+        if mapped:
+            continue
+
+        if protein_name in dict_protein_synonym_to_identifier:
+            mapped = True
+            for identifier in dict_protein_synonym_to_identifier[protein_name]:
+                csv_mapping.writerow(
+                    [unique_id, identifier,
+                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "MarkerDB"),
+                     'synonym'])
+        if mapped:
+            continue
+
+        if gene_name not in ['col9a1','dnase1l3'] and gene_name in dict_gene_symbol_to_gene_name and dict_gene_symbol_to_gene_name[gene_name]:
+            mapped=True
+            for identifier in dict_gene_symbol_to_gene_name[gene_name]:
+                csv_mapping.writerow(
+                    [unique_id, identifier,
+                    pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
+                    'gene_symbol'])
+        if mapped:
+            continue
+
         if identifier not in ignored_id:
             if identifier in dict_identifier_to_resource:
                 mapped=True
@@ -105,22 +137,8 @@ def load_all_MarkerDB_proteins_and_finish_the_files(csv_mapping):
                         'id'])
         if mapped:
             continue
-
-        if protein_name in dict_protein_name_to_identifier:
-            for identifier in dict_protein_name_to_identifier[protein_name]:
-                csv_mapping.writerow(
-                    [unique_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
-                    'name'])
-        elif gene_name in dict_gene_symbol_to_gene_name and dict_gene_symbol_to_gene_name[gene_name]:
-            for identifier in dict_gene_symbol_to_gene_name[gene_name]:
-                csv_mapping.writerow(
-                    [unique_id, identifier,
-                    pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
-                    'gene_symbol'])
-        else:
-            counter_not_mapped += 1
-            print(identifier, protein_name)
+        counter_not_mapped += 1
+        print(identifier, protein_name)
 
 
     print('number of not-mapped proteins:', counter_not_mapped)

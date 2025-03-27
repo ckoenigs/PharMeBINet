@@ -6,7 +6,6 @@ number_of_arguments=2
 if test $# -ne $number_of_arguments 
 then
     echo need 2 arguments:
-    # /home/cassandra/Dokumente/neo4j-community-3.2.9/bin
     echo 1 path to neo4j bin
     echo 2 path to project
     exit 0
@@ -23,7 +22,8 @@ path_project=$2
 name_of_import_tool='../Neo4j-GraphML-Importer-v1.3.0'
 
 # path to external save position of data
-path_to_other_place_of_data='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/'
+# path_to_other_place_of_data='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/'
+path_to_other_place_of_data='/media/cassandra/T7/System_Volume_Information/databases/'
 
 password='test1234'
 
@@ -48,7 +48,7 @@ $path_neo4j/neo4j stop
 
 sleep 120
 
-cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/graph /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/inte.db
+cp -r $path_neo4j/../data/databases/graph $path_neo4j/../data/databases/inte
 
 #$path_neo4j/neo4j restart
 python restart_neo4j.py $path_neo4j/
@@ -66,7 +66,15 @@ cd mapping_and_merging_into_hetionet
 cd ..
 
 
-# exit 1
+exit 1
+
+if [ -d $path_neo4j/../data/databases/pharmebinet ]; then
+  rm -r $path_neo4j/../data/databases/pharmebinet
+  rm -r $path_neo4j/../data/transactions/pharmebinet
+fi
+
+
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo cp database
@@ -82,7 +90,7 @@ echo "Current time: $now"
 
 cd final_preparation
 
-./new_preparation_script.sh $path_neo4j $name_of_import_tool $password #> output_delete_source.txt
+./new_preparation_script.sh $path_neo4j $name_of_import_tool $password $path_to_other_place_of_data #> output_delete_source.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

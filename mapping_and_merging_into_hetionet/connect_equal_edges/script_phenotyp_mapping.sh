@@ -9,6 +9,8 @@ path_to_project=$2
 #password
 password=$3
 
+#path to project
+path_to_databases=$4
 
 if [ ! -d output ]; then
   mkdir output
@@ -25,6 +27,9 @@ python3 connect_sideeffect_symptom_disease.py $path_to_project > output/output_s
 echo map metabolite and chemicals
 
 python3 connection_metabolite_chemical.py $path_to_project > output/output_chemical_metabolite.txt
+
+echo generate equal edes between chemicals
+# python3 similarity.py $path_to_project $path_to_databases > output/output_similarity.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

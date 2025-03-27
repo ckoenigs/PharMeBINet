@@ -17,11 +17,12 @@ USE_VERSION_5 = True
 
 # dictionary label to abbreviation
 dictionary_label_to_abbreviation = {
-    'Anatomy': 'A', 'BiologicalProcess': 'BP', 'BlackBoxEvent': 'B', 'CellularComponent': 'CC', 'Chemical': 'CH',
+    'Anatomy': 'A', 'BiologicalProcess': 'BP', 'BlackBoxEvent': 'B', 'CellType': 'CT', 'CellularComponent': 'CC',
+    'Chemical': 'CH',
     'ClinicalAnnotation': 'CA', 'Complex': 'CX', 'Compound': 'C', 'Depolymerisation': 'DP', 'Disease': 'D',
-    'EnzymeReactantSet': 'E', 'FailedReaction': 'F', 'Gene': 'G', 'GeneVariant': 'GV', 'Genotype': 'GT',
+    'EnzymeReactantSet': 'E', 'FailedReaction': 'F', 'Food':'FO', 'Gene': 'G', 'GeneVariant': 'GV', 'Genotype': 'GT',
     'Haplotype': 'H', 'Interaction': 'I', 'Metabolite': 'M', 'MolecularComplex': 'MC', 'MolecularFunction': 'MF',
-    'Pathway': 'PW', 'PharmacologicClass': 'PC', 'Phenotype': 'PT', 'Polymerisation': 'PO', 'Product': 'PR',
+    'Pathway': 'PW', 'PharmacologicClass': 'PC', 'Phenotype': 'PT', 'PTM':'PTM' ,'Polymerisation': 'PO', 'Product': 'PR',
     'Protein': 'P', 'Reaction': 'RN', 'ReactionLikeEvent': 'RLE', 'Regulation': 'RG', 'RNA': 'R', 'Salt': 'SA',
     'SideEffect': 'SE', 'Symptom': 'S', 'Treatment': 'T', 'Variant': 'V', 'VariantAnnotation': 'VA'
 }
@@ -126,9 +127,12 @@ def get_query_import(base_path: str, file_path: str, query: str, delimiter: str 
 
 def prepare_index_query(label: str, prop: str, additional_index: str = '') -> str:
     if USE_VERSION_5:
-        return 'CREATE INDEX index%s%s FOR (node:%s) ON (node.%s);\n' % (label, additional_index, label, prop)
+        # return 'CREATE INDEX index%s%s FOR (node:%s) ON (node.%s);\n' % (label, additional_index, label, prop)
+        return 'CREATE CONSTRAINT index%s%s FOR (node:%s) REQUIRE node.%s IS UNIQUE;\n' % (
+        label, additional_index, label, prop)
     else:
         return 'Create Constraint On (node:%s) Assert node.%s Is Unique;\n' % (label, prop)
+
 
 def prepare_index_query_text(label: str, prop: str, additional_index: str = '') -> str:
     return 'CREATE TEXT INDEX indexText%s%s FOR (node:%s) ON (node.%s);\n' % (label, additional_index, label, prop)
@@ -156,6 +160,19 @@ def prepare_obo_synonyms(synonym):
     if ' [' in synonym:
         synonym = synonym.rsplit(' [', 1)[0][1:-1]
     return synonym
+
+
+def prepare_rela_great(rela, label1, label2):
+    """
+    prepare rela type with right abbreviation
+    :param rela:
+    :param label1:
+    :param label2:
+    :return:
+    """
+    letter_1 = dictionary_label_to_abbreviation[label1]
+    letter_2 = dictionary_label_to_abbreviation[label2]
+    return rela.upper() + '_' + letter_1 + ''.join([x.lower()[0] for x in rela.split('_')]) + letter_2
 
 # def main():
 #     with open('label_to_short.tsv', 'r', encoding='utf-8') as f:

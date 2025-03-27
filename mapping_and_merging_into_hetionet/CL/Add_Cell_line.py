@@ -78,7 +78,7 @@ def get_co_properties():
     global query_new
 
     # combine the important parts of node creation
-    query_new = query_nodes_start + query_middle_new + 'resource:["CO"], co:"yes", source:"Cell Ontology", url:"https://www.ebi.ac.uk/ols4/ontologies/cl/classes?obo_id="+line.identifier, license:"' + license + '"})' + query_end
+    query_new = query_nodes_start + query_middle_new + 'resource:["Cell Ontology"], co:"yes", source:"Cell Ontology", url:"https://www.ebi.ac.uk/ols4/ontologies/cl/classes?obo_id="+line.identifier, license:"' + license + '"})' + query_end
 
 
 
