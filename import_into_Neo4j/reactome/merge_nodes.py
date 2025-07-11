@@ -274,21 +274,25 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id, i
     # integrate the new relationships from other nodes to this nodes into for this node into Hetionet
     count_new_relationships_to_this_node = 0
     for [rela_type, dict_rela, node_labels, node] in list_other_to_node:
-
+        final_node_label = ''
+        for node_label in node_labels:
+            if node_label in dict_label_to_unique_prop:
+                final_node_label = node_label
+                break
         # test if not a relationship already exists
         if not is_int:
-            if type(node[dict_label_to_unique_prop[node_labels[0]]]) == int:
+            if type(node[dict_label_to_unique_prop[final_node_label]]) == int:
                 query = ''' Match (a:%s{%s:"%s"})<-[r:%s]-(b:%s{%s:%s})  Return r'''
             else:
                 query = ''' Match (a:%s{%s:"%s"})<-[r:%s]-(b:%s{%s:"%s"})  Return r'''
         else:
-            if type(node[dict_label_to_unique_prop[node_labels[0]]]) == int:
+            if type(node[dict_label_to_unique_prop[final_node_label]]) == int:
                 query = ''' Match (a:%s{%s:%s})<-[r:%s]-(b:%s{%s:%s})  Return r'''
             else:
                 query = ''' Match (a:%s{%s:%s})<-[r:%s]-(b:%s{%s:"%s"})  Return r'''
         query = query % (
-            label, identifier_name, identifier, rela_type, node_labels[0], dict_label_to_unique_prop[node_labels[0]],
-            node[dict_label_to_unique_prop[node_labels[0]]])
+            label, identifier_name, identifier, rela_type, final_node_label, dict_label_to_unique_prop[final_node_label],
+            node[dict_label_to_unique_prop[final_node_label]])
         results = g.run(query)
         result = results.single()
 
@@ -296,14 +300,14 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id, i
         if result == None:
 
             if not is_int:
-                if type(node[dict_label_to_unique_prop[node_labels[0]]]) == int:
+                if type(node[dict_label_to_unique_prop[final_node_label]]) == int:
                     query = ''' Match (a:%s{%s:"%s"}), (b:%s{%s:%s})
                                     Create (a)<-[r:%s {'''
                 else:
                     query = ''' Match (a:%s{%s:"%s"}), (b:%s{%s:"%s"})
                                  Create (a)<-[r:%s {'''
             else:
-                if type(node[dict_label_to_unique_prop[node_labels[0]]]) == int:
+                if type(node[dict_label_to_unique_prop[final_node_label]]) == int:
                     query = ''' Match (a:%s{%s:%s}), (b:%s{%s:%s})
                                     Create (a)<-[r:%s {'''
                 else:
@@ -311,8 +315,8 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id, i
                                  Create (a)<-[r:%s {'''
 
             query = query % (
-                label, identifier_name, identifier, node_labels[0], dict_label_to_unique_prop[node_labels[0]],
-                node[dict_label_to_unique_prop[node_labels[0]]], rela_type)
+                label, identifier_name, identifier, final_node_label, dict_label_to_unique_prop[final_node_label],
+                node[dict_label_to_unique_prop[final_node_label]], rela_type)
             for key, property in dict_rela.items():
                 if type(property) != list:
                     query = query + '''%s:"%s",'''
