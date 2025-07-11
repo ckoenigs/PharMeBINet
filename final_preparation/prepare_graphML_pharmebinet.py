@@ -1,6 +1,11 @@
 # all node source to delete
 import sys, datetime
 import lxml.etree as ET
+import sys
+
+
+sys.path.append("..")
+import pharmebinetutils
 
 # dc = drugcentral
 TODELETE = {'adrecs', 'adrecstarget', 'aeolus', 'atc', 'biogrid', 'bindingdb', 'chebiontology', 'clinvar', 'ctd', 'co',
@@ -55,7 +60,7 @@ counter_key = 0
 counter_all_edges = 0
 counter_selected_edge = 0
 
-path_start='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/'
+path_start=pharmebinetutils.path_to_databases+'databases/PharMeBiNet/'
 if len(sys.argv) > 1:
     path_start=sys.argv[1]
 
@@ -122,6 +127,7 @@ with open(filename, 'w', encoding='utf-8') as xf:
                 print('edges', counter_all_edges)
                 xf.flush()
             node.clear()
+        node.clear()
     xf.write('  </graph>\n')
     xf.write('</graphml>\n')
 print('from all nodes', counter_all_nodes, 'are real nodes', counter_selected_node)
