@@ -14,7 +14,7 @@ dict_gene_infos = {}
 # set of chemical ids
 set_of_chemical_ids = set()
 
-version = '4.4.242'
+version = '4.4.245'
 
 
 def check_if_value_exist(line, key):
@@ -179,7 +179,7 @@ def generate_files_for_gene_chemical_interaction():
 
 '''
 https://wiki.thebiogrid.org/doku.php/biogrid_chemtab
-file: BIOGRID-CHEMICALS-4.4.198.chemtab
+file: BIOGRID-CHEMICALS-4.4.245.chemtab
     #BioGRID Chemical Interaction ID :rela
     BioGRID Gene ID : Gene id
     Entrez Gene ID : Gene id

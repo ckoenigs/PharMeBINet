@@ -1,7 +1,7 @@
 #BioGrid Parser
 https://thebiogrid.org/
 
-Version: BIOGRID-4.4.242 (2025-01-25)
+Version: BIOGRID-4.4.245 (2025-04-25)
 
 First, the data for chemical gene interaction are downloaded. Then for every row in the CSV file the gene, chemical information are extracted and written into a dictionary or the TSV file. However, only the edges are added into a new TSV if the genes are human genes. Additionally, for the relationships and the chemicals, the cypher queries are generated. Also, the Interaction is a node, because sometimes more than one gene and one chemical are related!
 
