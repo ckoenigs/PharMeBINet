@@ -99,23 +99,27 @@ def get_website_source(url: str) -> str:
         return response.read().decode('utf-8')
 
 def check_for_new_version():
-    source=get_website_source('https://www.genome.jp/kegg-bin/get_htext?br08303.keg')
-    # parsed_html = BeautifulSoup(source, "lxml")
-    if '<br>Last updated: ' in source:
-        last_updated=source.split('<br>Last updated: ')[1].split('<br>')[0]
-        print(last_updated)
-        last_update_date=datetime.datetime.strptime(last_updated, '%B %d, %Y')
-        print(last_update_date)
-    download=False
-    if os.path.isfile('update.txt'):
-        with open('update.txt', 'r', encoding='utf-8') as f:
-            other_data=next(f)
-            print(other_data)
-            other_data_update=datetime.datetime.strptime(other_data, '%Y-%m-%d')
-            if other_data_update < last_update_date:
-                download=True
-            # f.write(last_update_date.strftime('%Y-%m-%d'))
-    else:
+    try:
+        source=get_website_source('https://www.genome.jp/kegg-bin/get_htext?br08303.keg')
+        # parsed_html = BeautifulSoup(source, "lxml")
+        if '<br>Last updated: ' in source:
+            last_updated=source.split('<br>Last updated: ')[1].split('<br>')[0]
+            print(last_updated)
+            last_update_date=datetime.datetime.strptime(last_updated, '%B %d, %Y')
+            print(last_update_date)
+        download=False
+        if os.path.isfile('update.txt'):
+            with open('update.txt', 'r', encoding='utf-8') as f:
+                other_data=next(f)
+                print(other_data)
+                other_data_update=datetime.datetime.strptime(other_data, '%Y-%m-%d')
+                if other_data_update < last_update_date:
+                    download=True
+                # f.write(last_update_date.strftime('%Y-%m-%d'))
+        else:
+            download=True
+    except:
+        print('error')
         download=True
 
     if download:
