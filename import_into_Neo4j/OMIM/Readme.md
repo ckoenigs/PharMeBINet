@@ -1,6 +1,6 @@
 https://www.omim.org/
 
-Version: 2025-02-10
+Version: 2025-05-05
 
 To start with OMIM a license request is needed. Then a file called "key_omim" needs to be created in directory data. The file contains the information: OMIM_KEY="$key"
 The $key is the part of the OMIM URL between downloads/ and the file name.

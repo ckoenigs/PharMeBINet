@@ -8,6 +8,6 @@ Schema is below:
 
 ![er_diagram](schema.png)
 
-License:Creative Commons Attribution-ShareAlike 4.0 International Public License
+License:https://www.ebi.ac.uk/about/terms-of-use/
 
 This data are automatically updated.
