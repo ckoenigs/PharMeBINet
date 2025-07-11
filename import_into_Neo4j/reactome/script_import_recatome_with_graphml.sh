@@ -46,6 +46,8 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'extract as graphml'
 
+echo 'CALL apoc.export.graphml.all("'$path_to_reactome'pathwaydata.graphml", {batchSize:10000, readLabels: true, storeNodeIds: false, useTypes: true});' > export_reactome.cypher
+
 # $path_neo4j_other/cypher-shell -u neo4j -p $password -f export_reactome.cypher
 python ../../execute_cypher_shell.py $path_neo4j $password export_reactome.cypher > output/cypher.txt
 
