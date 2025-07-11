@@ -367,7 +367,7 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
             if key == 'refsnp_id':
                 key = 'identifier'
                 snp_id = value
-                print(snp_id)
+                # print(snp_id)
             add_to_node_information(key, value, dict_node)
             set_headers_node.add(key)
             continue
