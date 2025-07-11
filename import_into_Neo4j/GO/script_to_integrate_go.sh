@@ -52,3 +52,7 @@ python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 
 
 sleep 30
+
+cd data
+rm *
+cd ..

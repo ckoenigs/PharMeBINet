@@ -1,7 +1,6 @@
 import sys, datetime
-from io import BytesIO
 from requests import get
-import pandas as pd
+import csv, gzip, os
 
 sys.path.append("../..")
 import pharmebinetutils
@@ -11,7 +10,34 @@ cypher_file = open('cypher.cypher', 'a', encoding='utf-8')
 cypher_file_edge = open('cypher_edge.cypher', 'a', encoding='utf-8')
 
 
-def generate_csv_file_and_prepare_cypher_queries(keys, file_name, label, unique_identifier):
+def generate_nodes_files_and_cypher_queries(label, header):
+    """
+    generate the different node files and queries
+    :return:
+    """
+    file_name_node_1 = 'output/' + label + '.tsv'
+    file = open(file_name_node_1, 'w', encoding='utf-8')
+    csv_writer = csv.writer(file, delimiter='\t')
+    csv_writer.writerow(header)
+    generate_csv_file_and_prepare_cypher_queries(header, file_name_node_1, label, 'identifier')
+    return csv_writer
+
+
+def generate_edges_files_and_cypher_queries(label, rela_type, header):
+    """
+    generate the different edge files and queries
+    :return:
+    """
+    file_name = 'output/edges/edge_go_to_' + label + '_' + rela_type + '.tsv'
+    file = open(file_name, 'w', encoding='utf-8')
+    csv_writer = csv.writer(file, delimiter='\t')
+    csv_writer.writerow(header)
+
+    generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, rela_type, header)
+    return csv_writer
+
+
+def generate_csv_file_and_prepare_cypher_queries(header, file_name, label, unique_identifier):
     """
     generate node file as csv. Additionaly, generate cpher query to integrate node into neo4j with index.
     :param keys: list strings
@@ -24,7 +50,7 @@ def generate_csv_file_and_prepare_cypher_queries(keys, file_name, label, unique_
     # generate node query and indices
     query = """ Create (n:%s_go{  """
     query = query % (label)
-    for head in keys:
+    for head in header:
         head_short = head.split('_')[0]
         if head_short in ['synonyms']:
             query += head_short + ":split(line." + head + ",'|'), "
@@ -38,7 +64,7 @@ def generate_csv_file_and_prepare_cypher_queries(keys, file_name, label, unique_
 
 def generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, rela_type, rela_properties):
     """
-    Gnerate cpher query to integrate the edge into neo4j.
+    Gnerate cypher query to integrate the edge into neo4j.
     :param file_name: string
     :param label: string
     :param rela_type: string
@@ -102,6 +128,9 @@ dict_label_to_node_dataframe = {}
 # dictionary label and rela name to dataframe
 dict_label_rela_name_to_dataframe = {}
 
+# dictionary label to set of node ids
+dict_label_to_set_of_ids = {}
+
 """
 1	DB	required	1	UniProtKB	 node1
 2	DB Object ID	required	1	P12345	 node1
@@ -125,100 +154,74 @@ dict_label_rela_name_to_dataframe = {}
 
 def prepare_go_annotation_file(go_annotation_file_name):
     """
-    firs extract and pars the gzip csv file into a pandas dataframe. Add header. Get the label of the other node. Then
-    prepare the node csv by make it identifier unique and write it into  tsv and generate cypher query. The prepare
-    different rela type files.
+    first extract and parse the gzip csv file into node csv and edge csv files.
     :param go_annotation_file_name: string
     :return:
     """
-    url = 'http://geneontology.org/gene-associations/%s.gaf.gz' % go_annotation_file_name
 
-    request = get(url)
-    dataframe_csv = pd.read_csv(BytesIO(request.content), compression='gzip', sep='\t', comment='!',
-                                header=None)
-    # dataframe_csv = pd.read_csv(go_annotation_file_name + '.gaf.gz', compression='gzip', sep='\t', comment='!',
-    #                             header=None)
-    # dataframe_csv = pd.read_csv('goa_human.gaf', sep='\t', comment='!', header=None)
-    dataframe_csv.columns = ['database_node1', 'identifier_node1', 'symbol_node1', 'qualifier', 'go_id', 'db_reference',
-                             'evidence', 'with_from', 'aspect', 'name_1', 'synonyms_1', 'label_1', 'taxon', 'date',
-                             'assigned_by',
-                             'annotation_extension', 'gene_product_id']
-    print(dataframe_csv.head())
-    # print(dataframe_csv['annotation_extension'].unique())
-    print(dataframe_csv['label_1'].unique())
-    labels = dataframe_csv['label_1'].unique()
-    if len(labels) > 1:
-        print('multiple labels :O')
-        node_properties = ['database_node1', 'identifier_node1', 'symbol_node1', 'name_1', 'synonyms_1', 'label_1']
-        label = 'rna'
-    else:
-        node_properties = ['database_node1', 'identifier_node1', 'symbol_node1', 'name_1', 'synonyms_1']
-        label = labels[0]
+    filename = f'data/{go_annotation_file_name}.gaf.gz'
+    if not os.path.exists(filename):
+        url = f'http://geneontology.org/gene-associations/{go_annotation_file_name}.gaf.gz'
+        filename = pharmebinetutils.download_file(url, out='data')
+    file = gzip.open(filename, 'rt')
 
-    # prepare node 1 information and tsv file
-    node1_frame = dataframe_csv[node_properties].copy()
-    node1_frame = node1_frame.drop_duplicates(subset=['identifier_node1'])
-    print(node1_frame.head())
+    header = ['database_node1', 'identifier_node1', 'symbol_node1', 'qualifier', 'go_id', 'db_reference',
+              'evidence', 'with_from', 'aspect', 'name_1', 'synonyms_1', 'label_1', 'taxon', 'date',
+              'assigned_by',
+              'annotation_extension', 'gene_product_id']
 
-    if label not in dict_label_to_node_dataframe:
-        dict_label_to_node_dataframe[label] = node1_frame
-    else:
-        # dict_label_to_node_dataframe[label] = dict_label_to_node_dataframe[label].append(node1_frame).drop_duplicates(
-        #     subset=['identifier_node1'])
-        dict_label_to_node_dataframe[label] = pd.concat(
-            [dict_label_to_node_dataframe[label], node1_frame]).drop_duplicates(
-            subset=['identifier_node1'])
+    csv_reader = csv.reader(file, delimiter='\t')
 
-    # remove node 1, node 2 (except of identifier) and taxon infos of rela csv
-    dataframe_csv = dataframe_csv.drop(
-        columns=['database_node1', 'symbol_node1', 'name_1', 'synonyms_1', 'label_1', 'aspect', 'taxon'])
+    dict_label_to_tsv_writer = {}
+    # dictionary form label to edge type to csv
+    dict_label_to_edge_type_to_csv_file = {}
+    # header edge
+    header_edge = ['identifier_node1', 'qualifier', 'go_id', 'db_reference',
+                   'evidence', 'with_from', 'aspect', 'date',
+                   'assigned_by',
+                   'annotation_extension', 'gene_product_id']
     #
-    # print(dataframe_csv['qualifier'].unique())
-    # result_dataframe=dataframe_csv[dataframe_csv['identifier_node1']=='Q9BYF1']
-    # print('#test blub', labels)
-    # print(result_dataframe.head())
-    #
-    # file_name = 'edge_go_to_' + label  + '.tsv'
-    # result_dataframe.to_csv(file_name, sep='\t', index=False)
+    for row in csv_reader:
+        # the row with one entry are only comments
+        if len(row) > 1:
+            label = row[11]
+            if 'rna' in label.lower():
+                node_properties = ['database_node1', 'identifier_node1', 'symbol_node1', 'name_1', 'synonyms_1', 'label_1']
+                label = 'rna'
+            else:
+                node_properties = ['database_node1', 'identifier_node1', 'symbol_node1', 'name_1', 'synonyms_1']
+            if not label in dict_label_to_tsv_writer:
+                dict_label_to_set_of_ids[label] = set()
+                dict_label_to_tsv_writer[label] = generate_nodes_files_and_cypher_queries(label, node_properties)
+            row_node = []
+            identifier= row[1]
+            if not identifier in dict_label_to_set_of_ids[label]:
+                counter=0
+                dict_label_to_set_of_ids[label].add(identifier)
+                for head in header:
+                    if head in node_properties:
+                        row_node.append(row[counter])
+                    counter+=1
+                dict_label_to_tsv_writer[label].writerow(row_node)
 
-    # prepare the different
-    for rela_type in dataframe_csv['qualifier'].unique():
-        part_dataframe = dataframe_csv[dataframe_csv['qualifier'] == rela_type].copy()
-        part_dataframe['evidence'] = part_dataframe['evidence'].map(dict_evidence_code_to_evidence)
-        # part_dataframe.drop(columns=['qualifier'])
-        rela_type = rela_type.replace('|', '_')
-        if (label, rela_type) not in dict_label_rela_name_to_dataframe:
-            dict_label_rela_name_to_dataframe[(label, rela_type)] = part_dataframe
-        else:
-            # print('number of row, columns before:',dict_label_rela_name_to_dataframe[(label, rela_type)].shape , rela_type)
-            # dict_label_rela_name_to_dataframe[(label, rela_type)] = dict_label_rela_name_to_dataframe[
-            #     (label, rela_type)].append(part_dataframe).drop_duplicates()
-            dict_label_rela_name_to_dataframe[(label, rela_type)] = pd.concat([dict_label_rela_name_to_dataframe[
-                                                                                   (label, rela_type)],
-                                                                               part_dataframe]).drop_duplicates()
-            # print('number of row, columns after:' , dict_label_rela_name_to_dataframe[(label, rela_type)].shape)
-
-
-def generate_nodes_files_and_cypher_queries():
-    """
-    generate the different node files.
-    :return:
-    """
-    for label, dataframe in dict_label_to_node_dataframe.items():
-        file_name_node_1 = 'output/' + label + '.tsv'
-        dataframe.to_csv(file_name_node_1, sep='\t', index=False)
-        generate_csv_file_and_prepare_cypher_queries(dataframe, file_name_node_1, label, 'identifier')
-
-
-def generate_edges_files_and_cypher_queries():
-    """
-    generate the different node files.
-    :return:
-    """
-    for (label, rela_type), part_dataframe in dict_label_rela_name_to_dataframe.items():
-        file_name = 'output/edges/edge_go_to_' + label + '_' + rela_type + '.tsv'
-        part_dataframe.to_csv(file_name, sep='\t', index=False)
-        generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, rela_type, list(part_dataframe))
+            # qualifier
+            rela_type = row[3]
+            rela_type = rela_type.replace('|', '_')
+            if label not in dict_label_to_edge_type_to_csv_file:
+                dict_label_to_edge_type_to_csv_file[label] = {}
+            if rela_type not in dict_label_to_edge_type_to_csv_file[label]:
+                dict_label_to_edge_type_to_csv_file[label][rela_type] = generate_edges_files_and_cypher_queries(label,
+                                                                                                                rela_type,
+                                                                                                                header_edge)
+            row_edge = []
+            counter = 0
+            for head in header:
+                if head in header_edge and head != 'evidence':
+                    row_edge.append(row[counter])
+                elif head == 'evidence':
+                    row_edge.append(dict_evidence_code_to_evidence[row[counter]])
+                counter += 1
+            dict_label_to_edge_type_to_csv_file[label][rela_type].writerow(row_edge)
 
 
 def main():
@@ -235,24 +238,13 @@ def main():
     print(datetime.datetime.now())
     print('load')
 
-    for go_annotation_file_name in ['goa_human', 'goa_human_complex', 'goa_human_isoform', 'goa_human_rna']:
+    for go_annotation_file_name in ['goa_human']:
         print(datetime.datetime.now())
         print('load ' + go_annotation_file_name)
         prepare_go_annotation_file(go_annotation_file_name)
 
-    print('##########################################################################')
-
-    print(datetime.datetime.now())
-    print('generate node files and queries')
-
-    generate_nodes_files_and_cypher_queries()
-
-    print('##########################################################################')
-
-    print(datetime.datetime.now())
-    print('generate edge files and queries')
-
-    generate_edges_files_and_cypher_queries()
+    cypher_file.close()
+    cypher_file_edge.close()
 
     print('##########################################################################')
 
