@@ -26,7 +26,11 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'export database'
 
-python ../execute_cypher_shell.py $path_neo4j $password export_pharMeBINet.cypher > output/cypher.txt
+
+# create cypher file with query with variable path
+echo 'CALL apoc.export.graphml.all("'$path_to_pharMeBiNet'wholedata.graphml", {batchSize:10000, readLabels: true, storeNodeIds: false, useTypes: true});' > test.cypher
+
+python ../execute_cypher_shell.py $path_neo4j $password test.cypher > output/cypher.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
