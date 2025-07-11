@@ -42,7 +42,7 @@ sleep 120
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_file_edges.cypher > output/cypher1.txt
 
-sleep 60
+sleep 120
 
 python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
 
