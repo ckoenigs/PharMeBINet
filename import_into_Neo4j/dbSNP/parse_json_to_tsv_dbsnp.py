@@ -40,6 +40,7 @@ def open_json_file_write_into_csv(path_to_data):
         list_chromosome = list(range(1, 22))
         list_chromosome.append('X')
         list_chromosome.append('Y')
+        list_chromosome.append('MT')
         # list_chromosome=['Y']
         for chr in list_chromosome:
             url_file = url % (chr)
@@ -59,14 +60,14 @@ def open_json_file_write_into_csv(path_to_data):
     # json_file = open('data/refsnp-chrY.json', 'r')
     counter = 0
 
-    files = glob.glob(path_to_data + '/refsnp-chr*.json.bz2')
-    for file in files:
-        print(file)
-        print(datetime.datetime.now())
-        json_file = bz2.open(file, "rb")
-        print(datetime.datetime.now())
-        chr=file.split('refsnp-')[1].split('.json')[0]
-        prepare_a_single_node.run_through_list_of_nodes_as_json_string(path_of_directory, path_to_data, json_file,chr )
+    # files = glob.glob(path_to_data + '/refsnp-chr*.json.bz2')
+    # for file in files:
+    #     print(file)
+    #     print(datetime.datetime.now())
+    #     json_file = bz2.open(file, "rb")
+    #     print(datetime.datetime.now())
+    #     chr=file.split('refsnp-')[1].split('.json')[0]
+    #     prepare_a_single_node.run_through_list_of_nodes_as_json_string(path_of_directory, path_to_data, json_file,chr )
         # counter = 0
         # for line in json_file:
         #     counter += 1
@@ -77,7 +78,7 @@ def open_json_file_write_into_csv(path_to_data):
         #     if counter % 10000 == 0:
         #         print(counter)
         #         print(datetime.datetime.now())
-        sys.exit()
+        # sys.exit()
 
 
 def main():
