@@ -22,18 +22,6 @@ def create_connection_with_neo4j():
     g = driver.session(database='graph')
 
 
-def add_entry_to_dictionary(dictionary, key, value):
-    """
-    add entry  to dictionary
-    :param dictionary:
-    :param key:
-    :param value:
-    :return:
-    """
-    if key not in dictionary:
-        dictionary[key] = set()
-    dictionary[key].add(value)
-
 
 # dictionary rs id to clinvar ids
 dict_rs_id_to_clinvar_ids = {}
@@ -50,7 +38,7 @@ def get_all_variants_with_rs():
         [clinvar_id, xrefs] = record.values()
         for xref in xrefs:
             if xref.startswith('dbSNP'):
-                add_entry_to_dictionary(dict_rs_id_to_clinvar_ids, xref.split(':')[1], clinvar_id)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_rs_id_to_clinvar_ids, xref.split(':')[1], clinvar_id)
     print('number of rs ids:', len(dict_rs_id_to_clinvar_ids))
 
 
@@ -76,7 +64,7 @@ def load_already_extracted_infos_from_file(path_start):
     try:
         file_already_downloaded = open(file_name, 'r')
         counter_line = 0
-        for line in file_already_downloaded.readlines():
+        for line in file_already_downloaded:
             counter_line += 1
             node = ujson.loads(line)
             node_id = node['refsnp_id']
