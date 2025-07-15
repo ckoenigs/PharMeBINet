@@ -288,10 +288,9 @@ def create_node(path_of_directory, cypher_file):
 
     query = get_enzyme_reactant_set_properties()
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
+    cypher_file.write(pharmebinetutils.prepare_index_query('EnzymeReactantSet', 'identifier'))
     cypher_file.write(query)
 
-    query = pharmebinetutils.prepare_index_query('EnzymeReactantSet', 'identifier')
-    cypher_file.write(query)
     cypher_file.write('CALL db.awaitIndex("indexEnzymeReactantSet", 300);\n')
 
 

@@ -67,6 +67,10 @@ def generate_new_file_and_add_cypher_query(source):
     :param source:
     :return:
     """
+    # make sure folder exists
+    if not os.path.exists(path_of_directory):
+        os.mkdir(path_of_directory)
+
     file_name = 'new_node.tsv'
     file = open('chemical/' + file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
@@ -74,21 +78,27 @@ def generate_new_file_and_add_cypher_query(source):
 
     query = pharmebinetutils.get_all_properties_of_on_label % ('bindingDB_mono_struct_names')
     list_of_prop = []
+    list_of_prop_merge = []
     results = g.run(query)
     for result in results:
         [prop] = result.values()
         if prop not in ['monomerid', 'name', 'inchi_key', 'display_name', 'smiles_string',
                         'cd_smiles', 'cd_hash', 'cd_pre_calculated', 'cd_screen_descriptor',
-                        'cd_sortable_formula', 'cd_structure', 'cd_taut_hash'] and not prop.startswith('cd_fp'):
+                        'cd_sortable_formula', 'cd_structure', 'cd_taut_hash','cd_formula',
+                        'cd_timestamp', 'cd_taut_frag_hash', 'emp_form', 'cd_flags', 'het_pdb',
+                        'cd_molweight', 'n_pdb_ids_exact' ,'cd_id', 'taut_frag_hash'] and not prop.startswith('cd_fp'):
             if prop.startswith('cd_'):
                 list_of_prop.append(prop.replace('cd_','') + ':n.' + prop)
             list_of_prop.append(prop + ':n.' + prop)
+            list_of_prop_merge.append(f'm.{prop}= coalesce(m.{prop},n.{prop})')
+
         elif prop == 'inchi_key':
             list_of_prop.append('inchikey:n.' + prop)
+            list_of_prop_merge.append(f'm.inchikey= coalesce(m.inchikey,n.{prop})')
         elif prop == 'display_name':
             list_of_prop.append('bindingDB_id:n.' + prop)
-        # elif prop=='smiles_string':
-        #     list_of_prop.append('smiles:n.' + prop)
+        elif prop=='smiles_string':
+            list_of_prop_merge.append(f'm.smiles= coalesce(m.smiles,n.{prop})')
 
     query_cypher = 'Match (n:bindingDB_mono_struct_names{monomerid:line.id}) Create (m:Chemical{identifier:line.pubchem_id, smiles:line.smiles, name:line.name, xrefs:split(line.xrefs,"|"), url:"https://www.bindingdb.org/rwd/bind/chemsearch/marvin/MolStructure.jsp?monomerid="+line.id, source:"PubChem via BindingDB", bindingdb:"yes", resource:["BindingDB"], license:"CC BY 3.0 US Deed",  ' + ', '.join(
         list_of_prop) + '})-[:equal_binding{new:true}]->(n)'
@@ -99,13 +109,33 @@ def generate_new_file_and_add_cypher_query(source):
                                                      file_name,
                                                      query_cypher)
     cypher_file.write(query_cypher)
+
+
+    file_name = 'mapped_chemical.tsv'
+    file_path = os.path.join(path_of_directory, file_name)
+    header = ['node_id', 'pharmebinet_node_id', 'resource', 'mapping_method', 'xrefs']
+    # 'w+' creates file, 'w' opens file for writing
+    mode = 'w' if os.path.exists(file_path) else 'w+'
+    file = open(file_path, mode, encoding='utf-8', newline="")
+    csv_mapping = csv.writer(file, delimiter='\t')
+    csv_mapping.writerow(header)
+
+    cypher_file_path = os.path.join(source, 'cypher.cypher')
+    query = f' Match (n:bindingDB_mono_struct_names {{monomerid:line.node_id}}), (m:Chemical{{identifier:line.pharmebinet_node_id}})  Set m.bindingdb="yes", m.resource=split(line.resource,"|"), {", ".join(list_of_prop_merge)} Create (m)-[:equal_to_bindingDB_chemical{{mapped_with:line.mapping_method}}]->(n)'
+    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
+    cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              file_name,
+                                              query)
+    cypher_file.write(query)
+
     # query = 'Match (m:Chemical{identifier:line.pubchem_id}) Set m.name=line.name '
     # query = pharmebinetutils.get_query_import(path_of_directory,
     #                                           'manual_pubchem_to_name.tsv', query)
     # cypher_file.write(query)
     cypher_file.close()
 
-    return csv_writer
+    return csv_writer, csv_mapping
 
 
 def load_chemical_from_database_and_add_to_dict():
@@ -378,10 +408,7 @@ def main():
 
     print(datetime.datetime.now())
     print('Generate cypher and tsv file')
-    csv_mapping = general_function_bindingDB.generate_files(path_of_directory, 'mapped_chemical.tsv', source,
-                                                            'bindingDB_mono_struct_names', 'Chemical', ['monomerid'],
-                                                            ', v.xrefs=split(line.xrefs,"|") ')
-    csv_new = generate_new_file_and_add_cypher_query(source)
+    csv_new, csv_mapping = generate_new_file_and_add_cypher_query(source)
     print('##########################################################################')
 
     print(datetime.datetime.now())
