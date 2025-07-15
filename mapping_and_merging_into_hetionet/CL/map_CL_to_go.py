@@ -59,7 +59,7 @@ def load_CL_data_in_an_map_to_database(namespace, dict_pharmebinet, dict_alterna
     for record in results:
         go_node = record.data()['n']
         go_id = go_node['id']
-        go_name = go_node['names'][0]
+        go_name = go_node['name']
 
         if go_id in dict_pharmebinet:
             csv_writer.writerow([go_id, go_id, 'identifier',
