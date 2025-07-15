@@ -15,6 +15,9 @@ from urllib.parse import urlparse
 
 USE_VERSION_5 = True
 
+# path to database
+path_to_databases = '/mnt/System_Volume_Information/'
+
 # dictionary label to abbreviation
 dictionary_label_to_abbreviation = {
     'Anatomy': 'A', 'BiologicalProcess': 'BP', 'BlackBoxEvent': 'B', 'CellType': 'CT', 'CellularComponent': 'CC',
