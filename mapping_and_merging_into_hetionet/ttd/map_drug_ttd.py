@@ -40,64 +40,6 @@ def check_for_dictionary_and_return_dict(dict_current, key):
         dict_current[key] = {}
     return dict_current[key]
 
-def get_sub_dict(inchi_key, pubchem):
-    # inchikey_splited = inchi_key.split('-')
-    # # RDHQFKQIGNGIED-UHFFFAOYSA-N
-    # sub1_dict=check_for_dictionary_and_return_dict(dict_inchikey_to_pubchem_id, inchikey_splited[0][:3])
-    # sub2_dict = check_for_dictionary_and_return_dict(sub1_dict, inchikey_splited[0][3:6])
-    # sub3_dict = check_for_dictionary_and_return_dict(sub2_dict, inchikey_splited[0][6:9])
-    # sub4_dict = check_for_dictionary_and_return_dict(sub3_dict, inchikey_splited[0][9:12])
-    # sub5_dict = check_for_dictionary_and_return_dict(sub4_dict, inchikey_splited[0][12:14])
-    # sub6_dict = check_for_dictionary_and_return_dict(sub5_dict, inchikey_splited[1])
-    # if inchikey_splited[2] not in sub6_dict:
-    #     sub6_dict[inchikey_splited[2]] = set()
-    # sub6_dict[inchikey_splited[2]].add(pubchem)
-
-    #inchi_key = inchi_key.replace('-', '')
-    #current_dict = dict_inchikey_to_pubchem_id
-    #for i in range(len(inchi_key) - 1, 0, -1):
-    #    key = ord(inchi_key[i])
-    #    if key not in current_dict:
-    #        current_dict[key] = {}
-    #    current_dict = current_dict[key]
-    #key = ord(inchi_key[0])
-    #if key not in current_dict:
-    #    current_dict[key] = set()
-    #current_dict[key].add(pubchem)
-
-    test.add(pubchem)
-
-    # else:
-    #
-    #     print('ohno', inchi_key)
-    #     print(sub6_dict)
-    #     print(pubchem)
-
-def load_pubchem_data(path_start):
-    with open(path_start+'pubchem/pubchem_nodes.tsv','r',encoding='utf-8') as f:
-        csv_reader = csv.reader(f, delimiter='\t')
-        next(csv_reader)
-        counter=0
-        # 'PUBCHEM_COMPOUND_CID', 'PUBCHEM_CACTVS_TAUTO_COUNT', 'PUBCHEM_XLOGP3_AA', 'PUBCHEM_ATOM_UDEF_STEREO_COUNT',
-        #           'PUBCHEM_CACTVS_COMPLEXITY', 'PUBCHEM_IUPAC_INCHI', 'PUBCHEM_IUPAC_INCHIKEY', 'PUBCHEM_CACTVS_ROTATABLE_BOND',
-        #           'PUBCHEM_COORDINATE_TYPE', 'PUBCHEM_IUPAC_CAS_NAME', 'PUBCHEM_XLOGP3', 'PUBCHEM_ISOTOPIC_ATOM_COUNT',
-        #           'PUBCHEM_NONSTANDARDBOND', 'PUBCHEM_MOLECULAR_WEIGHT', 'PUBCHEM_CACTVS_HBOND_ACCEPTOR', 'PUBCHEM_IUPAC_NAME',
-        #           'PUBCHEM_COMPONENT_COUNT', 'PUBCHEM_CACTVS_HBOND_DONOR', 'PUBCHEM_MOLECULAR_FORMULA',
-        #           'PUBCHEM_MONOISOTOPIC_WEIGHT', 'PUBCHEM_CACTVS_SUBSKEYS', 'PUBCHEM_HEAVY_ATOM_COUNT',
-        #           'PUBCHEM_IUPAC_SYSTEMATIC_NAME', 'PUBCHEM_COMPOUND_CANONICALIZED', 'PUBCHEM_BONDANNOTATIONS',
-        #           'PUBCHEM_OPENEYE_CAN_SMILES', 'PUBCHEM_IUPAC_TRADITIONAL_NAME', 'PUBCHEM_CACTVS_TPSA',
-        #           'PUBCHEM_IUPAC_NAME_MARKUP', 'PUBCHEM_TOTAL_CHARGE', 'PUBCHEM_EXACT_MASS', 'PUBCHEM_BOND_DEF_STEREO_COUNT',
-        #           'PUBCHEM_BOND_UDEF_STEREO_COUNT', 'PUBCHEM_ATOM_DEF_STEREO_COUNT', 'PUBCHEM_OPENEYE_ISO_SMILES',
-        #           'PUBCHEM_REFERENCE_STANDARDIZATION', 'PUBCHEM_IUPAC_OPENEYE_NAME'
-        for line in csv_reader:
-            pubmed_id= int(line[0])
-            inchikey= line[6]
-            get_sub_dict(inchikey, pubmed_id)
-
-            counter+=1
-            if counter % 5_000_000 == 0:
-                print(counter,datetime.datetime.now())
-
 
 
 def load_already_extracted_infos_from_file():
@@ -461,10 +403,6 @@ def main():
     print('create connection')
     create_connection_with_neo4j()
 
-    # print(datetime.datetime.now())
-    # print('load pubchem data')
-    # path_start = '/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/'
-    # load_pubchem_data( path_start)
 
     print('#' * 50)
     print(datetime.datetime.now())
