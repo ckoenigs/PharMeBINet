@@ -59,12 +59,14 @@ def generate_files(path_of_directory):
     results = g.run(information_query)
 
     query = '''Match (n:snp_dbSNP{identifier:line.dbsnp_id}), (v:Variant{identifier:line.variant_id}) Set '''
-    for record in results:
-        property = record.data()['l']
+    for property, in results:
         if property in ['is_alt', 'license', 'is_top_level', 'last_update_build_id', 'deleted_sequence', 'identifier',
                         'is_patch', 'is_chromosome', 'xrefs', 'clinical_variant_ids']:
             continue
-        query += 'v.' + property + '=n.' + property + ', '
+        if property not in {'position','chromosome'}:
+            query += 'v.' + property + '=n.' + property + ', '
+        else:
+            query += 'v.' + property + f'=COALESCE(v.{property},n.' + property + '), '
 
     query += '''v.dbsnp="yes", v.url="https://www.ncbi.nlm.nih.gov/snp/"+line.dbsnp_id, v.resource=split(line.resource,"|"), v.source='dbSNP', v.license='https://www.ncbi.nlm.nih.gov/home/about/policies/' ,v.xrefs=split(line.xrefs,"|") Create (v)-[:equal_to_drugbank_variant]->(n)'''
 
