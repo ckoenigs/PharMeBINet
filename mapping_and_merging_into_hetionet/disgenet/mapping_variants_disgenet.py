@@ -72,7 +72,7 @@ def generate_files(path_of_directory):
                                               file_name + '.tsv',
                                               query)
     cypher_file.write(query)
-    query = f' Match (n:variant_DisGeNet{{snpId:line.identifier}}) Create (p:Variant :GeneVariant{{identifier:n.snpId, chromosome:n.chromosome, position:n.position, resource:["DisGeNet"], xrefs:["dbSNP:"+n.snpId], disgenet:"yes", source:"dbSNP from DisGeNet" }}) Create (p)-[:equal_to_DisGeNet_variant{{mapped_with:"new"}}]->(n)'
+    query = f' Match (n:variant_DisGeNet{{snpId:line.identifier}}) Create (p:Variant :GeneVariant{{identifier:n.snpId, resource:["DisGeNet"], xrefs:["dbSNP:"+n.snpId], disgenet:"yes", source:"dbSNP from DisGeNet" }}) Create (p)-[:equal_to_DisGeNet_variant{{mapped_with:"new"}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               'not_mapped.tsv',
                                               query)
