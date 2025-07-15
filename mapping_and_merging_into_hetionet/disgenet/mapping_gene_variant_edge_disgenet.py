@@ -74,7 +74,7 @@ def get_DisGeNet_information():
     counter_not_mapped = 0
     counter_all = 0
 
-    query = "MATCH (n:Variant)--(a:variant_DisGeNet)-[r]-(:gene_DisGeNet)--(p:Gene) RETURN n.identifier, r, p.identifier, a.snpId"
+    query = "MATCH (n:Variant)--(a:variant_DisGeNet)-[r]-(:gene_DisGeNet)--(p:Gene) Where 'DBSNP' in r.sourceId RETURN n.identifier, r, p.identifier, a.snpId"
     results = g.run(query)
 
     for record in results:
