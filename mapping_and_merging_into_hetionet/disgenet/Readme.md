@@ -39,7 +39,7 @@ Next, the DisGeNET gene-protein edges are prepared:
 In the next step, the DisGeNet gene-variant edges are prepared:
     First, the existing gene-variant pairs are loaded and written into a dictionary.
     Next, the TSV file for existing edges and new edges are prepared.
-    Then, the gene-variant pairs which are connected to PharMeBINet are loaded and written into the different TSV files depending on if they exist or not.
+    Then, the gene-variant pairs which are connected to PharMeBINet and from dbSNP are loaded and written into the different TSV files depending on if they exist or not.
     In the last step, the cypher queries are generated and added to the cypher file.
 
 The last program, prepare the DisGeNet gene/variant-disease/symptom edges:
