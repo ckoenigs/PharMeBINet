@@ -97,9 +97,9 @@ def get_properties_and_generate_tsv_files_and_cypher_file():
         query_create = pharmebinetutils.get_query_import(path_of_directory,
                                                          f'mapping_and_merging_into_hetionet/uberon/{file_name_new}',
                                                          query_create)
-        cypher_file.write(query_create)
         cypher_file.write(pharmebinetutils.prepare_index_query('Anatomy','identifier'))
         cypher_file.write(pharmebinetutils.prepare_index_query_text('Anatomy', 'name'))
+        cypher_file.write(query_create)
 
     with open('output/cypher_edge.cypher','w', encoding='utf-8') as cypher_file:
         query = 'Match (n:Anatomy)--(:uberon_extend)-[:is_a]->(:uberon_extend)--(m:Anatomy) Create (n)-[:IS_A_AiaA{uberon:"yes",  url:"http://purl.obolibrary.org/obo/"+ split(n.identifier,":")[0]+"_"+ split(n.identifier,":")[1], license:"CC BY 3.0", source:"UBERON", resource:["UBERON"]}]->(m);\n'

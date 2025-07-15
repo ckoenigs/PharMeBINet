@@ -71,9 +71,9 @@ def generate_cypher_file():
     query_new = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/sider/output/se_new.tsv',
                                                   query_new)
-    cypher_file.write(query_new)
     cypher_file.write(pharmebinetutils.prepare_index_query('SideEffect','identifier'))
     cypher_file.write(pharmebinetutils.prepare_index_query_text('SideEffect', 'name'))
+    cypher_file.write(query_new)
     query_new = ' Match   (n:SideEffect{identifier:line.identifier}) Where line.conceptName is not NULL Set n.synonyms=[line.conceptName]'
     query_new = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/sider/output/se_new.tsv',

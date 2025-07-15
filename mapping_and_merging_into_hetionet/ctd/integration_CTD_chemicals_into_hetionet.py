@@ -922,9 +922,9 @@ def generate_cypher_file():
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ctd/chemical/chemicals.tsv',
                                               query)
-    cypher_file.write(query)
     cypher_file.write(pharmebinetutils.prepare_index_query('Chemical', 'identifier'))
     cypher_file.write(pharmebinetutils.prepare_index_query_text('Chemical', 'name'))
+    cypher_file.write(query)
     cypher_file.close()
 
 

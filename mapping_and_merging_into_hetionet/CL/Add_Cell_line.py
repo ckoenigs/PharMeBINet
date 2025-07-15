@@ -98,9 +98,9 @@ def create_tsv_files():
 
     # cypher file
     with open('output/cypher.cypher', 'w', encoding='utf-8') as cypher_file:
-        cypher_file.write(query)
         cypher_file.write(pharmebinetutils.prepare_index_query(label,'identifier'))
         cypher_file.write(pharmebinetutils.prepare_index_query_text(label, 'name'))
+        cypher_file.write(query)
     file = open(file_name, 'w')
     tsv_file = csv.writer(file, delimiter='\t')
     tsv_file.writerow(['identifier', 'xrefs'])

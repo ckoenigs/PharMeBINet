@@ -26,6 +26,10 @@ def get_all_metabolites_with_xrefs():
     xrefs. Then write into tsv file.
     :return:
     """
+    # add an indice on metabolite
+    cypher_file.write(pharmebinetutils.prepare_index_query('Metabolite', 'identifier'))
+    cypher_file.write(pharmebinetutils.prepare_index_query_text('Metabolite', 'name'))
+
     file_name = 'metabolite/new.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
@@ -38,10 +42,6 @@ def get_all_metabolites_with_xrefs():
                                                      f'mapping_and_merging_into_hetionet/hmdb/{file_name}',
                                                      cypher_query)
     cypher_file.write(cypher_query)
-
-    # add an indice on metabolite
-    cypher_file.write(pharmebinetutils.prepare_index_query('Metabolite', 'identifier'))
-    cypher_file.write(pharmebinetutils.prepare_index_query_text('Metabolite', 'name'))
     #  Where p.status in ["quantified","detected"]
     query = 'MATCH (p:Metabolite_HMDB) Where p.status<>"predicted" Return p.identifier, p.xrefs'
     results = g.run(query)

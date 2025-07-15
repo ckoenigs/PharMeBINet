@@ -130,10 +130,10 @@ def prepare_files(label):
     query_meta_node = pharmebinetutils.get_query_import(path_of_directory,
                                                         f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
                                                         query_meta_node)
-    cypher_file.write(query_meta_node)
     if not add_constraint:
         cypher_file.write(pharmebinetutils.prepare_index_query('VariantAnnotation', 'identifier'))
         add_constraint = True
+    cypher_file.write(query_meta_node)
 
     return csv_file
 

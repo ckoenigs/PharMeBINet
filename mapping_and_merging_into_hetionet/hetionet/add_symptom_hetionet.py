@@ -56,9 +56,9 @@ def generate_cypher_queries():
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   'mapping_and_merging_into_hetionet/hetionet/output/symptoms.tsv',
                                                   query)
-        cypher_file.write(query)
         cypher_file.write(pharmebinetutils.prepare_index_query('Symptom', 'identifier'))
         cypher_file.write(pharmebinetutils.prepare_index_query_text('Symptom', 'name'))
+        cypher_file.write(query)
         cypher_file.close()
 
 

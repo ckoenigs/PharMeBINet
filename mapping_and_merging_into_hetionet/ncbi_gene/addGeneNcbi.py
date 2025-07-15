@@ -83,9 +83,9 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ncbi_gene/output/genes.tsv',
                                               query)
-    cypher_file.write(query)
     cypher_file.write(pharmebinetutils.prepare_index_query('Gene', 'identifier'))
     cypher_file.write(pharmebinetutils.prepare_index_query_text('Gene', 'name'))
+    cypher_file.write(query)
     cypher_file.close()
 
     query = '''MATCH (n:Gene_Ncbi) RETURN n.full_name_from_nomenclature_authority, n;'''

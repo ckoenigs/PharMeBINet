@@ -47,8 +47,8 @@ def generate_file_and_cypher():
                                               f'mapping_and_merging_into_hetionet/reactome/{file_name}.tsv',
                                               query)
     header = ['drug_reactome_id', 'disease_reactome_id', 'id', 'stoichiometry', 'order', 'stid']
-    cypher_file.write(query)
     cypher_file.write(pharmebinetutils.prepare_index_query('Treatment', 'identifier'))
+    cypher_file.write(query)
     query = '''Match (i:Treatment{identifier:"T_"+line.id}), (c:CellularComponent{identifier:line.go_id}) Set i.subcellular_location="GO term enrichment" Create (i)-[:IS_LOCALIZED_IN_TiliCC{license:"%s", url:i.url, reactome:"yes", source:"Reactome", resource:["Reactome"]}]->(c)'''
     query = query % (license)
     query = pharmebinetutils.get_query_import(path_of_directory,

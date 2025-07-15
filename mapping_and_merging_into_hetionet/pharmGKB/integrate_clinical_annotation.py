@@ -100,8 +100,8 @@ def prepare_files(directory):
     query_meta_node = pharmebinetutils.get_query_import(path_of_directory,
                                                         f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
                                                         query_meta_node)
-    cypher_file.write(query_meta_node)
     cypher_file.write(pharmebinetutils.prepare_index_query('ClinicalAnnotation', 'identifier'))
+    cypher_file.write(query_meta_node)
 
     for rela, rela_name in dict_label_to_rela_name.items():
         generate_rela_files(directory, rela, rela_name)

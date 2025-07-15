@@ -156,10 +156,10 @@ def cypher(keys, file_name, label, unique_identifier):
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/RNAcentral/{file_name}',
                                               query)
-    cypher_file.write(query)
-
     cypher_file.write(pharmebinetutils.prepare_index_query(label, unique_identifier))
     cypher_file.write(pharmebinetutils.prepare_index_query_text(label, 'name'))
+    cypher_file.write(query)
+
 
 
 def main():

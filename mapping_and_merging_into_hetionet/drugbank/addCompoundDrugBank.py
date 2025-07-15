@@ -143,10 +143,10 @@ def create_cypher_file():
     query_create = pharmebinetutils.get_query_import(path_of_directory,
                                                      f'mapping_and_merging_into_hetionet/drugbank/output/new_nodes.tsv',
                                                      query_create)
-    cypher_file.write(query_create)
 
     cypher_file.write(pharmebinetutils.prepare_index_query('Compound', 'identifier'))
     cypher_file.write(pharmebinetutils.prepare_index_query_text('Compound', 'name'))
+    cypher_file.write(query_create)
 
 
 def generation_of_interaction_file():

@@ -176,11 +176,11 @@ def generate_cypher_queries():
     query_new = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/monDO/output/new_nodes.tsv',
                                                   query_new)
-    cypher_file.write(query_new)
     cypher_file.write(pharmebinetutils.prepare_index_query("Disease","identifier"))
     cypher_file.write(pharmebinetutils.prepare_index_query_text('Disease', 'name'))
     cypher_file.write(pharmebinetutils.prepare_index_query("Phenotype","identifier"))
     cypher_file.write(pharmebinetutils.prepare_index_query_text('Phenotype', 'name'))
+    cypher_file.write(query_new)
 
     cypher_file.close()
     query_rela = ''' Match (a:Disease{identifier:line.id_1}),(b:Disease{identifier:line.id_2}) Create (a)-[r:IS_A_DiaD{ unbiased:false, url:"https://monarchinitiative.org/disease/"+ line.id_1,  source:"Monarch Disease Ontology", resource:['MonDO'] , mondo:'yes', license:"CC-BY-SA 3.0"}]->(b) '''
