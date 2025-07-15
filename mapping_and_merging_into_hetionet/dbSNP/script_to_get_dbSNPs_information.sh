@@ -32,7 +32,8 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo "snp information for integrated dbSNP nodes"
 
-python3 extract_dbSNP_info_for_integrated_node.py $path_to_project "${license}" $path_to_data > output/output.txt
+#python3 extract_dbSNP_info_for_integrated_node.py $path_to_project "${license}" $path_to_data > output/output.txt
+python3 extract_dbSNP_info_for_integration_from_files.py $path_to_project "${license}" $path_to_data #> output/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
