@@ -82,8 +82,8 @@ def write_info_into_tsv_file():
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/uniprot/{file_name}',
                                               query)
-    file_cypher.write(query)
     file_cypher.write(pharmebinetutils.prepare_index_query('Interaction', 'identifier'))
+    file_cypher.write(query)
 
     counter = 0
 
