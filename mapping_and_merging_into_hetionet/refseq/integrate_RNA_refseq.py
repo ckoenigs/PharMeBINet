@@ -89,8 +89,7 @@ def load_in_all_pre_miRNA(query, label, additional_label, property_name):
     results = g.run(query)
 
     counter = 0
-    for record in results:
-        identifier = record.data()['n.id']
+    for identifier, in results:
 
         csv_writer.writerow([identifier, general_function_refseq.prepare_url_id(identifier)])
         counter += 1
@@ -138,7 +137,7 @@ def prepare_edge():
     print('number of edges', counter)
 
     with open('output/cypher_edge.cypher', 'w', encoding='utf-8') as cypher_file_edge:
-        query = 'MATCH (n:RNA{identifier:line.mirna_id}),(m:RNA{identifier:line.pre_id}) Create (m)-[:CLEAVES_TO_RctR{start:line.start, end:line.end, strand:line.strand, source:"RefSeq via "+line.source, resource:["RefSeq"], license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", url:"https://identifiers.org/refseq:"+line.url, refseq:"yes"}]->(n)'
+        query = 'MATCH (n:RNA{identifier:line.mirna_id}),(m:RNA{identifier:line.pre_id}) Set n.url="https://identifiers.org/refseq:"+line.url Create (m)-[:CLEAVES_TO_RctR{start:line.start, end:line.end, strand:line.strand, source:"RefSeq via "+line.source, resource:["RefSeq"], license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", url:"https://identifiers.org/refseq:"+line.url, refseq:"yes"}]->(n)'
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/refseq/{file_name}',
                                                   query)
