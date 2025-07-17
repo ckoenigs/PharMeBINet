@@ -85,6 +85,12 @@ python3 CreateComplexEdges.py $path_to_project "${license}" > ComplexEdges/outpu
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo Complex relationships
+
+python3 CreateCellTypeToNodes.py $path_to_project "${license}" > ComplexEdges/output.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
 echo Catalyst activity relationships
 
 python3 CreateEdgeCatalystActivity.py $path_to_project "${license}" > CatalystActivityEdges/output.txt

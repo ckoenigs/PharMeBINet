@@ -28,6 +28,7 @@ if [ ! -d output ]; then
   mkdir treatment
   mkdir uniprotIDs
   mkdir IUPHAR
+  mkdir CellType
   cd IUPHAR
   wget https://www.guidetopharmacology.org/DATA/ligands.csv
   cd ..
