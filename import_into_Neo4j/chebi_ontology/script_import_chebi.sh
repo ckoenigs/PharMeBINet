@@ -20,7 +20,8 @@ fi
 
 
 #download co
-wget  -O data/chebi.obo "https://ftp.ebi.ac.uk/pub/databases/chebi/ontology/chebi.obo"
+# wget  -O data/chebi.obo "https://ftp.ebi.ac.uk/pub/databases/chebi/ontology/chebi.obo"
+python3 download_chebi.py > output/download.txt
 
 
 python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/chebi.obo chebi_ontology Chemical_ChebiOntology $path_to_project > output/output_generate_integration_file.txt
@@ -28,14 +29,14 @@ python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/chebi.obo chebi_onto
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate co into neo4j
+echo integrate chebi nodes into neo4j
 
 python ../../execute_cypher_shell.py $path_neo4j $password cypher.cypher > output/cypher.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate co into neo4j
+echo integrate chebi edges into neo4j
 
 python ../../execute_cypher_shell.py $path_neo4j $password cypher_edge.cypher > output/cypher.txt
 
