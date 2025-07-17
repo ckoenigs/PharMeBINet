@@ -351,6 +351,15 @@ cd bindingDB
 
 cd ..
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo pubchem
+cd pubchem
+
+./script_to_get_pubchems_information.sh $path_neo4j $path_to_project $password > output_script.txt
+
+cd ..
+
 cd med_rt/
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -614,7 +623,7 @@ echo "Current time: $now"
 echo dbSNP
 cd dbSNP
 
-./script_to_get_dbSNPs_information.sh $path_neo4j $path_to_project $password $path_to_other_place_of_data > output_script.txt
+./script_to_get_dbSNPs_information.sh $path_neo4j $path_to_project $password $path_to_other_place_of_data #> output_script.txt
 
 cd ..
 
