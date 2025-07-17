@@ -109,16 +109,16 @@ echo DDinter
 
 cd ..
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-cd foodb 
-echo Foodb
-
-./script_foodb.sh $path_neo4j $path_to_project $password > output.txt
-
-
-cd ..
+#now=$(date +"%F %T")
+#echo "Current time: $now"
+#
+#cd foodb
+#echo Foodb
+#
+#./script_foodb.sh $path_neo4j $path_to_project $password > output.txt
+#
+#
+#cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -574,21 +574,21 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-cd  ClinVar
-echo ClinVar
+cd ctd
+echo ctd
 
-./script_clinvar.sh $path_neo4j $path_to_project $path_to_other_place_of_data $password > output_script.txt
+./script_ctd.sh $path_to_other_place_of_data $path_neo4j $password > output.txt
+
 
 cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-cd ctd
-echo ctd
+cd  ClinVar
+echo ClinVar
 
-./script_ctd.sh $path_to_other_place_of_data $path_neo4j $password > output.txt
-
+./script_clinvar.sh $path_neo4j $path_to_project $path_to_other_place_of_data $password > output_script.txt
 
 cd ..
 
