@@ -7,7 +7,18 @@ import openbabel.pybel
 import datetime
 
 sys.path.append("../..")
+import create_connection_to_databases
 import pharmebinetutils
+
+
+def create_connection_with_neo4j_mysql():
+    """
+    create connection to neo4j and mysql
+    :return:
+    """
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session(database='graph')
 
 # https://www.rdkit.org/UGM/2012/Landrum_RDKit_UGM.Fingerprints.Final.pptx.pdf
 # rdkit dictionary for fingerprint functions
@@ -43,21 +54,6 @@ dict_rdfkit_similarity_metric = {
 pybel_fingerprints = ['FP2', 'FP3', 'FP4', 'MACCS']
 
 
-def transform_into_ob_and_rdkit_fromart(start_path):
-    """
-    transform sdf file into open babel and rdkit formart
-    :return: mol_pybel, mol_rdkit
-    """
-    path_to_sdf = start_path+'Drugbank_database/drugbank_files_without_preperation/structure/structures.sdf'
-    # path_to_sdf='data/structures.sdf'
-    # rdkit data
-    supplier = rdkit.Chem.SDMolSupplier(path_to_sdf)
-    mols_rdf = [x for x in supplier]
-
-    mols_pyble = list(openbabel.pybel.readfile("sdf", path_to_sdf))
-    return mols_pyble, mols_rdf
-
-
 def openbabel_mol_to_smiles(mol):
     return mol.write("smi")
 
@@ -72,7 +68,7 @@ dict_rdkit_id_to_fingerprints = {}
 dict_pybel_id_to_fingerprints = {}
 
 
-def prepare_fingerprints(mols_pyble, mols_rdf):
+def prepare_fingerprints():
     """
     run to all ob/rdkit structures and calculate the different fingerprints and write into dictionaries
     :param mols_pyble:
@@ -80,43 +76,33 @@ def prepare_fingerprints(mols_pyble, mols_rdf):
     :return:
     """
     counter = 0
+    query = 'Match (n:Compound) Where not n.smiles is null Return n.identifier, n.smiles'
+    for identifier, smiles, in g.run(query):
 
-    for mol_pybel in mols_pyble:
-        mol_rdk = mols_rdf[counter]
-
-        # some smiles are not correct and they do not need to be checked
-        if mol_rdk is None:
-            counter += 1
-            continue
-
-        drugbank_id = mol_pybel.data['DATABASE_ID']
+        pyble_mol = openbabel.pybel.readstring('smi', smiles)
         # print(drugbank_id)
         dict_pybel = {}
         for fingerprint_formart in pybel_fingerprints:
-            fingerprint = mol_pybel.calcfp(fptype=fingerprint_formart)
+            fingerprint = pyble_mol.calcfp(fptype=fingerprint_formart)
             dict_pybel[fingerprint_formart] = fingerprint
-        dict_pybel_id_to_fingerprints[drugbank_id] = dict_pybel
+        dict_pybel_id_to_fingerprints[identifier] = dict_pybel
 
         dict_rdkit = {}
-
+        rdkit_mol = rdkit_smiles_to_mol(smiles)
         for key, funct in dict_rdfkit_fingerprint.items():
             if key.startswith('morgan'):
-                fingerprint = funct(mol_rdk, 2)
+                fingerprint = funct(rdkit_mol, 2)
             else:
-                fingerprint = funct(mol_rdk)
+                fingerprint = funct(rdkit_mol)
             dict_rdkit[key] = fingerprint
-        dict_rdkit_id_to_fingerprints[drugbank_id] = dict_rdkit
+        dict_rdkit_id_to_fingerprints[identifier] = dict_rdkit
 
-        if drugbank_id == 'DB00006':
+        if identifier == 'DB00006':
             print(dict_pybel_id_to_fingerprints)
             print(dict_rdkit_id_to_fingerprints)
 
         counter += 1
 
-
-# print(dict_pybel_id_to_fingerprints.keys())
-# print(len(dict_pybel_id_to_fingerprints))
-# print(dict_pybel_id_to_fingerprints['DB00006'])
 
 # set the threshold
 threshold = 0.75
@@ -247,9 +233,9 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Extract information from sdf into rdkit and open babel')
+    print('create connection to databases')
 
-    mol_pybel, mol_rdkit = transform_into_ob_and_rdkit_fromart(start_path)
+    create_connection_with_neo4j_mysql()
 
     print(
         '###########################################################################################################################')
@@ -257,7 +243,7 @@ def main():
     print(datetime.datetime.now())
     print('Calculate different fingerprints')
 
-    prepare_fingerprints(mol_pybel, mol_rdkit)
+    prepare_fingerprints()
 
     print(
         '###########################################################################################################################')
