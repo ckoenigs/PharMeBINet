@@ -1,0 +1,36 @@
+Moa	edge_type
+activator	upregulates
+agonist	regulates
+antagonist	downregulates
+antisense	is_active_on_DNA_or_RNA_level
+binder	binds
+blocker	downregulates
+breaker	downregulates
+car-t-cell-therapy	degenerates
+chelator	associates
+co-agonist	regulates
+cofactor	regulates
+degrader	degenerates
+disrupter	is_active_on_polypeptide_level
+enhancer	upregulates
+immune response agent	associates
+immunomodulator	associates
+immunostimulant	upregulates
+inactivator	downregulates
+inducer	upregulates
+inhibitor	inhibits
+intercalator	is_active_on_DNA_or_RNA_level
+inverse agonist	regulates
+ligand	is_active_on_polypeptide_level
+mimetic	mimics
+modulator	regulates
+opener	is_active_on_cellular_level
+partial agonist	regulates
+potentiator	regulates
+reactivator	upregulates
+regulator	regulates
+replacement	is_active_on_DNA_or_RNA_level
+stabilizer	is_active_on_cellular_level
+stablizer	is_active_on_cellular_level
+stimulator	regulates
+suppressor	regulates
