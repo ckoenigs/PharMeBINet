@@ -161,7 +161,7 @@ def add_nodes_to_different_files(results, set_not_considered_nodes, dict_nodes, 
         set_xrefs = {x.split(':')[0] for x in xrefs_uberon}
         has_human_xref= bool(set_xrefs & set_human_xrefs)
         # consider no human nodes as next generation node but only add nodes to tsv if they are human or without reference
-        if (node_id in dict_anatomy_id_to_human and dict_anatomy_id_to_human[node_id] == False and not has_human_xref and 'human_reference_atlas' in subsets  ):
+        if (node_id not in dict_anatomy_id_to_human or (node_id in dict_anatomy_id_to_human and dict_anatomy_id_to_human[node_id] == False)) and not has_human_xref and (not subsets or (subsets and not 'human_reference_atlas' in subsets  )):
             continue
 
         # if not has human xref but xrefs from other taxonomies continue
