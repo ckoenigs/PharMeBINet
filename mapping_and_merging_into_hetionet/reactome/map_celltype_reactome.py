@@ -29,7 +29,7 @@ create the tsv files
 def create_tsv_files():
     # prepare file and queries for new nodes
     file_name = 'output/map_ct.tsv'
-    query = f'Match (d: {label} {{identifier: line.id_pharmebinet}}),(c:{reactome_label} {{dbId:line.id}}) Create (d)-[: equal_to_reactome_ct]->(c) SET d.resource = split(line.resource, "|"), d.reactome = "yes"'
+    query = f'Match (d: {label} {{identifier: line.id_pharmebinet}}),(c:{reactome_label} {{dbId:toInteger(line.id)}}) Create (d)-[: equal_to_reactome_ct]->(c) SET d.resource = split(line.resource, "|"), d.reactome = "yes"'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/{file_name}',
                                               query)

@@ -30,21 +30,21 @@ def load_pharmebinet_complex_pharmebinet_node_in(csv_file, dict_complex_pharmebi
                                                  new_relationship,
                                                  node_reactome_label, node_pharmebinet_label, direction1,
                                                  direction2):
-    query = '''MATCH (p:MolecularComplex)-[:equal_to_reactome_complex]-(r:Complex_reactome)%s[v:%s]%s(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, n.displayName'''
+    query = '''MATCH (p:CellType)-[]-(r:CellType_reactome)%s[v:%s]%s(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, n.displayName, n.stId'''
     query = query % (
         direction1, new_relationship, direction2, node_reactome_label, node_pharmebinet_label)
     results = graph_database.run(query)
     print(query)
     # for id1, id2, order, stoichiometry, in results:
     for record in results:
-        [complex_id, node_id, order, stoichiometry, displayName] = record.values()
+        [complex_id, node_id, order, stoichiometry, displayName, stId] = record.values()
         if "ReferenceEntity" in query:
             displayName = displayName.split("[")
             compartment = displayName[1]
             compartment = compartment.replace("]", "")
             if (complex_id, node_id) not in dict_complex_pharmebinet_node_pharmebinet:
                 dict_complex_pharmebinet_node_pharmebinet[(complex_id, node_id)] = [stoichiometry, order,
-                                                                                    set([compartment])]
+                                                                                    set([compartment]), stId]
                 continue
             else:
                 # print(complex_id, node_id)
@@ -55,13 +55,13 @@ def load_pharmebinet_complex_pharmebinet_node_in(csv_file, dict_complex_pharmebi
             # if (complex_id, node_id) in dict_complex_pharmebinet_node_pharmebinet:
             #     print(complex_id, node_id)
             #     sys.exit("Doppelte Kombination")
-            dict_complex_pharmebinet_node_pharmebinet[(complex_id, node_id)] = [stoichiometry, order]
-            csv_file.writerow([complex_id, node_id, order, stoichiometry])
+            dict_complex_pharmebinet_node_pharmebinet[(complex_id, node_id)] = [stoichiometry, order, stId]
+            csv_file.writerow([complex_id, node_id, order, stoichiometry,stId])
 
     if "ReferenceEntity" in query:
         for (complex_id, node_id), [stoichiometry, order,
-                                    compartment] in dict_complex_pharmebinet_node_pharmebinet.items():
-            csv_file.writerow([complex_id, node_id, order, stoichiometry, "|".join(compartment)])
+                                    compartment, stId] in dict_complex_pharmebinet_node_pharmebinet.items():
+            csv_file.writerow([complex_id, node_id, order, stoichiometry, "|".join(compartment), stId])
     print('number of complex-' + node_reactome_label + ' relationships in pharmebinet:' + str(
         len(dict_complex_pharmebinet_node_pharmebinet)))
 
@@ -73,9 +73,9 @@ generate new relationships between complex of pharmebinet and complex of pharmeb
 
 def create_cypher_file(file_path, node_label, rela_name, direction1, direction2):
     if node_label == "Protein" or node_label == "Chemical":
-        query = ''' MATCH (d:MolecularComplex{identifier:line.id_pharmebinet_Complex}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, source:'Reactome', url:"https://reactome.org/content/detail/"+line.id_pharmebinet_Complex, compartments: split(line.compartment, "|"), resource: ['Reactome'], reactome: "yes", license:"CC BY 4.0"}]%s(c)'''
+        query = ''' MATCH (d:CellType{identifier:line.id_pharmebinet}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, source:'Reactome', url:"https://reactome.org/content/detail/"+line.stId, compartments: split(line.compartment, "|"), resource: ['Reactome'], reactome: "yes", license:"CC BY 4.0"}]%s(c)'''
     else:
-        query = ''' MATCH (d:MolecularComplex{identifier:line.id_pharmebinet_Complex}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", source:'Reactome', url:"https://reactome.org/content/detail/"+line.id_pharmebinet_Complex, license:"CC BY 4.0"}]%s(c)'''
+        query = ''' MATCH (d:CellType{identifier:line.id_pharmebinet}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", source:'Reactome', url:"https://reactome.org/content/detail/"+line.stId, license:"CC BY 4.0"}]%s(c)'''
     query = query % (node_label, direction1, rela_name, direction2)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/{file_path}',
@@ -92,15 +92,15 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
     print(datetime.datetime.now())
     print('Load all relationships from pharmebinet_Complex and pharmebinet_nodes into a dictionary')
     # file for mapped or not mapped identifier
-    file_name = directory + '/mapped_Complex_to_' + node_reactome_label[0:24] + '_' + rela_name + '.tsv'
+    file_name = directory + '/mapped_CellType_to_' + node_pharmebinet_label + '_' + rela_name + '.tsv'
 
     file_mapped_complex_to_node = open(file_name, 'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_complex_to_node, delimiter='\t', lineterminator='\n')
 
     if "Chemical" in node_pharmebinet_label or "Protein" in node_pharmebinet_label:
-        csv_mapped.writerow(['id_pharmebinet_Complex', 'id_pharmebinet_node', 'order', 'stoichiometry', 'compartment'])
+        csv_mapped.writerow(['id_pharmebinet', 'id_pharmebinet_node', 'order', 'stoichiometry', 'compartment', 'stId'])
     else:
-        csv_mapped.writerow(['id_pharmebinet_Complex', 'id_pharmebinet_node', 'order', 'stoichiometry'])
+        csv_mapped.writerow(['id_pharmebinet', 'id_pharmebinet_node', 'order', 'stoichiometry', 'stId'])
     dict_Complex_node = {}
 
     load_pharmebinet_complex_pharmebinet_node_in(csv_mapped, dict_Complex_node, new_relationship,
@@ -133,40 +133,15 @@ def main():
     # 2: name of node in PharMeBINet;       3: name of new relationship  4: relationship direction left
     # 5: relationship direction right
     list_of_combinations = [
-        ['input', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'IS_INPUT_OF_MCiioRLE', '<-', '-', '-', '->'],
 
-        ['output', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'IS_OUTPUT_OF_MCiooRLE', '<-', '-', '-', '->'],
+        ['cellType', 'PhysicalEntity_reactome)--(a:ReferenceEntity_reactome', 'Chemical',
+         'IS_IN_CELL_TYPE_CHiictCT', '<-', '-', '<-', '-'],
+        ['cellType', 'PhysicalEntity_reactome)--(a:ReferenceEntity_reactome', 'Protein',
+         'IS_IN_CELL_TYPE_CHiictP', '<-', '-', '<-', '-'],
 
-        ['requiredInputComponent', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent',
-         'IS_REQUIRED_INPUT_COMPONENT_RLEiricMC', '<-', '-', '<-', '-'],
-
-        ['cellType', 'CellType_reactome', 'CellType',
-         'IS_IN_CELL_TYPE_MCiictCT', '-', '->', '-', '->'],
-
-        ['compartment', 'GO_CellularComponent_reactome', 'CellularComponent',
-         'IS_IN_COMPARTMENT_MCiicCC', '-', '->', '-', '->'],
-        ['includedLocation', 'GO_CellularComponent_reactome', 'CellularComponent',
-         'IS_INCLUDED_LOCATION_MCiilCC', '-', '->', '-', '->'],
-        ['goCellularComponent', 'GO_CellularComponent_reactome', 'CellularComponent',
-         'IS_CELLULAR_COMPONENT_MCiccCC', '-', '->', '-', '->'],
-
-        ['hasComponent', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'Chemical',
-         'HAS_COMPONENT_MChcCH', '-', '->', '-', '->'],
-        ['hasComponent', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'Protein',
-         'HAS_COMPONENT_MChcP', '-', '->', '-', '->'],
-        ['hasComponent', 'Complex_reactome', 'MolecularComplex',
-         'HAS_COMPONENT_MChcMC', '-', '->', '-', '->'],
-
-        ['inferredTo', 'Complex_reactome', 'MolecularComplex',
-         'HAS_EFFECT_ON_MCheoMC', '-', '->', '-', '->'],
-
-        ['regulator', 'Regulation_reactome', 'Regulation', 'HAS_REGULATOR_RGhrMC', '<-', '-', '<-', '-'],
-        ['activeUnit', 'Regulation_reactome', 'Regulation', 'HAS_ACTIVE_UNIT_RGhauMC', '<-', '-', '<-', '-'],
-
-        ['disease', 'Disease_reactome', 'Disease', 'LEADS_TO_MCltD', '-', '->', '-', '->'],
     ]
 
-    directory = 'ComplexEdges'
+    directory = 'CellType'
     cypher_file = open('output/cypher_drug_edge.cypher', 'a', encoding="utf-8")
 
     for list_element in list_of_combinations:
