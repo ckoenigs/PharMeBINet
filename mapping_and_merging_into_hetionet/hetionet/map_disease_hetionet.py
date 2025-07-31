@@ -45,7 +45,7 @@ generate cypher queries to integrate and merge disease nodes and create the subc
 def generate_cypher_queries():
     # cypher file to integrate mondo
     with open('output/cypher.cypher', 'a', encoding='utf-8') as cypher_file:
-        query = ''' Match (a:Disease_hetionet{identifier:line.doid}), (b:Disease{identifier:line.id}) Set b.resource=split(line.resource,"|") Create (b)-[:equal_to_hetionet_disease{how_mapped:line.how_mapped}]->(a) '''
+        query = ''' Match (a:Disease_hetionet{identifier:line.doid}), (b:Disease{identifier:line.id}) Set b.hetionet='yes', b.resource=split(line.resource,"|") Create (b)-[:equal_to_hetionet_disease{how_mapped:line.how_mapped}]->(a) '''
 
         query= pharmebinetutils.get_query_import(path_of_directory,'mapping_and_merging_into_hetionet/hetionet/output/map_nodes.tsv',query)
         cypher_file.write(query)

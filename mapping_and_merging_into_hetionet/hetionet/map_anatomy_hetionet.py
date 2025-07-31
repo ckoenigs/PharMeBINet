@@ -31,8 +31,7 @@ def generate_tsv_files_and_cypher_file():
     csv_update = csv.writer(update_nodes, delimiter='\t')
     csv_update.writerow(['id', 'resource'])
 
-    query_start = ''' Match (a:Anatomy_hetionet{identifier:line.id})'''
-    query_match = query_start + ' , (l:Anatomy{identifier:line.id}) Set l.hetionet="yes", l.resource=split(line.resource,"|") Create (l)-[:equal_anatomy_hetionet]->(a)'
+    query_match = ' Match (a:Anatomy_hetionet{identifier:line.id}) , (l:Anatomy{identifier:line.id}) Set l.hetionet="yes", l.resource=split(line.resource,"|") Create (l)-[:equal_anatomy_hetionet]->(a)'
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 

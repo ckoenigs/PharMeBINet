@@ -45,7 +45,7 @@ generate cypher queries to integrate and merge compound nodes
 def generate_cypher_queries():
     # cypher file to integrate mondo
     with open('output/cypher_drug.cypher', 'w', encoding='utf-8') as cypher_file:
-        query = ''' Match (a:Compound_hetionet{identifier:line.hetionet_id}), (b:Compound{identifier:line.id})  Set b.resource=split(line.resource,"|") Create (b)-[:equal_to_hetionet_compound{how_mapped:line.how_mapped}]->(a) '''
+        query = ''' Match (a:Compound_hetionet{identifier:line.hetionet_id}), (b:Compound{identifier:line.id})  Set b.hetionet="yes", b.resource=split(line.resource,"|") Create (b)-[:equal_to_hetionet_compound{how_mapped:line.how_mapped}]->(a) '''
 
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   'mapping_and_merging_into_hetionet/hetionet/output/map_compounds.tsv',
