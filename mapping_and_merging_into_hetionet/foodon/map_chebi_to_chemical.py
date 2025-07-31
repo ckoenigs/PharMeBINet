@@ -100,7 +100,7 @@ dict_manual_chebi_mapping = {
     "CHEBI:31344": "DB15648",
     'CHEBI:27007': 'D014001',
     "CHEBI:30363": "D002073",
-    "CHEBI:48154":"C405951"
+    "CHEBI:48154": "C405951"
 }
 
 
@@ -180,7 +180,7 @@ def get_all_foodon_and_map(dict_node_id_to_resource):
         if not is_mapped:
             counter_not_mapped += 1
             print(' not in database :O')
-            print(identifier, name)
+            print(identifier, names)
     print('mapped:', counter_mapping)
     print('number of not mapped drugs:', counter_not_mapped)
 

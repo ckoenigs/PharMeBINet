@@ -78,6 +78,7 @@ def get_FO_properties():
     query_new = query_nodes_start + query_middle_new + 'resource:["FoodOn"], foodon:"yes", source:"FoodON", url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.identifier, license:"' + license + '"})' + query_end
     return query_new
 
+
 '''
 create the tsv files
 '''
@@ -103,23 +104,6 @@ def create_tsv_files():
 
 
 '''
-check if id is in a dictionary
-'''
-
-
-def write_into_tsv_if_not_obsolete(identifier, label_FO, node, xrefs, tsv_file):
-    found_id = False
-    xref_string = "|".join(go_through_xrefs_and_change_if_needed_source_name(xrefs, label_FO))
-
-    if 'is_obsolete' in node:
-        print('need to be delete')
-        return found_id
-
-    tsv_file.writerow([identifier, xref_string])
-    return True
-
-
-'''
 Get all is_a relationships for bp, cc and mf and add the into a tsv file
 '''
 
@@ -130,9 +114,17 @@ def get_is_a_relationships_and_add_to_tsv(cypher_file):
 
     dict_type_to_tsv = {}
 
+    # set of rela types which should not be considered
+    # bearer_of?
+    # has_quality?
+    set_not_considered_rela_types = {"derives_from", "disjoint_from", "has_consumer", "immersed_in", "intersection_of",
+                                     "in_taxon", "is_about", "member_of", "surrounded_by", "union_of"}
+
     # go through the results
     for record in results:
         [id1, id2, rela_type] = record.values()
+        if rela_type in set_not_considered_rela_types:
+            continue
         if rela_type not in dict_type_to_tsv:
             print(rela_type)
             file_name = f'edges/integrate_FO_relationship_{rela_type}.tsv'
@@ -152,6 +144,21 @@ def get_is_a_relationships_and_add_to_tsv(cypher_file):
         dict_type_to_tsv[rela_type].writerow([id1, id2])
 
 
+# set of foodon ids which are consumer
+set_consumer_ids = set()
+
+
+def get_consumer_from_foodon():
+    """
+    Get all foodon consumer
+    :return:
+    """
+    query = '''Match (:%s)-[r]->(n:%s) Where n.id starts with "FOODON:" and type(r) in ["has_consumer","surrounded_by"] Return n.id''' % (
+    label_FO, label_FO)
+    for id, in g.run(query):
+        set_consumer_ids.add(id)
+
+
 '''
 go through all FO nodes and sort them into the dictionary 
 '''
@@ -159,20 +166,22 @@ go through all FO nodes and sort them into the dictionary
 
 def go_through_FO():
     tsv_file = create_tsv_files()
-    query = '''Match (n:%s) Where n.id starts with "FOODON:" Return n''' % (label_FO)
+    query = '''Match (n:%s) Where n.id starts with "FOODON:" and n.is_obsolete is null Return n.id, n.xrefs''' % (
+        label_FO)
     results = g.run(query)
-    for record in results:
-        node = record.data()['n']
-        identifier = node['id']
-        xrefs = node['xrefs'] if 'xrefs' in node else []
+    for identifier, xrefs, in results:
+        if identifier in set_consumer_ids:
+            continue
         new_xref = set()
-        for xref in xrefs:
-            splitted_xref = xref.split(' ')
-            if len(splitted_xref) > 1:
-                new_xref.add(splitted_xref[0])
-            else:
-                new_xref.add(xref)
-        write_into_tsv_if_not_obsolete(identifier, label_FO, node, new_xref, tsv_file)
+        if xrefs:
+            for xref in xrefs:
+                splitted_xref = xref.split(' ')
+                if len(splitted_xref) > 1:
+                    new_xref.add(splitted_xref[0])
+                else:
+                    new_xref.add(xref)
+        xref_string = "|".join(go_through_xrefs_and_change_if_needed_source_name(new_xref, label_FO))
+        tsv_file.writerow([identifier, xref_string])
 
 
 # path to directory
@@ -190,6 +199,13 @@ def main():
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
+
+    print(
+        '#################################################################################################################################################################')
+    print(datetime.datetime.now())
+    print('find all consumer')
+
+    get_consumer_from_foodon()
 
     print(
         '#################################################################################################################################################################')
