@@ -41,7 +41,8 @@ def load_variants_from_database_and_add_to_dict():
         if name:
             if len(name.split(':'))>1:
                 name=name.split(':')[1]
-            pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_id, name.lower(), (identifier,location))
+            if name:
+                pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_id, name.lower(), (identifier,location))
 
 
 
@@ -122,7 +123,7 @@ def load_all_MarkerDB_variants_and_finish_the_files(csv_mapping, csv_new):
         is_mapped=False
         if external_link:
             clinvar_id=external_link.rsplit('/', 1)[-1]
-            if clinvar_id in dict_variant_id_to_resource:
+            if 'clinvar' in  external_link and clinvar_id in dict_variant_id_to_resource:
                 is_mapped=True
                 csv_mapping.writerow(
                     [unique_id, clinvar_id,
@@ -134,21 +135,10 @@ def load_all_MarkerDB_variants_and_finish_the_files(csv_mapping, csv_new):
 
         if rs_id in dict_variant_id_to_resource:
             is_mapped=True
-            list_of_names=[]
-            if name:
-                list_of_names=[x for x in  dbsnp_identifier_map[rs_id] if dict_id_to_name[x] and name in dict_id_to_name[x] ]
-            if len(list_of_names)>0:
-                for variant_id in list_of_names:
-                    csv_mapping.writerow(
-                        [unique_id, variant_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[variant_id], "MarkerDB"),
-                         'dbSNP_name'])
-            else:
-                for variant_id in dbsnp_identifier_map[rs_id]:
-                    csv_mapping.writerow(
-                        [unique_id, variant_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[variant_id], "MarkerDB"),
-                         'dbSNP'])
+            csv_mapping.writerow(
+                [unique_id, rs_id,
+                 pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[rs_id], "MarkerDB"),
+                 'dbSNP'])
                     
         elif identifier in dict_name_to_id:
             for (variant_id,location) in dict_name_to_id[identifier]:
@@ -162,19 +152,24 @@ def load_all_MarkerDB_variants_and_finish_the_files(csv_mapping, csv_new):
         if is_mapped:
             continue
 
-        if name in dict_name_to_id:
-            for (variant_id,location) in dict_name_to_id[name]:
-                if location==position:
-                    csv_mapping.writerow(
-                        [unique_id, variant_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[variant_id], "MarkerDB"),
-                         'name-split'])
-        else:
-            if rs_id:
-                csv_new.writerow([unique_id, rs_id])
-                counter_new +=1
-                continue
-            counter_not_mapped += 1
+        # if name and name in dict_name_to_id:
+        #     for (variant_id,location) in dict_name_to_id[name]:
+        #         if location==position:
+        #             is_mapped=True
+        #             csv_mapping.writerow(
+        #                 [unique_id, variant_id,
+        #                  pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[variant_id], "MarkerDB"),
+        #                  'name-split'])
+        #
+        # if is_mapped:
+        #     continue
+
+
+        if rs_id:
+            csv_new.writerow([unique_id, rs_id])
+            counter_new +=1
+            continue
+        counter_not_mapped += 1
 
     print('number of not-mapped variants:', counter_not_mapped)
     print('number of new variants:', counter_new)
