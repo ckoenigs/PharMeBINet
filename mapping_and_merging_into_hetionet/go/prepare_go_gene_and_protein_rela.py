@@ -29,7 +29,7 @@ dict_label_to_label_to_rela_to_tsv = defaultdict(dict)
 header = ['go_id', 'other_id']
 
 # cypher file
-cypher_file = open('output/cypher_edge.cypher', 'w')
+cypher_file = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
 
 # dictionary for relationship ends
 dict_relationship_ends = {
