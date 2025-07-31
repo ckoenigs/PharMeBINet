@@ -17,11 +17,6 @@ echo Pathway
 
 python3  mapping_hmdb_pathway.py $path_to_project > pathway/output_mappings.txt
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo Metabolite-Compound edge
-
-# python3  create_connection_between_metabolite_and_compound.py $path_to_project > metabolite_compound_edge/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

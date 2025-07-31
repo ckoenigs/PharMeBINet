@@ -17,7 +17,6 @@ if [ ! -d output ]; then
   mkdir edge_protein_metabolite_without_info
   mkdir go
   mkdir metabolite
-  mkdir metabolite_compound_edge
   mkdir metabolite_disease_protein
   mkdir pathway
   mkdir protein
