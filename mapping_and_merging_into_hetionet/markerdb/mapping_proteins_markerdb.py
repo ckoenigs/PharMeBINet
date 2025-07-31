@@ -19,7 +19,7 @@ dict_protein_name_to_identifier = {}
 dict_protein_synonym_to_identifier = {}
 
 #dictionary for gene_symbol to protein gene_name
-dict_gene_symbol_to_gene_name = {}
+dict_gene_symbol_to_protein_ids = {}
 
 def load_proteins_from_database_and_add_to_dict():
     """
@@ -42,7 +42,7 @@ def load_proteins_from_database_and_add_to_dict():
 
     for gene_symbol, identifier, in results2:
         # for gene_symbol in node['gene_symbols']:
-        pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_gene_name, gene_symbol.lower(), identifier)
+        pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_protein_ids, gene_symbol.lower(), identifier)
 
 def generate_files(path_of_directory):
     """
@@ -108,7 +108,7 @@ def load_all_MarkerDB_proteins_and_finish_the_files(csv_mapping):
         if mapped:
             continue
 
-        if protein_name in dict_protein_synonym_to_identifier:
+        if protein_name in dict_protein_synonym_to_identifier and not identifier in ['P04070','Q13982']:
             mapped = True
             for identifier in dict_protein_synonym_to_identifier[protein_name]:
                 csv_mapping.writerow(
@@ -118,9 +118,9 @@ def load_all_MarkerDB_proteins_and_finish_the_files(csv_mapping):
         if mapped:
             continue
 
-        if gene_name not in ['col9a1','dnase1l3'] and gene_name in dict_gene_symbol_to_gene_name and dict_gene_symbol_to_gene_name[gene_name]:
+        if gene_name not in ['col9a1','dnase1l3'] and gene_name in dict_gene_symbol_to_protein_ids and dict_gene_symbol_to_protein_ids[gene_name]:
             mapped=True
-            for identifier in dict_gene_symbol_to_gene_name[gene_name]:
+            for identifier in dict_gene_symbol_to_protein_ids[gene_name]:
                 csv_mapping.writerow(
                     [unique_id, identifier,
                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
