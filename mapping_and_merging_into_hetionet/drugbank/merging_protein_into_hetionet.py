@@ -143,7 +143,7 @@ def load_manual_checked_proteins_or_not():
     This information where manual checked by me.
     :return:
     """
-    csv_file = open('protein/maybe_proteins_manual_checked.tsv', 'r')
+    csv_file = open('maybe_proteins_manual_checked.tsv', 'r')
     reader = csv.DictReader(csv_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     for row in reader:
         identifier = row['identifier']
