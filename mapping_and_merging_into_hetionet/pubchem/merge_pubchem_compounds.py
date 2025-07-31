@@ -24,15 +24,15 @@ header = ['PUBCHEM_ATOM_UDEF_STEREO_COUNT', 'PUBCHEM_COMPONENT_COUNT',
           'PUBCHEM_SMILES', 'PUBCHEM_XLOGP3_AA', 'PUBCHEM_IUPAC_INCHIKEY', 'PUBCHEM_ATOM_DEF_STEREO_COUNT',
           'PUBCHEM_CACTVS_TAUTO_COUNT', 'PUBCHEM_CACTVS_HBOND_DONOR', 'PUBCHEM_COORDINATE_TYPE',
           'PUBCHEM_BOND_UDEF_STEREO_COUNT', 'PUBCHEM_MOLECULAR_FORMULA', 'PUBCHEM_TOTAL_CHARGE',
-          'PUBCHEM_CACTVS_SUBSKEYS', 'PUBCHEM_CACTVS_COMPLEXITY', 'PUBCHEM_HEAVY_ATOM_COUNT',
-          'PUBCHEM_BONDANNOTATIONS', 'PUBCHEM_IUPAC_NAME_MARKUP', 'PUBCHEM_COMPOUND_CANONICALIZED',
+           'PUBCHEM_CACTVS_COMPLEXITY', 'PUBCHEM_HEAVY_ATOM_COUNT',
+           'PUBCHEM_IUPAC_NAME_MARKUP', 'PUBCHEM_COMPOUND_CANONICALIZED',
           'PUBCHEM_CACTVS_HBOND_ACCEPTOR', 'PUBCHEM_IUPAC_CAS_NAME', 'PUBCHEM_IUPAC_NAME',
           'PUBCHEM_IUPAC_TRADITIONAL_NAME', 'PUBCHEM_MONOISOTOPIC_WEIGHT',
           'PUBCHEM_IUPAC_INCHI', 'PUBCHEM_CACTVS_ROTATABLE_BOND', 'PUBCHEM_EXACT_MASS',
           'PUBCHEM_BOND_DEF_STEREO_COUNT', 'PUBCHEM_IUPAC_OPENEYE_NAME', 'PUBCHEM_ISOTOPIC_ATOM_COUNT',
           'PUBCHEM_MOLECULAR_WEIGHT', 'PUBCHEM_CACTVS_TPSA', 'PUBCHEM_IUPAC_SYSTEMATIC_NAME', 'PUBCHEM_XLOGP3',
           'PUBCHEM_NONSTANDARDBOND'
-        # , 'PUBCHEM_COMPOUND_CID', 'PUBCHEM_CONNECTIVITY_SMILES'
+        # , 'PUBCHEM_COMPOUND_CID', 'PUBCHEM_CONNECTIVITY_SMILES','PUBCHEM_BONDANNOTATIONS','PUBCHEM_CACTVS_SUBSKEYS',
           ]
 
 
@@ -51,13 +51,14 @@ def generate_node_tsv_and_query():
     dict_identifier_to_synonyms = {}
     query = 'Match (n:Chemical) Where n.source starts with "PubChem" Return n.identifier, n.resource, n.synonyms'
     for identifier, resource, synonyms,  in g.run(query):
+        synonyms = set(synonyms) if synonyms else set()
         dict_identifier_to_synonyms[identifier] = [set(resource),synonyms]
 
     properties_which_are_computed=set()
     query = 'Match (n:PubChem_compounds) Return n'
     for node, in g.run(query):
         identifier = node['identifier']
-        synonyms= dict_identifier_to_synonyms[identifier][0]
+        synonyms= dict_identifier_to_synonyms[identifier][1]
         node=dict(node)
         computed_properties = []
         for key,value in node.items():
@@ -73,6 +74,10 @@ def generate_node_tsv_and_query():
             elif 'stereo' in key_lower or 'atom' in key_lower or 'weight' in key_lower:
                 properties_which_are_computed.add(key)
                 computed_properties.append(key.replace('PUBCHEM_','').lower().replace('_',' ').title()+'::'+value+'::PubChem')
+            elif key=='PUBCHEM_TOTAL_CHARGE':
+                properties_which_are_computed.add(key)
+                computed_properties.append(key.replace('PUBCHEM_','').lower().replace('_',' ').title()+'::'+value+'::PubChem')
+
 
         csv_writer.writerow([identifier, pharmebinetutils.resource_add_and_prepare(
                         dict_identifier_to_synonyms[identifier][0], "PubChem" ), '|'.join(synonyms), '|'.join(computed_properties) ])
@@ -80,7 +85,7 @@ def generate_node_tsv_and_query():
 
     with open('chemical/cypher.cypher', 'w', encoding='utf-8') as f:
         #
-        query = 'Match (m:Chemical{identifier:line.chemical_id}), (n:PubChem_compounds{identifier:line.chemical_id}) Set m.pubchem="yes", m.license ="https://www.ncbi.nlm.nih.gov/home/about/policies/", m.calculated_properties_kind_value_source= split(line.computed_properties,"|"), m.resource = split(line.resource,"|"),  m.url="https://pubchem.ncbi.nlm.nih.gov/compound/"+line.chemical_id,  %s  Create (m)-[:equal_to_pubchem]->(n)'
+        query = 'Match (m:Chemical{identifier:line.chemical_id}), (n:PubChem_compounds{identifier:line.chemical_id}) Set m.pubchem="yes", m.license ="https://www.ncbi.nlm.nih.gov/home/about/policies/", m.calculated_properties_kind_value_source= split(line.computed_properties,"|"), m.resource = split(line.resource,"|"), m.synonyms = split(line.synonyms,"|"),  m.url="https://pubchem.ncbi.nlm.nih.gov/compound/"+line.chemical_id,  %s  Create (m)-[:equal_to_pubchem]->(n)'
         query_prop = []
         for head in header:
             if not head in ['PUBCHEM_COMPOUND_CID','PUBCHEM_IUPAC_INCHIKEY','PUBCHEM_IUPAC_INCHI'] and not head in properties_which_are_computed:
