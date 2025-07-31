@@ -1,0 +1,183 @@
+identifier	name	Protein_ja=1_und_nein=0	
+BE0004799	16S ribosomal RNA	0	
+BE0004800	23S ribosomal RNA	0	
+BE0009998	30S ribosomal protein	1	
+BE0004888	7tm_1	1	
+BE0004872	7tm_1	1	
+BE0004864	7tm_1	1	
+BE0004863	7tm_1	1	
+BE0004889	7tm_1	1	
+BE0004890	7tm_1	1	
+BE0004958	7tm_1	1	
+BE0004881	7tm_1	1	
+BE0004862	7tm_1	1	
+BE0009376	7tm_1	1	
+BE0009827	7tm_1	1	
+BE0004957	7tm_1	1	
+BE0009993	80S ribosomal subunit	1	
+BE0009976	Aa_trans	1	
+BE0009557	ABC transporters	1	
+BE0004828	Adenosine	0	
+BE0008669	Adenosine triphosphate (ATP)	0	
+BE0009692	Adenylsucc_synt	1	
+BE0009790	ALAS1 mRNA	0	
+BE0009847	Aldo_ket_red	1	
+BE0004818	Aluminum	0	
+BE0004909	Amino_oxidase	1	
+BE0008720	Amorphous calcium phosphate	0	
+BE0009695	Anaerobic bacterial DNA	0	
+BE0009935	Ank_2	1	
+BE0004813	Arsenic	0	
+BE0008672	Arylamine N-acetyltransferase	1	
+BE0009972	ATP_Ca_trans_C	1	
+BE0009961	ATP-synt_S1	1	
+BE0010055	ATP1G1_PLM_MAT8	1	
+BE0009883	B-lymphocytes	0	
+BE0009711	Bacterial beta-lactamase enzymes	0	not human
+BE0009913	Bacterial cell wall peptide bridging segments	0	not human
+BE0004833	Bacterial outer membrane	0	not human
+BE0002831	Beta-lactamase CTX-M	1	
+BE0004809	Bile acids	0	
+BE0010027	C1-set	1	
+BE0009995	C1q	1	
+BE0004829	C55-isoprenyl pyrophosphate	0	
+BE0004802	Cadmium	0	
+BE0004817	Calcium ions	0	
+BE0004908	"cAMP-specific 3'	5'-cyclic phosphodiesterase 3"	1	
+BE0009965	Carb_anhydrase	1	
+BE0004907	CBS	1	
+BE0004825	Copper	0	
+BE0009669	Cyclin A	1	
+BE0004827	Cystine	0	
+BE0009716	Cyt_bd_oxida_II	1	
+BE0010021	Cytoplasmic membrane	0	
+BE0004826	D-Ala-D-Ala moiety of NAM/NAG peptide subunits of peptidoglycan	0	
+BE0004915	D(2L) dopamine receptor	1	
+BE0004819	Dermatan sulfate	0	
+BE0004834	Dietary fat	0	
+BE0004835	Dietary protein	1	
+BE0004836	Dietary starch	0	
+BE0004837	Digoxin	0	
+BE0010036	DMD gene (exon 45 casimersen target site)	0	
+BE0010012	DMD gene (exon 53 viltolarsen target site)	0	
+BE0008666	DMD-001 gene (exon 51 target site)	0	
+BE0004796	DNA	0	
+BE0004897	ERG2_Sigma1R	1	
+BE0004803	Ergosterol	0	
+BE0009962	FAD_binding_3	1	
+BE0009632	Fatty acid	0	
+BE0004805	Fe(II)-protoporphyrin IX	0	
+BE0009672	Fib_alpha	1	
+BE0009339	Free radicals	0	
+BE0009556	GABA-A gated chloride channel	1	
+BE0008624	GD2 disialoganglioside	0	
+BE0002555	Gln-synt_N	1	
+BE0004830	Globotriaosylceramide	0	
+BE0004806	Glucocerebroside	0	
+BE0009719	Glucocorticoid binding proteins	1	
+BE0005577	Glutathione	0	
+BE0004831	Glycogen	0	
+BE0000007	"Glycogen phosphorylase	 liver form"	1	
+BE0009351	GPHH	1	
+BE0008715	GPHH	1	
+BE0009708	Group A nerve fibers	0	
+BE0009997	GSHPx	1	
+BE0010006	GST_N	1	
+BE0008667	HDAC4_Gln	1	
+BE0009979	Hematopoietic stem cells	0	
+BE0004820	Heparan sulfate	0	
+BE0010064	HNOBA	1	
+BE0004821	Hyaluronan	0	
+BE0009857	Hyaluronic acid	0	
+BE0004849	Hydrogen ions	0	
+BE0010002	Hydrolase_3	1	
+BE0004961	Hydroxyapatite	0	
+BE0004801	Hydroxylapatite	0	
+BE0004822	Iduronic acid	0	
+BE0008663	IL23	1	
+BE0004941	IMPDH	1	
+BE0004914	Ins145_P3_rec	1	
+BE0010014	Integrin_B_tail	1	
+BE0010136	Interfer-bind	1	
+BE0009797	Internal limiting membrane (ILM)	0	
+BE0004902	Ion_trans	1	
+BE0008716	Ion_trans	1	
+BE0009631	IRK	1	
+BE0008670	IRK	1	
+BE0004923	IRK	1	
+BE0004905	IRK	1	
+BE0004807	Iron	0	
+BE0004924	Jun	1	
+BE0004798	L-asparagine	0	
+BE0009344	Lactose	0	
+BE0004808	Lead	0	
+BE0004956	Lig_chan-Glu_bd	1	
+BE0004852	Lig_chan-Glu_bd	1	
+BE0009793	Lig_chan-Glu_bd	1	
+BE0004879	Lipocalin	1	
+BE0009352	Lung epithelial cells	0	
+BE0004811	Magnesium cation	0	
+BE0004812	Manganese cation	0	
+BE0004814	Mercury	0	
+BE0004838	Methotrexate	0	
+BE0004790	MHC_II_beta	1	
+BE0009875	Microbial proteins	1	
+BE0004845	mRNA of ApoB-100	0	
+BE0009738	Na_trans_cytopl	1	
+BE0009551	NAM/NAG peptide subunits of peptidoglycan	0	
+BE0004839	NAPQI (N-acetyl-p-benzoquinone imine)	0	
+BE0004797	Neur_chan_memb	1	
+BE0008668	Neur_chan_memb	1	
+BE0009927	Neur_chan_memb	1	
+BE0009860	Neur_chan_memb	1	
+BE0009666	Neur_chan_memb	1	
+BE0004857	Neur_chan_memb	1	
+BE0009576	Nitric oxide	0	
+BE0010011	Nitroreductases	1	
+BE0009630	Oxidored_q4	1	
+BE0004866	p450	1	
+BE0009629	PAS_9	1	
+BE0004895	PB1	1	
+BE0004922	PDEase_I	1	
+BE0009789	PDEase_I	1	
+BE0009963	PDEase_I	1	
+BE0009914	Pentaglycyl bridging segment	0	
+BE0004850	Peptidase_M28	1	
+BE0009912	Peptidoglycan precursors	0	
+BE0009685	Peptidoglycan transpeptidase	1	
+BE0004815	Phosphate	0	
+BE0009788	Phosphodiesterase enzymes	1	
+BE0009374	Phospholipid membrane	0	
+BE0009668	Pkinase	1	
+BE0009853	Pkinase	1	
+BE0009865	Pkinase	1	
+BE0008625	Platelet derived growth factor receptor alpha	1	
+BE0004816	Potassium	0	
+BE0009755	PP_M1	1	
+BE0009696	Protozoal DNA	0	
+BE0008653	Pyrophosphate	0	
+BE0004904	Ras	1	
+BE0009978	Retinoic acid receptor RXR	1	
+BE0004903	RHD_dimer	1	
+BE0009554	RHD_dimer	1	
+BE0004810	RNA	0	
+BE0004851	Schistosome calcium ion (Ca2+) channels	1	
+BE0004906	SK_channel	1	
+BE0009373	Skin epithelial cells	0	
+BE0010057	Sod_Fe_N	1	
+BE0010008	Somatostatin receptor	1	
+BE0004887	Steroid_dh	0	
+BE0009546	Sweat ducts	0	
+BE0008688	TCR	1	
+BE0009370	Thiol groups	0	
+BE0004951	TOPRIM_C	1	
+BE0004840	Transpeptidase	1	
+BE0009563	Transthyretin mRNA	0	
+BE0009341	Transuranium elements	0	
+BE0004842	Tumor-associated glycoprotein 72 (TAG-72)	1	
+BE0004824	Tyrosine	0	
+BE0004823	Uric acid	0	
+BE0004901	V-set	1	
+BE0010070	Variola virus DNA	0	
+BE0009739	VGCC_beta4Aa_N	1	
+BE0009811	zf-C4	1	
