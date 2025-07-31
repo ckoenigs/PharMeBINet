@@ -64,18 +64,20 @@ add query for a specific tsv to cypher file
 '''
 
 
-def add_query_to_cypher_file(tuples, file_name):
+def add_query_to_cypher_file(tuple_labels, file_name):
     this_start_query = "Match (n:Variant_ClinVar {identifier:line.identifier}) Create (m"
-    for label in list(tuples):
-        if '_' in label:
-            label = re.sub("\_[a-z]", lambda m: m.group(0)[1].upper(), label)
+    for label in tuple_labels:
         this_start_query += ':' + label + ' '
-    if not 'Genotype' in tuples and not 'Haplotype' in tuples:
+    if not 'Genotype' in tuple_labels and not 'Haplotype' in tuple_labels:
         this_start_query += ':GeneVariant '
     query = this_start_query + query_middle
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/clinvar/output/{file_name}.tsv',
                                               query)
+    if 'SingleNucleotideVariant' in tuple_labels:
+        with open('output/cypher_2.cypher','w', encoding='utf-8') as file:
+            file.write(query)
+            return
     cypher_file.write(query)
 
 
@@ -85,8 +87,16 @@ prepare the label remove _ and change instead letter to upper letter
 
 
 def prepare_label(label):
-    label = label.rsplit('_', 1)[0]
-    label = label[0].upper() + label[1:]
+    # label = label.rsplit('_', 1)[0]
+    # label = label[0].upper() + label[1:]
+    split_labels = label.split('_')
+    new_split_name =[]
+    for part in split_labels[:-1]:
+        res = re.split(r'(?=[A-Z])', part)
+        for sub_part in res:
+            if sub_part:
+                new_split_name.append(sub_part)
+    label = ''.join([x.title() for x in new_split_name])
 
     def remove_and_made_upper_letter(match):
         '''
@@ -134,24 +144,22 @@ def load_all_variants_and_finish_the_files():
     number_of_rounds = math.ceil(number_of_variant / divider_of_variant)
     for round_index in range(number_of_rounds):
 
-        query = "MATCH (n:Variant_ClinVar) RETURN n, labels(n) Skip %s Limit %s"
+        query = "MATCH (n:Variant_ClinVar) Where not n.review_status in ['no assertion provided'] RETURN n.identifier,  n.genes, n.xrefs , labels(n) Skip %s Limit %s"
         query = query % (round_index * divider_of_variant, divider_of_variant)
 
         results = g.run(query)
-        for record in results:
-            [node, labels] = record.values()
-            node = dict(node)
+        for identifier, genes, xrefs, labels, in results:
             new_labels = set()
             for label in labels:
                 new_label = prepare_label(label)
                 new_labels.add(new_label)
             new_labels = tuple(sorted(new_labels))
 
-            identifier = node['identifier']
 
             # add tuple to dict with tsv and gerenarte and add query
             if not new_labels in dict_tuple_of_labels_to_tsv_files:
-                file_name = '_'.join(list(new_labels))
+                print(new_labels)
+                file_name = '_'.join(new_labels)
                 file = open('output/' + file_name + '.tsv', 'w', encoding='utf-8')
                 csv_writer = csv.writer(file, delimiter='\t')
                 csv_writer.writerow(['identifier', 'xrefs'])
@@ -159,20 +167,20 @@ def load_all_variants_and_finish_the_files():
                 dict_tuple_of_labels_to_tsv_files[new_labels] = csv_writer
 
                 add_query_to_cypher_file(new_labels, file_name)
-            xrefs = node['xrefs'] if 'xrefs' in node else []
+
             new_xrefs = []
-            for xref in xrefs:
-                if xref.startswith('dbSNP:'):
-                    xref = xref.split(':')
-                    xref = xref[0] + ':rs' + xref[1]
-                new_xrefs.append(xref)
+            if xrefs:
+                for xref in xrefs:
+                    if xref.startswith('dbSNP:'):
+                        xref = xref.split(':')
+                        xref = xref[0] + ':rs' + xref[1]
+                    new_xrefs.append(xref)
 
             dict_tuple_of_labels_to_tsv_files[new_labels].writerow(
                 [identifier, '|'.join(go_through_xrefs_and_change_if_needed_source_name(new_xrefs, 'Variant'))])
 
-            if 'genes' in node:
-                possible_genes_rela = node["genes"].replace('\\"', '"')
-                print(identifier,possible_genes_rela)
+            if genes:
+                possible_genes_rela = genes.replace('\\"', '"')
                 genes_infos = json.loads(possible_genes_rela)
                 for gene_infos in genes_infos:
                     gene_id = gene_infos['gene_id']
@@ -282,6 +290,13 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.now())
+    print('Add constraint and relationships to gene')
+
+    perpare_queries_index_and_relationships()
+
+    print('##########################################################################')
+
+    print(datetime.datetime.now())
     print('Load all genes from database')
 
     load_genes_from_database_and_add_to_dict()
@@ -299,13 +314,6 @@ def main():
     print('Load all variation from database')
 
     load_all_variants_and_finish_the_files()
-
-    print('##########################################################################')
-
-    print(datetime.datetime.now())
-    print('Add constraint and relationships to gene')
-
-    perpare_queries_index_and_relationships()
 
     print('##########################################################################')
 
