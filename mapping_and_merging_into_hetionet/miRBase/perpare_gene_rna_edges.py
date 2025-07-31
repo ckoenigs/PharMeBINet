@@ -28,7 +28,7 @@ def load_existing_pairs(label, rela_type, dictionary, direction_left=''):
         dictionary[(node_id, rna_id)] = resource
 
 
-def prepare_edge(label, mirbase_label, dict_pair_to_resource):
+def prepare_edge(label, mirbase_label, dict_pair_to_resource, condition=''):
     """
     perpare rela tsv and cypher file and query
     :return:
@@ -37,7 +37,7 @@ def prepare_edge(label, mirbase_label, dict_pair_to_resource):
     with open(file_name, 'w', encoding='utf-8') as file:
         csv_writer = csv.writer(file, delimiter='\t')
         csv_writer.writerow(['identifier', 'rna_id', 'resource', 'mirbase_id','from','to'])
-        query = f'''MATCH (n:{label})--(:{mirbase_label})-[rela]-(h:miRBase_pre_miRNA)--(m:RNA) RETURN  n.identifier,  m.identifier, h.accession , rela '''
+        query = f'''MATCH (n:{label})--(:{mirbase_label})-[rela]-(h:miRBase_pre_miRNA)--(m:RNA) {condition} RETURN  n.identifier,  m.identifier, h.accession , rela '''
         print(query)
         results = g.run(query)
 
@@ -55,7 +55,7 @@ def prepare_edge(label, mirbase_label, dict_pair_to_resource):
     return file_name
 
 
-def prepare_mapping_and_file(label, rela_type, mirbase_label, direction_left=''):
+def prepare_mapping_and_file(label, rela_type, mirbase_label, direction_left='', condition = ''):
     # dictionary pair to resource
     dict_pair_to_resource = {}
     print('#' * 20)
@@ -67,7 +67,7 @@ def prepare_mapping_and_file(label, rela_type, mirbase_label, direction_left='')
     print('#' * 20)
     print(datetime.datetime.now())
     print('load all pairs of mirbase, map them and write into file')
-    file_name = prepare_edge(label, mirbase_label, dict_pair_to_resource)
+    file_name = prepare_edge(label, mirbase_label, dict_pair_to_resource, condition)
 
     return file_name
 
@@ -124,7 +124,7 @@ def main():
     print(datetime.datetime.now())
     print('Load pairs, generate tsv file and map rna-rna ')
 
-    file_name_RNA = prepare_mapping_and_file('RNA', 'CLEAVES_TO_RctR', 'miRBase_miRNA', direction_left='<')
+    file_name_RNA = prepare_mapping_and_file('RNA', 'CLEAVES_TO_RctR', 'miRBase_miRNA', direction_left='<', condition='Where n.gene=m.gene')
 
     print(
         '###########################################################################################################################')
