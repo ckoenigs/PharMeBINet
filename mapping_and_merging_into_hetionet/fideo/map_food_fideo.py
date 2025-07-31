@@ -36,7 +36,7 @@ def generate_tsv_files_and_cypher_file():
     query_start = f' Match (a:{label_co}{{id:line.id}})'
     query_match = query_start + ' , (l:Food{identifier:line.id}) Set l.fideo="yes", l.resource=split(line.resource,"|") Create (l)-[:equal_anatomy_cl]->(a)'
 
-    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
+    cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
     query_match = pharmebinetutils.get_query_import(path_of_directory,
                                                     f'mapping_and_merging_into_hetionet/fideo/{file_name_mapped}',
