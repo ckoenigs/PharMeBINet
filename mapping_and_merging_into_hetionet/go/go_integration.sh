@@ -24,6 +24,12 @@ echo "Current time: $now"
 
 python3 mapping_go_protein.py $path_to_project > protein/output_map.txt
 
+echo map protein
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+# python3 map_rna_go.py $path_to_project > output/output_map_rna.txt
+
 echo integrate connection with ne4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"

@@ -44,9 +44,9 @@ header = []
 dict_header_to_property = {}
 
 # cypher file
-cypher_file = open('output/cypher.cypher', 'w')
+cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
-cypher_file_delete = open('output/cypher_delete.cypher', 'w')
+cypher_file_edge = open('output/cypher_edge.cypher', 'w', encoding='utf-8')
 
 '''
 Get the  properties of go
@@ -97,9 +97,9 @@ def create_tsv_files():
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/go/{file_name}',
                                                   query)
-        cypher_file.write(query)
         cypher_file.write(pharmebinetutils.prepare_index_query(dict_go_to_pharmebinet_label[label],'identifier'))
         cypher_file.write(pharmebinetutils.prepare_index_query_text(dict_go_to_pharmebinet_label[label], 'name'))
+        cypher_file.write(query)
         file = open(file_name, 'w')
         tsv_file = csv.writer(file, delimiter='\t')
         tsv_file.writerow(['identifier', 'xrefs'])
@@ -160,7 +160,7 @@ def get_is_a_relationships_and_add_to_tsv(namespace):
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/go/{file_name}',
                                               query)
-    cypher_file.write(query)
+    cypher_file_edge.write(query)
 
     # go through the results
     for record in results:
