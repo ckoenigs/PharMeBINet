@@ -25,7 +25,10 @@ def load_pair_edges(label):
     :return:
     """
     query = '''MATCH (p:%s)-[]-(r:%s_HMDB)-[v]-(n:Metabolite_HMDB)-[]-(b:Metabolite) Where v.references is not NULL  RETURN p.identifier, b.identifier, v'''
-    query = query % (label, label)
+    if label!='Symptom':
+        query = query % (label, label)
+    else:
+        query = query % (label, 'Disease')
     results = graph_database.run(query)
 
     # set of all hmdb pairs
@@ -39,6 +42,8 @@ def load_pair_edges(label):
 
     for record in results:
         [node_id_1, node_id_2, rela] = record.values()
+        if node_id_1=='HP:0000835':
+            print('here')
         counter += 1
         references = rela['references']
         pubmed_ids = set()
@@ -105,7 +110,7 @@ def create_cypher_file(file_name, label):
     :return:
     """
 
-    query = ''' MATCH (d:%s{identifier:line.node_id_1}),(c:Metabolite{identifier:line.node_id_2}) CREATE (d)-[: ASSOCIATES_%saM{ resource: ['HMDB'], hmdb: "yes", url:"https://hmdb.ca/metabolites/"+line.node_id_2, source:"HMDB", pubMed_ids:split(line.pubmed_ids,"|"), urls:split(line.urls,"|"), references:split(line.references,"|"), license:"Creative Commons (CC) Attribution-NonCommercial (NC) 4.0 International Licensing "}]->(c)'''
+    query = ''' MATCH (d:%s{identifier:line.node_id_1}),(c:Metabolite{identifier:line.node_id_2}) CREATE (d)-[: ASSOCIATES_%saM{ resource: ['HMDB'], hmdb: "yes", url:"https://hmdb.ca/metabolites/"+line.node_id_2, source:"HMDB", pubMed_ids:split(line.pubmed_ids,"|"), reference_urls:split(line.urls,"|"), references:split(line.references,"|"), license:"Creative Commons (CC) Attribution-NonCommercial (NC) 4.0 International Licensing "}]->(c)'''
     query = query % (label, label[0])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/hmdb/{file_name}',
@@ -127,7 +132,7 @@ def main():
 
     create_connection_with_neo4j()
 
-    for label in ['Disease', 'Protein']:
+    for label in ['Disease', 'Protein', 'Symptom']:
         print(
             '###########################################################################################################################')
 
