@@ -25,7 +25,7 @@ dict_id_to_name = {}
 def load_variants_from_database_and_add_to_dict():
     # Define the Cypher query to fetch dbSNP IDs and identifiers
     cypher_query = (
-        "MATCH (n:Variant)  RETURN n.identifier AS identifier, n.xrefs as xrefs, n.resource AS resource, n.name as name, n.cytogenetic_location")
+        "MATCH (n:Variant) Where n.identifier Starts with 'rs'  RETURN n.identifier AS identifier, n.xrefs as xrefs, n.resource AS resource, n.name as name, n.cytogenetic_location")
     results = g.run(cypher_query)
     for record in results:
         [identifier, xrefs, resource, name, location] = record.values()
@@ -71,13 +71,13 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     query = (f' Match (n:GWASCatalog_Association), (v:Variant{{'
-             f'identifier:line.identifier}}) Where ID(n) =  toInteger(line.variant_id) Set v.gwas="yes", v.resource=split(line.resource,"|") Create (v)-['
+             f'identifier:line.identifier}}) Where ID(n) =  toInteger(line.variant_id) Set v.gwas="yes", v.chromosome=n.chr_id, v.position=n.chr_position, v.resource=split(line.resource,"|") Create (v)-['
              f':equal_to_GWAS_variant{{mapped_with:line.mapping_method}}]->(n)')
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
 
-    query = f' Match (n:GWASCatalog_Association) Where ID(n)=toInteger(line.variant_id) Merge (p:Variant :GeneVariant{{identifier:line.identifier}}) Set p.cytogenetic_location=n.position , p.resource=["GWAS"], p.xrefs=["dbSNP:"+line.identifier], p.gwas="yes", p.source="dbSNP from GWAS", p.license="CC BY-NC 4.0 Deed"  Create (p)-[:equal_to_GWAS_variant{{mapped_with:"new"}}]->(n)'
+    query = f' Match (n:GWASCatalog_Association) Where ID(n)=toInteger(line.variant_id) Merge (p:Variant :GeneVariant{{identifier:line.identifier}}) On Create Set p.chromosome=n.chr_id, p.position=n.chr_position , p.resource=["GWAS"], p.xrefs=["dbSNP:"+line.identifier], p.gwas="yes", p.source="dbSNP from GWAS", p.license="CC BY-NC 4.0 Deed"  Create (p)-[:equal_to_GWAS_variant{{mapped_with:"new"}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_new,
                                               query)
