@@ -34,7 +34,7 @@ def generate_tsv_files_and_cypher_file():
     csv_update.writerow(['id', 'resource'])
 
     query_start = f' Match (a:{label_co}{{id:line.id}})'
-    query_match = query_start + ' , (l:Food{identifier:line.id}) Set l.fideo="yes", l.resource=split(line.resource,"|") Create (l)-[:equal_anatomy_cl]->(a)'
+    query_match = query_start + ' , (l:Food{identifier:line.id}) Set l.fideo="yes", l.resource=split(line.resource,"|") Create (l)-[:equal_food_cl]->(a)'
 
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
@@ -46,26 +46,26 @@ def generate_tsv_files_and_cypher_file():
     cypher_file.close()
 
 
-# dictionary anatomy id to resource
-dict_anatomy_id_to_resource = {}
+# dictionary food id to resource
+dict_food_id_to_resource = {}
 
 
 def load_all_pharmebinet_food_in_dictionary():
     """
-    Load all existing Anatomy nodes into dictionaries
+    Load all existing food nodes into dictionaries
     :return:
     """
     query = '''Match (n:Food) RETURN n.identifier, n.resource '''
     results = g.run(query)
     for identifier, resource,  in results:
-        dict_anatomy_id_to_resource[identifier] = set(resource)
+        dict_food_id_to_resource[identifier] = set(resource)
 
-    print('size of anatomies in pharmebinet before the rest of DrugBank is added: ', len(dict_anatomy_id_to_resource))
+    print('size of anatomies in pharmebinet before the rest of DrugBank is added: ', len(dict_food_id_to_resource))
 
 
 def map_food_nodes():
     """
-    Load all hetionet anatomy nodes and try to map to anatomy with the identifier
+    Load all hetionet food nodes and try to map to food with the identifier
     :return:
     """
 
@@ -77,9 +77,9 @@ def map_food_nodes():
         [node_id] = record.values()
         counter += 1
 
-        if node_id in dict_anatomy_id_to_resource:
+        if node_id in dict_food_id_to_resource:
             counter_mapped += 1
-            resource = dict_anatomy_id_to_resource[node_id]
+            resource = dict_food_id_to_resource[node_id]
             csv_update.writerow(
                 [node_id,
                  pharmebinetutils.resource_add_and_prepare(resource, 'FIDEO')])
