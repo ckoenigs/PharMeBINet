@@ -175,6 +175,21 @@ def get_all_fideo_and_map(dict_node_id_to_resource):
     print('mapped:', counter_mapping)
     print('number of not mapped drugs:', counter_not_mapped)
 
+    # mapping of the references
+    query = f"Match (n:{label_other_node})<-[r:is_about]-(m:{label_other_node}) Where m.name starts with 'DrugBank' Return Distinct m.id, m.name"
+
+    # counter mapping
+    counter_mapping = 0
+    counter_not_mapped = 0
+    for identifier, source_id in g.run(query):
+        drugbank_id = source_id.split(':')[1]
+        if drugbank_id in dict_node_id_to_resource:
+            counter_mapping += 1
+            add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping, 'drugbank')
+        else:
+            counter_not_mapped += 1
+    print('mapped:', counter_mapping)
+    print('number of not mapped drugs:', counter_not_mapped)
 
 def main():
     print(datetime.datetime.now())
