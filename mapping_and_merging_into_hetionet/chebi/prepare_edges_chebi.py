@@ -26,7 +26,10 @@ def create_cypher_file(file_name,  rela_name):
     '''
     rela = pharmebinetutils.prepare_rela_great(rela_name, 'Chemical', 'Chemical')
     query = ''' MATCH (d:Chemical{identifier:line.node_id}),(c:Chemical{identifier:line.other_id}) CREATE (d)-[: %s{resource: ['ChEBI'], chebi: "yes", source:"ChEBI", license:"%s", url:"https://www.ebi.ac.uk/chebi/chebiOntology.do?chebiId="+line.chebi_id}]->(c)'''
-    query = query % ( rela, license)
+    if rela_name!='has_functional_parent':
+        query = query % ( rela, license)
+    else:
+        query = query % ('HAS_PARENT_CHhpCH', license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/chebi/{file_name}',
                                               query)
@@ -61,13 +64,19 @@ def load_all_pair_and_add_to_files():
     query = f'''MATCH (p:Chemical)-[:equal_chebi_chemical]-(r)-[v]->(n)-[:equal_chebi_chemical]-(b:Chemical) Where ID(p)<>ID(b) RETURN p.identifier, b.identifier, type(v), r.id'''
     results = graph_database.run(query)
     counter = 0
+    dict_type_to_tuples={}
     for record in results:
         counter += 1
         [node_id_1, node_id_2, rela_type, chebi_id] = record.values()
         if rela_type not in dict_type_direction_to_tsv:
             csv_writer = create_tsv_file_and_cypher_query( rela_type)
             dict_type_direction_to_tsv[ rela_type] = csv_writer
+            dict_type_to_tuples[rela_type] = set()
+        # only allowed one direction
+        if (node_id_1,node_id_2) in dict_type_to_tuples[rela_type] or (node_id_2,node_id_1) in dict_type_to_tuples[rela_type]:
+            continue
         dict_type_direction_to_tsv[ rela_type].writerow([node_id_1, node_id_2, chebi_id])
+        dict_type_to_tuples[rela_type].add((node_id_1,node_id_2))
     print( counter)
 
 
