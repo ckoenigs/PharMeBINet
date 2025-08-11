@@ -13,11 +13,17 @@ if [ ! -d output ]; then
   mkdir output
   mkdir edges
 fi
-echo add food
+echo map food
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 python3 map_food_fideo.py $path_to_project > output/output_add.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo map chemical
+
+python3 map_chebi_to_chemical_fideo.py $path_to_project > output/output_add.txt
 
 
 
@@ -38,9 +44,16 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-#python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
-#sleep 30
+python3 prepare_edge.py $path_to_project > output/output_add.txt
 
-#python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
 
-#sleep 40
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
+sleep 30
+
+python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
+
+sleep 40
