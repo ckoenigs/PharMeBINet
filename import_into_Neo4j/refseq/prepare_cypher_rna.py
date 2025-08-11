@@ -1,7 +1,7 @@
 list_of_labels = ["refSeq_PrimaryTranscript",
                   "refSeq_lncRNA",
                   "refSeq_mRNA",
-                  # "refSeq_Exon", can be a lot of different thins also RNA but I will exclude it!
+                  # "refSeq_Exon", can be a lot of different things also RNA but I will exclude it!
                   "refSeq_miRNA",
                   "refSeq_Transcript",
                   "refSeq_snoRNA",
@@ -15,7 +15,7 @@ list_of_labels = ["refSeq_PrimaryTranscript",
                   "refSeq_tRNA",
                   "refSeq_vaultRNA",
                   "refSeq_telomeraseRNA",
-                  "refSeq_ncRNA"
+                  #"refSeq_ncRNA" is only in the gbkey property but not as label anymore
                   ]
 file = open('cypher_add_label.cypher', 'w', encoding='utf-8')
 
