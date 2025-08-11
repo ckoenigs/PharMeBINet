@@ -22,10 +22,14 @@ fi
 wget  -O data/fideo.owl "https://gitub.u-bordeaux.fr/erias/fideo/-/raw/master/fideo.owl?ref_type=heads&inline=false"
 
 # convert OWL to obo with robot
-../robot.sh convert -i data/fideo.owl --format obo -o data/fideo.obo --check false
+../robot.sh convert -i data/fideo.owl -f obo -o data/fideo.obo --check false
 
+java -jar ../robot.jar query -i data/fideo.owl -f TSV -q flatten.sparql data/relationships.tsv
 
 python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/fideo.obo FIDEO FIDEO_Entry $path_to_project > output/output_generate_integration_file.txt
+
+
+python3 parse_is_about_rela_from_union_owl.py > output/extra.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
