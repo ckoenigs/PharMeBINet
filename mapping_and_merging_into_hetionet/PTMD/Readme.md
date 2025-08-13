@@ -39,7 +39,7 @@ Next, the PTMD PTM-disease edges are added:
 		
 
 Last, the PTMD PTM-protein edges are added:
-	For both edge types do the following:
+	For only the has edge type the following steps are executed (the involves edge is not sure where this information come from):
 		First, prepare the new add edge file as TSV.
 		Then, load all tuples and write them into the TSV files.
 		Last, write the cypher query in the existing cypher file.
