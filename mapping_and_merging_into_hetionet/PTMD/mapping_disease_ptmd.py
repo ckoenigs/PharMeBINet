@@ -216,7 +216,6 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
         if mapped:
             continue
 
-        umls_cui_list = try_to_get_umls_ids_with_UMLS(name)
         for umls_cui in umls_cui_list:
             if umls_cui in dict_symptom['umls']:
                 mapped = True
@@ -241,7 +240,6 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
         if mapped:
             continue
 
-        umls_cui_list = try_to_get_umls_ids_with_UMLS(name)
         for umls_cui in umls_cui_list:
             if umls_cui in dict_phenotype['umls']:
                 mapped = True
