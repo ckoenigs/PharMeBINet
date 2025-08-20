@@ -100,7 +100,7 @@ def write_files(path_of_directory):
     list_of_labels = ['PharmacologicClass']
 
     for [label_1, label_2] in [[x, y] for x in list_of_labels for y in list_of_labels]:
-        query = '''MATCH p=(n:%s)-[:equal_to_atc]-()-[]->(a)-[:equal_to_atc]-(b:%s) Merge (n)-[r:BELONGS_TO_%sbt%s]->(b) On Create Set r.source='ATC from KEGG', r.url="http://identifiers.org/atc:"+a.identifier , r.resource=['KEGG'], r.kegg='yes', r.license="Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed.";\n'''
+        query = '''MATCH p=(n:%s)-[:equal_to_atc]-()-[]->(a)-[:equal_to_atc]-(b:%s) Merge (n)-[r:BELONGS_TO_%sbt%s]->(b) On Create Set r.source='ATC from KEGG', r.url="http://identifiers.org/atc:"+a.identifier , r.resource=['KEGG'], r.kegg='yes', r.license="Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed."  On Match Set r.resource=r.resource+['KEGG'], r.kegg='yes';\n '''
         query = query % (
             label_1, label_2, pharmebinetutils.dictionary_label_to_abbreviation[label_1],
             pharmebinetutils.dictionary_label_to_abbreviation[label_2])
