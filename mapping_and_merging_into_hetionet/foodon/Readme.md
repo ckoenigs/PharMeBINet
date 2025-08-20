@@ -12,12 +12,12 @@ Next mapped the FoodON anatomy to anatomy:
     All FoodON Uberon nodes are loaded and mapped directly to anatomy. For the mapping the Uberon id where used. All mappings are written into the TSV file.
 
 Next mapped the FoodON chebi ontology to chemical:
-    First, load all chemicals and write information into a dictionary.
+    First, load all chemicals and write information into a dictionary. Also, load the ChEBI mapping into a dictionary.
     Second, the file for mapping chebi ontology as tsv are generated and the additional cypher query is added to the cypher file. 
     All FoodON chebi ontology nodes are loaded and mapped to chemicals: 
-        First, map with ChEBI id to chemical xrefs.
-        Second, map name to name.
-        Last, map name to synonyms.
+        First, map with ChEBI id to chemical with the use of the mappings from ChEBI.
+        Second, use the manual mapping.
+        Last, map name to synonyms but only if the name is a plural of the chemical name.
     All mappings are written into the TSV file. 
 
 
