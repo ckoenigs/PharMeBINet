@@ -87,12 +87,12 @@ def fasta_iter(fasta_name):
     fh = open(fasta_name)
     # ditch the boolean (x[0]) and just keep the header or sequence since
     # we know they alternate.
-    faiter = (x[1] for x in groupby(fh, lambda line: line[0] == ">"))
-    for header in faiter:
+    faster = (x[1] for x in groupby(fh, lambda line: line[0] == ">"))
+    for header in faster:
         # drop the ">"
         header = header.__next__()[1:].strip()
         # join all sequence lines to one.
-        seq = "".join(s.strip() for s in faiter.__next__())
+        seq = "".join(s.strip() for s in faster.__next__())
         yield header, seq
 
 
