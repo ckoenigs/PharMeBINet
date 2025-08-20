@@ -3,7 +3,7 @@ For ClinVar exists multiple scripts. One is for integration of variants and inte
 First script:
 First the preparation of the ClinVar Variant information. The database does not contain any variant information until now.
     First, it loads the gene information from the neo4j database.
-    Next, all properties of the Clinvar variant nodes are extracted to add the information to the database. Therefore, it prepares the properties in the cypher query. 
+    Next, all properties of the Clinvar variant nodes (execpt the variants with review status: "no assertion provided") are extracted to add the information to the database. Therefore, it prepares the properties in the cypher query. 
     Next, the variant nodes are loaded in batches and prepared. This means for every label combination they have their own TSV file and prepare the external references. Additionally, the cypher query for this label combination is generated. Also, the gene information of a ClinVar variant nod has the NCBI gene id and the connection is written into an own TSV file. The gene ids are checked if they exist in PharMeBiNet.
     Then, it generates queries for generating a constrain on variant and a query for gene-variant integration. All queries are added to the cypher file.
     In the last step, the relationships between the different variants are written in TSV files and the cypher queries are generated and written into cypher files.
