@@ -17,13 +17,13 @@ echo map food
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python3 map_food_fideo.py $path_to_project > output/output_add.txt
+python3 map_food_fideo.py $path_to_project > output/output_food.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo map chemical
 
-python3 map_chebi_to_chemical_fideo.py $path_to_project > output/output_add.txt
+python3 map_chebi_to_chemical_fideo.py $path_to_project > output/output_chemical.txt
 
 
 
@@ -44,7 +44,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-python3 prepare_edge.py $path_to_project > output/output_add.txt
+python3 prepare_edge.py $path_to_project > output/output_edge.txt
 
 
 now=$(date +"%F %T")
