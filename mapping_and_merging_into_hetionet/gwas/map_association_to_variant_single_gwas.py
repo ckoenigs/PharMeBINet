@@ -97,18 +97,12 @@ def load_all_GWAS_variants_and_finish_the_files(csv_mapping, csv_new):
     counter_all = 0
     counter_new = 0
     pattern = r'rs\d+'
-    for record in results:
-        [unique_id ,snp_id, ensg_id, stronges_alles, mapped_gene] = record.values()
+    for unique_id ,snp_id, ensg_id, stronges_alles, mapped_gene, in results:
         counter_all += 1
         rs_id = ''
         match = re.search(pattern, snp_id)
         if match:
             rs_id = match.group()
-        # mapping
-        # if rs_id == "rs368270856":
-        # print(rs_id, dict_variant_id_to_resource[rs_id])
-
-        is_mapped = False
 
         if rs_id in dbsnp_identifier_map:
             for variant_id in dbsnp_identifier_map[rs_id]:
