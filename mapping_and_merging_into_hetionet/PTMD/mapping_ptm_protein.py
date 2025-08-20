@@ -108,7 +108,7 @@ def main():
     print('gather all information of the PTMD ptms/protein')
 
     get_PTMD_information("PTMD_HAS_PTM")
-    get_PTMD_information("PTMD_INVOLVES")
+    #get_PTMD_information("PTMD_INVOLVES")
 
     driver.close()
 

@@ -103,12 +103,11 @@ def get_PTMD_information():
     counter_all = 0
     # Where not r.pmids is Null or "
     #              "r.is_experimental_verification
-    query = ("Match (n:PTM)--(p:PTMD_PTM)-[r]-(:PTMD_Disease)--(m:Phenotype)  With n, m, collect(r) as hu Return n.identifier, m.identifier, "
+    query = ("Match (n:PTM)--(p:PTMD_PTM)-[r]-(:PTMD_Disease)--(m:Phenotype) With n, m, collect(r) as hu Return n.identifier, m.identifier, "
              "labels(m),hu")
     results = g.run(query)
 
-    for record in results:
-        [ptm_id, phenotype_id, labels, relationships] = record.values()
+    for ptm_id, phenotype_id, labels, relationships, in results:
         counter_all += 1
 
         general_label = ''
@@ -138,9 +137,9 @@ def get_PTMD_information():
                 dict_label_to_type_to_tsv[general_label][regulation] = [tsv_writer, tsv_file]
             if regulation not in dict_type_to_properties:
                 dict_type_to_properties[regulation] = {'ptmd_properties': [dict(rela)], 'mutation_site_impacts': rela[
-                    'mutation_site_impacts'] if 'mutation_site_impacts' in rela else [],
+                    'mutation_site_impacts'][:] if 'mutation_site_impacts' in rela else [],
                                                        'mutation_sites': rela[
-                                                           'mutation_sites'] if 'mutation_sites' in rela else [],
+                                                           'mutation_sites'][:] if 'mutation_sites' in rela else [],
                                                        'sources': set(rela['sources']),
                                                        'is_experimental_verification': rela[
                                                            'is_experimental_verification'],
