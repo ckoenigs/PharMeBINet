@@ -47,7 +47,7 @@ def load_existing_pairs():
     Load all pairs of a ND WRITE RESOURCE AND PUBMED INFORMATION INTO dictionary
     :return:
     """
-    query = f'Match (m:Phenotype)-[r]->(n:Variant) Where type(r) starts with "ASSOCIATES_" Return m.identifier, n.identifier, r.resource, r.pubMed_ids'
+    query = f'Match (m:Phenotype)-[r]-(n:Variant) Where type(r) starts with "ASSOCIATES_" Return m.identifier, n.identifier, r.resource, r.pubMed_ids'
     results = g.run(query)
     for node_id, node_id_2, resource, pubmed_ids, in results:
         dict_pair_to_resource_and_pmids[(node_id, node_id_2)] = [resource, set(pubmed_ids) if pubmed_ids else set()]
@@ -81,13 +81,13 @@ def create_tsv_file(other_label):
                                                                 ['variant_id', 'phenotype_id', 'resource', 'pubmed_ids',
                                                                  'additional_info'], 'merge')
 
-    query = f'Match (n:Variant{{identifier:line.variant_id}})<-[r:ASSOCIATES_{pharmebinetutils.dictionary_label_to_abbreviation[other_label]}aV]-(m:{other_label} {{identifier:line.phenotype_id}}) Set r.resource=split(line.resource,"|"), r.gwas="yes", r.pubMed_ids=split(line.pubmed_ids,"|"), r.gwas_information=split(line.additional_info,"|") '
+    query = f'Match (n:Variant{{identifier:line.variant_id}})-[r:ASSOCIATES_Va{pharmebinetutils.dictionary_label_to_abbreviation[other_label]}]->(m:{other_label} {{identifier:line.phenotype_id}}) Set r.resource=split(line.resource,"|"), r.gwas="yes", r.pubMed_ids=split(line.pubmed_ids,"|"), r.gwas_information=split(line.additional_info,"|") '
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/gwas/{file_name_merge}',
                                               query)
     cypher_file.write(query)
 
-    query = f'Match (n:Variant{{identifier:line.variant_id}}), (m:{other_label} {{identifier:line.phenotype_id}}) Create (m)-[:ASSOCIATES_{pharmebinetutils.dictionary_label_to_abbreviation[other_label]}aV{{source:"GWAS", resource:["GWAS"], gwas:"yes", pubMed_ids:split(line.pubmed_ids,"|"), gwas_information:split(line.additional_info,"|"), url:"https://www.ebi.ac.uk/gwas/studies/"+line.study_id, license:"https://www.ebi.ac.uk/about/terms-of-use/"}}]->(n)'
+    query = f'Match (n:Variant{{identifier:line.variant_id}}), (m:{other_label} {{identifier:line.phenotype_id}}) Create (m)<-[:ASSOCIATES_Va{pharmebinetutils.dictionary_label_to_abbreviation[other_label]} {{source:"GWAS", resource:["GWAS"], gwas:"yes", pubMed_ids:split(line.pubmed_ids,"|"), gwas_information:split(line.additional_info,"|"), url:"https://www.ebi.ac.uk/gwas/studies/"+line.study_id, license:"https://www.ebi.ac.uk/about/terms-of-use/"}}]-(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/gwas/{file_name}',
                                               query)
@@ -96,7 +96,7 @@ def create_tsv_file(other_label):
     return [csv_writer_new, csv_writer_merge]
 
 
-def go_through_all_gwas_pairs():
+def go_through_all_gwas_pairs(label_pharmebinet):
     # dictionary pair to gwas information
     dict_pair_to_gwas_edge_information = {}
 
@@ -105,13 +105,13 @@ def go_through_all_gwas_pairs():
 
     # dictionary id to label
     dict_id_to_label = {}
-    query = 'Match (n:Variant)--(a:GWASCatalog_Association)--(b:GWASCatalog_Study)--(:GWASCatalog_Trait)--(m:Phenotype) Return n.identifier, m.identifier, a.strongest_snp_risk_allele, a.p_value, a.risk_allele_frequency, b, labels(m) '
+    query = f'Match (n:Variant)--(a:GWASCatalog_Association)--(b:GWASCatalog_Study)--(:GWASCatalog_Trait)--(m:{label_pharmebinet}) Return n.identifier, m.identifier, a.strongest_snp_risk_allele, a.p_value, a.risk_allele_frequency, b, labels(m) '
     for variant_id, phenotype_id, strongest_snp_risk_allele, p_value, risk_allele_frequency, edge_info, labels_phenotype, in g.run(
             query):
         edge_info = dict(edge_info)
         edge_info['risk_allel_info'] = [{'strongest_snp_risk_allele': strongest_snp_risk_allele, 'p-value': p_value,
                                          'risk_allele_frequency': risk_allele_frequency}]
-        if phenotype_id not in dict_id_to_label:
+        if label_pharmebinet=='Phenotype' and  phenotype_id not in dict_id_to_label:
             dict_id_to_label[
                 phenotype_id] = 'Disease' if 'Disease' in labels_phenotype else 'Symptom' if 'Symptom' in labels_phenotype else 'SideEffect' if 'SideEffect' in labels_phenotype else 'Phenotype'
         if not (phenotype_id, variant_id) in dict_pair_to_gwas_edge_information:
@@ -133,7 +133,7 @@ def go_through_all_gwas_pairs():
             else:
                 dict_study_id_to_study_info[study_id]['risk_allel_info'].append(edge_info['risk_allel_info'][0])
 
-        label = dict_id_to_label[pair[0]]
+        label = dict_id_to_label[pair[0]] if label_pharmebinet == "Phenotype"  else label_pharmebinet
         if label not in dict_label_to_tsv_files:
             dict_label_to_tsv_files[label] = create_tsv_file(label)
         if pair in dict_pair_to_resource_and_pmids:
@@ -181,7 +181,8 @@ def main():
     print('go through all gwas pairs and write information into tsv files')
 
 
-    go_through_all_gwas_pairs()
+    go_through_all_gwas_pairs("Phenotype")
+    go_through_all_gwas_pairs("BiologicalProcess")
 
     cypher_file.close()
     driver.close()

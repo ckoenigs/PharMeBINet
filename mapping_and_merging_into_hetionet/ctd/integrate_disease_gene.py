@@ -45,7 +45,7 @@ def load_existing_gene_disease_pairs():
     Load all existing pairs and pubmed and resource information and write it into a dictionary
     :return:
     """
-    query = 'Match (b:Disease)-[r:ASSOCIATES_DaG]->(n:Gene) Return b.identifier, n.identifier, r.pubMed_ids, r.resource'
+    query = 'Match (b:Disease)<-[r:ASSOCIATES_GaD]-(n:Gene) Return b.identifier, n.identifier, r.pubMed_ids, r.resource'
     results = g.run(query)
     for record in results:
         [disease_id, gene_id, pubmed_ids, resources] = record.values()
@@ -63,7 +63,7 @@ also generate a cypher file to integrate this information
 def take_all_relationships_of_gene_disease():
     # generate cypher file
     cypherfile = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
-    query = '''Match (n:Gene{identifier:line.GeneID}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaG]->(n) On Create Set  r.ctd='yes', r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.source="CTD", r.inferences=split(line.inferences,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.directEvidences=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2024 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased) On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.unbiased=toBoolean(line.unbiased), r.inferences=split(line.inferences,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.directEvidences=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.resource=split(line.resources,'|')  '''
+    query = '''Match (n:Gene{identifier:line.GeneID}), (b:Disease{identifier:line.DiseaseID}) Merge (b)<-[r:ASSOCIATES_GaD]-(n) On Create Set  r.ctd='yes', r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.source="CTD", r.inferences=split(line.inferences,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.directEvidences=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2024 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased) On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.unbiased=toBoolean(line.unbiased), r.inferences=split(line.inferences,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.directEvidences=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.resource=split(line.resources,'|')  '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ctd/gene_disease/relationships.tsv',
                                               query)

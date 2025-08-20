@@ -29,7 +29,7 @@ def load_edges_from_database_and_add_to_dict(label, other_label):
     '''
     global dict_pairs_to_info
     print("query_started----------")
-    query = f"MATCH (n:{other_label})-[r:ASSOCIATES_{label[0]}a{other_label[0]}]-(p:{label}) RETURN n.identifier,r,p.identifier "
+    query = f"MATCH (n:{other_label})-[r:ASSOCIATES_{other_label[0]}a{label[0]}]-(p:{label}) RETURN n.identifier,r,p.identifier "
     results = g.run(query)
     print("query_ended----------")
 
@@ -163,7 +163,7 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
         os.mkdir(path_of_directory)
 
     # Create tsv for existing edges and not existing edges
-    edge_type = f'ASSOCIATES_Da{other_label[0]}' if type == 'Disease' else f'ASSOCIATES_Sa{other_label[0]}'
+    edge_type = f'ASSOCIATES_{other_label[0]}aD' if type == 'Disease' else f'ASSOCIATES_{other_label[0]}aS'
     other_id = 'disease_id' if type == 'Disease' else 'symptom_id'
     file_name = f'{other_label.lower()}_{type.lower()}_edges.tsv'
     file_path = os.path.join(path_of_directory, file_name)
@@ -266,7 +266,7 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
     # 1. Set…
     url = '"https://www.disgenet.org/browser/2/1/0/"+line.snp_id' if other_label == 'Variant' else '"https://www.disgenet.org/browser/1/1/1/"+line.gene_id'
 
-    query = f'  Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Merge (n)-[r:{edge_type}]->(v) On Match Set r.disgenet = "yes", r.sources = split(line.sources, "|"), r.resource = split(line.resource, "|"),  r.EI = line.EI, r.pubMed_ids = split(line.pmid, "|"),r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.score=line.score On Create Set r.source="DisGeNet", r.license="Attribution-NonCommercial-ShareAlike 4.0 International License", r.sources=split(line.sources,"|"), r.score=line.score,  r.resource=["DisGeNet"], r.disgenet="yes",  r.EI=line.EI, r.pubMed_ids=split(line.pmid,"|"), r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.url={url}'
+    query = f'  Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Merge (v)-[r:{edge_type}]->(n) On Match Set r.disgenet = "yes", r.sources = split(line.sources, "|"), r.resource = split(line.resource, "|"),  r.EI = line.EI, r.pubMed_ids = split(line.pmid, "|"),r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.score=line.score On Create Set r.source="DisGeNet", r.license="Attribution-NonCommercial-ShareAlike 4.0 International License", r.sources=split(line.sources,"|"), r.score=line.score,  r.resource=["DisGeNet"], r.disgenet="yes",  r.EI=line.EI, r.pubMed_ids=split(line.pmid,"|"), r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.url={url}'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name,
                                               query)

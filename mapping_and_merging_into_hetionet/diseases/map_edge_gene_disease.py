@@ -25,7 +25,7 @@ def load_existing_edges():
     Load all drug interaction from database
     :return:
     """
-    query = '''MATCH (a:Gene)<-[s:ASSOCIATES_DaG]-(b:Disease) RETURN a.identifier, b.identifier, s.resource'''
+    query = '''MATCH (a:Gene)-[s:ASSOCIATES_GaD]-(b:Disease) RETURN a.identifier, b.identifier, s.resource'''
     results = g.run(query)
     for gene_id, disease_id, resource, in results:
         dict_existing_gene_disease_to_resource[(gene_id, disease_id)] = resource
@@ -99,12 +99,12 @@ def generate_cypher_file(file_name, file_name_new):
     :param file_name_new: string
     :return:
     """
-    query = ''' MATCH (n:Gene{identifier:line.gene_id}), (c:Disease{identifier:line.disease_id}) Match (c)-[r:ASSOCIATES_DaG]->(n)  Set r.resource=split(line.resource,"|"), r.diseases="yes",  r.diseases_rela_infos=split(line.rela_infos,"|")'''
+    query = ''' MATCH (n:Gene{identifier:line.gene_id}), (c:Disease{identifier:line.disease_id}) Match (c)<-[r:ASSOCIATES_GaD]-(n)  Set r.resource=split(line.resource,"|"), r.diseases="yes",  r.diseases_rela_infos=split(line.rela_infos,"|")'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/diseases/{file_name}', query)
     cypher_file.write(query)
 
-    query = '''MATCH (n:Gene{identifier:line.gene_id}), (c:Disease{identifier:line.disease_id}) Create (c)-[r:ASSOCIATES_DaG{ resource:["DISEASES"], source:"DISEASES", diseases:"yes" , license:"%s", url:"https://diseases.jensenlab.org/Entity?order=textmining,knowledge,experiments&textmining=10&knowledge=10&experiments=10&type1=-26&type2=9606&id1="+line.doid , diseases_rela_infos:split(line.rela_infos,"|")}]->(n) '''
+    query = '''MATCH (n:Gene{identifier:line.gene_id}), (c:Disease{identifier:line.disease_id}) Create (c)<-[r:ASSOCIATES_GaD{ resource:["DISEASES"], source:"DISEASES", diseases:"yes" , license:"%s", url:"https://diseases.jensenlab.org/Entity?order=textmining,knowledge,experiments&textmining=10&knowledge=10&experiments=10&type1=-26&type2=9606&id1="+line.doid , diseases_rela_infos:split(line.rela_infos,"|")}]-(n) '''
     query = query % (license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/diseases/{file_name_new}',

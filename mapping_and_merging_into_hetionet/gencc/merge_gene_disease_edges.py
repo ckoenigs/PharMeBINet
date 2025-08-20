@@ -27,7 +27,7 @@ def load_existing_association_edges():
     Load all gene disease pairs into a dictionary
     :return:
     """
-    query = 'Match p=(n:Gene)-[r:ASSOCIATES_DaG]-(m:Disease) Return n.identifier, m.identifier, r'
+    query = 'Match p=(n:Gene)-[r:ASSOCIATES_GaD]-(m:Disease) Return n.identifier, m.identifier, r'
     results = g.run(query)
     for result in results:
         [gene_id, disease_id, rela] = result.values()
@@ -95,14 +95,14 @@ def generate_cypher_file_with_queries(properties, file_name, file_name_mapped):
                 news.append(prop + ':split(line.' + prop + ',"|")')
                 mapped.append('r.' + prop + '=split(line.' + prop + ',"|")')
 
-        query_new = 'MATCH (n:Gene{identifier:line.gene_id}),(m:Disease{identifier:line.disease_id}) Create (m)-[:ASSOCIATES_DaG{'
+        query_new = 'MATCH (n:Gene{identifier:line.gene_id}),(m:Disease{identifier:line.disease_id}) Create (m)<-[:ASSOCIATES_GaD{'
         query_new += ', '.join(
-            news) + ', license:"CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",  gencc:"yes" }]->(n)'
+            news) + ', license:"CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",  gencc:"yes" }]-(n)'
         query_new = pharmebinetutils.get_query_import(path_of_directory,
                                                       f'mapping_and_merging_into_hetionet/gencc/{file_name}',
                                                       query_new)
         cypher_file_edge.write(query_new)
-        query_mapped = 'MATCH (n:Gene{identifier:line.gene_id})<-[r:ASSOCIATES_DaG]-(m:Disease{identifier:line.disease_id}) Set '
+        query_mapped = 'MATCH (n:Gene{identifier:line.gene_id})-[r:ASSOCIATES_GaD]->(m:Disease{identifier:line.disease_id}) Set '
         query_mapped += ', '.join(mapped) + ', r.gencc="yes"'
         query_mapped = pharmebinetutils.get_query_import(path_of_directory,
                                                          f'mapping_and_merging_into_hetionet/gencc/{file_name_mapped}',
