@@ -76,7 +76,10 @@ def check_relationships_and_generate_file(pharmebinet_label1, pharmebinet_label2
                        RETURN allfields as l;'''
     query = query % (hetionet_label1, rela_hetionet, hetionet_label2)
     result = graph_database.run(query)
-    query = f'Match (a:{pharmebinet_label1}{{identifier:line.id1}}), (b:{pharmebinet_label2}{{identifier:line.id2}}) Create (a)-[:{rela_type}{{%s , hetionet:"yes", resource:["Hetionet"]}}]->(b)'
+    if rela_type!='ASSOCIATES_GaD':
+        query = f'Match (a:{pharmebinet_label1}{{identifier:line.id1}}), (b:{pharmebinet_label2}{{identifier:line.id2}}) Create (a)-[:{rela_type}{{%s , hetionet:"yes", resource:["Hetionet"]}}]->(b)'
+    else:
+        query = f'Match (a:{pharmebinet_label1}{{identifier:line.id1}}), (b:{pharmebinet_label2}{{identifier:line.id2}}) Create (b)-[:{rela_type}{{%s , hetionet:"yes", resource:["Hetionet"]}}]->(a)'
     list_prop = []
     header = ['id1', 'id2']
     for record in result:
@@ -127,7 +130,7 @@ def main():
     # 5: rela in PharMeBINet
     list_of_combinations = [
         ['Disease', 'Disease_hetionet', 'Symptom_hetionet', 'Symptom', 'PRESENTS_DpS', 'PRESENTS_DpS'],
-        ['Disease', 'Disease_hetionet', 'Gene_hetionet', 'Gene', 'ASSOCIATES_DaG', 'ASSOCIATES_DaG'],
+        ['Disease', 'Disease_hetionet', 'Gene_hetionet', 'Gene', 'ASSOCIATES_DaG', 'ASSOCIATES_GaD'],
         ['Disease', 'Disease_hetionet', 'Gene_hetionet', 'Gene', 'UPREGULATES_DuG', 'UPREGULATES_DuG'],
         ['Disease', 'Disease_hetionet', 'Gene_hetionet', 'Gene', 'DOWNREGULATES_DdG', 'DOWNREGULATES_DdG'],
         ['Disease', 'Disease_hetionet', 'Anatomy_hetionet', 'Anatomy', 'LOCALIZES_DlA', 'LOCALIZES_DlA'],
