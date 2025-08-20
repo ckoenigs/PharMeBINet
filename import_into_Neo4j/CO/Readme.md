@@ -1,6 +1,6 @@
 Cell Ontology (CL) from https://obophenotype.github.io/cell-ontology/.
 
-version: 2025-01-07
+version: 2025-07-25
 
 First, the script downloads the latest version of CL.
 Then the OBO file from the CL will be transformed into node and relationship TSV with the program of EFO/transform_obo_to_tsv_and_cypher_file.py.

@@ -1,6 +1,6 @@
 https://www.pharmgkb.org/
 
-Version: 2025-02-05
+Version: 2025-08-05
 
 The PharmGKB files are prepared as one GraphML file with BioDWH2 v0.4.0 (https://github.com/BioDWH2/BioDWH2).
 The Neo4j-GraphML-Importer-v1.1.5 (https://github.com/BioDWH2/Neo4j-GraphML-Importer) import the data into Neo4j.

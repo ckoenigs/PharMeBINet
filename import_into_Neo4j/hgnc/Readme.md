@@ -2,7 +2,7 @@
 
 https://www.genenames.org/
 
-Version: 2025-02-07
+Version: 2025-08-13
 
 BioDWH2 prepare transformation into GraphML file and with the GraphmML importert the data are add to Neo4j.
 

@@ -1,6 +1,7 @@
 https://www.ebi.ac.uk/gwas/
+## GWAS Catalog
 
-Version: 2025-02-08
+Version: 2025-08-12
 
 BioDWH2 prepare transformation into GraphML file and with the GraphmML importert the data are add to Neo4j.
 

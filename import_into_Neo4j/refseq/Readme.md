@@ -1,6 +1,6 @@
 https://www.ncbi.nlm.nih.gov/refseq/
 
-Version: 2024-08-27
+Version: 2025-08-06
 
 BioDWH2 prepare transformation into GraphML file and with the GraphmML importert the data are add to Neo4j.
 

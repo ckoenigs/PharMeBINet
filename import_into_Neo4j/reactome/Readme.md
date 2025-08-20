@@ -1,13 +1,13 @@
 https://reactome.org/
 
-Version: 2025-03-25
+Version: 2025-06-13
 
 ## Preparation of Neo4j :
 
 1. Download Reactome dump und remove the '.graph' of the name.
 2. Delete existing reactome directories in Neo4j data.
 3. Load dump into Neo4j 5.26.4:
-
+   ./neo4j-admin database load --from-path=path reactome
    ./neo4j-admin database migrate --force-btree-indexes-to-range reactome
 
    If after execute this command this error appeare: Failed to migrate database 'reactome': Failed to verify the transaction logs. This most likely means that the transaction logs are corrupted.

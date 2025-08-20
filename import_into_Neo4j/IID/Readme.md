@@ -2,7 +2,7 @@
 
 http://iid.ophid.utoronto.ca/
 
-Version: 2021-05
+Version: 2025-05
 
 First, the program downloads the file from Integrated Interactions Database (IID) version 2021-05.
 Next, the cypher file and the cypher queries are generated to integrate all the information.
