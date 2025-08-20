@@ -107,7 +107,7 @@ def prepare_different_nodes():
                       # "refSeq_Exon", it is not only RNA but also a lot of different types
                       "refSeq_Transcript", "refSeq_snoRNA", "refSeq_rRNA", "refSeq_RNasePRNA", "refSeq_RNaseMRPRNA",
                       "refSeq_scRNA", "refSeq_snRNA", "refSeq_YRNA", "refSeq_antisenseRNA", "refSeq_tRNA",
-                      "refSeq_vaultRNA", "refSeq_telomeraseRNA", "refSeq_ncRNA"
+                      "refSeq_vaultRNA", "refSeq_telomeraseRNA" #, "refSeq_ncRNA" is no label anymore
                       ]
     for label in list_of_labels:
         query = f'MATCH (n:{label})  RETURN  n.id'
