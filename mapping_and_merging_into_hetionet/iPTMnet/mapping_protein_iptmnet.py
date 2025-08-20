@@ -46,6 +46,7 @@ def load_proteins_from_database_and_add_to_dict():
 
     print("dict_gene_symbol_to_identifer:",len(dict_gene_symbol_to_identifer))
     print("dict_identifer_to_resource:",len(dict_identifier_to_resource))
+
 def generate_files(path_of_directory):
     """
     generate cypher file and tsv file

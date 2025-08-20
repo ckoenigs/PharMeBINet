@@ -30,9 +30,6 @@ def load_ptms_from_database_and_add_to_dict():
 
     for identifier, resource in results:
         dict_identifier_to_resource[identifier] = resource
-        #name = name.lower()
-        #pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_to_identifier, name, identifier)
-    #print(identifier)
 
 def generate_files(path_of_directory):
     """
@@ -78,7 +75,6 @@ def generate_files(path_of_directory):
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     # append second query
-    cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
 
     return csv_mapping_existing, csv_mapping_new
