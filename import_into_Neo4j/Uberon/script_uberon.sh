@@ -21,7 +21,7 @@ fi
 #download uberon
 # old used http://purl.obolibrary.org/obo/uberon/ext.obo 
 # I think this http://purl.obolibrary.org/obo/uberon/uberon-full.obo is similar but I will test
-wget  -O data/ext.obo "http://purl.obolibrary.org/obo/uberon/uberon-simple.obo"
+wget  -O data/ext.obo "http://purl.obolibrary.org/obo/uberon/uberon-full.obo"
 
 
 
