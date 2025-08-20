@@ -101,7 +101,6 @@ def extract_information_from_block(group, is_type):
     for info in group:
         # seperate key and value
         (key_term, value) = [element.strip() for element in info.split(":", 1)]
-
         # check if the key is a relationship or not and add the information to the right dictionary
         if key_term != 'relationship':
             # print(value)
@@ -119,10 +118,10 @@ def extract_information_from_block(group, is_type):
                     for synonym_type, key_name in dict_synonyms.items():
                         if '" ' + synonym_type + ' ' in value:
                             found_type = True
-                            first_part_synonym_second_addtional_information = value.split(' ' + synonym_type + ' ', 1)
-                            synonym = first_part_synonym_second_addtional_information[0]
+                            first_part_synonym_second_additional_information = value.split(' ' + synonym_type + ' ', 1)
+                            synonym = first_part_synonym_second_additional_information[0]
                             new_key = key_name
-                            addtional_info_and_xrefs = first_part_synonym_second_addtional_information[1].split("[", 1)
+                            addtional_info_and_xrefs = first_part_synonym_second_additional_information[1].split("[", 1)
                             if len(addtional_info_and_xrefs[1]) > 1:
                                 synonym += ' [' + addtional_info_and_xrefs[1]
                             else:
@@ -132,42 +131,16 @@ def extract_information_from_block(group, is_type):
                     if not found_type:
                         print(value)
                         sys.exit('different formart for synonyms')
-                        # first_part_with_type_and_second_ref = value.rsplit(' [', 1)
-                        # synonym_type = first_part_with_type_and_second_ref[0].rsplit(' ', 1)
-                        # # somethimes it defined the synonym more accurate, but this is not needed
-                        # if synonym_type[1] not in dict_synonyms:
-                        #     # sometimes it has the reference from HPO direct after it, this is add to the other references
-                        #     if synonym_type[1].startswith('HP:'):
-                        #         first_part_with_type_and_second_ref[1] = synonym_type[1] + \
-                        #                                                  first_part_with_type_and_second_ref[1] if \
-                        #         first_part_with_type_and_second_ref[1] == ']' else synonym_type[1] + ',' + \
-                        #                                                            first_part_with_type_and_second_ref[
-                        #                                                                1]
-                        #         synonym_type = synonym_type[0].rsplit(' ', 1)
-                        #     else:
-                        #         synonym_type = synonym_type[0].rsplit(' ', 1)
-
-                        # if '[' in first_part_with_type_and_second_ref[1]:
-                        #     print('huhuh')
-                        # new_key = dict_synonyms[synonym_type[1]]
-                        # if len(first_part_with_type_and_second_ref[1]) > 1:
-                        #     xrefs = first_part_with_type_and_second_ref[1]
-                        #     if len(xrefs.split(']')) > 1 and ' {' in xrefs.split(']')[1]:
-                        #         xrefs = xrefs.rsplit(' {', 1)[0]
-                        #     synonym = synonym_type[0] + ' [' + xrefs
-                        # else:
-                        #     synonym = synonym_type[0]
                     add_information_to_dictionary(dict_all_info, new_key, synonym)
                     set_all_properties_in_database.add(new_key)
 
 
-            # check for not typedefinition the relationship
+            # check for not type definition the relationship
             elif not is_type:
                 set_properties_with_bang.add(key_term)
                 identifier = dict_all_info['id']
-                parent_id = value.split(' ! ')[0].strip().split(' {')[0]
-                if parent_id == 'DOID:4606':
-                    print('test')
+                split_whole_into_rela_and_additional_part = value.strip().split(' ! ')
+                parent_id = split_whole_into_rela_and_additional_part[0].split(' {')[0]
                 counter_rela += 1
                 splitted_parent_id = parent_id.split(' ')
                 key_term = key_term.replace('-', '_')
@@ -176,14 +149,13 @@ def extract_information_from_block(group, is_type):
                     if len(splitted_parent_id) == 2:
                         rela = splitted_parent_id[0]
                         parent_id = splitted_parent_id[1]
-                        dict_other_rela_parent_child[key_term].add((parent_id, identifier, rela))
+                        dict_other_rela_parent_child[key_term].add((parent_id, identifier, rela+':'+split_whole_into_rela_and_additional_part[1]))
                         continue
                     else:
                         add_information_to_dictionary(dict_all_info, key_term, value)
-
                         set_all_properties_in_database.add(key_term)
                         continue
-                dict_other_rela_parent_child[key_term].add((parent_id, identifier))
+                dict_other_rela_parent_child[key_term].add((parent_id, identifier, split_whole_into_rela_and_additional_part[1]))
                 list_other_rela.add(key_term)
 
         # is a relationship but depending on the type it is add to a different set
@@ -191,10 +163,8 @@ def extract_information_from_block(group, is_type):
             rela_info = value.split('!')[0].split(' ')
             rela_type = rela_info[0].replace('-', '_')
             parent_id = rela_info[1]
-            if parent_id == 'DOID:4606':
-                print('test')
             identifier = dict_all_info['id']
-            dict_other_rela_parent_child[rela_type].add((parent_id, identifier))
+            dict_other_rela_parent_child[rela_type].add((parent_id, identifier, value.split('!')[1].strip() if '!' in value else ''))
             list_other_rela.add(rela_type)
 
     return dict_all_info['id'], dict_all_info
@@ -286,9 +256,10 @@ def generate_cypher_file():
                     # because a typedef can have multiple names only one is needed
                     if len(type_def[rela_type]['name'].split('|')) > 1:
                         type_def[rela_type]['name'] = type_def[rela_type]['name'].split('|')[0]
-                    rela_type = type_def[rela_type]['name'].replace(' ', '_').replace('-', '_') if not '/' in type_def[
+                    rela_type = type_def[rela_type]['name'].replace(' ', '_').replace('-', '_').replace('(','_').replace(')','_').replace('__','_') if not '/' in type_def[
                         rela_type][
                         'name'] else rela_type
+                    rela_type = rela_type if rela_type[-1]!='_' else rela_type[:-1]
 
         # create csv for relationships
         file_name = 'rela_' + rela_type + '.tsv'
