@@ -95,7 +95,7 @@ def map_efo_disease_and_to_pharmebinet(csv_mapped):
     csv_not_mapped.writerow(['id'])
 
     # efo EFO:0000408 id disease
-    query = 'Match (m:efo{id:"EFO:0000408"} )  RETURN m.id, m.names, m.xrefs'
+    query = 'Match (m:efo{id:"efo:EFO_0000408"} )  RETURN m.id, m.names, m.xrefs'
     results = g.run(query)
     for record in results:
         counter += 1
@@ -113,7 +113,7 @@ def map_efo_disease_and_to_pharmebinet(csv_mapped):
     dict_nodes = {}
 
     level = 1
-    dict_level_to_ids = {level: set(['EFO:0000408'])}
+    dict_level_to_ids = {level: set(['efo:EFO_0000408'])}
 
     while level in dict_level_to_ids:
         new_query = query_nodes
