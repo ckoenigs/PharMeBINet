@@ -75,20 +75,21 @@ def prepare_fingerprints():
     :param mols_rdf:
     :return:
     """
-    counter = 0
-    query = 'Match (n:Compound) Where not n.smiles is null Return n.identifier, n.smiles'
-    for identifier, smiles, in g.run(query):
-
-        pyble_mol = openbabel.pybel.readstring('smi', smiles)
-        # print(drugbank_id)
-        dict_pybel = {}
-        for fingerprint_formart in pybel_fingerprints:
-            fingerprint = pyble_mol.calcfp(fptype=fingerprint_formart)
-            dict_pybel[fingerprint_formart] = fingerprint
-        dict_pybel_id_to_fingerprints[identifier] = dict_pybel
-
+    query = 'Match (n:Compound) Where not n.smiles is null Return n.identifier, n.smiles, n.inchi'
+    counter_all=0
+    counter_wrong=0
+    for identifier, smiles, inchi, in g.run(query):
+        counter_all+=1
         dict_rdkit = {}
-        rdkit_mol = rdkit_smiles_to_mol(smiles)
+        rdkit_mol = None
+        if inchi:
+            rdkit_mol = rdkit.Chem.MolFromInchi(inchi)
+        if rdkit_mol is None:
+            rdkit_mol = rdkit_smiles_to_mol(smiles)
+            if rdkit_mol is None:
+                print(identifier, 'wrong structure', smiles, inchi)
+                counter_wrong+=1
+                continue
         for key, funct in dict_rdfkit_fingerprint.items():
             if key.startswith('morgan'):
                 fingerprint = funct(rdkit_mol, 2)
@@ -97,11 +98,23 @@ def prepare_fingerprints():
             dict_rdkit[key] = fingerprint
         dict_rdkit_id_to_fingerprints[identifier] = dict_rdkit
 
+        # pyble_mol = None
+        # if inchi:
+        #     pyble_mol = openbabel.pybel.readstring('inchi', inchi)
+        pyble_mol = openbabel.pybel.readstring('smi', smiles)
+        # print(identifier)
+        dict_pybel = {}
+        for fingerprint_formart in pybel_fingerprints:
+            fingerprint = pyble_mol.calcfp(fptype=fingerprint_formart)
+            dict_pybel[fingerprint_formart] = fingerprint
+        dict_pybel_id_to_fingerprints[identifier] = dict_pybel
+
+
         if identifier == 'DB00006':
             print(dict_pybel_id_to_fingerprints)
             print(dict_rdkit_id_to_fingerprints)
-
-        counter += 1
+    print('number of all compounds:', counter_all)
+    print('number of wrong smiles compounds:', counter_wrong)
 
 
 # set the threshold
@@ -115,9 +128,7 @@ def generate_cypher(header, file_name):
     :param file_name:
     :return:
     """
-    cypherfile = open('compound_interaction/cypher_resemble.cypher', 'w', encoding='utf-8')
-    query = '''Match (c1:Compound)-[r:RESEMBLES_CrC]->(c2:Compound) Delete r;\n '''
-    cypherfile.write(query)
+    cypherfile = open('output/cypher_resemble.cypher', 'w', encoding='utf-8')
     query = ''' Match (c1:Compound{identifier:line.id1}), (c2:Compound{identifier:line.id2}) Create (c1)-[:RESEMBLES_CrC{source:"Open Babel and rdKit", unbiased:false, url:"https://pharmebi.net/#/compounds/"+line.id1, resource:['OpenBabel','rdKit'], open_babel_and_rdkit:'yes', license:'%s', '''
     for head in header:
         query += head + ':toFloat(line.' + head + '), '
@@ -125,7 +136,7 @@ def generate_cypher(header, file_name):
     query = query[:-2] + '''}]->(c2) '''
 
     query = pharmebinetutils.get_query_import(path_of_directory,
-                                              f'mapping_and_merging_into_hetionet/drugbank/compound_interaction/{file_name}',
+                                              f'mapping_and_merging_into_hetionet/drugbank/{file_name}',
                                               query)
     cypherfile.write(query)
     cypherfile.close()
@@ -156,10 +167,11 @@ def calculate_similarities_and_write_into_file():
               'atom_pair_hash_bit_vec_kulczynski', 'atom_pair_hash_bit_vec_tanimoto', 'atom_pair_hash_bit_vec_russel',
               'atom_pair_hash_bit_vec_dice', 'atom_pair_hash_bit_vec_sokal', 'atom_pair_hash_bit_vec_tversky']
     header = [x.replace(' ', '_') for x in header]
-    file_write = open('compound_interaction/pair_to_similarity.tsv', 'w', encoding='utf-8')
+    file_name='similarity/pair_to_similarity.tsv'
+    file_write = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.DictWriter(file_write, fieldnames=header, delimiter='\t')
     csv_writer.writeheader()
-    generate_cypher(header, 'pair_to_similarity.tsv')
+    generate_cypher(header, file_name)
     counter = 0
     for (id0, fp0), (id1, fp1) in itertools.combinations(dict_pybel_id_to_fingerprints.items(), 2):
         dict_pair = {'id1': id0, 'id2': id1}
@@ -217,17 +229,16 @@ def calculate_similarities_and_write_into_file():
         if counter % 1000000 == 0:
             print(counter)
 
-    print(set_of_types)
-    print(dict_fp_to_metrics)
+    # print(set_of_types)
+    # print(dict_fp_to_metrics)
 
 
 def main():
     global path_of_directory
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        start_path = sys.argv[2]
     else:
-        sys.exit('need a path and path to databases')
+        sys.exit('need a path')
 
     print(
         '###########################################################################################################################')
