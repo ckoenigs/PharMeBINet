@@ -81,8 +81,6 @@ def get_properties_and_generate_tsv_files_and_cypher_file():
             query_new.append('definitions:a.' + property)
         elif property == 'id':
             query_new.append('identifier:a.' + property)
-        elif property == 'names':
-            query_new.append('name:line.name')
         elif property in ['xrefs', 'synonyms']:
             query_new.append(f'{property}:split(line.{property},"|")')
 
@@ -148,14 +146,13 @@ def add_nodes_to_different_files(results, set_not_considered_nodes, dict_nodes, 
     :param counter:
     :return:
     """
-    for record in results:
-        [node_id, names, xrefs_uberon, synonyms, subsets] = record.values()
+    for node_id, name, xrefs_uberon, synonyms, subsets, in results:
         if node_id in dict_nodes or node_id in set_not_considered_nodes:
             continue
         counter += 1
         xrefs_uberon = xrefs_uberon if xrefs_uberon is not None else []
         set_ids_of_level.add(node_id)
-        dict_nodes[node_id] = (names, xrefs_uberon)
+        dict_nodes[node_id] = (name, xrefs_uberon)
 
         # xref check
         set_xrefs = {x.split(':')[0] for x in xrefs_uberon}
@@ -168,14 +165,10 @@ def add_nodes_to_different_files(results, set_not_considered_nodes, dict_nodes, 
         if (not has_human_xref and bool(set_xrefs & set_not_human_xrefs)):
             if subsets is None or not 'human_reference_atlas' in subsets:
                 continue
-
-        names = set(names)
         # print(type(synonyms), synonyms)
         synonyms = set(synonyms) if not synonyms is None else []
         xrefs_uberon = set(xrefs_uberon) if not xrefs_uberon is None else []
 
-        name = names.pop()
-        synonyms = names.union(synonyms)
         csv_new.writerow([node_id, name, '|'.join(synonyms),
                           '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs_uberon, 'Anatomy'))])
     return counter
@@ -186,7 +179,7 @@ def load_all_uberon_anatomy_nodes():
     Load all nodes below anatomical structure as anatomy nodes. COnsider the below nodes is-a and part-of.
     :return:
     """
-    query_nodes = 'MATCH (n:uberon_extend)-[:%s]->(m:uberon_extend ) Where n.is_obsolete is NULL and m.id in ["%s"] and n.id starts with "UBERON" RETURN n.id, n.names, n.xrefs, n.synonyms, n.subsets'
+    query_nodes = 'MATCH (n:uberon_extend)-[:%s]->(m:uberon_extend ) Where n.is_obsolete is NULL and m.id in ["%s"] and n.id starts with "UBERON" RETURN n.id, n.name, n.xrefs, n.synonyms, n.subsets'
 
     dict_nodes = {}
 
@@ -259,7 +252,7 @@ def main():
 
     print(datetime.datetime.now())
 
-    print('load all DrugBank compounds in dictionary')
+    print('load all Uberons nodes and preapre')
 
     load_all_uberon_anatomy_nodes()
 
