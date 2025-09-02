@@ -322,69 +322,67 @@ def search_with_api_bioportal():
     for list_ids in list_of_list_of_meddra_ids:
         if len(list_ids) == 0:
             continue
-        string_ids = ' '.join(list_ids)
-        part = "/search?q=" + urllib.parse.quote(string_ids) + "&include=cui,prefLabel&pagesize=250&ontology=MEDDRA"
-        url = REST_URL + part
-        results_all = get_json(url)
-        if results_all['totalCount'] > 250:
-            sys.exit('more results thant it can show')
-        results = results_all['collection']
+        for meddra_id_from_list in list_ids:
+            part = "/search?q=" + meddra_id_from_list + "&include=cui,prefLabel&pagesize=250&ontology=MEDDRA"
+            url = REST_URL + part
+            results_all = get_json(url)
+            if results_all['totalCount'] > 250:
+                sys.exit('more results thant it can show')
+            results = results_all['collection']
 
-        dict_all_inside = {}
-        # check if this api got an result
-        if results:
-            for result in results:
-                # print(results)
-                all_infos = result['@id'].split('/')
-                meddra_id = all_infos[-1]
-                if meddra_id == '10052551':
-                    print('test')
-                # filter out all results which are not from meddra
-                if all_infos[-2] != 'MEDDRA':
-                    continue
+            dict_all_inside = {}
+            # check if this api got an result
+            if results:
+                found_cui=False
+                for result in results:
+                    # print(results)
+                    all_infos = result['@id'].split('/')
+                    meddra_id = all_infos[-1]
+                    if meddra_id == '10052551':
+                        print('test')
+                    # filter out all results which are not from meddra
+                    if all_infos[-2] != 'MEDDRA':
+                        continue
 
-                # check if the result has a cui
-                if 'cui' in result:
-                    cuis = result['cui']
-                else:
-                    print('no cui')
-                    print(meddra_id)
-                    continue
-                pref_name = result['prefLabel']
+                    # check if the result has a cui
+                    if 'cui' in result:
+                        cuis = result['cui']
+                    else:
+                        print('no cui')
+                        print(meddra_id)
+                        continue
+                    pref_name = result['prefLabel']
 
-                # check if the id is really in this list
-                if not meddra_id in list_ids:
-                    print('ohje')
-                    print(meddra_id)
-                    print(url)
-                    print(list_ids)
-                    print(result)
-                    print('What did happend')
-                    continue
+                    # check if the id is really in this list
+                    if not meddra_id !=meddra_id_from_list:
+                        print('ohje')
+                        print(meddra_id)
+                        print(url)
+                        print(list_ids)
+                        print(result)
+                        print('What did happend')
+                        continue
+                    found_cui=True
+                    # if it contains more than one cui write it into an extra file
+                    if len(list(set(cuis))) > 1:
+                        cuis_string = "|".join(list(set(cuis)))
+                        csv_multiple_cuis.writerow([meddra_id, cuis_string, 'from bioportal'])
+                    dict_all_inside[meddra_id] = cuis
+                    sideEffect_name = dict_side_effects_aeolus[meddra_id].name
+                    dict_aeolus_SE_with_CUIs[meddra_id] = list(set(cuis))
+                    csv_writer.writerow([meddra_id, '|'.join(cuis)])
+                    # check if names are equal
+                    if pref_name != sideEffect_name:
+                        counter_for_not_equal_names += 1
 
-                # if it contains more than one cui write it into an extra file
-                if len(list(set(cuis))) > 1:
-                    cuis_string = "|".join(list(set(cuis)))
-                    csv_multiple_cuis.writerow([meddra_id, cuis_string, 'from bioportal'])
-                dict_all_inside[meddra_id] = cuis
-                sideEffect_name = dict_side_effects_aeolus[meddra_id].name
-                dict_aeolus_SE_with_CUIs[meddra_id] = list(set(cuis))
-                csv_writer.writerow([meddra_id, '|'.join(cuis)])
-                # check if names are equal
-                if pref_name != sideEffect_name:
-                    counter_for_not_equal_names += 1
+                # check if some do not have a cui and if so add the to the list without cui
+                if not found_cui:
+                    list_aeolus_outcome_without_cui.add(meddra_id_from_list)
 
-            # check if some do not have a cui and if so add the to the list without cui
-            if len(list_ids) != len(dict_all_inside):
-                set_list = set(list_ids)
-                set_keys = set(dict_all_inside.keys())
-                not_mapped_list = list(set_list.difference(set_keys))
-                counter_meddra_id_without_cui += len(not_mapped_list)
-                list_aeolus_outcome_without_cui.extend(not_mapped_list)
-        else:
-            print('not in bioportal')
-            print(list_ids)
-            list_aeolus_outcome_without_cui.extend(list_ids)
+            else:
+                print('not in bioportal')
+                print(list_ids)
+                list_aeolus_outcome_without_cui.extend(list_ids)
 
     print('Size of Aoelus side effects:' + str(len(dict_side_effects_aeolus)))
     print('number of not equal names:' + str(counter_for_not_equal_names))
