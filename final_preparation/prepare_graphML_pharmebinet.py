@@ -8,10 +8,10 @@ sys.path.append("..")
 import pharmebinetutils
 
 # dc = drugcentral
-TODELETE = {'adrecs', 'adrecstarget', 'aeolus', 'atc', 'biogrid', 'bindingdb', 'chebiontology', 'clinvar', 'ctd', 'co',
+TODELETE = {'adrecs', 'adrecstarget', 'aeolus', 'atc', 'biogrid', 'bindingdb', 'chebiontology', 'clinvar', 'ctd', 'co', 'ChebiOntology',
             'dbsnp', 'dc', 'ddinter', 'diseases', 'disgenet', 'diseaseontology', 'drugbank', 'fideo', 'foodb', 'foodon',
             'efo', 'gencc', 'go', 'gwas', 'gwascatalog', 'hetionet', 'hgnc', 'hippie', 'hmdb', 'hpo', 'iid', 'iptmnet', 'markerdb',
-            'medrt', 'mirbase', 'mondo', 'ncbi', 'ndfrt', 'multi', 'omim', 'openfda', 'pharmgkb', 'ptmd', 'qptm',
+            'medrt', 'mirbase', 'mondo', 'ncbi', 'ndfrt', 'multi', 'omim', 'openfda', 'pharmgkb',  'ptmd', 'pubchem', 'qptm',
             'reactome', 'refseq', 'rnacentral', 'rnadisease', 'rnainter', 'sider', 'smpdb', 'ttd', 'uberon', 'uniprot'}
 
 
@@ -114,7 +114,7 @@ with open(filename, 'w', encoding='utf-8') as xf:
                 print('node', counter_all_nodes)
                 xf.flush()
             node.clear()
-        if node.tag == ns + 'edge':
+        elif node.tag == ns + 'edge':
             counter_all_edges += 1
             source = node.attrib['source']
             target = node.attrib['target']
@@ -127,7 +127,8 @@ with open(filename, 'w', encoding='utf-8') as xf:
                 print('edges', counter_all_edges)
                 xf.flush()
             node.clear()
-        node.clear()
+        elif node.tag == ns + 'key':
+            node.clear()
     xf.write('  </graph>\n')
     xf.write('</graphml>\n')
 print('from all nodes', counter_all_nodes, 'are real nodes', counter_selected_node)
