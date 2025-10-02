@@ -45,7 +45,7 @@ def get_node_properties_and_prepare_query(label, additional_label, id_property_n
             else:
                 list_of_properties.append('name:m.' + property)
 
-    query = f'Match (m:{label}{{id:line.id}}) Create (n:RNA :{additional_label} {{ {", ".join(list_of_properties)}, resource:["RefSeq"], source:"RefSeq", license:"CC0 with attribution", refseq:"yes", url:"https://identifiers.org/refseq:"+line.url}}) Create (n)-[:equals_rna_refseq]->(m)'
+    query = f'Match (m:{label}{{id:line.id}}) Create (n:RNA :{additional_label} {{ {", ".join(list_of_properties)}, resource:["RefSeq"], source:"RefSeq", license:"CC0 with attribution", refseq:"yes", url:COALESCE("https://identifiers.org/refseq:"+line.url, "https://www.ncbi.nlm.nih.gov/refseq/")}}) Create (n)-[:equals_rna_refseq]->(m)'
     return query
 
 
