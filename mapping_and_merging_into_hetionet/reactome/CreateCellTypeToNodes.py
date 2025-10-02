@@ -137,7 +137,7 @@ def main():
         ['cellType', 'PhysicalEntity_reactome)--(a:ReferenceEntity_reactome', 'Chemical',
          'IS_IN_CELL_TYPE_CHiictCT', '<-', '-', '<-', '-'],
         ['cellType', 'PhysicalEntity_reactome)--(a:ReferenceEntity_reactome', 'Protein',
-         'IS_IN_CELL_TYPE_CHiictP', '<-', '-', '<-', '-'],
+         'IS_IN_CELL_TYPE_PiictCT', '<-', '-', '<-', '-'],
 
     ]
 
