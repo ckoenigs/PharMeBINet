@@ -77,7 +77,7 @@ def generate_files(path_of_directory):
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
 
-    query = f' Match (n:GWASCatalog_Association) Where ID(n)=toInteger(line.variant_id) Merge (p:Variant :GeneVariant{{identifier:line.identifier}}) On Create Set p.chromosome=n.chr_id, p.position=n.chr_position , p.resource=["GWAS"], p.xrefs=["dbSNP:"+line.identifier], p.gwas="yes", p.source="dbSNP from GWAS", p.license="CC BY-NC 4.0 Deed"  Create (p)-[:equal_to_GWAS_variant{{mapped_with:"new"}}]->(n)'
+    query = f' Match (n:GWASCatalog_Association) Where ID(n)=toInteger(line.variant_id) Merge (p:Variant :GeneVariant{{identifier:line.identifier}}) On Create Set p.chromosome=n.chr_id, p.position=n.chr_position , p.resource=["GWAS Catalog"], p.xrefs=["dbSNP:"+line.identifier], p.gwas="yes", p.source="dbSNP from GWAS", p.license="CC BY-NC 4.0 Deed"  Create (p)-[:equal_to_GWAS_variant{{mapped_with:"new"}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_new,
                                               query)
@@ -108,7 +108,7 @@ def load_all_GWAS_variants_and_finish_the_files(csv_mapping, csv_new):
             for variant_id in dbsnp_identifier_map[rs_id]:
                 csv_mapping.writerow(
                     [unique_id, variant_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[variant_id], "GWAS"),
+                     pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[variant_id], "GWAS Catalog"),
                      'dbSNP'])
 
         else:

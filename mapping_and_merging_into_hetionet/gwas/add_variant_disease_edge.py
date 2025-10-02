@@ -87,7 +87,7 @@ def create_tsv_file(other_label):
                                               query)
     cypher_file.write(query)
 
-    query = f'Match (n:Variant{{identifier:line.variant_id}}), (m:{other_label} {{identifier:line.phenotype_id}}) Create (m)<-[:ASSOCIATES_Va{pharmebinetutils.dictionary_label_to_abbreviation[other_label]} {{source:"GWAS", resource:["GWAS"], gwas:"yes", pubMed_ids:split(line.pubmed_ids,"|"), gwas_information:split(line.additional_info,"|"), url:"https://www.ebi.ac.uk/gwas/studies/"+line.study_id, license:"https://www.ebi.ac.uk/about/terms-of-use/"}}]-(n)'
+    query = f'Match (n:Variant{{identifier:line.variant_id}}), (m:{other_label} {{identifier:line.phenotype_id}}) Create (m)<-[:ASSOCIATES_Va{pharmebinetutils.dictionary_label_to_abbreviation[other_label]} {{source:"GWAS Catalog", resource:["GWAS Catalog"], gwas:"yes", pubMed_ids:split(line.pubmed_ids,"|"), gwas_information:split(line.additional_info,"|"), url:"https://www.ebi.ac.uk/gwas/studies/"+line.study_id, license:"https://www.ebi.ac.uk/about/terms-of-use/"}}]-(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/gwas/{file_name}',
                                               query)
@@ -138,7 +138,7 @@ def go_through_all_gwas_pairs(label_pharmebinet):
             dict_label_to_tsv_files[label] = create_tsv_file(label)
         if pair in dict_pair_to_resource_and_pmids:
             dict_label_to_tsv_files[label][1].writerow(
-                [pair[1], pair[0], pharmebinetutils.resource_add_and_prepare(dict_pair_to_resource_and_pmids[pair][0],'GWAS'), '|'.join(dict_pair_to_resource_and_pmids[pair][1].union(set_pubmed_ids)), '|'.join([json.dumps(x) for x in dict_study_id_to_study_info.values()]) ])
+                [pair[1], pair[0], pharmebinetutils.resource_add_and_prepare(dict_pair_to_resource_and_pmids[pair][0],'GWAS Catalog'), '|'.join(dict_pair_to_resource_and_pmids[pair][1].union(set_pubmed_ids)), '|'.join([json.dumps(x) for x in dict_study_id_to_study_info.values()]) ])
         else:
             dict_label_to_tsv_files[label][0].writerow(
                 [pair[1], pair[0],
