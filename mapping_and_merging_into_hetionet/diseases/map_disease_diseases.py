@@ -50,7 +50,7 @@ def generate_cypher_file():
     """
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query_set = ' Match (n:Disease{identifier:line.mondo_id}), (b:DISEASES_Disease{id:line.disease_id}) Set  n.disease="yes", n.resource=split(line.resource,"|") Create (n)-[:equal_to {how_mapped:line.how_mapped}]->(b)'
+    query_set = ' Match (n:Disease{identifier:line.mondo_id}), (b:DISEASES_Disease{id:line.disease_id}) Set  n.diseases="yes", n.resource=split(line.resource,"|") Create (n)-[:equal_to {how_mapped:line.how_mapped}]->(b)'
     print(query_set)
     query_set = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/diseases/output/mapped.tsv',
