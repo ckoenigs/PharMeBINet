@@ -34,7 +34,7 @@ def generate_tsv_files_and_cypher_file():
     csv_update.writerow(['id', 'resource'])
 
     query_start = f' Match (a:{label_fo}{{id:line.id}})'
-    query_match = query_start + ' , (l:Anatomy{identifier:line.id}) Set l.fo="yes", l.resource=split(line.resource,"|") Create (l)-[:equal_anatomy_fo]->(a)'
+    query_match = query_start + ' , (l:Anatomy{identifier:line.id}) Set l.foodon="yes", l.resource=split(line.resource,"|") Create (l)-[:equal_anatomy_fo]->(a)'
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 

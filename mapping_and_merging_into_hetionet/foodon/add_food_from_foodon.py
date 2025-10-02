@@ -75,7 +75,7 @@ def get_FO_properties():
     query_end = ''' Create (a)-[:equal_to_FO]->(b)'''
 
     # combine the important parts of node creation
-    query_new = query_nodes_start + query_middle_new + 'resource:["FoodOn"], foodon:"yes", source:"FoodON", url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.identifier, license:"' + license + '"})' + query_end
+    query_new = query_nodes_start + query_middle_new + 'resource:["FoodOn"], foodon:"yes", source:"FoodOn", url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.identifier, license:"' + license + '"})' + query_end
     return query_new
 
 
