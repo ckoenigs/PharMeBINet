@@ -17,6 +17,7 @@ if [ ! -d output ]; then
   mkdir mapping_disease_mapping
   mkdir mapping_phenotype_mapping
   mkdir mapping_symptom_sideeffect
+  mkdir similarity
 fi
 
 echo map se, symptom, disease and phenotypes to each other
