@@ -116,7 +116,7 @@ def generate_cypher_file(file_name, file_name_new):
                                               f'mapping_and_merging_into_hetionet/DDinter/{file_name}', query)
     cypher_file.write(query)
 
-    query = '''MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Create (n)-[r:INTERACTS_CHiCH{source:"DDinter", resource:["DDinter"], source:"DDinter", ddinter:"yes" , license:"%s", level:line.level, rela_infos:split(line.rela_infos,"|")}]->(c) '''
+    query = '''MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Create (n)-[r:INTERACTS_CHiCH{source:"DDinter", resource:["DDinter"], source:"DDinter", ddinter:"yes" , license:"%s", url:"https://ddinter.scbdd.com/", level:line.level, rela_infos:split(line.rela_infos,"|")}]->(c) '''
     query = query % (license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/DDinter/{file_name_new}',
