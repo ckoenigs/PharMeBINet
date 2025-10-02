@@ -53,7 +53,7 @@ def prepare_cypher_query_rela(file_name, label, direction):
     :return:
 
     """
-    query_new = f' Match (n:Reaction{{identifier:line.reaction_id}}), (m:%s{{identifier:line.other_id}}) Create (n)%s[:%s{{url:"{dict_label_to_url[label]}"+line.drugbank_id, license:"%s", source:"DrugBank", drugbank:"yes", resource:["DrugBank"]}}]%s(m)'
+    query_new = f' Match (n:Reaction{{identifier:line.reaction_id}}), (m:%s{{identifier:line.other_id}}) Create (n)%s[:%s{{url:COALESCE("{dict_label_to_url[label]}"+line.drugbank_id,"https://go.drugbank.com/"), license:"%s", source:"DrugBank", drugbank:"yes", resource:["DrugBank"]}}]%s(m)'
     abbreviation = pharmebinetutils.dictionary_label_to_abbreviation[label] if label != 'Compound' else 'CH'
     if direction == 'right':
         query_new = query_new % (label, '<-',
