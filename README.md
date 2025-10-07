@@ -14,65 +14,67 @@ Included Data Sources:
 |-----------------|:-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
 | Adverse Drug Reaction Classification System (ADReCS)   | 2024-06-07 | [CC BY-SA 4.0 DEED](https://creativecommons.org/licenses/by-sa/4.0/deed.en)       | [Link](http://www.bio-add.org/ADReCS/) |
 | Adverse Event Open Learning through Universal Standardization (AEOLUS)          | 2017-04-08 | [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)                                                                                                                  | [Link](http://datadryad.org/resource/doi:10.5061/dryad.8q0s4) |
-| ATC         | 2025-02-06 | Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed.      | [Link](https://www.whocc.no/atc_ddd_index/) |
-| BindingDB         | 2024-01-29 |[CC BY-SA 3.0 US Deed ](https://creativecommons.org/licenses/by-sa/3.0/us/deed.en)            | [Link](https://www.bindingdb.org/rwd/bind/index.jsp)                 |
-| BioGRID         | 4.4.242 (2025-01-25) | MIT License          | [Link](https://thebiogrid.org/)                 |
-| Cell Ontology (CL)         | 2025-01-07 | [CC BY-SA 4.0 DEED](https://creativecommons.org/licenses/by-sa/4.0/deed.en)   | [Link](https://obophenotype.github.io/cell-ontology/)                 |
-| ChEBI Ontology         | 2024-12-27 | [CC BY-SA 4.0 DEED](https://creativecommons.org/licenses/by-sa/4.0/deed.en)   | [Link](https://www.ebi.ac.uk/chebi/)                 |
-| ClinVar         | 2025-02-06 | https://www.ncbi.nlm.nih.gov/home/about/policies/                                                                                                                                        | [Link](https://www.ncbi.nlm.nih.gov/clinvar/)                 |
-| Comparative Toxicogenomics Database (CTD)    | 2024-01-31    | © 2002–2012 MDI Biological Laboratory. All rights reserved. © 2012-2024 NC State University. All rights reserved.    | [Link](http://ctdbase.org)                                    |
-| dbSNP           | 2022-11-16 | https://www.ncbi.nlm.nih.gov/home/about/policies/                                                                                                                                        | [Link](https://www.ncbi.nlm.nih.gov/snp/)                     |
+| ATC         | 2025-07-22 | Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed.      | [Link](https://www.whocc.no/atc_ddd_index/) |
+| BindingDB         | 2025-08-21 |[CC BY-SA 3.0 US Deed ](https://creativecommons.org/licenses/by-sa/3.0/us/deed.en)            | [Link](https://www.bindingdb.org/rwd/bind/index.jsp)                 |
+| BioGRID         | 4.4.248 (2025-07-25) | MIT License          | [Link](https://thebiogrid.org/)                 |
+| Cell Ontology (CL)         | 2025-07-25 | [CC BY-SA 4.0 DEED](https://creativecommons.org/licenses/by-sa/4.0/deed.en)   | [Link](https://obophenotype.github.io/cell-ontology/)                 |
+| ChEBI Ontology         | 2025-08-01 | [CC BY-SA 4.0 DEED](https://creativecommons.org/licenses/by-sa/4.0/deed.en)   | [Link](https://www.ebi.ac.uk/chebi/)                 |
+| ClinVar         | 2025-08-12 | https://www.ncbi.nlm.nih.gov/home/about/policies/                                                                                                                                        | [Link](https://www.ncbi.nlm.nih.gov/clinvar/)                 |
+| Comparative Toxicogenomics Database (CTD)    | 2025-07    | © 2002–2012 MDI Biological Laboratory. All rights reserved. © 2012-2025 NC State University. All rights reserved.    | [Link](http://ctdbase.org)                                    |
+| dbSNP           | 2025-01-15 | https://www.ncbi.nlm.nih.gov/home/about/policies/                                                                                                                                        | [Link](https://www.ncbi.nlm.nih.gov/snp/)                     |
 | DDinter              | 2020-09-04 | [CC BY-NC-SA 4.0 DEED](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en)         | [Link](http://ddinter.scbdd.com/)                          |
-| Disease Ontology (DO)   | 2024-01-31 | [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)                                                    | [Link](https://disease-ontology.org)                          |
-| Diseases        | 2024-09-13 | [CC BY-SA 4.0 DEED](https://creativecommons.org/licenses/by-sa/4.0/deed.en)   | [Link](https://diseases.jensenlab.org/Search)   |
+| Disease Ontology (DO)   | 2025-08-01 | [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)                                                    | [Link](https://disease-ontology.org)                          |
+| Diseases        | 2025-07-11 | [CC BY-SA 4.0 DEED](https://creativecommons.org/licenses/by-sa/4.0/deed.en)   | [Link](https://diseases.jensenlab.org/Search)   |
 | DisGeNET  | 2020-06 | [CC BY-NC-SA 4.0 DEED](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en)    | [Link](https://www.disgenet.org/)                          |
 | DrugBank        | 5.1.13 (2025-01-02)      | [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)         | [Link](https://go.drugbank.com)                               |
 | DrugCentral        | 2023-11-01      | [CC BY-SA 4.0 LEGAL CODE](https://creativecommons.org/licenses/by-sa/4.0/legalcode)         | [Link](https://drugcentral.org/)                               |
-| Entrez Gene     | 2025-02-12 | https://www.ncbi.nlm.nih.gov/home/about/policies/     | [Link](https://www.ncbi.nlm.nih.gov/gene)                     |
-| Experimental Factor Ontology (EFO)   | 3.74.0 (2025-01-15) | Apache-2  | [Link](https://www.ebi.ac.uk/efo/)                     |
+| Entrez Gene     | 2025-08-12 | https://www.ncbi.nlm.nih.gov/home/about/policies/     | [Link](https://www.ncbi.nlm.nih.gov/gene)                     |
+| Experimental Factor Ontology (EFO)   | 3.80.0 (2025-07-15) | Apache-2  | [Link](https://www.ebi.ac.uk/efo/)                     |
 | Food Interactions with Drugs Evidence Ontology (FIDEO)   | 2023-12-18 | [CC BY-SA 4.0 DEED](https://creativecommons.org/licenses/by-sa/4.0/deed.en)   | [Link](https://gitub.u-bordeaux.fr/erias/fideo/)   |
-| FooDB        | 1.0 (2020-04-07) | [CC BY-SA 4.0 DEED](https://creativecommons.org/licenses/by-sa/4.0/deed.en)   | [Link](https://foodb.ca/)   |
-| GenCC              | 2024-05-22 | [CC0 1.0 Universell](https://creativecommons.org/publicdomain/zero/1.0/deed.de)   | [Link](https://thegencc.org/)                               |
-| Gene Ontology (GO)        | 2024-05-22 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)   | [Link](http://geneontology.org)                               |
+| FoodOn        | 2025-08-01 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)   | [Link](https://foodon.org/)   |
+| GenCC              | 2025-06-13 | [CC0 1.0 Universell](https://creativecommons.org/publicdomain/zero/1.0/deed.de)   | [Link](https://thegencc.org/)                               |
+| Gene Ontology (GO)        | 2025-07-22 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)   | [Link](http://geneontology.org)                               |
+| GWAS Cataglog        | 2025-08-12 | [https://www.ebi.ac.uk/about/terms-of-use/](https://www.ebi.ac.uk/about/terms-of-use/)   | [Link](https://www.ebi.ac.uk/gwas/)                               |
 | Hetionet        | 1.0        | [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)           | [Link](https://het.io)     |
-| HUGO Gene Nomenclature Committee (HGNC)             | 2025-02-07 | [CC0](https://creativecommons.org/public-domain/cc0/)  | [Link](https://www.genenames.org/)         |
+| HUGO Gene Nomenclature Committee (HGNC)             | 2025-08-13 | [CC0](https://creativecommons.org/public-domain/cc0/)  | [Link](https://www.genenames.org/)         |
 | Human Integrated Protein–Protein Interaction rEference (HIPPIE)   | 2022-04-29 | Free to use for academic purposes  | [Link](http://cbdm-01.zdv.uni-mainz.de/~mschaefer/hippie/)         |
 | Human Metabolome Database (HMDB)  | 2021-11-02 | [CC BY-NC-SA 4.0 DEED](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en) | [Link](https://hmdb.ca/)         |
-| Human Phenotype Ontology (HPO)  | 2025-01-16 | This service/product uses the Human Phenotype Ontology (version information). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well. | [Link](https://hpo.jax.org)         |
-| IID             | 2021-05    | Free to use for academic purposes      | [Link](http://iid.ophid.utoronto.ca)                          |
+| Human Phenotype Ontology (HPO)  | 2025-08-11 | This service/product uses the Human Phenotype Ontology (version information). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well. | [Link](https://hpo.jax.org)         |
+| IID             | 2025-05    | Free to use for academic purposes      | [Link](http://iid.ophid.utoronto.ca)                          |
 | iPTMnet  | 6.2  (2024-01-31) | [CC BY-NC-SA 4.0 DEED](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en) | [Link](https://research.bioinformatics.udel.edu/iptmnet/)         |
-| MarkerDB  | 6.2  (2024-09-12) | [CC BY-NC-SA 4.0 DEED](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en) | [Link](https://markerdb.ca/)         |
-| MED-RT          | 2025-02-03 | UMLS license, available at https://uts.nlm.nih.gov/license.  | [Link](https://evs.nci.nih.gov/ftp1/MED-RT/)                  |
+| MarkerDB  | 2024-09-12 | [CC BY-NC-SA 4.0 DEED](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en) | [Link](https://markerdb.ca/)         |
+| MED-RT          | 2025-07-07 | UMLS license, available at https://uts.nlm.nih.gov/license.  | [Link](https://evs.nci.nih.gov/ftp1/MED-RT/)                  |
 | miRBase         | 22.1 (2018-05-23) | CC0 with attribution  | [Link](https://mirbase.org/)                  |
-| MONDO           | 2025-02-04 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)                                                                                                                                | [Link](https://github.com/monarch-initiative/mondo)           |
+| MONDO           | 2025-08-05 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)                                                                                                                                | [Link](https://github.com/monarch-initiative/mondo)           |
 | NDF-RT          | 2018-02-05 | UMLS license, available at https://uts.nlm.nih.gov/license.html      | [Link](https://evs.nci.nih.gov/ftp1/NDF-RT/)                  |
-| OMIM            | 2025-02-10 | https://www.omim.org/help/agreement                                                                                                                                                      | [Link](https://www.omim.org)                                  |
+| OMIM            | 2025-08-21 | https://www.omim.org/help/agreement                                                                                                                                                      | [Link](https://www.omim.org)                                  |
 | Pathway Commons | 14  (2024-06-21)       | License of the different sources             | [Link](https://www.pathwaycommons.org)                        |
-| PharmGKB        | 2025-02-05 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)                                                                                                                          | [Link](https://www.pharmgkb.org/) |
-| PTMD        | 2025-02-05 | ONLY freely available for academic research| [Link](https://ptmd.biocuckoo.cn/)       |
+| PharmGKB        | 2025-08-05 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)                                                                                                                          | [Link](https://www.pharmgkb.org/) |
+| PTMD        | 2024-08-06 | ONLY freely available for academic research| [Link](https://ptmd.biocuckoo.cn/)       |
+| PubChem    | 2025-07-01            | Therefore, NCBI itself places no restrictions on the use or distribution of the data contained therein. However, some submitters of the original data may claim patent, copyright, or other intellectual property rights in all or a portion of the data they have submitted. NCBI is not in a position to assess the validity of such claims and, therefore, cannot provide comment or unrestricted permission concerning the use, copying, or distribution of the information contained in the molecular databases.      | [Link](https://pubchem.ncbi.nlm.nih.gov/)    |
 | qPTM        | 2022-09-29 | ONLY freely available for academic research| [Link](http://qptm.omicsbio.info/index.php)     |
-| Reactome        | 2024-11-27 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)    | [Link](https://reactome.org)                                  |
-| RefSeq        | 2024-08-27 | https://www.ncbi.nlm.nih.gov/home/about/policies/    | [Link](https://www.ncbi.nlm.nih.gov/refseq/)                                  |
+| Reactome        | 2025-06-13 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)    | [Link](https://reactome.org)                                  |
+| RefSeq        | 2025-08-06 | https://www.ncbi.nlm.nih.gov/home/about/policies/    | [Link](https://www.ncbi.nlm.nih.gov/refseq/)                                  |
 | RNAdisease        | 2022-07-03|Provide data for non-commercial use, distribution, or reproduction in any medium, only if you properly cite the original work.    | [Link](http://www.rnadisease.org/)                                  |
 | RNAinter        | 2021-10-12| Provide data for non-commercial use, distribution, or reproduction in any medium, only if you properly cite the original work.  | [Link](http://www.rnainter.org/)                                  |
 | Side Effect Resource (SIDER)           | 4.1        | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)           | [Link](http://sideeffects.embl.de)                            |
 | Small Molecule Pathway Database (SMPDB)           | 2018-09-14 | SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication (see below). We ask that users who download significant portions of the database cite the SMPDB paper in any resulting publications. | [Link](https://www.smpdb.ca/)                            |
 | Therapeutic target database (TTD)  | 2024-01-10| no license | [Link](https://db.idrblab.net/ttd/)                            |
-| Uberon         | 2025-01-15    | [Attribution 3.0 Unported (CC BY 3.0)](https://creativecommons.org/licenses/by/3.0/)   | [Link](http://obophenotype.github.io/uberon/)                               |
- UniProt         | 2025-1 (2025-02-05)    | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)                                                                                                                                | [Link](https://www.uniprot.org)                               |
-| WikiPathway     | 2025-01-10 | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)                                                                                                                                | [Link](https://www.wikipathways.org)                          |
+| Uberon         | 2025-05-28    | [Attribution 3.0 Unported (CC BY 3.0)](https://creativecommons.org/licenses/by/3.0/)   | [Link](http://obophenotype.github.io/uberon/)                               |
+ UniProt         | 2025-3 (2025-06-19)    | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)                                                                                                                                | [Link](https://www.uniprot.org)                               |
+| WikiPathway     | 2025-08-10 | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)                                                                                                                                | [Link](https://www.wikipathways.org)                          |
 
 
-Data Sources used for mapping:
+Data Sources used for mapping or transformation:
 
-| Data source     | Version    |License      | URL    |
-|-----------------|-------------|------------|--------|
-| FDA UNII     | 2023-01-27     |Except as otherwise noted, data is provided as Public Domain.      | [Link](https://precision.fda.gov/uniisearch)    |
-| IUPHAR    | 2023-11-29    |[CC BY-SA 4.0 Deed](https://creativecommons.org/licenses/by-sa/4.0/)      | [Link](https://www.guidetopharmacology.org/)    | 
-| PubChem    | 2024-01    |Therefore, NCBI itself places no restrictions on the use or distribution of the data contained therein. However, some submitters of the original data may claim patent, copyright, or other intellectual property rights in all or a portion of the data they have submitted. NCBI is not in a position to assess the validity of such claims and, therefore, cannot provide comment or unrestricted permission concerning the use, copying, or distribution of the information contained in the molecular databases.      | [Link](https://pubchem.ncbi.nlm.nih.gov/)    |
-| RxNorm    | 2023-11    |UMLS license, available at https://uts.nlm.nih.gov/license.html      | [Link](https://www.nlm.nih.gov/research/umls/rxnorm/index.html)    |
-| STITCH    | 2020-02-07    |STITCH is available for licensing - both for commercial and for academic institutions. [CC BY 4.0 Deed] (https://creativecommons.org/licenses/by/4.0/) for the 3 used files  | [Link](http://stitch.embl.de/)    |
-| UMLS    | 2023-11    |UMLS license, available at https://uts.nlm.nih.gov/license.html      | [Link](https://www.nlm.nih.gov/research/umls/index.html)    |
+| Data source     | Version            |License      | URL    |
+|-----------------|--------------------|------------|--------|
+| FDA UNII     | 2025-07-02         |Except as otherwise noted, data is provided as Public Domain.      | [Link](https://precision.fda.gov/uniisearch)    |
+| IUPHAR    | 2025-06-18         |[CC BY-SA 4.0 Deed](https://creativecommons.org/licenses/by-sa/4.0/)      | [Link](https://www.guidetopharmacology.org/)    | 
+| RxNorm    | 2025-07            |UMLS license, available at https://uts.nlm.nih.gov/license.html      | [Link](https://www.nlm.nih.gov/research/umls/rxnorm/index.html)    |
+| STITCH    | 2020-02-07         |STITCH is available for licensing - both for commercial and for academic institutions. [CC BY 4.0 Deed] (https://creativecommons.org/licenses/by/4.0/) for the 3 used files  | [Link](http://stitch.embl.de/)    |
+| UMLS    | 2025-05            |UMLS license, available at https://uts.nlm.nih.gov/license.html      | [Link](https://www.nlm.nih.gov/research/umls/index.html)    |
+| ROBOT | 1.9.8 (2025-05-15) |  BSD 3-Clause License |  [LINK](https://robot.obolibrary.org/convert.html)|
 
 The shell script does the integration into neo4j and the mapping and merging to Hetionet.
 
@@ -94,6 +96,7 @@ The shell script does the integration into neo4j and the mapping and merging to 
 It is executed on ubuntu.
 
 First, download a Neo4j Service version 5.
+Additionally, APOC as plugin for Neo4j is needed.
 The restart_neo4j.sh needs to be added to the Neo4j service bin. In the script, the path needs to be changed to the path to the conf of the neo4j service.
 Download a version of BioDWH2 https://github.com/BioDWH2/BioDWH2 and put it into import_into_Neo4j and change in the integration_shell.sh the BioDWH2 version to the correct one. Download a version of Neo4j-GraphML-Importer https://github.com/BioDWH2/Neo4j-GraphML-Importer put it into this directory and change in the script_to_execute_all.sh that Neo4j-GraphML-Importer version to the correct one.
 In script_to_execute_all.sh the password needs to be changed to your Neo4j password and change the path path_to_other_place_of_data to a path where a lot of memory exists.
@@ -102,7 +105,7 @@ In import_into_Neo4j/readme, you see the databases that need manual steps. The a
 Also, in all readmes of the different databases, it explains if this is automatically updated or if you need to do some manual steps.
 In the mapping_and_merging_into_hetionet/readme, it explains which databases need manual changes for the mapping like using external resources.
 In create_connection_to_databases.py change the MySQL user name, MySQL password, MySQL db names, neo4j user, neo4j address, and neo4j password.
-
+The ROBOT jar and script need to be downloaded from https://robot.obolibrary.org/ and add to the import_into_Neo4j file.
 
 ## Citing this work
 If you find this resource useful, please do remember to cite:
