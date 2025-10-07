@@ -108,7 +108,7 @@ def get_DisGeNet_information():
 
     # 2. Create… (finde beide KNOTEN)
     # url:"https://www.disgenet.org/browser/2/1/0/"+line.variant_id
-    query = f' Match (n:Variant{{identifier:line.variant_id}}), (v:Gene{{identifier:line.gene_id}}) Create (v)-[:HAS_GhGV{{source:"DisGeNet", resource:["DisGeNet"] , license:"Attribution-NonCommercial-ShareAlike 4.0 International License", sources:split(line.sources,"|"), disgenet:"yes", url:"https://www.disgenet.org/browser/0/0/2/0/0/25/snpid__"+line.snp_id+"-source__CURATED/_b./"}}]->(n)'
+    query = f' Match (n:Variant{{identifier:line.variant_id}}), (v:Gene{{identifier:line.gene_id}}) Create (v)-[:HAS_GhGV{{source:"DisGeNet", resource:["DisGeNet"] , license:"Attribution-NonCommercial-ShareAlike 4.0 International License", sources:split(line.sources,"|"), disgenet:"yes", url:"https://disgenet.com/search?view=VARIANTS&idents="+line.snp_id+"&source=ALL&tab=VDA"}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_not_mapped,
                                               query)

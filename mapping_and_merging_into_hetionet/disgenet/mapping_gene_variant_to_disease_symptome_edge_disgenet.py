@@ -264,7 +264,7 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
     file_gene_other.close()
 
     # 1. Set…
-    url = '"https://www.disgenet.org/browser/2/1/0/"+line.snp_id' if other_label == 'Variant' else '"https://www.disgenet.org/browser/1/1/1/"+line.gene_id'
+    url = '"https://disgenet.com/search?view=VARIANTS&idents="+line.variant_id+"&source=ALL&tab=VDA"' if other_label == 'Variant' else '"https://disgenet.com/search?view=GENES&idents=2811-"+line.gene_id+"&source=ALL&tab=GDA"'
 
     query = f'  Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Merge (v)-[r:{edge_type}]->(n) On Match Set r.disgenet = "yes", r.sources = split(line.sources, "|"), r.resource = split(line.resource, "|"),  r.EI = line.EI, r.pubMed_ids = split(line.pmid, "|"),r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.score=line.score On Create Set r.source="DisGeNet", r.license="Attribution-NonCommercial-ShareAlike 4.0 International License", r.sources=split(line.sources,"|"), r.score=line.score,  r.resource=["DisGeNet"], r.disgenet="yes",  r.EI=line.EI, r.pubMed_ids=split(line.pmid,"|"), r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.url={url}'
     query = pharmebinetutils.get_query_import(path_of_directory,
