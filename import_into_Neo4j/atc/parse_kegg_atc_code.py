@@ -126,7 +126,8 @@ def check_for_new_version():
         print('download')
         pharmebinetutils.download_file('https://www.genome.jp/kegg-bin/download_htext?htext=br08303.keg&format=json&filedir=',out='data/', file_name='atc_kegg.json')
         with open('update.txt', 'w', encoding='utf-8') as f:
-            f.write(last_update_date.strftime('%Y-%m-%d'))
+            if last_update_date:
+                f.write(last_update_date.strftime('%Y-%m-%d'))
 
 
 def main():

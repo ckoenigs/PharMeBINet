@@ -135,7 +135,7 @@ def load_all_drugbank_pc_and_map(csv_mapping):
             counter_mapped += 1
             continue
 
-        if mesh_id:
+        if name:
             # start = time.time()
             cur = con.cursor()
             query = ("Select CUI From MRCONSO Where STR= '%s';")
@@ -158,22 +158,23 @@ def load_all_drugbank_pc_and_map(csv_mapping):
             continue
 
         # start = time.time()
-        cur = con.cursor()
-        query = ("Select CUI From MRCONSO Where SAB='MSH' and CODE='%s' ;")
-        query = query % (mesh_id)
-        rows_counter = cur.execute(query)
-        if rows_counter > 0:
-            for (cui) in cur:
-                if cui in dict_umls_cui_to_pc_ids:
-                    found_mapping = True
-                    for pc_id in dict_umls_cui_to_pc_ids[cui]:
-                        if (identifier, pc_id) not in dict_pc_db_to_pc_id:
-                            dict_pc_db_to_pc_id[(identifier, pc_id)] = 'mesh_umls_mapped'
-                            csv_mapping.writerow([identifier, pc_id, 'mesh_umls_mapped',
-                                                  pharmebinetutils.resource_add_and_prepare(
-                                                      dict_identifier_to_resource[pc_id], 'DrugBank')])
-                        else:
-                            print('multy mapping with mesh_umls_mapped')
+        if mesh_id:
+            cur = con.cursor()
+            query = ("Select CUI From MRCONSO Where SAB='MSH' and CODE='%s' ;")
+            query = query % (mesh_id)
+            rows_counter = cur.execute(query)
+            if rows_counter > 0:
+                for (cui) in cur:
+                    if cui in dict_umls_cui_to_pc_ids:
+                        found_mapping = True
+                        for pc_id in dict_umls_cui_to_pc_ids[cui]:
+                            if (identifier, pc_id) not in dict_pc_db_to_pc_id:
+                                dict_pc_db_to_pc_id[(identifier, pc_id)] = 'mesh_umls_mapped'
+                                csv_mapping.writerow([identifier, pc_id, 'mesh_umls_mapped',
+                                                      pharmebinetutils.resource_add_and_prepare(
+                                                          dict_identifier_to_resource[pc_id], 'DrugBank')])
+                            else:
+                                print('multy mapping with mesh_umls_mapped')
 
         if found_mapping:
             counter_mapped += 1
