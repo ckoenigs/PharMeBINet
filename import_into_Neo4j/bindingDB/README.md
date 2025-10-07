@@ -2,15 +2,14 @@
 
 https://www.bindingdb.org/rwd/bind/index.jsp
 
-Version: 2024-01-29
+Version: 2025-08-21
 
 
 Important steps for importing BindingDB into MySQL:
-mysql -u ckoenigs -p bindingDB < BDB-mySQL_All_202402.dmp
-Create Index mono_in_struct ON bindingDB.monomer_struct (monomerid);
+mysql -u ckoenigs -p bindingDB < BDB-mySQL_All_202508.dmp
 
 The import into Neo4j is separated into multiple steps.
-First, load all tables that are considered into TSV files in batches. Only polymer, monomer, and complex are a bit complex because the Tsv is a combination of multiple tables. Polymer and complex are combined with their name tables. The monomer is combined with the monomer-name and monomer-structure.
+First, load all tables that are considered into TSV files in batches. Only polymer, monomer, and complex are a bit complex because the Tsv is a combination of multiple tables. Polymer, monomer, and complex are combined with their name tables.
 
 The second program prepares the edge files and the cypher queries.
     First, the TSV is prepared for the tables which are connected through direct property names and now information in the edge.
