@@ -5,11 +5,6 @@ import ujson, sys
 import datetime
 import urllib.request
 
-try:
-    from BeautifulSoup import BeautifulSoup
-except ImportError:
-    from bs4 import BeautifulSoup
-
 sys.path.append("../..")
 import pharmebinetutils
 
@@ -101,7 +96,6 @@ def get_website_source(url: str) -> str:
 def check_for_new_version():
     try:
         source=get_website_source('https://www.genome.jp/kegg-bin/get_htext?br08303.keg')
-        # parsed_html = BeautifulSoup(source, "lxml")
         if '<br>Last updated: ' in source:
             last_updated=source.split('<br>Last updated: ')[1].split('<br>')[0]
             print(last_updated)
