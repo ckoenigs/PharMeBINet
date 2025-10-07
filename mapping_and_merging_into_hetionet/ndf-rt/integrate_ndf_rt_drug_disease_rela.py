@@ -75,9 +75,9 @@ def integrate_connection_into_pharmebinet(label):
             results = g.run(query_check)
             result = results.single()
             if result:
-                query = query_start + 'Merge (a)-[r:%s]->(b) On Create Set r.source=line.source, r.resource=["NDF-RT"], r.ndf_rt="yes", r.unbiased=false, r.license="UMLS license, available at https://uts.nlm.nih.gov/license.html" On Match Set r.resource=r.resource+"NDF-RT", r.ndf_rt="yes" '
+                query = query_start + 'Merge (a)-[r:%s]->(b) On Create Set r.source=line.source, r.resource=["NDF-RT"], r.url="https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=ndfrt", r.ndf_rt="yes", r.unbiased=false, r.license="UMLS license, available at https://uts.nlm.nih.gov/license.html" On Match Set r.resource=r.resource+"NDF-RT", r.ndf_rt="yes" '
             else:
-                query = query_start + "Create (a)-[r:%s{source:line.source, resource:['NDF-RT'], ndf_rt:'yes', unbiased:false, license:'UMLS license, available at https://uts.nlm.nih.gov/license.html'}]->(b)"
+                query = query_start + "Create (a)-[r:%s{source:line.source, resource:['NDF-RT'], url:'https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=ndfrt', ndf_rt:'yes', unbiased:false, license:'UMLS license, available at https://uts.nlm.nih.gov/license.html'}]->(b)"
             query = query % (label, dict_type_to_label[rela_type])
             query = query % (letter)
 

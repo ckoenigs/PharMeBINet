@@ -70,9 +70,9 @@ def integrate_connection_into_pharmebinet(labels):
             results = g.run(query_check)
             result = results.single()
             if result:
-                query = query_start + 'Merge (a)-[r:%s]->(b) On Create Set r.source=line.source, r.resource=["MED-RT"], r.med_rt="yes",  r.license="UMLS license, available at https://uts.nlm.nih.gov/license.html" On Match Set r.resource=r.resource+"MED-RT", r.med_rt="yes" '
+                query = query_start + 'Merge (a)-[r:%s]->(b) On Create Set r.source=line.source, r.resource=["MED-RT"], r.med_rt="yes", r.url="https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=medrt",  r.license="UMLS license, available at https://uts.nlm.nih.gov/license.html" On Match Set r.resource=r.resource+"MED-RT", r.med_rt="yes" '
             else:
-                query = query_start + "Create (a)-[r:%s{source:line.source, resource:['MED-RT'], med_rt:'yes', license:'UMLS license, available at https://uts.nlm.nih.gov/license.html'}]->(b)"
+                query = query_start + "Create (a)-[r:%s{source:line.source, resource:['MED-RT'], url:'https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=medrt',  med_rt:'yes', license:'UMLS license, available at https://uts.nlm.nih.gov/license.html'}]->(b)"
             query = query % (label, dict_type_to_label[rela_type])
             query = query % letter
 

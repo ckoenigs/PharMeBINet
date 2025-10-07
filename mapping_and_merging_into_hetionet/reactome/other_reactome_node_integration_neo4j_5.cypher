@@ -42,7 +42,7 @@ CREATE INDEX indexRegulation FOR (node:Regulation) ON (node.identifier);
 MATCH (n:Regulation_reactome)--(m:PhysicalEntity_reactome)
 WHERE m.speciesName = "Homo sapiens" and n.pubMed_ids is not NULL WITH distinct n
 CREATE (m:Regulation{identifier:toString(n.dbId), name:n.displayName, alternative_id:n.oldStId, pubMed_ids:n.pubMed_ids, node_edge:true,
-url:"https://reactome.org/content/detail/" + n.stId, source:'Reactome', resource:['Reactome'], reactome:'yes', license:'CC BY 4.0'})<-[:equal_to_reactome_regulation]-(n);
+url:"https://reactome.org/content/detail/" + n.stId, source:'Reactome', resource:['Reactome'], reactome:'yes', license:'CC BY 4.0', url:'https://reactome.org/'})<-[:equal_to_reactome_regulation]-(n);
 
 //Create new Node "MolecularComplex"
 CREATE INDEX indexMolecularComplex FOR (node:MolecularComplex) ON (node.identifier);

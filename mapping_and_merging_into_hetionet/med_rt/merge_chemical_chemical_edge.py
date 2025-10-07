@@ -53,7 +53,7 @@ def write_files(label, direction_1, direction_2, rela_name, rela_type):
     header_rela = ['chemical_id1', 'chemical_id2', 'source', 'resource', 'rela_type']
     csv_rela.writerow(header_rela)
 
-    query = '''Match (c:Chemical{identifier:line.chemical_id1}), (p:Chemical{identifier:line.chemical_id2}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['MED-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.pharmacological_class_id , r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html', r.unbiased=false, r.med_rt='yes', r.types=split(line.rela_type,"|") On Match Set r.resource=split(line.resource,"|") , r.med_rt='yes', r.types=split(line.rela_type,"|") '''
+    query = '''Match (c:Chemical{identifier:line.chemical_id1}), (p:Chemical{identifier:line.chemical_id2}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['MED-RT'], r.url='https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=medrt' , r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html', r.unbiased=false, r.med_rt='yes', r.types=split(line.rela_type,"|") On Match Set r.resource=split(line.resource,"|") , r.med_rt='yes', r.types=split(line.rela_type,"|") '''
     query = query % (direction_1, rela_name, direction_2)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/med_rt/{file_name}',

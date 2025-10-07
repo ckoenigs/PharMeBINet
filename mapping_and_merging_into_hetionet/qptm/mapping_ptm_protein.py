@@ -116,7 +116,7 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
             pubmed_ids = set()
             for prop in edge_info:
                 if 'pmid' in prop:
-                    pubmed_ids.add(str(prop['pmid']))  # If it's a single value, convert it to a list
+                    pubmed_ids.add(str(prop['pmid']))
                 if len(prop) > 0:
                     clean.append(json.dumps(dict(prop)))
 

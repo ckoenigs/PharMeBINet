@@ -53,7 +53,7 @@ generate new relationships between pathways of pharmebinet and Regulation of pha
 
 
 def create_cypher_file(file_path, node_label, rela_name, direction1, direction2):
-    query = ''' MATCH (d:Regulation{identifier:line.id_pharmebinet_Regulation}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, knownAction:line.knownAction, resource: ['Reactome'], source:"Reactome", reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.stid}]%s(c)'''
+    query = ''' MATCH (d:Regulation{identifier:line.id_pharmebinet_Regulation}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, knownAction:line.knownAction, resource: ['Reactome'], url:COALESCE("https://reactome.org/content/detail/"+line.stid, "https://reactome.org/"), source:"Reactome", reactome: "yes", license:"%s"}]%s(c)'''
     query = query % (node_label, direction1, rela_name, license, direction2)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/{file_path}',
