@@ -1,5 +1,5 @@
 # all node source to delete
-import sys, datetime
+import datetime
 import lxml.etree as ET
 import sys
 
@@ -60,7 +60,7 @@ counter_key = 0
 counter_all_edges = 0
 counter_selected_edge = 0
 
-path_start=pharmebinetutils.path_to_databases+'databases/PharMeBiNet/'
+path_start=pharmebinetutils.path_to_databases+'PharMeBiNet/'
 if len(sys.argv) > 1:
     path_start=sys.argv[1]
 
