@@ -35,37 +35,36 @@ echo "Current time: $now"
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
 
-sleep 400
+sleep 100
 
 python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
-sleep 240
-sleep 400
+sleep 100
 
-python ../../restart_neo4j.py $path_neo4j > output/neo4j4.txt
-sleep 400
-sleep 400
 
+echo integrate connection SNP single with ne4j shell
+now=$(date +"%F %T")
+echo "Current time: $now"
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_2.cypher > output/cypher.txt
+
+sleep 1000
 python ../../restart_neo4j.py $path_neo4j > output/neo4j4.txt
-sleep 400
+sleep 800
+
 
 $path_neo4j/neo4j stop
 
-sleep 400
+sleep 600
+
 
 rm -r $path_neo4j/../data/transactions/graph
 
 
-sleep 120
+sleep 400
 
-python ../../restart_neo4j.py $path_neo4j > output/neo4j3.txt
-
-sleep 180
-
-sleep 60
 
 python ../../restart_neo4j.py $path_neo4j > output/neo4j5.txt
 
-sleep 180
+sleep 300
 
 now=$(date +"%F %T")
 echo "Current time: $now"

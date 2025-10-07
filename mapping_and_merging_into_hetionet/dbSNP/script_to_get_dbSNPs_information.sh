@@ -62,6 +62,11 @@ echo integrat dbSNP edges
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
 
 
+sleep 30
+python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
+sleep 60
+
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrat dbSNP clinvar rela
@@ -71,8 +76,12 @@ python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_dbSNP_c
 
 sleep 30
 python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
-sleep 60
+sleep 180
 
+
+sleep 30
+python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
+sleep 60
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -98,7 +107,7 @@ echo "Current time: $now"
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo map dbSNP gene
+echo map dbSNP gene-variant
 
 python3 integrate_gene_variant_rela.py $path_to_project  > output_mapping/output_gene_variant.txt
 
