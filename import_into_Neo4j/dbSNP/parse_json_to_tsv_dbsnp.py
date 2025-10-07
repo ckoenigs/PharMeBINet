@@ -1,13 +1,10 @@
 import sys
 import time
 import datetime
-import glob
-import bz2
 import urllib.request
 import os.path
 
 sys.path.append("../..")
-import prepare_a_single_node
 import pharmebinetutils
 
 request_headers = {

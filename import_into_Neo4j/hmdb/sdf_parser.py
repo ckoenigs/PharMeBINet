@@ -1,4 +1,4 @@
-import sys, csv
+import sys
 from zipfile import ZipFile
 
 set_properties_sdf = set()

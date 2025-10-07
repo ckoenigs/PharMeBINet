@@ -5,8 +5,6 @@ import sys
 import lxml.etree as etree
 from zipfile import ZipFile
 
-from autograd.builtins import dict_
-
 import sdf_parser
 
 sys.path.append("../..")

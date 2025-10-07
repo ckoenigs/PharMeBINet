@@ -1,5 +1,5 @@
 import sys
-import datetime, time
+import datetime
 import csv
 
 sys.path.append("../..")

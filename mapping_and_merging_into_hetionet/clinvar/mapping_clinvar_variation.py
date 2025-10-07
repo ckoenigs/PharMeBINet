@@ -1,5 +1,5 @@
 import sys
-import datetime, re
+import datetime
 import csv, json, math
 import re
 

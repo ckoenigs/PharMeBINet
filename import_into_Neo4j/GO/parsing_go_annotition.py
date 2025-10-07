@@ -1,5 +1,4 @@
 import sys, datetime
-from requests import get
 import csv, gzip, os
 
 sys.path.append("../..")

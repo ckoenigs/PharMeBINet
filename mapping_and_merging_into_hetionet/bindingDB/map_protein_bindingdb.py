@@ -1,6 +1,5 @@
 import datetime
 import os, sys
-import csv
 from collections import defaultdict
 
 sys.path.append("../..")

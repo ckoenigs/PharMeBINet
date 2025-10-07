@@ -16,10 +16,6 @@ def create_connection_with_neo4j():
     g = driver.session(database='graph')
 
 
-sys.path.append("../..")
-import pharmebinetutils
-
-
 def generate_files(path_of_directory, file_name, source, label_hgnc, label_pharmebinet, id_property_hgncs):
     """
     generate cypher file and tsv file

@@ -1,7 +1,6 @@
 import sys
 import datetime
 import csv
-from itertools import groupby
 
 sys.path.append("../..")
 import create_connection_to_databases

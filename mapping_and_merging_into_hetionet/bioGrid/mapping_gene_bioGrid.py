@@ -1,6 +1,5 @@
 import datetime
 import sys, os
-import csv
 import general_function_bioGrid
 
 sys.path.append("../..")

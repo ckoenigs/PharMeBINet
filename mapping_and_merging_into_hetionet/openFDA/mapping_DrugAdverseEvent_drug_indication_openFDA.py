@@ -1,8 +1,7 @@
-import datetime, sys
+import  sys
 
 sys.path.append("../..")
 import create_connection_to_databases
-import pharmebinetutils
 from mapping import *
 
 if len(sys.argv) > 1:

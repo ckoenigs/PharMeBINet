@@ -1,6 +1,5 @@
 import datetime
 import sys, csv
-from collections import defaultdict
 import json
 
 '''

@@ -1,6 +1,4 @@
-import csv
-import os
-import datetime, sys
+import sys
 
 sys.path.append("../..")
 import create_connection_to_databases

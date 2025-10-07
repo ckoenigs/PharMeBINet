@@ -1,9 +1,7 @@
 '''integrate the'''
-from collections import defaultdict
 import datetime
 import sys, csv
 from collections import defaultdict
-import json
 
 sys.path.append("../..")
 import create_connection_to_databases

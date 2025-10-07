@@ -1,5 +1,5 @@
 import csv, sys
-import datetime, json
+import datetime
 
 sys.path.append("../..")
 import create_connection_to_databases

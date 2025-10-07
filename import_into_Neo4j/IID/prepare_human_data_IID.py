@@ -1,5 +1,4 @@
 import csv
-import datetime
 import gzip
 import os
 import sys
