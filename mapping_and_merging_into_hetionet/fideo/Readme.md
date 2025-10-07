@@ -20,7 +20,7 @@ The cypher shell integrates the mappings.
 
 Next, the food-chemical interactions are merged to PharMeBINet:
     First, load all FIDEO nodes that are connected to the Food interaction node (FIDEO:00000006).
-    Next, get for the fideo nodes the reference information.
+    Next, get for the Fideo nodes the reference information.
     Then, load the mapping from the reference nodes to the chemical into a dictionary.
     Next, generate an adding TSV file and the cypher file with the cypher query.
     Then, load all food-chemical pairs from Fideo. The edges need to have reference information and be a food-interaction edge node.
