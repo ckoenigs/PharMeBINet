@@ -1,7 +1,8 @@
 import time
-import MySQLdb as mdb
 import neo4j
 import pymysql
+
+mysql_host = 'totoro.local'
 mysql_user='ckoenigs'
 mysql_pw='Za8p7Tf$'
 
@@ -30,18 +31,32 @@ def database_connection_neo4j_driver() -> neo4j.Driver:
 def mysqlconnect_bindingDB():
     # To connect MySQL database
     conn = pymysql.connect(
-        host='localhost',
+        host=mysql_host,
         user=mysql_user,
         password=mysql_pw,
-        db='bindingDB',
+        db='bindingdb',
     )
     return conn
 
 def database_connection_RxNorm():
-    conRxNorm = mdb.connect('127.0.0.1', mysql_user, mysql_pw, 'RxNorm', charset='utf8')
-    return conRxNorm
+    conn = pymysql.connect(
+        host=mysql_host,
+        user=mysql_user,
+        password=mysql_pw,
+        db='rxnorm',
+    )
+    return conn
+    # conRxNorm = mdb.connect('127.0.0.1', mysql_user, mysql_pw, 'RxNorm', charset='utf8')
+    # return conRxNorm
 
 
 def database_connection_umls():
-    con = mdb.connect('127.0.0.1', mysql_user, mysql_pw, 'umls', charset='utf8')
-    return con
+    conn = pymysql.connect(
+        host=mysql_host,
+        user=mysql_user,
+        password=mysql_pw,
+        db='umls',
+    )
+    return conn
+    # con = mdb.connect('127.0.0.1', mysql_user, mysql_pw, 'umls', charset='utf8')
+    # return con
