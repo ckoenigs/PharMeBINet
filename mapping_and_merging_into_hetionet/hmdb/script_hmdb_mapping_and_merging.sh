@@ -27,20 +27,20 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo metabolite
 
-python3 interagete_hmdb_metabolite.py $path_to_project > metabolite/output_integration_metabolite.txt
+python interagete_hmdb_metabolite.py $path_to_project > metabolite/output_integration_metabolite.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo GO
 
-python3  mapping_hmdb_go.py $path_to_project > go/output_mapping_gos.txt
+python  mapping_hmdb_go.py $path_to_project > go/output_mapping_gos.txt
 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo protein
 
-python3  mapping_hmdb_protein.py $path_to_project > protein/output_map_protein.txt
+python  mapping_hmdb_protein.py $path_to_project > protein/output_map_protein.txt
 
 
 now=$(date +"%F %T")

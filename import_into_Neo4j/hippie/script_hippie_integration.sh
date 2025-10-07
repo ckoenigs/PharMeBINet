@@ -26,7 +26,7 @@ echo "Current time: $now"
 
 echo prepare hippie data for neo4j integration
 
-python3 parse_hippie.py $path_to_project > output/output_generate_integration_file.txt
+python parse_hippie.py $path_to_project > output/output_generate_integration_file.txt
 
 
 now=$(date +"%F %T")

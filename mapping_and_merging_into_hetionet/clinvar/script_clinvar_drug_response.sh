@@ -11,7 +11,7 @@ password=$3
 
 echo clinvar drug response
 
-python3 mapping_clinvar_drug_response.py $path_to_project > output/output_map.txt
+python mapping_clinvar_drug_response.py $path_to_project > output/output_map.txt
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")

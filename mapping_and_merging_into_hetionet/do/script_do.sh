@@ -16,7 +16,7 @@ fi
 
 echo 'Mapping Disease Ontology into PharMeBINet'
 
-python3 map_disease_ontology_to_disease.py $path_to_project > output/output_do.txt
+python map_disease_ontology_to_disease.py $path_to_project > output/output_do.txt
 
 
 now=$(date +"%F %T")

@@ -18,6 +18,7 @@ if [ ! -d database ]; then
   cd database
   wget https://hmdb.ca/system/downloads/current/hmdb_metabolites.zip
   wget https://hmdb.ca/system/downloads/current/hmdb_proteins.zip
+  wget https://hmdb.ca/system/downloads/current/structures.zip
   cd ..
 fi
 
@@ -26,7 +27,7 @@ echo "Current time: $now"
 
 echo prepare hmdb
 
-python3 parse_xmls_to_tsv_files.py $path_to_project > output/outputfile.txt
+python parse_xmls_to_tsv_files.py $path_to_project > output/outputfile.txt
 
 
 now=$(date +"%F %T")

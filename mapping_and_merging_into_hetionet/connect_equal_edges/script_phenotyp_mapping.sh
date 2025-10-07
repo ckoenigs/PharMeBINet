@@ -22,21 +22,32 @@ fi
 
 echo map se, symptom, disease and phenotypes to each other
 
-python3 connect_sideeffect_symptom_disease.py $path_to_project > output/output_symptoms_to_sideEffects_disease.txt
+python connect_sideeffect_symptom_disease.py $path_to_project > output/output_symptoms_to_sideEffects_disease.txt
 
 
 echo map metabolite and chemicals
 
-python3 connection_metabolite_chemical.py $path_to_project > output/output_chemical_metabolite.txt
+python connection_metabolite_chemical.py $path_to_project > output/output_chemical_metabolite.txt
 
 echo generate equal edes between chemicals
-# python3 similarity.py $path_to_project $path_to_databases > output/output_similarity.txt
+#python similarity.py $path_to_project $path_to_databases > output/output_similarity.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo integration of equal relationship between disease, side effect and symptom
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
+
+sleep 30
+python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
+sleep 30
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo integration of resemble edges
+
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_resemble.cypher > output/cypher_integration.txt
 
 sleep 30
 python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt

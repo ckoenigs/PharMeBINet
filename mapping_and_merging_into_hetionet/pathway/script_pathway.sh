@@ -17,7 +17,7 @@ fi
 
 echo perparation
 
-python3 switch_identifier_pathway_to_newer_version.py $path_to_project > output/output_map.txt
+python switch_identifier_pathway_to_newer_version.py $path_to_project > output/output_map.txt
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")

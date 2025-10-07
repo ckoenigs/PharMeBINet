@@ -23,7 +23,7 @@ fi
 if [ ! -d data ]; then
   mkdir data
   cd data
-  wget https://www.bindingdb.org/bind/downloads/BindingDB_All_202502_tsv.zip
+  wget https://www.bindingdb.org/rwd/bind/downloads/BindingDB_All_202507_tsv.zip
   cd ..
 fi
 
@@ -33,7 +33,7 @@ echo "Current time: $now"
 
 echo prepare TSV files
 
-python3 merge_and_save.py $path_to_project > output/output_tsv.txt
+python merge_and_save.py $path_to_project > output/output_tsv.txt
 
 
 now=$(date +"%F %T")
@@ -41,7 +41,7 @@ echo "Current time: $now"
 
 echo prepare query files
 
-python3 prepare_queries.py $path_to_project > output/output_cypher.txt
+python prepare_queries.py $path_to_project > output/output_cypher.txt
 
 
 now=$(date +"%F %T")

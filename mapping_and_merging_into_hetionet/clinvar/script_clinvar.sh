@@ -20,7 +20,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo "merge variant"
 
-python3 mapping_clinvar_variation.py $path_to_project > output/output_map_variant.txt
+python mapping_clinvar_variation.py $path_to_project > output/output_map_variant.txt
 
 
 now=$(date +"%F %T")

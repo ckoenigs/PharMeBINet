@@ -19,7 +19,7 @@ fi
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo aeolus outcome mapping
-python3 map_aeolus_outcome_final.py $path_to_project > output/output_map_aeolus_outcome.txt
+python map_aeolus_outcome_final.py $path_to_project > output/output_map_aeolus_outcome.txt
 
 
 
@@ -29,7 +29,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-python3  map_aeolus_drugs_final.py $path_to_project > output/output_aeolus_drug.txt
+python  map_aeolus_drugs_final.py $path_to_project > output/output_aeolus_drug.txt
 
 
 now=$(date +"%F %T")

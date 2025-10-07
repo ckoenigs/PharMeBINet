@@ -22,7 +22,7 @@ if [ ! -d data ]; then
   cd ..
 fi
 
-python3 fooddb.py $path_to_project > output_generate_integration_file.txt
+python fooddb.py $path_to_project > output_generate_integration_file.txt
 
 
 now=$(date +"%F %T")

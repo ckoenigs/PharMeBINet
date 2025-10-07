@@ -45,7 +45,7 @@ then
 fi
 
 
-python3 import_rnainter.py $path_to_project "Homo sapiens" > output/output.txt
+python import_rnainter.py $path_to_project "Homo sapiens" > output/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

@@ -21,7 +21,7 @@ fi
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python3 parse_uniprot_xml_file_to_tsv.py $path_to_project > output/output_integration.txt
+python parse_uniprot_xml_file_to_tsv.py $path_to_project > output/output_integration.txt
 
 rm database/*
 

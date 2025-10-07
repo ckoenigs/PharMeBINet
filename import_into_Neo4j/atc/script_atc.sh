@@ -25,8 +25,8 @@ echo "Current time: $now"
 
 echo prepare ATC integration
 
-# python3 prepare_german_atc.py $path_to_project > output/output.txt
-python3 parse_kegg_atc_code.py $path_to_project > output/output.txt
+# python prepare_german_atc.py $path_to_project > output/output.txt
+python parse_kegg_atc_code.py $path_to_project > output/output.txt
 
 
 now=$(date +"%F %T")

@@ -15,14 +15,14 @@ if [ ! -d output ]; then
   mkdir protein
 fi
 
-python3 combine_with_new_go.py $path_to_project > output/output_map.txt
+python combine_with_new_go.py $path_to_project > output/output_map.txt
 
 
 echo map protein
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python3 mapping_go_protein.py $path_to_project > protein/output_map.txt
+python mapping_go_protein.py $path_to_project > protein/output_map.txt
 
 echo map protein
 now=$(date +"%F %T")
@@ -42,7 +42,7 @@ python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 
 sleep 40
 
-python3 prepare_go_gene_and_protein_rela.py $path_to_project > edge_go_protein_gene/output.txt
+python prepare_go_gene_and_protein_rela.py $path_to_project > edge_go_protein_gene/output.txt
 
 echo integrate edges
 now=$(date +"%F %T")

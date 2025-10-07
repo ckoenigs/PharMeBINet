@@ -22,12 +22,12 @@ fi
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo drug mapping
-python3 mapping_drug_adrecs.py $path_to_project $path_to_datasource > chemical/output.txt
+python mapping_drug_adrecs.py $path_to_project $path_to_datasource > chemical/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo SE mapping
-python3 mapping_adr_adrecs.py $path_to_project $path_to_datasource > sideeffect/output.txt
+python mapping_adr_adrecs.py $path_to_project $path_to_datasource > sideeffect/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

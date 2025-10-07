@@ -17,12 +17,11 @@ echo Pathway
 
 python3  mapping_hmdb_pathway.py $path_to_project > pathway/output_mappings.txt
 
-
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo disease
 
-python3 mapping_hmdb_disease.py $path_to_project > disease/output_integration.txt
+python mapping_hmdb_disease.py $path_to_project > disease/output_integration.txt
 
 
 

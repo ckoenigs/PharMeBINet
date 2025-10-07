@@ -19,7 +19,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo parse DDinter to nodes and edges
 
-python3 integrate_ddinter.py $path_to_project  > output/output.txt
+python integrate_ddinter.py $path_to_project  > output/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

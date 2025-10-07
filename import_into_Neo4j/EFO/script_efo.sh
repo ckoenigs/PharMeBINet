@@ -21,7 +21,7 @@ fi
 wget  -O data/efo.obo "https://www.ebi.ac.uk/efo/efo.obo"
 
 
-python3 transform_obo_to_tsv_and_cypher_file.py data/efo.obo EFO efo $path_to_project > output/output_generate_integration_file.txt
+python transform_obo_to_tsv_and_cypher_file.py data/efo.obo EFO efo $path_to_project > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

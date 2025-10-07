@@ -26,13 +26,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'Map bioGrid gene'
 
-python3 mapping_gene_bioGrid.py $path_to_project > gene/output.txt
+python mapping_gene_bioGrid.py $path_to_project > gene/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'Map bioGrid chemical'
 
-python3 map_chemical_biogrid.py $path_to_project > chemical/output.txt
+python map_chemical_biogrid.py $path_to_project > chemical/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -42,7 +42,7 @@ python3 mapping_disease_biogrid.py $path_to_project > disease/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo 'Map bioGrid chemical'
+echo 'Map bioGrid go'
 
 python3 map_go_bioGrid.py $path_to_project > GO/output.txt
 

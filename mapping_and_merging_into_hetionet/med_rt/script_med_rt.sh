@@ -25,13 +25,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo pharmacologic class mapping
 
-python3  create_new_pc_med_rt.py $path_to_project > pharmacological_class/output_map_med_rt.txt
+python  create_new_pc_med_rt.py $path_to_project > pharmacological_class/output_map_med_rt.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo chemical mapping
 
-python3  map_chemical_med_rt.py $path_to_project > chemical/output_map_med_rt.txt
+python  map_chemical_med_rt.py $path_to_project > chemical/output_map_med_rt.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

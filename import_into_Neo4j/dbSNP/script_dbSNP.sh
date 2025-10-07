@@ -29,7 +29,7 @@ echo "Current time: $now"
 echo parse dbSNP
 
 
-python3 parse_json_to_tsv_dbsnp.py $path_to_databases"dbSNP" $path_to_project  > output/output_generate_integration_file.txt
+python parse_json_to_tsv_dbsnp.py $path_to_databases"dbSNP" $path_to_project  > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

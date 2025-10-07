@@ -23,7 +23,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo gene and disease
 
-python3 mapping_to_SideEffect.py $path_to_project > output/output_side_effect.txt
+python mapping_to_SideEffect.py $path_to_project > output/output_side_effect.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

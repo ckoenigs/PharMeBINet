@@ -27,7 +27,7 @@ if [ ! -d results ]; then
   mkdir results
 fi
 
-python3 prepare_ndf_rt_to_neo4j_integration.py $path_to_project > output_integration_ndf_rt.txt
+python prepare_ndf_rt_to_neo4j_integration.py $path_to_project > output_integration_ndf_rt.txt
 
 
 now=$(date +"%F %T")

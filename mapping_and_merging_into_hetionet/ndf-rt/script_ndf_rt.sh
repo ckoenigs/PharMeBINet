@@ -27,13 +27,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo disease
 
-python3 map_NDF-RT_disease_final.py $path_to_project > disease/output_map_ndf_rt_disease.txt
+python map_NDF-RT_disease_final.py $path_to_project > disease/output_map_ndf_rt_disease.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo drugs
 
-python3  map_NDF_RT_drug.py $path_to_project > drug/output_map_ndf_rt_drugs.txt
+python  map_NDF_RT_drug.py $path_to_project > drug/output_map_ndf_rt_drugs.txt
 
 
 now=$(date +"%F %T")

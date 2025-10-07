@@ -22,13 +22,13 @@ if [ ! -d output ]; then
 fi
 
 echo se
-python3 map_Sider_se.py $path_to_project > output/output_map_se.txt
+python map_Sider_se.py $path_to_project > output/output_map_se.txt
 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo drug
-python3 map_sider_drug.py $path_to_project $path_to_stich > output/output_map_drug.txt
+python map_sider_drug.py $path_to_project $path_to_stich > output/output_map_drug.txt
 
 echo integrate mapping with cypher shell
 now=$(date +"%F %T")

@@ -24,13 +24,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo pathway
 
-python3 mapping_smpdb_pathway.py $path_to_project > pathway/output_integration_pathway.txt
+python mapping_smpdb_pathway.py $path_to_project > pathway/output_integration_pathway.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo protein
 
-python3  mapping_smpdb_protein.py $path_to_project > protein/output_mapping_proteins.txt
+python  mapping_smpdb_protein.py $path_to_project > protein/output_mapping_proteins.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

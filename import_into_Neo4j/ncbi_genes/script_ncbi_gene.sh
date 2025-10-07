@@ -17,7 +17,7 @@ if [ ! -d data ]; then
   mkdir data
 fi
 
-python3 integrate_ncbi_genes_which_are_already_in_hetionet.py $path_to_project > output_generate_integration_file.txt
+python integrate_ncbi_genes_which_are_already_in_hetionet.py $path_to_project > output_generate_integration_file.txt
 
 echo rm gz file
 rm data/*

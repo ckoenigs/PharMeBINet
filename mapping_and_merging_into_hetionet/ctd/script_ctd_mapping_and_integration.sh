@@ -34,14 +34,14 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo map and integrate gene
 
-python3 map_CTD_gene_gene_hetionet.py $path_to_project > gene/output_gene.txt
+python map_CTD_gene_gene_hetionet.py $path_to_project > gene/output_gene.txt
 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo map and integrate GO
 
-python3 integrate_CTD_GO_to_Hetionet.py $path_to_project > GO/output.txt
+python integrate_CTD_GO_to_Hetionet.py $path_to_project > GO/output.txt
 
 
 now=$(date +"%F %T")

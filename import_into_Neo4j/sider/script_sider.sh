@@ -27,7 +27,7 @@ if [ ! -d data ]; then
   cd ..
 fi
 
-python3 importSideEffects_change_to_umls_meddra_final.py data/ $path_to_project > output/output_integration_sider.txt
+python importSideEffects_change_to_umls_meddra_final.py data/ $path_to_project > output/output_integration_sider.txt
 
 
 now=$(date +"%F %T")

@@ -25,7 +25,7 @@ wget  -O data/ext.obo "http://purl.obolibrary.org/obo/uberon/uberon-full.obo"
 
 
 
-python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/ext.obo Uberon uberon_extend $path_to_project > output/output_generate_integration_file.txt
+python ../EFO/transform_obo_to_tsv_and_cypher_file.py data/ext.obo Uberon uberon_extend $path_to_project > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

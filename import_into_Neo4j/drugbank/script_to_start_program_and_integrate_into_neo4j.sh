@@ -28,7 +28,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo prepare drugbank categories
 
-# python3 update_drugbank_categories.py > out_categories.txt
+# python update_drugbank_categories.py > out_categories.txt
 
 
 
@@ -46,7 +46,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo information extraction from xml
 
-python3 transform_drugbank_to_tsv.py $path_to_project > output_transform.txt
+python transform_drugbank_to_tsv.py $path_to_project > output_transform.txt
 
 
 
@@ -56,7 +56,7 @@ echo file preperation
 
 output_file=output_file_preperation.txt
 
-python3 file_preperation.py $path_to_drugbank_data drug_sequences/ external_links/ Protein_identifiers/ structure/ target_sequences/ $path_to_project > $output_file
+python file_preperation.py $path_to_drugbank_data drug_sequences/ external_links/ Protein_identifiers/ structure/ target_sequences/ $path_to_project > $output_file
 
 #exit 1
 

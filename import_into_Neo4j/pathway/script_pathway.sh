@@ -18,7 +18,7 @@ if [ ! -d data ]; then
   mkdir data
 fi
 
-python3 new_pathway_preparation.py $path_to_project > output/output_generate_integration_file.txt
+python new_pathway_preparation.py $path_to_project > output/output_generate_integration_file.txt
 
 echo rm gz file
 rm data/*

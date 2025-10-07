@@ -26,7 +26,7 @@ echo "Current time: $now"
 echo prepare rnaCentral
 
 
-python3 integrate_RNAcentral.py $path_to_project $path_to_databases > output/output_integration_rnacentral.txt
+python integrate_RNAcentral.py $path_to_project $path_to_databases > output/output_integration_rnacentral.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

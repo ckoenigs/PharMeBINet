@@ -20,7 +20,7 @@ if [ ! -d $path ]; then
   mkdir $path;
 fi
 
-python3 import_openFDA.py $path/ > output/output_generate_integration_file.txt
+python import_openFDA.py $path/ > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

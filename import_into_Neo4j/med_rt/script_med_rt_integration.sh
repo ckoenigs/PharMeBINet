@@ -24,7 +24,7 @@ if [ ! -d data ]; then
   cd ..
 fi
 
-python3 parse_med_rt_to_tsv.py $path_to_project > output/output_integration_med_rt.txt
+python parse_med_rt_to_tsv.py $path_to_project > output/output_integration_med_rt.txt
 
 
 now=$(date +"%F %T")

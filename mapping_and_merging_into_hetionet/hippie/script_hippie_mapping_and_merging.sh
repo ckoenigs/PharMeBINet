@@ -20,7 +20,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo protein
 
-python3 map_protein_hippie.py $path_to_project > output/output_integration.txt
+python map_protein_hippie.py $path_to_project > output/output_integration.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

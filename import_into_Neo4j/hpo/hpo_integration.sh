@@ -38,11 +38,11 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo start parse data
 
-#python3 integrate_hpo_disease_symptomes_into_neo4j.py  > output_integration_hpo.txt
-python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/hpo.obo hpo HPO_symptom $path_to_project > output/output_generate_integration_file.txt
+#python integrate_hpo_disease_symptomes_into_neo4j.py  > output_integration_hpo.txt
+python ../EFO/transform_obo_to_tsv_and_cypher_file.py data/hpo.obo hpo HPO_symptom $path_to_project > output/output_generate_integration_file.txt
 
 echo generation of csv from tsv file
-python3 integrate_hpo_disease_symptomes_into_neo4j.py $path_to_project > output/output_disease.txt
+python integrate_hpo_disease_symptomes_into_neo4j.py $path_to_project > output/output_disease.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

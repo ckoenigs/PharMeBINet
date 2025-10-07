@@ -23,13 +23,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo map gene
 
-python3 mapping_gene_gencc.py $path_to_project > gene/output_integration.txt
+python mapping_gene_gencc.py $path_to_project > gene/output_integration.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo map disease
 
-python3 mapping_disease_gencc.py $path_to_project > disease/output_integration.txt
+python mapping_disease_gencc.py $path_to_project > disease/output_integration.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

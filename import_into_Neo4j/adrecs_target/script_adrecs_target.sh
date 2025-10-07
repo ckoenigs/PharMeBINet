@@ -34,7 +34,7 @@ echo "Current time: $now"
 echo prepare ADReCS-Target integration
 
 # run preparation adrecs-target
-python3 prepare_files.py $path_to_project > output/output.txt
+python prepare_files.py $path_to_project > output/output.txt
 
 
 now=$(date +"%F %T")

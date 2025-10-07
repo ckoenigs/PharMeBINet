@@ -21,6 +21,7 @@ if [ ! -d cypher ]; then
 fi
 if [ ! -d $path_to_ctd_data/ctd_data ]; then
   mkdir $path_to_ctd_data/ctd_data
+  cp ctd_data/delete_the_head.sh $path_to_ctd_data/ctd_data/delete_the_head.sh
 fi
 
 
@@ -35,7 +36,7 @@ then
 
     # download gene-disease manual because there is a human check!
 
-    python3 download_the_ctd_files.py $path_to_ctd_data > output_download.txt
+    python download_the_ctd_files.py $path_to_ctd_data > output_download.txt
 
 
     echo first remove the first lines of the ctd files
@@ -54,7 +55,7 @@ echo prepare ctd data
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python3 integrate_whole_CTD_into_neo4j_with_tsv.py $path_to_ctd_data True > output_integration.txt
+python integrate_whole_CTD_into_neo4j_with_tsv.py $path_to_ctd_data True > output_integration.txt
 
 
 echo nodes
@@ -63,9 +64,11 @@ echo "Current time: $now"
 
 python ../../execute_cypher_shell.py $path_neo4j $password cypher/nodes_1.cypher > output/cypher.txt
 
-sleep 60
+python ../../check_indices.py
+
 python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
-sleep 60
+
+python ../../check_indices.py
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo edge
@@ -77,7 +80,8 @@ echo "Current time: $now"
 
 sleep 60
 python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
-sleep 60
+
+python ../../check_indices.py
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -87,9 +91,10 @@ python ../../execute_cypher_shell.py $path_neo4j $password cypher/nodes_delete.c
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-sleep 60
+python ../../check_indices.py
 python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
-sleep 60
+
+python ../../check_indices.py
 
 
 

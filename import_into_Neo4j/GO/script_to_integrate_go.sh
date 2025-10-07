@@ -12,6 +12,9 @@ password=$3
 # prepare directories
 if [ ! -d output ]; then
   mkdir output
+  cd output
+  mkdir edges
+  cd ..
 fi
 if [ ! -d data ]; then
   mkdir data
@@ -24,13 +27,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo parse obo file
 
-python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/go-basic.obo GO go $path_to_project > output/output_generate_integration_file.txt
+python ../EFO/transform_obo_to_tsv_and_cypher_file.py data/go-basic.obo GO go $path_to_project > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo parse annotation file
 
-python3 parsing_go_annotition.py $path_to_project  > output/output_annotation.txt
+python parsing_go_annotition.py $path_to_project  > output/output_annotation.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

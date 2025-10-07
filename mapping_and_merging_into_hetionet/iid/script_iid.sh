@@ -19,7 +19,7 @@ if [ ! -d output ]; then
   mkdir protein
 fi
 
-python3 mapping_protein.py $path_to_project > protein/output_mapping_and_integration.txt 
+python mapping_protein.py $path_to_project > protein/output_mapping_and_integration.txt
 
 
 python ../../execute_cypher_shell.py $path_neo4j $password protein/cypher.cypher > output/cypher.txt
@@ -32,7 +32,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'IID interaction'
 
-python3 integrate_interaction_rela.py $path_to_project > interaction/outputintegration.txt 
+python integrate_interaction_rela.py $path_to_project > interaction/outputintegration.txt
 
 
 python ../../execute_cypher_shell.py $path_neo4j $password interaction/cypher.cypher > output/cypher1.txt

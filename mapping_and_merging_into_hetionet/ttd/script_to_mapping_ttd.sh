@@ -29,19 +29,19 @@ echo pathway
 # it has only connection to target and this edge information are from other source like Wikipathways
 # but I have wikipathways included and there are edges which I do not have which might be because of 
 # an older version. So, I decide against this.
-# python3 map_pathway_ttd.py $path_to_project > pathway/output_integration_pathway.txt
+# python map_pathway_ttd.py $path_to_project > pathway/output_integration_pathway.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo protein
 
-python3  map_protein_ttd.py $path_to_project > protein/output_mapping_proteins.txt
+python  map_protein_ttd.py $path_to_project > protein/output_mapping_proteins.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo drug
 
-python3 map_drug_ttd.py $path_to_project > drug/output_integration_drug.txt
+python map_drug_ttd.py $path_to_project > drug/output_integration_drug.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

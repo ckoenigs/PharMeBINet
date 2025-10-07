@@ -19,7 +19,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'Map hgnc gene'
 
-python3 map_gene_hgnc.py $path_to_project > gene/output.txt
+python map_gene_hgnc.py $path_to_project > gene/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

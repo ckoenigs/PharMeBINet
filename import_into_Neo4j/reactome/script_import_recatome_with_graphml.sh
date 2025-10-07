@@ -21,6 +21,9 @@ path_to_reactome=$path_data_source/reactome/
 if [ ! -d output ]; then
   mkdir output
 fi
+if [ ! -d $path_to_reactome ]; then
+  mkdir $path_to_reactome
+fi
 
 # if reactome is with another version
 # JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ 
@@ -40,7 +43,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'extract as property types'
 
-python3 get_property_types.py $suffix > output/output_preparation.txt
+python get_property_types.py $suffix > output/output_preparation.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -91,7 +94,7 @@ echo "Current time: $now"
 echo ' merge two nodes '
 
 # nodes which are double except of the dbid and id
-python3 merge_nodes.py 2011833 1247632 Disease_reactome dbId True > output_merge.txt
+python merge_nodes.py 2011833 1247632 Disease_reactome dbId True > output_merge.txt
 
 # only 3134792 exist now
 # python3 merge_nodes.py 9611565 3134792 Disease_reactome dbId True > output_merge.txt  

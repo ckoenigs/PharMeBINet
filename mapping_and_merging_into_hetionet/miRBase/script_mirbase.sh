@@ -18,7 +18,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo map genes
 
-python3 map_gene_mirbase.py $path_to_project > output/protein_map.txt
+python map_gene_mirbase.py $path_to_project > output/protein_map.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

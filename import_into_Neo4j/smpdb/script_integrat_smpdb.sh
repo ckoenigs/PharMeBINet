@@ -20,7 +20,7 @@ echo "Current time: $now"
 
 echo prepare smpDB
 
-python3 prepare_smpdb.py $path_to_project > output/outputfile.txt
+python prepare_smpdb.py $path_to_project > output/outputfile.txt
 
 
 now=$(date +"%F %T")

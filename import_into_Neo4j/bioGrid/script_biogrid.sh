@@ -20,7 +20,7 @@ echo "Current time: $now"
 
 echo prepare biogrid
 
-python3 prepare_biogrid_data.py $path_to_project > output/outputfile.txt
+python prepare_biogrid_data.py $path_to_project > output/outputfile.txt
 
 
 now=$(date +"%F %T")

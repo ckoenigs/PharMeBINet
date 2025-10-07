@@ -20,7 +20,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo add RNA
 
-python3 integrate_RNA_refseq.py $path_to_project > output/RNA_map.txt
+python integrate_RNA_refseq.py $path_to_project > output/RNA_map.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

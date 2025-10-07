@@ -27,7 +27,7 @@ FILE=genemap2.txt
 if [ -f "$FILE" ]; then
     echo "$FILE exist"
 else 
-    python3 load_omim_files.py
+    python load_omim_files.py
     ./prepare_files.sh
 fi
 
@@ -38,7 +38,7 @@ echo excecute parser
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python3 prepare_nodes_and_relationships.py $path_to_project > output/output.txt
+python prepare_nodes_and_relationships.py $path_to_project > output/output.txt
 
 
 echo integrat into neo4j

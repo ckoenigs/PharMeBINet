@@ -21,7 +21,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo start preparation
 
-python3 prepare_human_data_IID.py $path_to_project exp > output/outputfile.txt
+python prepare_human_data_IID.py $path_to_project exp > output/outputfile.txt
 
 echo rm gz file
 rm data/*

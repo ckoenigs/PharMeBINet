@@ -19,12 +19,12 @@ fi
 
 echo gene and disease
 
-python3 integrate_omim_genes_phenotypes.py $path_to_project > output/output_map_gene_phenotype.txt
+python integrate_omim_genes_phenotypes.py $path_to_project > output/output_map_gene_phenotype.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python3 integrate_omim_predominantly_phenotypes.py $path_to_project > output/output_map_phenotype.txt
+python integrate_omim_predominantly_phenotypes.py $path_to_project > output/output_map_phenotype.txt
 
 echo integrate connection with cypher shell
 now=$(date +"%F %T")

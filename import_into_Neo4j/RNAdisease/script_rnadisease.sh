@@ -21,7 +21,7 @@ if [ ! -d data ]; then
   cd ..
 fi
 
-python3 RNAdisease.py $path_to_project > output/output_integration_rnadisease.txt
+python RNAdisease.py $path_to_project > output/output_integration_rnadisease.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
