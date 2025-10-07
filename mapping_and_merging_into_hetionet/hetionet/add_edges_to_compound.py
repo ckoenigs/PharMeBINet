@@ -17,6 +17,14 @@ def create_connection_with_neo4j():
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     graph_database = driver.session()
 
+# license  got from hetionet or manually found
+dict_source_to_license= {
+    'PubChem': 'https://www.ncbi.nlm.nih.gov/home/about/policies/',
+    'LINCS L1000':'https://lincsproject.org/LINCS/data/release-policy',
+    # this have the hetionet license
+    'US Patent':'CC0',
+    'PDSP Ki':'CC0',
+}
 
 def load_pharmebinet_pharmebinet_node_in(csv_file, pharmebinet_node_label1, pharmebinet_node_label2, hetionet_label_1,
                                          hetionet_label_2, relationship):
@@ -52,6 +60,21 @@ def load_pharmebinet_pharmebinet_node_in(csv_file, pharmebinet_node_label1, phar
             dict_all=rela_infos[0]
             dict_all['id1']=node1
             dict_all['id2']=node2
+
+        if 'license' not in dict_all or not dict_all['license']:
+            if 'source' in dict_all:
+                dict_all['license'] = dict_source_to_license[dict_all['source']]
+            elif 'sources' in dict_all:
+                possible_license = ''
+                for source in dict_all['sources']:
+                    if not possible_license:
+                        possible_license = dict_source_to_license[source]
+                        if '4' in possible_license:
+                            break
+                    elif '4' in dict_source_to_license[source]:
+                        possible_license = dict_source_to_license[source]
+                dict_all['license']= possible_license
+
         for key, value in dict_all.items():
             if type(value) in [list, set]:
                 dict_all[key]='|'.join(value)
@@ -77,7 +100,7 @@ def check_relationships_and_generate_file(pharmebinet_label1, pharmebinet_label2
                        RETURN allfields as l;'''
     query = query % (hetionet_label1, rela_hetionet, hetionet_label2)
     result = graph_database.run(query)
-    query = f'Match (a:{pharmebinet_label1}{{identifier:line.id1}}), (b:{pharmebinet_label2}{{identifier:line.id2}}) Create (a)-[:{rela_type}{{%s , hetionet:"yes", resource:["Hetionet"]}}]->(b)'
+    query = f'Match (a:{pharmebinet_label1}{{identifier:line.id1}}), (b:{pharmebinet_label2}{{identifier:line.id2}}) Create (a)-[:{rela_type}{{%s , hetionet:"yes", url:"https://het.io/", resource:["Hetionet"]}}]->(b)'
     list_prop = []
     header = ['id1', 'id2']
     for record in result:
@@ -93,6 +116,9 @@ def check_relationships_and_generate_file(pharmebinet_label1, pharmebinet_label2
 
 
         header.append(prop)
+    if 'license' not in header:
+        header.append('license')
+        list_prop.append(f'license:line.license')
 
     query = query % (', '.join(list_prop))
     query = pharmebinetutils.get_query_import(path_of_directory,
@@ -117,7 +143,7 @@ def main():
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
-        sys.exit('need a path and license hetionet edge')
+        sys.exit('need a path hetionet edge')
 
     global cypher_file
     print(datetime.datetime.now())
