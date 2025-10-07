@@ -14,12 +14,16 @@ if [ ! -d output ]; then
   mkdir output
 fi
 if [ ! -d aeolus_v1 ]; then
-  python3 downlaod_files.py
-  for f in aeolus_v1.zip; do unzip "$f" -d "${f%.zip}"; done
+  echo download_files
+  wget -O aeolus_v1.zip https://datadryad.org/api/v2/files/67855/download
+  for f in aeolus_v1.zip;
+  do
+      unzip "$f" -d "${f%.zip}";
+  done
   rm aeolus_v1.zip
 fi
 
-python3 importAeolus_final.py aeolus_v1/ $path_to_project > output/output_integration_aeolus.txt 
+python importAeolus_final.py aeolus_v1/ $path_to_project > output/output_integration_aeolus.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
