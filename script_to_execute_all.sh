@@ -66,7 +66,7 @@ cd mapping_and_merging_into_hetionet
 cd ..
 
 
-exit 1
+# exit 1
 
 if [ -d $path_neo4j/../data/databases/pharmebinet ]; then
   rm -r $path_neo4j/../data/databases/pharmebinet

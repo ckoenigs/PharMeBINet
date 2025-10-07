@@ -48,7 +48,7 @@ def transform_into_ob_and_rdkit_fromart():
     transform sdf file into open babel and rdkit formart
     :return: mol_pybel, mol_rdkit
     """
-    path_to_sdf = '/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/Drugbank_database/drugbank_files_without_preperation/structure/structures.sdf'
+    path_to_sdf = pharmebinetutils.path_to_databases+'databases/Drugbank_database/drugbank_files_without_preperation/structure/structures.sdf'
     # path_to_sdf='data/structures.sdf'
     # rdkit data
     supplier = rdkit.Chem.SDMolSupplier(path_to_sdf)
