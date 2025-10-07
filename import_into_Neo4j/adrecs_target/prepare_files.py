@@ -155,7 +155,7 @@ def prepare_dataframe(dataframe):
     dataframe = dataframe.replace('(-)', '')
     dataframe = dataframe.replace('---', '')
     dataframe = dataframe.replace('Not Available', '')
-    dataframe = dataframe.fillna('')
+    dataframe = dataframe.infer_objects().fillna('')
     dataframe = dataframe.replace(to_replace=r'^-$', value='', regex=True)
     dataframe = dataframe.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 
