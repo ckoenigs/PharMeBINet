@@ -26,3 +26,10 @@ The SE-phenotype edge used as mapping:
               
 All the mapping pairs are written into a TSV file and for each label pair, a cypher query is generated and written into a cypher file.
 In the end, the information is integrated into the database with the cypher shell.
+
+
+
+Next, connections between compound and metabolite are generated:
+    First, load all compound information.
+    Then the metabolite information is asked and used for mapping. One is the InChIKey and the other a combination of the DrugBank identifier and name mapping.
+    All pairs are written into a TSV file and a cypher query is generated and added to the cypher file.

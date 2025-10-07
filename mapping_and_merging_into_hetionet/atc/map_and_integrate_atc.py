@@ -70,7 +70,7 @@ def write_files(path_of_directory):
     file_name_mapped = 'output/mapping_compound.tsv'
     file_mapped = open(file_name_mapped, 'w', encoding='utf-8')
     csv_mapped = csv.writer(file_mapped, delimiter='\t')
-    header_mapped = ['compound_id', 'id']
+    header_mapped = ['compound_id', 'id', 'atc']
     csv_mapped.writerow(header_mapped)
 
     file_name_mapped_pc = 'output/mapping_pc.tsv'
@@ -106,7 +106,7 @@ def write_files(path_of_directory):
             pharmebinetutils.dictionary_label_to_abbreviation[label_2])
         cypher_file.write(query)
 
-    query = f'''Match (n:PharmacologicClass{{identifier:line.id}}), (v:Compound{{identifier:line.compound_id}}) Create (v)-[:BELONGS_TO_{pharmebinetutils.dictionary_label_to_abbreviation['Chemical']}bt{pharmebinetutils.dictionary_label_to_abbreviation['PharmacologicClass']}{{source:'ATC from KEGG', url:"http://identifiers.org/atc:"+n.id , resource:['KEGG'], kegg:'yes', license:"Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed."}}]->(n)'''
+    query = f'''Match (n:PharmacologicClass{{identifier:line.id}}), (v:Compound{{identifier:line.compound_id}}) Create (v)-[:BELONGS_TO_{pharmebinetutils.dictionary_label_to_abbreviation['Chemical']}bt{pharmebinetutils.dictionary_label_to_abbreviation['PharmacologicClass']}{{source:'ATC from KEGG', url:"http://identifiers.org/atc:"+line.id , resource:['KEGG'], kegg:'yes', license:"Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed."}}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/atc/{file_name_mapped}',
                                               query)
