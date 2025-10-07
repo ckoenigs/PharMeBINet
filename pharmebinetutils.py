@@ -16,17 +16,17 @@ from urllib.parse import urlparse
 USE_VERSION_5 = True
 
 # path to database
-path_to_databases = '/mnt/System_Volume_Information/'
+path_to_databases = '/media/cassandra/T7/System_Volume_Information/'
 
 # dictionary label to abbreviation
 dictionary_label_to_abbreviation = {
     'Anatomy': 'A', 'BiologicalProcess': 'BP', 'BlackBoxEvent': 'B', 'CellType': 'CT', 'CellularComponent': 'CC',
     'Chemical': 'CH',
-    'ClinicalAnnotation': 'CA', 'Complex': 'CX', 'Compound': 'C', 'Depolymerisation': 'DP', 'Disease': 'D',
+    'ClinicalAnnotation': 'CA', 'Compound': 'C', 'Depolymerisation': 'DP', 'Disease': 'D',
     'EnzymeReactantSet': 'E', 'FailedReaction': 'F', 'Food':'FO', 'Gene': 'G', 'GeneVariant': 'GV', 'Genotype': 'GT',
     'Haplotype': 'H', 'Interaction': 'I', 'Metabolite': 'M', 'MolecularComplex': 'MC', 'MolecularFunction': 'MF',
-    'Pathway': 'PW', 'PharmacologicClass': 'PC', 'Phenotype': 'PT', 'PTM':'PTM' ,'Polymerisation': 'PO', 'Product': 'PR',
-    'Protein': 'P', 'Reaction': 'RN', 'ReactionLikeEvent': 'RLE', 'Regulation': 'RG', 'RNA': 'R', 'Salt': 'SA',
+    'Pathway': 'PW', 'PharmacologicClass': 'PC', 'Phenotype': 'PT' ,'Polymerisation': 'PO', 'Product': 'PR',
+    'Protein': 'P', 'PTM':'PTM', 'Reaction': 'RN', 'ReactionLikeEvent': 'RLE', 'Regulation': 'RG', 'RNA': 'R', 'Salt': 'SA',
     'SideEffect': 'SE', 'Symptom': 'S', 'Treatment': 'T', 'Variant': 'V', 'VariantAnnotation': 'VA'
 }
 
