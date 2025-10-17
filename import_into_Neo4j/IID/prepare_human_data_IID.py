@@ -127,9 +127,11 @@ def load_and_prepare_IID_human_data(evidence_type_filter):
     for path in ['./data', './output']:
         if not os.path.exists(path):
             os.makedirs(path)
+    file_name='data/human_annotated_PPIs.txt.gz'
     # download IID PP interaction
-    file_url = 'http://iid.ophid.utoronto.ca/static/download/human_annotated_PPIs.txt.gz'
-    file_name = pharmebinetutils.download_file(file_url, './data')
+    if not os.path.exists(file_name):
+        file_url = 'http://iid.ophid.utoronto.ca/static/download/human_annotated_PPIs.txt.gz'
+        file_name = pharmebinetutils.download_file(file_url, './data')
     counter_edges = 0
 
     counter_other_type = 0
