@@ -9,7 +9,7 @@ import pharmebinetutils
 
 
 def prepare_header(header):
-    return header.replace(' ', '_').replace(',', '').replace('\'', '').replace('-', '_')
+    return header.replace(' ', '_').replace(',', '').replace('\'', '').replace('-', '_').replace('+', '_plus').replace('#', 'count').replace('/','_').replace('[','_').replace(']','')
 
 
 dict_number_to_number = {
