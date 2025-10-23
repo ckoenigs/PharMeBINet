@@ -4,12 +4,12 @@ import os
 import sys
 
 # Import pharmebinet utils without proper module structure
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
+sys.path.append("../..")
 import pharmebinetutils
 
 
 def prepare_header(header):
-    return header.replace(' ', '_').replace(',', '').replace('\'', '').replace('-', '_').replace('+', '_plus').replace('#', 'count').replace('/','_').replace('[','_').replace(']','')
+    return header.replace(' ', '_').replace(',', '').replace('\'', '').replace('-', '_').replace('+', '_plus').replace('/','_').replace('[','_').replace(']','')
 
 
 dict_number_to_number = {
@@ -46,29 +46,37 @@ def generate_node_and_rela_file_and_query(header_rela):
     csv_rela = csv.DictWriter(rela_file, delimiter='\t', fieldnames=header_rela)
     csv_rela.writeheader()
 
+    file_edge_properties = open('output/edge_properties.tsv', 'w', encoding='utf-8', newline='')
+    csv_edge = csv.writer(file_edge_properties, delimiter='\t')
+
     query = 'Match (p1:protein_IID{identifier:line.uniprot1}),(p2:protein_IID{identifier:line.uniprot2}) Create (p1)-[:interacts{'
     for header in header_rela:
         if header in ['uniprot1', 'uniprot2', 'symbol1', 'symbol2']:
             continue
-        elif header in ['targeting_drugs', 'evidence_type', 'db_with_ppi', 'methods', 'pmids',
+        elif header in ['targeting_drugs', 'evidence_type', 'db_with_ppis', 'methods', 'pmids',
                         'drugs_targeting_both_proteins', 'drugs_targeting_one_or_both_proteins',
                         'complexes_with_both_proteins', 'complexes_with_one_or_both_proteins', 'direction_information',
                         'causing_mutations', 'decreasing_mutations', 'decreasing_rate_mutations',
                         'decreasing_strength_mutations', "disrupting_mutations", "disrupting_rate_mutations",
                         "disrupting_strength_mutations", "increasing_mutations", "increasing_rate_mutations",
-                        "increasing_strength_mutations", "no_effect_mutations", "unknown_effect_mutations"]:
-            if header in ['evidence_type', 'db_with_ppi', 'experiments']:
+                        "increasing_strength_mutations", "no_effect_mutations", "unknown_effect_mutations",'detection_type', "co_purified_set_ids"]:
+            if header in ['evidence_type', 'experiments','detection_type']:
                 query += header + 's:split(line.`' + header + '`,"|"), '
+                csv_edge.writerow([header+'s'])
             else:
                 query += header + ':split(line.`' + header + '`,"|"), '
+                csv_edge.writerow([header])
         else:
             if header.startswith('#'):
                 query += header.replace('#', 'number') + ':line.`' + header + '`, '
+                csv_edge.writerow([header.replace('#', 'number')])
             elif header[0] in ['1', '2', '4', '8']:
                 first_letter = header[0]
                 query += header.replace(first_letter, dict_number_to_number[first_letter]) + ':line.`' + header + '`, '
+                csv_edge.writerow([header.replace(first_letter, dict_number_to_number[first_letter])])
             else:
                 query += prepare_header(header) + ':line.`' + header + '`, '
+                csv_edge.writerow([header])
     query = query[:-2] + '}]->(p2)'
     query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/IID/{rela_file_name}', query)
     cypher_file_edge.write(query)
