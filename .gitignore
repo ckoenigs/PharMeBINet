@@ -121,7 +121,6 @@ node_modules/
 *.bz2
 *.gz
 *.rar
-*.zip
 *.7z
 *.bak
 *.dat
@@ -141,7 +140,7 @@ node_modules/
 *.html
 *.sql
 **/sources
-*.gtm
+*.gmt
 
 wget-log
 wget-log.*
