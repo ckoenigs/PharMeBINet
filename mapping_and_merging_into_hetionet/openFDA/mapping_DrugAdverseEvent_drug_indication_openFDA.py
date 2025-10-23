@@ -43,7 +43,7 @@ a = list(g.run(query))
 print(datetime.datetime.now())
 print("Fetching data for Disease ...")
 # Category Daten abrufen und anschließend als Dictionary speichern.
-query = "MATCH (n:Disease) RETURN n.identifier, toLower(n.name), n.synonyms, n.resource, n.umls_cuis;"
+query = "MATCH (n:Disease) RETURN n.identifier, toLower(n.name), n.synonyms, n.resource, n.xrefs;"
 b = list(g.run(query))
 #######################################################################
 for entry in a:
@@ -68,11 +68,12 @@ for entry in b:
                 attr = attr.lower()
                 attr = pharmebinetutils.prepare_obo_synonyms(attr)
                 CAT2[attr] = [id_, source_]
-        attr_ = entry["n.umls_cuis"]
+        attr_ = entry["n.xrefs"]
         if attr_ is not None:
             for attr in attr_:
-                attr = attr.split(":")[1]
-                CAT5[attr] = [id_, source_]
+                if attr.startswith('UMLS:'):
+                    attr = attr.split(":")[1]
+                    CAT5[attr] = [id_, source_]
 #######################################################################
 FDA_name = "DrugAdverseEvent_drug_indication_openFDA"
 CAT_name = "Disease"

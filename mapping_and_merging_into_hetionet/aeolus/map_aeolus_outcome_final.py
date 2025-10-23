@@ -1,7 +1,7 @@
 import datetime
 import sys, csv
 import urllib.request, urllib.error, urllib.parse
-import json
+import json, time
 
 sys.path.append("../..")
 import create_connection_to_databases
@@ -262,11 +262,11 @@ def load_disease_infos():
     Load all disease with umls, identifier and name (,synonyms?)
     :return:
     """
-    query = '''Match (n:Disease) Return n.identifier, n.name, n.umls_cuis, n.xrefs, n.resource'''
+    query = '''Match (n:Disease) Return n.identifier, n.name, n.xrefs, n.resource'''
     results = g.run(query)
 
     for record in results:
-        [identifier, name, umls_cuis, xrefs, resource] = record.values()
+        [identifier, name, xrefs, resource] = record.values()
         dict_mondo_to_xrefs_and_resource[identifier] = [xrefs, resource]
         if name:
             name = name.lower()
@@ -277,13 +277,7 @@ def load_disease_infos():
 
             else:
                 dict_disease_name_to_id[name] = [identifier]
-        if umls_cuis:
-            for umls_cui in umls_cuis:
-                cui = umls_cui.split(':')[1]
-                if cui in dict_disease_cui_to_id:
-                    dict_disease_cui_to_id[cui].append(identifier)
-                else:
-                    dict_disease_cui_to_id[cui] = [identifier]
+
         if xrefs:
             for xref in xrefs:
                 if xref.startswith('MedDRA'):
@@ -292,6 +286,12 @@ def load_disease_infos():
                         dict_meddra_to_mondo[meddra_id].add(identifier)
                     else:
                         dict_meddra_to_mondo[meddra_id] = set([identifier])
+                elif xref.startswith('UMLS'):
+                    cui = xref.split(':')[1]
+                    if cui in dict_disease_cui_to_id:
+                        dict_disease_cui_to_id[cui].append(identifier)
+                    else:
+                        dict_disease_cui_to_id[cui] = [identifier]
 
 
 # dictionary with for every key outcome_concept a list of umls cuis as value
@@ -318,11 +318,19 @@ def search_with_api_bioportal():
     # counter for meddra ids which has no cui
     counter_meddra_id_without_cui = 0
 
+    # counter api question
+    counter_api_question=0
     # search for cui id in bioportal
     for list_ids in list_of_list_of_meddra_ids:
         if len(list_ids) == 0:
             continue
         for meddra_id_from_list in list_ids:
+            counter_api_question+=1
+            if counter_api_question%10==0:
+                time.sleep(5)
+                if counter_api_question %1000==0:
+                    print('counter_api_question:', counter_api_question, datetime.datetime.now())
+
             part = "/search?q=" + meddra_id_from_list + "&include=cui,prefLabel&pagesize=250&ontology=MEDDRA"
             url = REST_URL + part
             results_all = get_json(url)
@@ -331,11 +339,11 @@ def search_with_api_bioportal():
             results = results_all['collection']
 
             dict_all_inside = {}
-            # check if this api got an result
+            # check if this api got a result
             if results:
                 found_cui=False
                 for result in results:
-                    # print(results)
+                    print(result['@id'])
                     all_infos = result['@id'].split('/')
                     meddra_id = all_infos[-1]
                     if meddra_id == '10052551':
@@ -354,7 +362,7 @@ def search_with_api_bioportal():
                     pref_name = result['prefLabel']
 
                     # check if the id is really in this list
-                    if not meddra_id !=meddra_id_from_list:
+                    if meddra_id !=meddra_id_from_list:
                         print('ohje')
                         print(meddra_id)
                         print(url)
@@ -381,8 +389,8 @@ def search_with_api_bioportal():
 
             else:
                 print('not in bioportal')
-                print(list_ids)
-                list_aeolus_outcome_without_cui.extend(list_ids)
+                print(meddra_id_from_list)
+                list_aeolus_outcome_without_cui.append(meddra_id_from_list)
 
     print('Size of Aoelus side effects:' + str(len(dict_side_effects_aeolus)))
     print('number of not equal names:' + str(counter_for_not_equal_names))

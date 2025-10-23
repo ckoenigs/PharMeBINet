@@ -141,6 +141,7 @@ node_modules/
 *.html
 *.sql
 **/sources
+*.gtm
 
 wget-log
 wget-log.*

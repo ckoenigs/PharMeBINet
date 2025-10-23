@@ -42,23 +42,21 @@ class DiseaseCTD:
         self.altDiseaseIDs = altDiseaseIDs
         self.disease_id = disease_id
         self.doids = doids
-        self.mondos = []
-        self.cuis = []
-        self.mapping = []
+        self.mondos = set()
+        self.cuis = set()
+        self.mapping = set()
 
     def set_cuis(self, cuis):
         self.cuis = cuis
 
     def set_mondos(self, mondos):
-        mondo_set = set(self.mondos)
-        self.mondos = list(mondo_set.union(mondos))
+        self.mondos = self.mondos.union(mondos)
 
     def set_how_mapped(self, how_mapped):
         self.how_mapped = how_mapped
 
     def set_mapping_id(self, identifier):
-        self.mapping.append(identifier)
-        self.mapping = list(set(self.mapping))
+        self.mapping.add(identifier)
 
 
 # dictionary with all CTD diseases, which has a relationship  treats or induces with a drug
@@ -107,12 +105,12 @@ load in all diseases from pharmebinet in a dictionary
 
 
 def load_pharmebinet_diseases_in():
-    query = '''MATCH (n:Disease) RETURN n.identifier,n.name, n.synonyms, n.xrefs, n.umls_cuis, n.resource, n.doids'''
+    query = '''MATCH (n:Disease) RETURN n.identifier,n.name, n.synonyms, n.xrefs,  n.resource, n.alternative_ids'''
     results = g.run(query)
 
     counter = 0
     for record in results:
-        [identifier, name, synonyms, xrefs, umls_cuis, resource, doids] = record.values()
+        [identifier, name, synonyms, xrefs,  resource, doids] = record.values()
         counter += 1
         # if identifier=='MONDO:0002165':
         #     print('BLUB')
@@ -136,43 +134,44 @@ def load_pharmebinet_diseases_in():
         else:
             synonyms = []
 
-        # list of the umls cuis without the label 'UMLS_CUI:'
-        umls_cuis_without_label = []
-        if umls_cuis:
-            for umls_cui in umls_cuis:
-                if len(umls_cui) > 0:
-                    if len(umls_cui.split(':')) < 2:
-                        print('ohje')
-                    cui = umls_cui.split(':')[1]
-                    umls_cuis_without_label.append(cui)
-                    if cui in dict_umls_cui_to_mondo:
-                        dict_umls_cui_to_mondo[cui].append(identifier)
-                    else:
-                        dict_umls_cui_to_mondo[cui] = [identifier]
 
         # generate dictionary with doid to mondo
         if doids:
             for doid in doids:
                 if doid in dict_doid_to_mondo:
-                    dict_doid_to_mondo[doid].append(identifier)
+                    dict_doid_to_mondo[doid].add(identifier)
                 else:
-                    dict_doid_to_mondo[doid] = [identifier]
+                    dict_doid_to_mondo[doid] = {identifier}
+
+
+        # list of the umls cuis without the label 'UMLS_CUI:'
+        umls_cuis_without_label = set([])
 
         # add all mondo  with mesh and omim in the dictionaries
         if xrefs:
             for xref in xrefs:
                 if xref.split(':')[0] == 'MESH':
                     if not xref.split(':')[1] in dict_mesh_to_mondo:
-                        dict_mesh_to_mondo[xref.split(':')[1]] = [identifier]
+                        dict_mesh_to_mondo[xref.split(':')[1]] = {identifier}
                     else:
-                        dict_mesh_to_mondo[xref.split(':')[1]].append(identifier)
-                        dict_mesh_to_mondo[xref.split(':')[1]] = list(set(dict_mesh_to_mondo[xref.split(':')[1]]))
+                        dict_mesh_to_mondo[xref.split(':')[1]].add(identifier)
                 elif xref.split(':')[0] == 'OMIM':
                     if not xref.split(':')[1] in dict_omim_to_mondo:
-                        dict_omim_to_mondo[xref.split(':')[1]] = [identifier]
+                        dict_omim_to_mondo[xref.split(':')[1]] = {identifier}
                     else:
-                        dict_omim_to_mondo[xref.split(':')[1]].append(identifier)
-                        dict_omim_to_mondo[xref.split(':')[1]] = list(set(dict_omim_to_mondo[xref.split(':')[1]]))
+                        dict_omim_to_mondo[xref.split(':')[1]].add(identifier)
+                elif xref.startswith('UMLS:'):
+                    cui = xref.split(':')[1]
+                    umls_cuis_without_label.add(cui)
+                    if cui in dict_umls_cui_to_mondo:
+                        dict_umls_cui_to_mondo[cui].add(identifier)
+                    else:
+                        dict_umls_cui_to_mondo[cui] = {identifier}
+                elif xref.startswith('DOID:'):
+                    if xref in dict_doid_to_mondo:
+                        dict_doid_to_mondo[xref].add(identifier)
+                    else:
+                        dict_doid_to_mondo[xref] = {identifier}
 
         # generate class Diseasepharmebinet and add to dictionary
         disease = Diseasepharmebinet(identifier, synonyms, umls_cuis_without_label, xrefs, resource)

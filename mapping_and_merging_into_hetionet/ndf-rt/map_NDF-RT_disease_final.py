@@ -90,18 +90,13 @@ load in all diseases from pharmebinet in a dictionary in a dictionary and  gener
 
 
 def load_pharmebinet_diseases_in():
-    query = '''MATCH (n:Disease) RETURN n.identifier,n.name, n.synonyms, n.xrefs, n.umls_cuis, n.resource'''
+    query = '''MATCH (n:Disease) RETURN n.identifier,n.name, n.synonyms, n.xrefs,  n.resource'''
     results = g.run(query)
 
     for record in results:
-        [identifier, name, synonyms, xrefs, umls_cuis, resource] = record.values()
+        [identifier, name, synonyms, xrefs, resource] = record.values()
         umls_cuis_without_label = []
         pharmebinetutils.add_entry_to_dict_to_set(dict_name_synonym_to_mondo_id, name.lower(), identifier)
-        if umls_cuis:
-            for umls_cui in umls_cuis:
-                if len(umls_cui) > 0:
-                    cui = prepare_dictionary_xrefs_to_mondo(umls_cui, identifier, dict_umls_to_mondo)
-                    umls_cuis_without_label.append(cui)
         if synonyms:
             for synonym in synonyms:
                 synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
@@ -110,6 +105,9 @@ def load_pharmebinet_diseases_in():
             for xref in xrefs:
                 if xref.startswith('MESH:'):
                     prepare_dictionary_xrefs_to_mondo(xref, identifier, dict_mesh_to_mondo)
+                elif xref.startswith('UMLS:'):
+                    cui = prepare_dictionary_xrefs_to_mondo(xref, identifier, dict_umls_to_mondo)
+                    umls_cuis_without_label.append(cui)
         resource = resource if resource is not None else []
         disease = Diseasepharmebinet(identifier, synonyms, umls_cuis_without_label, xrefs, resource)
         dict_diseases_pharmebinet[identifier] = disease

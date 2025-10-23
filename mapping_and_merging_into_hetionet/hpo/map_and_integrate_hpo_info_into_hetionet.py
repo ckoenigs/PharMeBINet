@@ -61,10 +61,10 @@ load all disease from pharmebinet and remember all name, synonym, umls cui and o
 
 
 def get_all_disease_information_from_pharmebinet():
-    query = ''' Match (d:Disease) Return d.identifier, d.name, d.synonyms, d.xrefs, d.umls_cuis, d'''
+    query = ''' Match (d:Disease) Return d.identifier, d.name, d.synonyms, d.xrefs, d'''
     results = g.run(query)
     for record in results:
-        [mondo, name, synonyms, xrefs, umls_cuis, node] = record.values()
+        [mondo, name, synonyms, xrefs, node] = record.values()
         dict_mondo_to_node[mondo] = dict(node)
         if name:
             dict_name_to_mondo[name.lower()] = mondo
@@ -75,15 +75,6 @@ def get_all_disease_information_from_pharmebinet():
             for synonym in synonyms:
                 synonym = synonym.lower()
                 dict_name_to_mondo[synonym] = mondo
-        if umls_cuis:
-            for umls_cui in umls_cuis:
-                #            print(umls_cui)
-                if len(umls_cui) > 0:
-                    umls_cui = umls_cui.split(':')[1]
-                    if not umls_cui in dict_umls_cui_to_mondo:
-                        dict_umls_cui_to_mondo[umls_cui] = set([mondo])
-                    else:
-                        dict_umls_cui_to_mondo[umls_cui].add(mondo)
         if xrefs:
             for xref in xrefs:
                 if xref[0:5] == 'OMIM:':
