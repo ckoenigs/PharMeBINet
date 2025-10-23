@@ -6,46 +6,49 @@ import create_connection_to_databases
 import pharmebinetutils
 
 # names of go terms in iid
-set_of_gos = set(
-    ['golgi apparatus', 'cytoplasm', 'cytoskeleton', 'endoplasmic reticulum', 'extracellular space', 'mitochondrion',
-     'nuclear matrix', 'nucleolus', 'nucleoplasm', 'nucleus', 'peroxisome', 'plasma membrane', 'vacuole'])
+set_of_gos = {'golgi apparatus', 'cytoplasm', 'cytoskeleton', 'endoplasmic reticulum', 'extracellular space',
+              'mitochondrion', 'nuclear matrix', 'nucleolus', 'nucleoplasm', 'nucleus', 'peroxisome', 'plasma membrane',
+              'vacuole'}
 set_of_gos_with_ = set([x.replace(' ', '_') for x in set_of_gos])
 
 # dictionary cellular component go_name to go id
 dict_go_name_to_id = {}
 
 # iid disease categories
-set_of_disease_categories_with_ = set(
-    ['cancer', 'thoracic_cancer', 'organ_system_cancer', 'male_reproductive_organ_cancer', 'reproductive_organ_cancer',
-     'gastrointestinal_system_cancer', 'intestinal_cancer', 'female_reproductive_organ_cancer', 'cell_type_cancer',
-     'respiratory_system_cancer', 'lung_cancer', 'tauopathy', 'nervous_system_disease', 'neurodegenerative_disease',
-     'central_nervous_system_disease', 'disease_of_anatomical_entity', 'immune_system_cancer', 'hematologic_cancer',
-     'urinary_system_cancer', 'artery_disease', 'cardiovascular_system_disease', 'vascular_disease', 'bone_disease',
-     'bone_inflammation_disease', 'arthritis', 'connective_tissue_disease', 'musculoskeletal_system_disease',
-     'myeloid_leukemia', 'cognitive_disorder', 'psychotic_disorder', 'disease_of_mental_health', 'overnutrition',
-     'acquired_metabolic_disease', 'disease_of_metabolism', 'nutrition_disease', 'carcinoma', 'astrocytoma',
-     'glucose_metabolism_disease', 'carbohydrate_metabolism_disease', 'pancreatic_cancer', 'endocrine_gland_cancer',
-     'autonomic_nervous_system_neoplasm', 'peripheral_nervous_system_neoplasm', 'nervous_system_cancer',
-     'bone_marrow_cancer', 'myeloid_neoplasm', 'lower_respiratory_tract_disease', 'respiratory_system_disease',
-     'lung_disease', 'bronchial_disease', 'obstructive_lung_disease', 'arteriosclerotic_cardiovascular_disease',
-     'arteriosclerosis', 'lymphocytic_leukemia'])
+set_of_disease_categories_with_ = {'cancer', 'thoracic_cancer', 'organ_system_cancer', 'male_reproductive_organ_cancer',
+                                   'reproductive_organ_cancer', 'gastrointestinal_system_cancer', 'intestinal_cancer',
+                                   'female_reproductive_organ_cancer', 'cell_type_cancer', 'respiratory_system_cancer',
+                                   'lung_cancer', 'tauopathy', 'nervous_system_disease', 'neurodegenerative_disease',
+                                   'central_nervous_system_disease', 'disease_of_anatomical_entity',
+                                   'immune_system_cancer', 'hematologic_cancer', 'urinary_system_cancer',
+                                   'artery_disease', 'cardiovascular_system_disease', 'vascular_disease',
+                                   'bone_disease', 'bone_inflammation_disease', 'arthritis',
+                                   'connective_tissue_disease', 'musculoskeletal_system_disease', 'myeloid_leukemia',
+                                   'cognitive_disorder', 'psychotic_disorder', 'disease_of_mental_health',
+                                   'overnutrition', 'acquired_metabolic_disease', 'disease_of_metabolism',
+                                   'nutrition_disease', 'carcinoma', 'astrocytoma', 'glucose_metabolism_disease',
+                                   'carbohydrate_metabolism_disease', 'pancreatic_cancer', 'endocrine_gland_cancer',
+                                   'autonomic_nervous_system_neoplasm', 'peripheral_nervous_system_neoplasm',
+                                   'nervous_system_cancer', 'bone_marrow_cancer', 'myeloid_neoplasm',
+                                   'lower_respiratory_tract_disease', 'respiratory_system_disease', 'lung_disease',
+                                   'bronchial_disease', 'obstructive_lung_disease',
+                                   'arteriosclerotic_cardiovascular_disease', 'arteriosclerosis',
+                                   'lymphocytic_leukemia'}
 
 # iid_set_of_disease
-set_of_disease_with_ = set(
-    ['breast_cancer', 'breast_carcinoma', 'prostate_cancer', 'prostate_carcinoma', 'stomach_cancer',
-     'large_intestine_cancer', 'colorectal_cancer', 'ovarian_cancer', 'melanoma', 'malignant_glioma',
-     'lung_carcinoma', 'stomach_carcinoma', 'Alzheimer\'s_disease', 'leukemia',
-     'non-small_cell_lung_carcinoma', 'urinary_bladder_cancer', 'colon_carcinoma',
-     'coronary_artery_disease', 'rheumatoid_arthritis', 'acute_myeloid_leukemia', 'schizophrenia',
-     'obesity', 'squamous_cell_carcinoma', 'colon_cancer', 'glioblastoma_multiforme',
-     'type_2_diabetes_mellitus', 'pancreatic_carcinoma', 'adenocarcinoma', 'liver_cancer',
-     'neuroblastoma', 'diabetes_mellitus', 'multiple_myeloma', 'asthma', 'lymphoma', 'atherosclerosis',
-     'hypertension', 'chronic_lymphocytic_leukemia'])
+set_of_disease_with_ = {'breast_cancer', 'breast_carcinoma', 'prostate_cancer', 'prostate_carcinoma', 'stomach_cancer',
+                        'large_intestine_cancer', 'colorectal_cancer', 'ovarian_cancer', 'melanoma', 'malignant_glioma',
+                        'lung_carcinoma', 'stomach_carcinoma', 'Alzheimer\'s_disease', 'alzheimer_s_disease',
+                        'leukemia', 'non-small_cell_lung_carcinoma', 'urinary_bladder_cancer', 'colon_carcinoma',
+                        'coronary_artery_disease', 'rheumatoid_arthritis', 'acute_myeloid_leukemia', 'schizophrenia',
+                        'obesity', 'squamous_cell_carcinoma', 'colon_cancer', 'glioblastoma_multiforme',
+                        'type_2_diabetes_mellitus', 'pancreatic_carcinoma', 'adenocarcinoma', 'liver_cancer',
+                        'neuroblastoma', 'diabetes_mellitus', 'multiple_myeloma', 'asthma', 'lymphoma',
+                        'atherosclerosis', 'hypertension', 'chronic_lymphocytic_leukemia'}
 
 # iid set of species
-set_of_species = set(
-    ["alpaca", "cat", "chicken", "cow", "dog", "duck", "fly", "guinea_pig", "horse", "mouse", "pig", "rabbit", "rat",
-     "sheep", "turkey", "worm", "yeast"])
+set_of_species = {"alpaca", "cat", "chicken", "cow", "dog", "duck", "fly", "guinea_pig", "horse", "mouse", "pig",
+                  "rabbit", "rat", "sheep", "turkey", "worm", "yeast"}
 
 '''
 create a connection with neo4j
@@ -104,10 +107,10 @@ def generate_file_and_cypher():
     generate cypher file and tsv file
     :return:
     """
-    query = '''MATCH (:protein_IID)-[p:interacts]->(:protein_IID) WITH DISTINCT keys(p) AS keys
-        UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
-        RETURN allfields as l; '''
-    results = g.run(query)
+    # query = '''MATCH (:protein_IID)-[p:interacts]->(:protein_IID) WITH DISTINCT keys(p) AS keys
+    #     UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
+    #     RETURN allfields as l; '''
+    # results = g.run(query)
 
     file_name = 'interaction/rela'
     file_name_update = 'interaction/rela_match'
@@ -120,25 +123,38 @@ def generate_file_and_cypher():
     query_update = '''Match (p1:Protein{identifier:line.protein_id_1})-[a:INTERACTS_PiI]->(m:Interaction{identifier:line.id})-[b:INTERACTS_IiP]->(p2:Protein{identifier:line.protein_id_2}) Set '''
 
     header = ['protein_id_1', 'protein_id_2', 'id']
-    for head in results:
-        head = head.data()['l']
-        header.append(head)
-        if head in ['evidence_types', 'dbs', 'methods', 'pmids', 'db_with_ppis',
-                    'drugs_targeting_one_or_both_proteins']:
-            if head != 'pmids':
-                query += head + ':split(line.' + head + ',"|"), '
-                query_update += 'm.' + head + '=split(line.' + head + ',"|"), '
+    file_name='../../import_into_Neo4j/IID/output/edge_properties.tsv'
+    with open(file_name, 'r', encoding='utf-8') as edge_file:
+        csv_reader_edge_prop = csv.reader(edge_file, delimiter='\t')
+        for line in csv_reader_edge_prop:
+
+            head = line[0]
+            header.append(head)
+            if head in ['evidence_types', 'dbs', 'methods', 'pmids', 'db_with_ppis',
+                        'drugs_targeting_one_or_both_proteins', 'complexes_with_both_proteins',
+                        'complexes_with_one_or_both_proteins', 'direction_information',
+                        'causing_mutations''decreasing_mutations', 'decreasing_rate_mutations',
+                        'decreasing_strength_mutations', "disrupting_mutations", "disrupting_rate_mutations",
+                        "disrupting_strength_mutations", "increasing_mutations", "increasing_rate_mutations",
+                        "increasing_strength_mutations", "no_effect_mutations", "unknown_effect_mutations",
+                        'detection_type', "co_purified_set_ids"]:
+                if head != 'pmids':
+                    query += head + ':split(line.' + head + ',"|"), '
+                    query_update += 'm.' + head + '=split(line.' + head + ',"|"), '
+                else:
+                    query += 'pubMed_ids:split(line.' + head + ',"|"), '
+                    query_update += 'm.pubMed_ids=split(line.' + head + ',"|"), '
+            elif head in ['targeting_drugs', 'targeted_by_drugs', 'drugs_targeting_both_proteins', 'enzymes',
+                          'ion_channels', 'receptors', 'transporters', 'drug_targets',
+                          'orthologs_are_drug_targets', 'drugs targeting orthologs', 'orthologs_targeted_by_drugs',
+                          'drugs_targeting_orthologs_of_both_proteins',
+                          'drugs_targeting_orthologs_of_one_or_both_proteins']:
+                continue
+            elif head in set_of_disease_categories_with_ or head in set_of_disease_with_ or head in set_of_gos_with_ or head in set_of_species:
+                continue
             else:
-                query += 'pubMed_ids:split(line.' + head + ',"|"), '
-                query_update += 'm.pubMed_ids=split(line.' + head + ',"|"), '
-        elif head in ['targeting_drugs', 'enzymes', 'ion_channels', 'receptors_transporters', 'drug_targets',
-                      'orthologs_are_drug_targets', 'drugs targeting orthologs']:
-            continue
-        elif head in set_of_disease_categories_with_ or head in set_of_disease_with_ or head in set_of_gos_with_ or head in set_of_species:
-            continue
-        else:
-            query += head + ':line.' + head + ', '
-            query_update += 'm.' + head + '=line.' + head + ', '
+                query += head + ':line.' + head + ', '
+                query_update += 'm.' + head + '=line.' + head + ', '
 
     query += ' license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", resource:["IID"], url:"http://iid.ophid.utoronto.ca/",  node_edge:true})-[:INTERACTS_IiP{iid:"yes", source:"Integrated Interactions Database", url:"http://iid.ophid.utoronto.ca/", resource:["IID"], license:"free to use for academic purposes"}]->(p2)'
 
