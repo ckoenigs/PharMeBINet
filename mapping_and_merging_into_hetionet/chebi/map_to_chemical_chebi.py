@@ -152,9 +152,10 @@ def get_all_chebi_and_map(dict_node_id_to_resource):
     counter_not_mapped = 0
     set_of_all_possible_properties = set()
     for identifier, name, synonyms, property_values, xrefs, in results:
+        print(identifier)
         only_number_id = identifier.split(':')[1]
 
-        name = name.lower()
+        name = name.lower() if name else ''
 
         is_mapped = False
 
@@ -162,6 +163,7 @@ def get_all_chebi_and_map(dict_node_id_to_resource):
         bool_formular_and_inchi_formular_equal = True
         if property_values:
             for value in property_values:
+                print(value)
                 value = value.replace('" xsd:string', '')
                 key_value_pair = value.split(' "')
                 dict_property_to_value[key_value_pair[0].replace('http://purl.obolibrary.org/obo/chebi/', '')] = \
@@ -189,56 +191,58 @@ def get_all_chebi_and_map(dict_node_id_to_resource):
         if is_mapped:
             continue
 
-        if name in dict_name_to_id:
-            is_mapped = True
-            counter_mapping += 1
-            for drugbank_id in dict_name_to_id[name]:
-                if 'inchikey' in dict_property_to_value and drugbank_id in dict_identifier_to_inchikey:
-                    start_chebi_inchikey = dict_property_to_value['inchikey'].split('-')[0]
-                    start_pharmebinet_inchikey = dict_identifier_to_inchikey[drugbank_id].split('-')[0]
-                    if start_pharmebinet_inchikey == start_chebi_inchikey:
-                        add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping,
-                                    'name_and_part_inchikey_mapping', dict_property_to_value)
-                        continue
-                    else:
-                        print(identifier, drugbank_id)
-                        print('different inchikeys', start_pharmebinet_inchikey, start_chebi_inchikey)
-                        continue
-                add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping, 'name_mapping',
-                            dict_property_to_value)
+        if name:
+            if name in dict_name_to_id:
+                is_mapped = True
+                counter_mapping += 1
+                for drugbank_id in dict_name_to_id[name]:
+                    if 'inchikey' in dict_property_to_value and drugbank_id in dict_identifier_to_inchikey:
+                        start_chebi_inchikey = dict_property_to_value['inchikey'].split('-')[0]
+                        start_pharmebinet_inchikey = dict_identifier_to_inchikey[drugbank_id].split('-')[0]
+                        if start_pharmebinet_inchikey == start_chebi_inchikey:
+                            add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping,
+                                        'name_and_part_inchikey_mapping', dict_property_to_value)
+                            continue
+                        else:
+                            print(identifier, drugbank_id)
+                            print('different inchikeys', start_pharmebinet_inchikey, start_chebi_inchikey)
+                            continue
+                    add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping, 'name_mapping',
+                                dict_property_to_value)
 
         if is_mapped:
             continue
 
-        if name in dict_synonyms_to_id:
-            found_real_mapping = False
-            for drugbank_id in dict_synonyms_to_id[name]:
-                if 'inchikey' in dict_property_to_value and drugbank_id in dict_identifier_to_inchikey and bool_formular_and_inchi_formular_equal:
-                    start_chebi_inchikey = dict_property_to_value['inchikey'].split('-')[0]
-                    start_pharmebinet_inchikey = dict_identifier_to_inchikey[drugbank_id].split('-')[0]
-                    if start_pharmebinet_inchikey == start_chebi_inchikey:
-                        formula_pmbin = dict_node_id_to_resource[drugbank_id][2]
-                        if 'formula' in dict_property_to_value:
-                            if dict_property_to_value['formula'] != formula_pmbin:
-                                print('different', formula_pmbin, dict_property_to_value['formula'])
-                                continue
+        if name:
+            if name in dict_synonyms_to_id:
+                found_real_mapping = False
+                for drugbank_id in dict_synonyms_to_id[name]:
+                    if 'inchikey' in dict_property_to_value and drugbank_id in dict_identifier_to_inchikey and bool_formular_and_inchi_formular_equal:
+                        start_chebi_inchikey = dict_property_to_value['inchikey'].split('-')[0]
+                        start_pharmebinet_inchikey = dict_identifier_to_inchikey[drugbank_id].split('-')[0]
+                        if start_pharmebinet_inchikey == start_chebi_inchikey:
+                            formula_pmbin = dict_node_id_to_resource[drugbank_id][2]
+                            if 'formula' in dict_property_to_value:
+                                if dict_property_to_value['formula'] != formula_pmbin:
+                                    print('different', formula_pmbin, dict_property_to_value['formula'])
+                                    continue
+                            found_real_mapping = True
+                            add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping,
+                                        'synonym_and_part_inchikey_mapping', dict_property_to_value)
+                            continue
+                        else:
+                            print(identifier, drugbank_id)
+                            print('different inchikeys', start_pharmebinet_inchikey, start_chebi_inchikey)
+                            continue
+                    # CHEBI:15693 is a general name for suger molecules and this happened to be in some synonyms
+                    if drugbank_id.startswith('DB') or (
+                    not (drugbank_id.startswith('D') or drugbank_id.startswith('C'))) and identifier not in ['CHEBI:15693']:
                         found_real_mapping = True
-                        add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping,
-                                    'synonym_and_part_inchikey_mapping', dict_property_to_value)
-                        continue
-                    else:
-                        print(identifier, drugbank_id)
-                        print('different inchikeys', start_pharmebinet_inchikey, start_chebi_inchikey)
-                        continue
-                # CHEBI:15693 is a general name for suger molecules and this happened to be in some synonyms
-                if drugbank_id.startswith('DB') or (
-                not (drugbank_id.startswith('D') or drugbank_id.startswith('C'))) and identifier not in ['CHEBI:15693']:
-                    found_real_mapping = True
-                    add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping, 'synonyms_mapping',
-                                dict_property_to_value)
-            if found_real_mapping:
-                is_mapped = True
-                counter_mapping += 1
+                        add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping, 'synonyms_mapping',
+                                    dict_property_to_value)
+                if found_real_mapping:
+                    is_mapped = True
+                    counter_mapping += 1
 
         if is_mapped:
             continue
