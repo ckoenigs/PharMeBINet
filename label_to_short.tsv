@@ -1,0 +1,39 @@
+Label	Short	Type	Category
+Anatomy	A	node	
+BiologicalProcess	BP	node	GO
+BlackBoxEvent	B	node-edge	ReactionLikeEvent
+CellType	CT	node	
+CellularComponent	CC	node	GO
+Chemical	CH	node	
+ClinicalAnnotation	CA	node-edge	
+Compound	C	node	Chemical
+Depolymerisation	DP	node-edge	ReactionLikeEvent
+Disease	D	node	
+EnzymeReactantSet	E	Node-edge	
+FailedReaction	F	node-edge	ReactionLikeEvent
+Food	FO	node	
+Gene	G	node	
+GeneVariant	GV	node	Variant
+Genotype	GT	node	Variant
+Haplotype	H	node	Variant
+Interaction	I	node-edge	
+Metabolite	M	node	
+MolecularComplex	MC	node	
+MolecularFunction	MF	node	GO
+Pathway	PW	node	
+PharmacologicClass	PC	node	
+Phenotype	PT	node	
+Polymerisation	PO	node-edge	ReactionLikeEvent
+Product	PR	node	
+Protein	P	node	
+PTM	PTM	node	
+Reaction	RN	node-edge	ReactionLikeEvent
+ReactionLikeEvent	RLE	node-edge	ReactionLikeEvent
+Regulation	RG	node-edge	
+RNA	R	node	
+Salt	SA	node	Chemical;Compound
+SideEffect	SE	node	
+Symptom	S	node	
+Treatment	T	node-edge	
+Variant	V	node	
+VariantAnnotation	VA	node-edge	
