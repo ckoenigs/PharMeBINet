@@ -1,0 +1,7 @@
+"export"	"ext"	"The movement of a molecule out of a cell (by more specific means than secretion)."	"sec"
+"import"	"imt"	"The movement of a molecule into a cell (by more specific means than uptake)."	"upt"
+"localization"	"loc"	"Part of the cell where a molecule resides."	
+"secretion"	"sec"	"The movement of a molecule out of a cell (by less specific means than export)."	"trt"
+"stability"	"sta"	"Overall molecular integrity."	
+"transport"	"trt"	"The movement of a molecule into or out of a cell."	
+"uptake"	"upt"	"The movement of a molecule into a cell (by less specific means than import)."	"trt"
