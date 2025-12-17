@@ -36,6 +36,7 @@ fi
 if [ ! -f IUPHAR/ligands.csv ]; then
     cd IUPHAR
     wget https://www.guidetopharmacology.org/DATA/ligands.csv
+    ../prepare_header.sh ligands.csv
     cd ..
 fi
 

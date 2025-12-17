@@ -56,9 +56,9 @@ def transform_json_string_to_dict(json_string):
     if '\\"' in json_string:
         json_string = json_string.replace('\\"', '"')
     else:
-        json_string = re.sub("([{\[])'", '\\1"', json_string)
-        json_string = re.sub("([\:,]) '", '\\1 "', json_string)
-        json_string = re.sub("'([\:,\]}])", '"\\1', json_string)
+        json_string = re.sub("([{\\[])'", '\\1"', json_string)
+        json_string = re.sub("([:,]) '", '\\1 "', json_string)
+        json_string = re.sub("'([:,\\]}])", '"\\1', json_string)
     # print(json_string)
     return json.loads(json_string)
 

@@ -89,12 +89,17 @@ set_of_rxcui_drug_bank_pairs = set()
 for chunk in synonym_chunks:
     names = "','".join(chunk)
     cur = con.cursor()
-    query = "SELECT Distinct STR, RXCUI FROM RXNCONSO WHERE LOWER(STR) COLLATE utf8_bin in ('%s');" % names
+    # COLLATE utf8_bin
+    query = "SELECT Distinct STR, RXCUI FROM RXNCONSO WHERE LOWER(STR) in ('%s');" % names
+    # print(query)
     cur.execute(query)
 
     for (synonym, rxcui) in cur:
         list_rxnorm_id.add(rxcui)
         synonym = synonym.lower().strip()
+        if not synonym in synonym_to_drugbank_ids:
+            print('why',synonym)
+            continue
         for drugbank_id in synonym_to_drugbank_ids[synonym]:
             if (rxcui, drugbank_id) in set_of_rxcui_drug_bank_pairs:
                 continue

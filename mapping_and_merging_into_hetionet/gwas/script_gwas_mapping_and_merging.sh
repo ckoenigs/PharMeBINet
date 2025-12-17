@@ -14,6 +14,7 @@ if [ ! -d output ]; then
   mkdir output
   mkdir variant
   mkdir trail
+  mkdir edge
 fi
 
 echo gencc

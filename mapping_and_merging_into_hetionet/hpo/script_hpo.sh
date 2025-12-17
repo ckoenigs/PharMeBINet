@@ -10,10 +10,10 @@ path_to_project=$2
 password=$3
 
 # hpo date annotated
-hpo_annotated_date='2024-01-16'
+hpo_annotated_date='2025-08-11'
 
 # hpo date ontology
-hpo_ontology_date='2024-01-16'
+hpo_ontology_date='2025-08-11'
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -24,11 +24,12 @@ if [ ! -d output ]; then
   mkdir output
   mkdir cypher
   mkdir mapping_files
+  mkdir mapping_files/disease
 fi
 
 
 echo HPO
-python3 map_and_integrate_hpo_info_into_hetionet.py $path_to_project > output/output_hpo_disease.txt
+python map_and_integrate_hpo_info_into_hetionet.py $path_to_project > output/output_hpo_disease.txt
 
 
 python3 map_hpo_symptoms_into_db.py $path_to_project $hpo_ontology_date > output/output_hpo_symptomes.txt

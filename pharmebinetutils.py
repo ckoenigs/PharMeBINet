@@ -16,7 +16,7 @@ from urllib.parse import urlparse
 USE_VERSION_5 = True
 
 # path to database
-path_to_databases = '/media/cassandra/T7/System_Volume_Information/'
+path_to_databases = '/mnt/d/databases/'
 
 # dictionary label to abbreviation
 dictionary_label_to_abbreviation = {

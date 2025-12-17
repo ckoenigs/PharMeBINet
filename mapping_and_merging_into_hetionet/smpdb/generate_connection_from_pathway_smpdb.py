@@ -37,7 +37,6 @@ def load_pathway_node_edge_info(csv_file, dict_pathway_node_to_rela_info,
         [pathway_id, node_id, edge, smpdb_pathway_id] = record.values()
         if (pathway_id, node_id) in dict_pathway_node_to_rela_info:
             print(pathway_id, node_id)
-            # sys.exit("Doppeltepathway-edge Kombination")
             continue
         dict_pathway_node_to_rela_info[(pathway_id, node_id)] = edge
         csv_file.writerow([pathway_id, node_id, smpdb_pathway_id])
@@ -106,6 +105,7 @@ def main():
     list_of_combinations = [
         ['metabolite_smpdb', 'Metabolite', 'ASSOCIATES_PWaM'],
         ['protein_smpdb', 'Protein', 'ASSOCIATES_PWaP'],
+        ['protein_smpdb', 'Chemical', 'ASSOCIATES_PWaCH'],
     ]
 
     directory = 'edge_pathways'

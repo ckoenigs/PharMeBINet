@@ -183,7 +183,7 @@ def open_json_file_write_into_csv(path_to_data):
     If some nodes where already checked before go through all files.
     """
 
-    if not os.path.isfile(path_to_data + 'dbSNP/refsnp-chrY.json.bz2'):
+    if not os.path.isfile(path_to_data + '/dbSNP/refsnp-chrY.json.bz2'):
         url = 'https://ftp.ncbi.nih.gov/snp/latest_release/JSON/refsnp-chr%s.json.bz2'
         list_chromosome = list(range(1, 23))
         list_chromosome.append('X')
@@ -192,14 +192,14 @@ def open_json_file_write_into_csv(path_to_data):
         for chr in list_chromosome:
             url_file = url % (chr)
             print(url_file)
-            pharmebinetutils.download_file(url_file, out=path_to_data + '/')
+            pharmebinetutils.download_file(url_file, out=path_to_data + '/dbSNP')
             time.sleep(30)
 
         # sys.exit('only download else it takes  too much time')
 
     print('number of rs ids which need to be checked:', len(set_of_rs_ids_in_pharmebinet))
     if len(set_of_rs_ids_in_pharmebinet) > 0:
-        files = glob.glob(path_to_data + 'dbSNP/refsnp-chr*.json.bz2')
+        files = glob.glob(path_to_data + '/dbSNP/refsnp-chr*.json.bz2')
         # files = glob.glob(path_to_data + 'dbSNP/refsnp-chrY.json.bz2')
         for file in files:
             print(file)
@@ -220,6 +220,7 @@ def open_json_file_write_into_csv(path_to_data):
                     set_of_rs_ids_in_pharmebinet.remove(identifier)
             print('end', datetime.datetime.now())
 
+    print('number of rs ids which are not found', len(set_of_rs_ids_in_pharmebinet))
     file_already_downloaded.close()
     for not_matched_rs_id in set_of_rs_ids_in_pharmebinet:
         csv_file_not_existing_ids.writerow([not_matched_rs_id])

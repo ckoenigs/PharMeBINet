@@ -32,8 +32,8 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo "snp information for integrated dbSNP nodes"
 
-#python3 extract_dbSNP_info_for_integrated_node.py $path_to_project "${license}" $path_to_data > output/output.txt
-python3 extract_dbSNP_info_for_integration_from_files.py $path_to_project "${license}" $path_to_data #> output/output.txt
+#python extract_dbSNP_info_for_integrated_node.py $path_to_project "${license}" $path_to_data > output/output.txt
+python extract_dbSNP_info_for_integration_from_files.py $path_to_project "${license}" $path_to_data #> output/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -62,9 +62,13 @@ echo integrat dbSNP edges
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
 
 
-sleep 30
-python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
 sleep 60
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+sleep 180
+
+sleep 60
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+sleep 180
 
 
 now=$(date +"%F %T")
@@ -78,10 +82,24 @@ sleep 30
 python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
 sleep 180
 
-
-sleep 30
-python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
 sleep 60
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+sleep 180
+
+sleep 60
+python ../../restart_neo4j.py $path_neo4j > output/neo4j3.txt
+sleep 180
+
+sleep 180
+python ../../restart_neo4j.py $path_neo4j > output/neo4j89.txt
+sleep 180
+
+$path_neo4j/neo4j stop
+
+
+sleep 60
+python ../../restart_neo4j.py $path_neo4j > output/neo4j3.txt
+sleep 180
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -100,7 +118,17 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrat mapping dbSNP information into Neo4j
 
+
+sleep 60
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+sleep 180
+
 python ../../execute_cypher_shell.py $path_neo4j $password output_mapping/cypher.cypher > output/cypher4.txt
+
+
+sleep 60
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+sleep 180
 
 now=$(date +"%F %T")
 echo "Current time: $now"

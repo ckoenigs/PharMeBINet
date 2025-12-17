@@ -2,7 +2,7 @@
 
 echo $1
 #
-head -1 $1 > IUPHAR/version.txt
+head -1 $1 > version.txt
 
 tail -n+2 $1 > test.tsv
 

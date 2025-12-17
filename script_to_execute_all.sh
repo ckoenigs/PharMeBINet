@@ -23,7 +23,7 @@ name_of_import_tool='../Neo4j-GraphML-Importer-v1.3.0'
 
 # path to external save position of data
 # path_to_other_place_of_data='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/'
-path_to_other_place_of_data='/media/cassandra/T7/System_Volume_Information/databases/'
+path_to_other_place_of_data='/mnt/e/databases/'
 
 password='test1234'
 
@@ -95,7 +95,6 @@ cd final_preparation
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-#[ ]*[0-9]+K[\. ]+[0-9]+\%[ ]+[0-9,]+M[ =][0-9,ms]+\n
 
 
 

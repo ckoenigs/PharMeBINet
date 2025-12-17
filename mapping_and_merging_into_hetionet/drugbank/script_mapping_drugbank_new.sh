@@ -114,25 +114,3 @@ sleep 30
 python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
 sleep 60
 
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'calculate similarities'
-
-# python3 similarity.py  $path_to_project > compound_interaction/output.txt
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-python ../../execute_cypher_shell.py $path_neo4j $password compound_interaction/cypher_resemble.cypher > output/cypher4.txt
-
-sleep 30
-python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
-sleep 60
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-

@@ -415,7 +415,7 @@ def add_pair_to_dict(chemical_id, drugbank_ids, gene_id, interaction_text, inter
                                      chemical_id, gene_id, interaction_text, gene_forms,
                                      pubMedIds, interactions_actions)
 
-
+error_rela =set()
 '''
 get all relationships between gene and chemical, take the pharmebinet identifier an save all important information in a tsv
 also generate a cypher file to integrate this information 
@@ -507,7 +507,8 @@ def take_all_relationships_of_gene_chemical():
                     if action_type not in dict_interaction_word_to_value:
                         dict_interaction_word_to_value[action_type] = ['']
             else:
-                sys.exit('the interaction ' + action_type + ' has no rela')
+                error_rela.add(action_type)
+                print('the interaction ' + action_type + ' has no rela')
 
         # if no other rela type is found then the pair are add to association
         found_a_interaction_type = False
@@ -695,10 +696,14 @@ def main():
 
     driver.close()
 
+
     print(
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
+
+    if len(error_rela)>0:
+        sys.exit("edge types not defined:"+ ', '.join(error_rela))
 
 
 if __name__ == "__main__":

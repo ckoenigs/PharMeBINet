@@ -15,7 +15,6 @@ if [ ! -d output ]; then
   mkdir chemical
   mkdir change_gene_rela_to_protein
   mkdir chemical_disease
-  mkdir chemical_gene
   mkdir chemical_go
   mkdir chemical_pathway
   mkdir chemical_phenotype

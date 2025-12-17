@@ -136,7 +136,7 @@ def generate_cypher(header, file_name):
     query = query[:-2] + '''}]->(c2) '''
 
     query = pharmebinetutils.get_query_import(path_of_directory,
-                                              f'mapping_and_merging_into_hetionet/drugbank/{file_name}',
+                                              f'mapping_and_merging_into_hetionet/connect_equal_edges/{file_name}',
                                               query)
     cypherfile.write(query)
     cypherfile.close()

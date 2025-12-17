@@ -28,13 +28,13 @@ sleep 30
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo "snp information for integrated dbSNP nodes"
+echo "get pubchem information from downloads or api"
 
 python3 get_pubchem_from_api.py $path_to_project  > output/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo integrat dbSNP information into Neo4j
+echo add pubchem nodes to neo4j
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
 
@@ -50,14 +50,14 @@ sleep 60
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo map and integrate dbSNP
+echo map pubchem to chemical
 
 python3 merge_pubchem_compounds.py $path_to_project > chemical/output.txt
 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo integrat mapping dbSNP information into Neo4j
+echo add pubchem information to nodes
 
 python ../../execute_cypher_shell.py $path_neo4j $password chemical/cypher.cypher > output/cypher4.txt
 
