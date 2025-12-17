@@ -1,7 +1,7 @@
 The idea is from https://think-lab.github.io/d/40/ but it is only the basic idea.
 
-Version: UNII:  2024-01-27 
-        RxNorm: 2023-11 
+Version: UNII:  2025-08-18 
+        RxNorm: 2025-07  
 
 The preparation of mapping table with RxNorm and UNII from mapping between RxNorm Cui to DrugBank.
 First, download the latest version of UNII from FDA-SRS database (https://precision.fda.gov/uniisearch/archive/latest/UNII_Data.zip) and unzip it.
