@@ -15,6 +15,14 @@ path_to_databases=$4
 # path to pharMeBiNet graphml
 path_to_pharMeBiNet=$path_to_databases"PharMeBiNet/"
 
+
+if [ ! -d output ]; then
+  mkdir output
+fi
+if [ ! -d $path_to_pharMeBiNet ]; then
+  mkdir $path_to_pharMeBiNet
+fi
+
 sleep 60
 
 python ../restart_neo4j.py $path_neo4j > output/neo4.txt
