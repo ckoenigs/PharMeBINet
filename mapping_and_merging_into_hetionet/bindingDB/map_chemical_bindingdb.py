@@ -7,7 +7,6 @@ import gzip
 sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
-import general_function_bindingDB
 
 
 def create_connection_with_neo4j():
@@ -82,13 +81,8 @@ def generate_new_file_and_add_cypher_query(source):
     results = g.run(query)
     for result in results:
         [prop] = result.values()
-        if prop not in ['monomerid', 'name', 'inchi_key', 'display_name', 'smiles_string',
-                        'cd_smiles', 'cd_hash', 'cd_pre_calculated', 'cd_screen_descriptor',
-                        'cd_sortable_formula', 'cd_structure', 'cd_taut_hash','cd_formula',
-                        'cd_timestamp', 'cd_taut_frag_hash', 'emp_form', 'cd_flags', 'het_pdb',
-                        'cd_molweight', 'n_pdb_ids_exact' ,'cd_id', 'taut_frag_hash'] and not prop.startswith('cd_fp'):
-            if prop.startswith('cd_'):
-                list_of_prop.append(prop.replace('cd_','') + ':n.' + prop)
+        if prop not in ['monomerid', 'name', 'inchi_key', 'display_name', 'smiles_string', 'emp_form', 'het_pdb',
+                        'n_pdb_ids_exact', 'taut_frag_hash']:
             list_of_prop.append(prop + ':n.' + prop)
             list_of_prop_merge.append(f'm.{prop}= coalesce(m.{prop},n.{prop})')
 
@@ -180,7 +174,7 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping, csv_new):
     Where (n)--(:bioGrid_interaction)
     """
     #
-    query = "MATCH (n:bindingDB_mono_struct_names) Where (n)--() RETURN n.monomerid,n.inchi_key,n.cd_smiles, n.smiles_string, n.name, n.synonyms"
+    query = "MATCH (n:bindingDB_mono_struct_names) Where (n)--() RETURN n.monomerid,n.inchi_key, n.smiles_string, n.name, n.synonyms"
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
@@ -194,7 +188,7 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping, csv_new):
     file = open('chemical/chemical_inchikeys' + str(counter_inchikey_file) + '.tsv', 'w', encoding='utf-8')
 
     for record in results:
-        [identifier, inchikey, cd_smiles, smiles_string, name, synonyms] = record.values()
+        [identifier, inchikey,  smiles, name, synonyms] = record.values()
         counter_all += 1
 
         # mapping
@@ -218,7 +212,7 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping, csv_new):
 
         if found_mapping:
             continue
-        smiles = cd_smiles if cd_smiles else smiles_string
+
         if smiles:
             if smiles in dict_chemical_smiles:
                 found_mapping = True
@@ -337,7 +331,6 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping, csv_new):
                     pubchem_id = dict_inchikey_to_pubchem_id[inchikey].pop()
                     if pubchem_id == '':
                         continue
-                    counter_create += 1
                     created_new_node = True
                     if name == "":
                         possible_names = [x for x in synonyms if
@@ -345,8 +338,9 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping, csv_new):
                         if len(possible_names) > 0:
                             name = possible_names[0]
                         else:
-                            counter_not_mapped += 1
+                            created_new_node = False
                             continue
+                    counter_create += 1
                     csv_new.writerow(
                         [identifier, pubchem_id, 'bindingDB:' + identifier, name, smiles])
 
