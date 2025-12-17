@@ -24,7 +24,7 @@ echo start preparation
 python prepare_human_data_IID.py $path_to_project exp > output/outputfile.txt
 
 echo rm gz file
-rm data/*
+#rm data/*
 
 now=$(date +"%F %T")
 echo "Current time: $now"

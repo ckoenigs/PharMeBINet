@@ -59,7 +59,7 @@ echo "Current time: $now"
 cd gwas
 echo gwas
 
-./integrate_gwas.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+./integrate_gwas.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > script_output.txt
 
 
 cd ..

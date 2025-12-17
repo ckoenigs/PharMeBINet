@@ -41,9 +41,15 @@ python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate sider into neo4j
+echo integrate sider edges into neo4j
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate restart neo4j
 
 sleep 30
 

@@ -22,8 +22,6 @@ path_of_directory = sys.argv[1]
 # dictionary category name to category id
 dict_category_name_to_id = {}
 
-# open file with all drugbank categories
-file = open('drugbank/categories.tsv', 'r', encoding='utf-8')
 
 # generate a file for "proteins" to show which are proteinss and which are not
 decision_protein_file = open('maybe_protein_manual_checked.tsv', 'w', encoding='utf-8')
@@ -35,14 +33,15 @@ maybe_not_protein_set = set()
 dict_atc_nodes = {}
 set_atc_edges = set()
 
-# get the information for the drugbank categroies
-csv_reader = csv.reader(file, delimiter='\t')
-next(csv_reader)
-for row in csv_reader:
-    if row[1] in dict_category_name_to_id:
-        sys.exit('ohje')
-    name = html.unescape(row[1])
-    dict_category_name_to_id[name] = row[0]
+# open file with all drugbank categories and get the information for the drugbank categories
+with open('drugbank/categories.tsv', 'r', encoding='utf-8') as file:
+    csv_reader = csv.reader(file, delimiter='\t')
+    next(csv_reader)
+    for row in csv_reader:
+        if row[1] in dict_category_name_to_id:
+            sys.exit('ohje')
+        name = html.unescape(row[1])
+        dict_category_name_to_id[name] = row[0]
 
 # open the xml file
 xml_file = os.path.join('full database.xml')

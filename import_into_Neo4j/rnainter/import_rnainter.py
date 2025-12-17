@@ -64,8 +64,8 @@ def edges(file, name, reduced):
     edge_set = ("RNAInterID", "Raw_ID1", "Raw_ID2", "Interactor1", "Interactor2", "score", "strong", "weak", "predict")
     edge = file.loc[:, edge_set]
 
-    edge["Raw_ID1"].fillna(edge["Interactor1"], inplace=True)
-    edge["Raw_ID2"].fillna(edge["Interactor2"], inplace=True)
+    edge.fillna({"Raw_ID1":edge["Interactor1"]}, inplace=True)
+    edge.fillna({"Raw_ID2":edge["Interactor2"]}, inplace=True)
 
     edge = edge.replace(to_replace="//", value="|", regex=True)
     if reduced:
@@ -100,7 +100,7 @@ def nodes(file, name):
         rna = file.loc[:, edge_set1]
 
         file = file.loc[:, edge_set2]
-        file["Raw_ID2"].fillna(file["Interactor2"], inplace=True)
+        file.fillna({"Raw_ID2":file["Interactor2"]}, inplace=True)
         file = file.drop_duplicates(subset=['Raw_ID2'])
         file = file.set_index('Raw_ID2')
         file_name = 'output/' + name + ".tsv"
@@ -153,7 +153,7 @@ def main():
         rna = pd.concat([rna, a])
         edges(csv, i, reduced)
 
-    rna["Raw_ID1"].fillna(rna["Interactor1"], inplace=True)
+    rna.fillna({"Raw_ID1":rna["Interactor1"]}, inplace=True)
     rna = rna.drop_duplicates(subset=['Raw_ID1'])
     rna = rna.set_index('Raw_ID1')
     rna.to_csv(file_name_rna, sep='\t')

@@ -72,7 +72,7 @@ def add_information_to_dictionary(dict_all_info, key_term, value):
     # if more than one value appears for a key the key is add to the list of multi values keys
     # also the values are connected with a |
     else:
-        dict_all_info[key_term] += '|' + value.replace("\\", "")
+        dict_all_info[key_term] += '||' + value.replace("\\", "")
         set_list_properties.add(key_term)
 
 
@@ -222,7 +222,7 @@ def generate_cypher_file():
             query += property + ':line.' + property + ', '
         # add a 's' at the end of a list property, because they have multiple values :D
         else:
-            query += property + 's:split(line.' + property + ',"|"), '
+            query += property + 's:split(line.' + property + ',"||"), '
     query = query[:-2] + '})'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               '''import_into_Neo4j/''' + directory + '/output/node.tsv', query)
@@ -254,8 +254,8 @@ def generate_cypher_file():
             if 'name' in type_def[rela_type]:
                 if not rela_type == type_def[rela_type]['name']:
                     # because a typedef can have multiple names only one is needed
-                    if len(type_def[rela_type]['name'].split('|')) > 1:
-                        type_def[rela_type]['name'] = type_def[rela_type]['name'].split('|')[0]
+                    if len(type_def[rela_type]['name'].split('||')) > 1:
+                        type_def[rela_type]['name'] = type_def[rela_type]['name'].split('||')[0]
                     rela_type = type_def[rela_type]['name'].replace(' ', '_').replace('-', '_').replace('(','_').replace(')','_').replace('__','_') if not '/' in type_def[
                         rela_type][
                         'name'] else rela_type

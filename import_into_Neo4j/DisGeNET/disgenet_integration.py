@@ -113,7 +113,7 @@ def prepare_sqllite_info_and_combine(query, properties, on_properties, integrate
         list_of_rows.append(list(row))
 
     test_dataframe = pd.DataFrame(np.array(list_of_rows), columns=properties)
-    test_dataframe = test_dataframe.fillna('')
+    test_dataframe = test_dataframe.infer_objects().fillna('')
     return integrated_dataframe.merge(test_dataframe, on=on_properties, how='left', copy=False, sort=True)
 
 
@@ -132,7 +132,7 @@ def get_Node_information(query, properties):
         list_of_rows.append(list(row))
 
     test_dataframe = pd.DataFrame(np.array(list_of_rows), columns=properties)
-    test_dataframe = test_dataframe.fillna('')
+    test_dataframe = test_dataframe.infer_objects().fillna('')
     return test_dataframe
 
 
@@ -150,9 +150,7 @@ def get_geneInfo(gene_ids):
     :return: list of lists
     """
 
-    name1 = "curated_gene_disease_associations.tsv.gz"
     name2 = "variant_to_gene_mappings.tsv.gz"
-    name3 = "all_gene_disease_pmid_associations.tsv.gz"
     file2 = pd.read_csv(os.path.join(source, name2), compression='gzip', sep='\t').convert_dtypes()
 
     # combine all sources to get list of unique gene_ids
@@ -249,9 +247,6 @@ def get_variantInfo(snp_ids):
     :return 1: list of unique diseaseId's (from curated_variant_disease_associations.tsv)
     :return 2: dataframe of disease-related-Information (from all_variant_disease_pmid_associations.tsv)
     """
-
-    name1 = "curated_variant_disease_associations.tsv.gz"
-    name2 = "all_variant_disease_pmid_associations.tsv.gz"
 
     unique_snp_ids = get_Node_information(
         'Select variantId, s, most_severe_consequence, chromosome, coord, DSI, DPI From variantAttributes;',
