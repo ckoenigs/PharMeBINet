@@ -1,4 +1,6 @@
 import datetime
+import glob
+import gzip
 import sys, csv
 import requests
 import time
@@ -37,7 +39,7 @@ def prepare_dictionary(dictionary_node):
     return new_dict
 
 
-def parse_sdf(sdf_string, ids, counter_not_found):
+def parse_sdf_api(sdf_row, ids, counter_not_found):
     """
     parse the sdf string to nodes  and write them to tsv files
     :param sdf_string:
@@ -49,7 +51,7 @@ def parse_sdf(sdf_string, ids, counter_not_found):
     counter_entries = 0
     set_properties_sdf = set()
     ids_in_sdf = set()
-    for line in sdf_string.split('\n'):
+    for line in sdf_row:
         if len(line.strip()) != 0:
             if line.startswith("> "):
                 key = line.split('<')[1].split('>')[0]
@@ -77,6 +79,41 @@ def parse_sdf(sdf_string, ids, counter_not_found):
         counter_not_found += 1
     # print('keys', set_properties_sdf)
     return counter_not_found
+
+
+def parse_sdf(sdf_row, ids_in_sdf):
+    """
+    parse the sdf string to nodes  and write them to tsv files
+    :param sdf_string:
+    :param ids:
+    :return:
+    """
+    dict_one_node_information = {}
+    key = ''
+    counter_entries = 0
+    set_properties_sdf = set()
+    for line in sdf_row:
+        if len(line.strip()) != 0:
+            if line.startswith("> "):
+                key = line.split('<')[1].split('>')[0]
+                set_properties_sdf.add(key)
+            elif line.strip() == "$$$$":
+                counter_entries += 1
+                identifier = dict_one_node_information['PUBCHEM_COMPOUND_CID']
+                if identifier in set_of_pubchem_ids_in_pharmebinet:
+                    ids_in_sdf.add(dict_one_node_information['PUBCHEM_COMPOUND_CID'])
+                    dict_one_node_information = prepare_dictionary(dict_one_node_information)
+                    csv_writer_api.writerow(dict_one_node_information)
+                    csv_writer.writerow(dict_one_node_information)
+                dict_one_node_information = {}
+                key = ''
+            elif key != '':
+                if key in dict_one_node_information and not type(dict_one_node_information[key]) == list:
+                    dict_one_node_information[key] = [dict_one_node_information[key], line.strip()]
+                elif key in dict_one_node_information:
+                    dict_one_node_information[key].append(line.strip())
+                else:
+                    dict_one_node_information[key] = line.strip()
 
 
 # header for the tsv files
@@ -163,6 +200,7 @@ def load_already_extracted_infos_from_file(path_start):
         file_not_existing_ids = open(file_name_not_existing, 'w')
         csv_file_not_existing_ids = csv.writer(file_not_existing_ids)
 
+
 def ask_api_and_prepare_return(ids):
     """
     Load pubchem infos from API and prepare and add dictionary of nodes
@@ -194,7 +232,7 @@ def ask_api_and_prepare_return(ids):
             return counter_not_found
 
         else:
-            counter_not_found = parse_sdf(res_json_string, ids, counter_not_found)
+            counter_not_found = parse_sdf_api(res_json_string.split('\n'), ids, counter_not_found)
 
     return counter_not_found
 
@@ -246,19 +284,35 @@ def get_information_from_api():
     counter_not_existing += counter_not_found
     file_already_downloaded.close()
 
-    print('all counted gene variant with rs:', counter_to_seek)
-    print('all not existing rs ids:', counter_not_existing)
+    print('all searched:', counter_to_seek)
+    print('all not existing pubchem:', counter_not_existing)
+
+
+def parse_data_from_download_gz_pubchem_files():
+    print('number to check in files:', len(set_of_pubchem_ids_in_pharmebinet))
+    set_found_sdf_pubchem_ids = set()
+    for file_name in glob.glob(path_of_data_full + "/*.gz"):
+        with gzip.open(file_name, 'rt') as f:
+            print(datetime.datetime.now(), file_name)
+            parse_sdf(f, set_found_sdf_pubchem_ids)
+    counter_not_existing=0
+    difference = set(set_of_pubchem_ids_in_pharmebinet).difference(set_found_sdf_pubchem_ids)
+    for diff in difference:
+        csv_file_not_existing_ids.writerow([diff])
+        counter_not_existing += 1
+    print('number of not existing pubchem:', counter_not_existing)
 
 
 def main():
-    global license, path_of_directory_pubchem, path_to_data
-    if len(sys.argv) > 1:
+    global license, path_of_directory_pubchem, path_to_data, path_of_data_full
+    if len(sys.argv) > 2:
         path_of_directory = sys.argv[1]
+        path_of_data_full = sys.argv[2] + 'pubchem'
         path_of_directory_pubchem = path_of_directory + 'mapping_and_merging_into_hetionet/pubchem/'
         # license = sys.argv[2]
         path_to_data = 'data/'
     else:
-        sys.exit('need a path and license and path to data ')
+        sys.exit('need a path and data path and path to data ')
 
     print(datetime.datetime.now())
     print('diseaserate connection with neo4j')
@@ -293,9 +347,11 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load pubchem node from db and get pubchem infos')
-
-    get_information_from_api()
+    print('Load pubchem node from db and get pubchem infos',len(set_of_pubchem_ids_in_pharmebinet))
+    if len(set_of_pubchem_ids_in_pharmebinet) < 50000:
+        get_information_from_api()
+    else:
+        parse_data_from_download_gz_pubchem_files()
 
     driver.close()
 
