@@ -2,11 +2,50 @@ import csv
 import gzip
 import io
 import os
-import sys
+import sys, urllib
+
+from rdkit.Chem.MolKey.InchiInfo import console
 
 # Import pharmebinet utils without proper module structure
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
 import pharmebinetutils
+
+
+
+def get_website_source(url: str) -> str:
+    request_headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) ' +
+                      'Chrome/35.0.1916.47 Safari/537.36'
+    }
+    request = urllib.request.Request(url, headers=request_headers)
+    with urllib.request.urlopen(request) as response:
+        return response.read().decode('utf-8')
+
+def check_for_new_version():
+    """
+    check out when the downloaded ncbi gene where last updated and write it into a file.
+    Return if a update is needed.
+    """
+    file_name='version.txt'
+    old_date=''
+    if os.path.exists(file_name):
+        with open(file_name, 'r',encoding='utf-8') as f:
+            line=f.readline()
+            if line!='need manual checking!':
+                old_date=line
+            print(line)
+    try:
+        source=get_website_source('https://ftp.ncbi.nih.gov/gene/DATA/GENE_INFO/Mammalia/')
+        infos_behind_homo_sapiens = source.split('<a href="Homo_sapiens.gene_info.gz">Homo_sapiens.gene_info.gz</a>')[1].strip().split('\n')[0]
+        date = infos_behind_homo_sapiens.split(' ')[0]
+        with open(file_name, 'w', encoding='utf-8') as version_file:
+            version_file.write(date)
+        if old_date==date:
+            return False
+    except:
+        with open(file_name, 'w', encoding='utf-8') as version_file:
+            version_file.write('need manual checking!')
+    return True
 
 '''
 load ncbi tsv file in and write only the important lines into a new tsv file for integration into Neo4j
@@ -14,6 +53,10 @@ load ncbi tsv file in and write only the important lines into a new tsv file for
 
 
 def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
+    need_update=check_for_new_version()
+    if not need_update:
+        print('Do not need new version')
+        return
     file_url = 'https://ftp.ncbi.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens.gene_info.gz'
     for path in ['./data', './output']:
         if not os.path.exists(path):
