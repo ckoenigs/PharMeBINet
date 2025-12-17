@@ -19,8 +19,8 @@ fi
 
 python integrate_ncbi_genes_which_are_already_in_hetionet.py $path_to_project > output_generate_integration_file.txt
 
-echo rm gz file
-rm data/*
+#echo rm gz file
+#rm data/*
 
 now=$(date +"%F %T")
 echo "Current time: $now"

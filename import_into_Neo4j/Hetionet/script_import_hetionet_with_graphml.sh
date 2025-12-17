@@ -17,6 +17,10 @@ path_to_project=$4
 if [ ! -d output ]; then
   mkdir output
 fi
+if [ ! -d data ]; then
+  mkdir data
+fi
+
 
 
 $path_neo4j/restart_neo4j.sh graph stop

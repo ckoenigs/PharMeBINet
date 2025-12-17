@@ -1,6 +1,6 @@
 http://db.idrblab.net/ttd/
 
-Version: 2024-01-10
+Version: 2024-03-11
 
 BioDWH2 prepare transformation into GraphML file and with the GraphmML importert the data are add to Neo4j.
 

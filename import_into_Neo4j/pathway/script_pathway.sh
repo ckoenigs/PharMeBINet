@@ -21,7 +21,7 @@ fi
 python new_pathway_preparation.py $path_to_project > output/output_generate_integration_file.txt
 
 echo rm gz file
-rm data/*
+#rm data/*
 
 now=$(date +"%F %T")
 echo "Current time: $now"

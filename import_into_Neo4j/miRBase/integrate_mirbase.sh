@@ -39,7 +39,7 @@ echo $import_tool
 
 echo integrate mirbase into neo4j
 
-java -jar ../$import_tool.jar -i sources/miRBase/intermediate.graphml  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix miRBase_ > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/miRBase/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix miRBase_ > output/import_tool_output.txt
 
 sleep 30
 

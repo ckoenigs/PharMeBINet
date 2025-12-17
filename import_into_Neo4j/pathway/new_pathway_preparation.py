@@ -267,8 +267,8 @@ def wikipathways():
     # Parse WikiPathways
 
     # download WikiPathways
-    url = 'https://zenodo.org/records/15221202/files/wikipathways-20250410-gmt-Homo_sapiens.gmt?download=1'
-    #url = 'https://data.wikipathways.org/20240410/gmt/wikipathways-20240410-gmt-Homo_sapiens.gmt'
+    #url = 'https://zenodo.org/records/15221202/files/wikipathways-20250810-gmt-Homo_sapiens.gmt?download=1'
+    url = 'https://data.wikipathways.org/20251010/gmt/wikipathways-20251010-gmt-Homo_sapiens.gmt'
     filename = pharmebinetutils.download_file(url, out='data/')
 
     gmt_generator = read_gmt(filename)

@@ -1,6 +1,6 @@
 https://reactome.org/
 
-Version: 2025-06-13
+Version: 2025-09-05
 
 ## Preparation of Neo4j :
 
