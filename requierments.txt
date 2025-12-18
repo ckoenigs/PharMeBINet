@@ -1,0 +1,13 @@
+conda install python=3.12
+conda install conda-forge::rdkit [2023.09.6]
+conda install conda-forge::openbabel [3.1.1]
+conda install conda-forge::neo4j-python-driver [5.28.2]
+conda install conda-forge::pymysql [1.1.2]
+conda install anaconda::lxml [5.3.0]
+conda install anaconda::ujson [5.10.0]
+conda install anaconda::beautifulsoup4 [4.13.4]
+conda install bioconda::pubchempy [1.0.4]
+conda install conda-forge::requests [2.32.5]
+conda install anaconda::openpyxl [3.1.5]
+
+sudo apt-get install unzip
