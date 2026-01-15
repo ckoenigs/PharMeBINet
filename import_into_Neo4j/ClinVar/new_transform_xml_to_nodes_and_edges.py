@@ -229,6 +229,46 @@ def check_for_information_and_add_to_dictionary_with_extra_name(tag, node, dicti
             sys.exit('I have to think about this case')
     # return list_to_add
 
+def prepare_specific_classification_information(node, review_status_list, node_property_name, dictionary):
+    """
+    extract from the different classes of classification (GermlineClassification, OncogenicityClassification, NoClassification, SomaticClinicalImpact)
+    the review status and additional information
+    """
+    if node is not None:
+        # TODO extract more information?
+        review_status = node.find('ReviewStatus').text
+        review_status_list.add(review_status)
+        description = node.find('Description')
+        if description is not None:
+            description = description.text
+        else:
+            description = ''
+        dictionary[node_property_name] = review_status + ':' + description
+
+
+def prepareClassificationInformation( node, dictionary):
+    """
+    get information from node and put in dictionary
+    """
+    classification = node.find('Classifications')
+    review_status_list= set()
+    germline_classification = classification.find('GermlineClassification')
+    prepare_specific_classification_information(germline_classification, review_status_list,'germlineClassification', dictionary)
+
+    oncogenicity_classification = classification.find('OncogenicityClassification')
+    prepare_specific_classification_information(oncogenicity_classification, review_status_list,'oncogenicityClassification', dictionary)
+
+
+    no_classification = classification.find('NoClassification')
+    prepare_specific_classification_information(no_classification, review_status_list,'noClassification',dictionary)
+
+    # TODO multiple possible
+    somatic_clinical_impact = classification.find('SomaticClinicalImpact')
+    prepare_specific_classification_information(somatic_clinical_impact, review_status_list,'somaticClinicalImpact', dictionary)
+    dictionary['review_status'] = review_status_list
+
+
+
 
 def check_for_information_and_add_to_list_with_extra_name(tag, node, list_of_infos, name=None, gets=None):
     """
@@ -844,13 +884,13 @@ extract relationships information from full release
 '''
 
 
-def get_information_from_full_relase():
+def get_information_from_full_release():
     print(datetime.datetime.now(), 'start download')
 
-    filename = path_of_clinvar_data + 'ClinVarFullRelease_00-latest.xml.gz'
+    filename = path_of_clinvar_data + 'ClinVarRCVRelease_00-latest.xml.gz'
     if not os.path.exists(filename):
         # url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarFullRelease_00-latest.xml.gz'
-        url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/RCV_xml_old_format/ClinVarFullRelease_00-latest.xml.gz'
+        url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/RCV_release/ClinVarRCVRelease_00-latest.xml.gz'
         filename = pharmebinetutils.download_file(url, out=path_of_clinvar_data )
     file = gzip.open(filename, 'rb')
     print(datetime.datetime.now(), 'end download')
@@ -1305,8 +1345,7 @@ def preparation_on_variation_haplo_or_genotype(interpreted_record, variant_id, d
     if len(list_single) == 1:
         fusion_of_them(dict_node, list_single)
 
-        property_list_which_are_list = perpare_dictionary_values(dict_node, specific_type,
-                                                                 dict_type_to_list_property_list)
+        perpare_dictionary_values(dict_node, specific_type,dict_type_to_list_property_list)
 
         dict_tsv_file_variation['Variant'][specific_type].writerow(dict_node)
         dict_variation_to_node_ids['Variant'][specific_type].add(variant_id)
@@ -1420,7 +1459,7 @@ header_variation = ['identifier', 'accession', 'name', 'allele_id', 'frequencies
                     'xrefs', 'attributes', 'comments', 'genes', 'specific_type', 'synonyms', 'cytogenetic_location',
                     'hgvs_json_list',
                     'sequence_location', 'functional_consequences', 'number_of_chromosomes', 'review_status',
-                    'citations', 'rela', 'global_minor_allel_frequency', 'genes', 'citations_info']
+                    'citations', 'rela', 'global_minor_allel_frequency', 'genes', 'citations_info', 'germlineClassification','somaticClinicalImpact','noClassification','oncogenicityClassification']
 list_header_measures = ['identifier', 'accession', 'name', 'synonyms', 'symbols', 'comments', 'measures',
                         'citations', 'xrefs', 'number_of_chromosomes', 'specific_type', 'allele_id',
                         'attributes',
@@ -1471,8 +1510,7 @@ def extract_node_info_for_variations():
         # for interpretation
         interpreted_record = node.find('ClassifiedRecord')
         if interpreted_record is not None:
-            # check_for_information_and_add_to_dictionary_with_extra_name('ReviewStatus', interpreted_record, dict_node,
-            #                                                             name='review_status')
+            prepareClassificationInformation(interpreted_record, dict_node)
             general_citation = interpreted_record.find('GeneralCitations')
             if general_citation is not None:
                 for_citation_extraction_to_list(general_citation, dict_node)
@@ -1484,8 +1522,7 @@ def extract_node_info_for_variations():
                 continue
         else:
             interpreted_record = node.find('IncludedRecord')
-            check_for_information_and_add_to_dictionary_with_extra_name('ReviewStatus', interpreted_record, dict_node,
-                                                                        name='review_status')
+            prepareClassificationInformation(interpreted_record, dict_node)
             general_citation = interpreted_record.find('GeneralCitations')
             if general_citation is not None:
                 for_citation_extraction_to_list(general_citation, dict_node)
@@ -1571,7 +1608,7 @@ def main():
     print(datetime.datetime.now())
     print(dict_specific_to_general_type)
     print('extract information from Full release')
-    get_information_from_full_relase()
+    get_information_from_full_release()
 
     # measure set nodes queries
     generate_node_cypher(dict_variation_to_node_ids, header_variation, is_Varient=True)
