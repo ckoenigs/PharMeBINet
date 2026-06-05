@@ -3,7 +3,7 @@ The script starts with the mapping program.
 The EFO disease mapping to disease:
     First, load all diseases from PharMeBINet and write the information into the dictionaries.
     Then, prepare the mapping TSV file and create the cypher file with the additional cypher query to map the data.
-    Next, the EFO entry EFO:0000408 is loaded and mapped to the disease with MONDO.
+    Next, the EFO entry "MONDO:0000001" (Disease) is loaded and mapped to the disease with MONDO.
     Then all nodes under disease are loaded and mapped:
         First, mapped the EFO mondo identifier to the disease identifier.
         Second, map with EFO xref mondo id to disease identifier.
@@ -22,3 +22,4 @@ Then, the is-a edges of EFO are merged to the PharMeBINet is-a relationships of 
 
 In the last step, the edges are updated or created with the cypher file and the Neo4j cypher-shell.
 
+  

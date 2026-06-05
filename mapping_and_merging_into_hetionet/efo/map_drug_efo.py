@@ -22,7 +22,7 @@ def generate_cypher_queries_and_tsv_files():
     generate cypher queries and tsv files
     :return: csv writer for mapping and new
     """
-    set_header_for_files = ['efo_id', 'pharmebinet_id', 'resource', 'how_mapped']
+    set_header_for_files = ['efo_id', 'pharmebinet_id', 'resource', 'how_mapped', 'licenses']
     # tsv file for mapping chemical
     file_name_mapped = 'output/drug_mapped.tsv'
     file_chemical_mapped = open(file_name_mapped, 'w', encoding='utf-8')
@@ -32,7 +32,7 @@ def generate_cypher_queries_and_tsv_files():
     # cypher file for mapping and integration
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query_match = '''Match (s:Chemical{identifier:line.pharmebinet_id }) , (n:efo{id:line.efo_id}) Set s.efo='yes',  s.resource=split(line.resource,"|")  Create (s)-[:equal_to_efo_drug{how_mapped:line.how_mapped}]->(n)'''
+    query_match = '''Match (s:Chemical{identifier:line.pharmebinet_id }) , (n:efo{id:line.efo_id}) Set s.efo=true,  s.resource=split(line.resource,"|"),  s.licenses=split(line.licenses,"|")  Create (s)-[:equal_to_efo_drug{how_mapped:line.how_mapped}]->(n)'''
     query_match = pharmebinetutils.get_query_import(path_of_directory,
                                                     f'mapping_and_merging_into_hetionet/efo/{file_name_mapped}',
                                                     query_match)
@@ -64,7 +64,7 @@ def get_all_chemicals_and_add_to_dict():
         result = record.data()['n']
         identifier = result['identifier']
 
-        dict_of_pharmebinet_to_resource[identifier] = result['resource']
+        dict_of_pharmebinet_to_resource[identifier] = [set(result['resource']), set(result['licenses'])]
 
         name = result['name'].lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_chemical_ids, name, identifier)
@@ -75,6 +75,11 @@ def get_all_chemicals_and_add_to_dict():
                 xref=xref.split(':')[1]
                 pharmebinetutils.add_entry_to_dict_to_set(dict_chebi_id_to_chemical_ids, xref, identifier)
 
+def write_to_tsv_file(csv_mapped, node_id, chemical_id, mapping_method):
+    licenses = dict_of_pharmebinet_to_resource[chemical_id][0]
+    licenses.add(pharmebinetutils.dict_source_to_license['efo'])
+    csv_mapped.writerow([node_id, chemical_id, pharmebinetutils.resource_add_and_prepare(
+        dict_of_pharmebinet_to_resource[chemical_id][0], 'EFO'), mapping_method, "|".join(licenses)])
 
 def map_efo_chemical_and_to_pharmebinet(csv_mapped):
     """
@@ -118,8 +123,7 @@ def map_efo_chemical_and_to_pharmebinet(csv_mapped):
                 if only_number in dict_chebi_id_to_chemical_ids:
                     for chemical_id in dict_chebi_id_to_chemical_ids:
                         found_one = True
-                        csv_mapped.writerow([node_id, chemical_id, pharmebinetutils.resource_add_and_prepare(
-                            dict_of_pharmebinet_to_resource[chemical_id], 'EFO'), 'chebi'])
+                        write_to_tsv_file(csv_mapped, node_id, chemical_id, 'chebi')
 
             if found_one:
                 count_mapped += 1
@@ -130,8 +134,7 @@ def map_efo_chemical_and_to_pharmebinet(csv_mapped):
             #         if xref.startswith('MONDO:'):
             #             if xref in dict_of_pharmebinet_to_resource:
             #                 found_one = True
-            #                 csv_mapped.writerow([node_id, xref, pharmebinetutils.resource_add_and_prepare(
-            #                     dict_of_pharmebinet_to_resource[xref], 'EFO'), 'xref'])
+            #                 write_to_tsv_file(csv_mapped, node_id, xref, 'xref')
             #
             # if found_one:
             #     count_mapped += 1
@@ -142,8 +145,7 @@ def map_efo_chemical_and_to_pharmebinet(csv_mapped):
                 if name in dict_name_to_chemical_ids:
                     found_one = True
                     for mondo_id in dict_name_to_chemical_ids[name]:
-                        csv_mapped.writerow([node_id, mondo_id, pharmebinetutils.resource_add_and_prepare(
-                            dict_of_pharmebinet_to_resource[mondo_id], 'EFO'), 'name'])
+                        write_to_tsv_file(csv_mapped, node_id, mondo_id, 'name')
 
             if found_one:
                 count_mapped += 1
