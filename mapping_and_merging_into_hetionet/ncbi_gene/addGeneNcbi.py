@@ -79,7 +79,8 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             query += part
             on_create_string += part
     query = query % on_create_string
-    query += 'ncbi:"yes", resource:["NCBI"], source:"Entrez Gene",  license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", url:"http://identifiers.org/ncbigene/"+line.identifier, ncbi:"yes"}) Create (n)<-[:equal_to_ncbi_gene]-(g)'''
+    query += ' resource:["NCBI"], licenses:["%s"], source:"Entrez Gene", url:"http://identifiers.org/ncbigene/"+line.identifier, ncbi:true}) Create (n)<-[:equal_to_ncbi_gene]-(g)'''
+    query = query % (pharmebinetutils.dict_source_to_license['ncbi'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ncbi_gene/output/genes.tsv',
                                               query)

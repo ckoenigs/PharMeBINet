@@ -26,7 +26,7 @@ def generate_files(path_of_directory, file_name, source, label_hgnc, label_pharm
         os.mkdir(path_of_directory)
 
     file_path = os.path.join(path_of_directory, file_name)
-    header = ['hgnc_id', 'pharmebinet_node_id', 'resource', 'gene_symbols', 'xrefs', 'mapping_method']
+    header = ['hgnc_id', 'pharmebinet_node_id', 'resource', 'gene_symbols', 'xrefs', 'mapping_method', 'licenses']
     # 'w+' creates file, 'w' opens file for writing
     file = open(file_path, 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
@@ -34,7 +34,7 @@ def generate_files(path_of_directory, file_name, source, label_hgnc, label_pharm
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/DisGeNet/
-    query = f' Match (n:{label_hgnc}{{ {id_property_hgncs}:line.hgnc_id}}), (v:{label_pharmebinet}{{identifier:line.pharmebinet_node_id}}) Set v.hgnc="yes", v.pubMed_ids=n.pubmed_ids ,v.resource=split(line.resource,"|"), v.gene_symbols=split(line.gene_symbols,"|"), v.xrefs=split(line.xrefs,"|") Create (v)-[:equal_to_hgnc_{label_pharmebinet.lower()}{{mapped_with:line.mapping_method}}]->(n)'
+    query = f' Match (n:{label_hgnc}{{ {id_property_hgncs}:line.hgnc_id}}), (v:{label_pharmebinet}{{identifier:line.pharmebinet_node_id}}) Set v.hgnc=true, v.pubMed_ids=n.pubmed_ids ,v.resource=split(line.resource,"|"),v.licenses=split(line.licenses,"|"), v.gene_symbols=split(line.gene_symbols,"|"), v.xrefs=split(line.xrefs,"|") Create (v)-[:equal_to_hgnc_{label_pharmebinet.lower()}{{mapped_with:line.mapping_method}}]->(n)'
     cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name,
@@ -65,7 +65,7 @@ def load_genes_from_database_and_add_to_dict():
         identifier = int(node['identifier'])
         gene_symbols = set(node['gene_symbols'])
         xrefs = set(node['xrefs']) if 'xrefs' in node else set()
-        dict_gene_id_to_resource[identifier] = [node['resource'], gene_symbols, xrefs]
+        dict_gene_id_to_resource[identifier] = [node['resource'], gene_symbols, xrefs, set(node['licenses'])]
         for gene_symbol in gene_symbols:
             pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_gene_ids, gene_symbol, identifier)
         synonyms = node['synonyms'] if 'synonyms' in node else []
@@ -110,10 +110,12 @@ def load_all_hgnc_genes_and_finish_the_files(csv_mapping):
             gene_xrefs.add('HGNC:'+hgnc_id)
             for refseq_accession in refseq_accessions:
                 gene_xrefs.add(f'RefSeq:{refseq_accession}')
+            licenses = dict_gene_id_to_resource[entrez_id][3]
+            licenses.add(pharmebinetutils.dict_source_to_license['hgnc'])
             csv_mapping.writerow(
                 [hgnc_id, entrez_id,
                  pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[entrez_id][0], "HGNC"),
-                 '|'.join(symbols_combination), '|'.join(gene_xrefs), 'id'])
+                 '|'.join(symbols_combination), '|'.join(gene_xrefs), 'id', '|'.join(licenses)])
 
         else:
             counter_not_mapped += 1

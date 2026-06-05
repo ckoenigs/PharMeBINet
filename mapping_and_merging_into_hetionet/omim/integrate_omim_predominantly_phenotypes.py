@@ -31,7 +31,7 @@ def add_query_to_cypher_file(omim_label, database_label, rela_name_addition, fil
         this_start_query = "Match (n:%s {identifier:line.identifier}), (m:%s{identifier:toInteger(line.database_id)})"
     else:
         this_start_query = "Match (n:%s {identifier:line.identifier}), (m:%s{identifier:line.database_id}) "
-    this_start_query += "Set m.resource=split(line.resource,'|'), m.omim='yes' Create (m)-[:equal_to_omim_%s{how_mapped:line.how_mapped}]->(n)"
+    this_start_query += "Set m.resource=split(line.resource,'|'),m.licenses=split(line.licenses,'|'), m.omim=true Create (m)-[:equal_to_omim_%s{how_mapped:line.how_mapped}]->(n)"
     query = this_start_query % (omim_label, database_label, rela_name_addition)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/omim/{file_name}',
@@ -56,8 +56,8 @@ def create_query_for_phenotype(label, file_name):
             query_create += property + ':n.' + property + ', '
         else:
             query_create += 'synonyms:n.' + property + ', '
-    query_create += ' license:"https://www.omim.org/help/agreement", url:"https://www.omim.org/entry/"+line.identifier , source:"OMIM", resource:["OMIM"], omim:"yes"}) Create (p)-[:equal_to_omim{how_mapped:"new"}]->(n)'
-    query_create = query_create % (label)
+    query_create += ' licenses:["%s"], url:"https://www.omim.org/entry/"+line.identifier , source:"OMIM", resource:["OMIM"], omim:true}) Create (p)-[:equal_to_omim{how_mapped:"new"}]->(n)'
+    query_create = query_create % (label, pharmebinetutils.dict_source_to_license['omim'])
 
     query_create = pharmebinetutils.get_query_import(path_of_directory,
                                                      f'mapping_and_merging_into_hetionet/omim/{file_name}',
@@ -75,7 +75,7 @@ dict_of_mapped_tuples = {}
 set_not_mapped_ids = set()
 
 # file header
-file_header = ['identifier', 'database_id', 'resource', 'xrefs', 'how_mapped']
+file_header = ['identifier', 'database_id', 'resource', 'xrefs', 'how_mapped', 'licenses']
 
 
 def prepare_tsv_files(file_name, header):
@@ -115,10 +115,13 @@ Get the xrefs information from the existing nodes. Add the omim id to the xrefs.
         xrefs, 'Gene') if is_int else go_through_xrefs_and_change_if_needed_source_name(
         xrefs, 'Disease')
 
-    resource = dict_node['resource']
-    resource.append('OMIM')
-    resource = list(set(resource))
-    csv_writer.writerow([omim_id, mapped_id, "|".join(resource), "|".join(xrefs), how_mapped])
+    resource = set(dict_node['resource'])
+    resource.add('OMIM')
+    resource = list(resource)
+    resource.sort()
+    licenses = set(dict_node['licenses'])
+    licenses.add(pharmebinetutils.dict_source_to_license['omim'])
+    csv_writer.writerow([omim_id, mapped_id, "|".join(resource), "|".join(xrefs), how_mapped, "|".join(licenses)])
     mapping_dict[(omim_id, mapped_id)] = 1
 
 

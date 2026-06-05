@@ -25,7 +25,7 @@ dict_first_letter_to_rela_letter = {
     'P': 'PT'
 }
 
-query_start = '''Match (g:Gene{identifier:line.%s}),(to:%s{identifier:line.%s}) Merge (g)-[r:ASSOCIATES_Ga%s]->(to) On Create Set r.resource=['OMIM'], r.source='OMIM', r.url="https://www.omim.org/entry/"+line.%s , r.omim='yes', r.license='https://www.omim.org/help/agreement', %s On Match Set r.resource=r.resource+'OMIM', r.omim="yes", %s '''
+query_start = '''Match (g:Gene{identifier:line.%s}),(to:%s{identifier:line.%s}) Merge (g)-[r:ASSOCIATES_Ga%s]->(to) On Create Set r.resource=['OMIM'], r.source='OMIM', r.url="https://www.omim.org/entry/"+line.%s , r.omim=true, r.licenses=['%s'], %s On Match Set r.resource=r.resource+'OMIM', r.licenses=r.licenses+'%s', r.omim=true, %s '''
 
 
 def prepare_cypher_query(file, header_start, to_label):
@@ -50,8 +50,9 @@ def prepare_cypher_query(file, header_start, to_label):
     query_merge = query_merge[:-2]
     combine_cypher = query_start
     combine_cypher = combine_cypher % (header_start[0], to_label, header_start[1],
-                                       dict_first_letter_to_rela_letter[to_label[0]], 'omim_id', query_merge,
-                                       query_merge)
+                                       dict_first_letter_to_rela_letter[to_label[0]], 'omim_id',
+                                       pharmebinetutils.dict_source_to_license['omim'] , query_merge,
+                                       pharmebinetutils.dict_source_to_license['omim'] ,query_merge)
 
     combine_cypher = pharmebinetutils.get_query_import(path_of_directory,
                                                        f'mapping_and_merging_into_hetionet/omim/{file}',
