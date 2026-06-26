@@ -46,12 +46,12 @@ def load_all_chemicals_and_generate_dictionary():
      drugbank id, but it seems not so) and generate a dictionary of name to chemical id
     :return:
     """
-    query = 'Match (c:Chemical) Return c.identifier, c.name, c.synonyms, c.resource;'
+    query = 'Match (c:Chemical) Return c.identifier, c.name, c.synonyms, c.resource, c.licenses;'
     result = g.run(query)
     for record in result:
-        [chemical_id, name, synonyms, resources] = record.values()
+        [chemical_id, name, synonyms, resources, licenses] = record.values()
         add_name_to_dict(name, chemical_id, dict_name_to_chemical_id)
-        dict_chemical_to_resource[chemical_id] = resources
+        dict_chemical_to_resource[chemical_id] = [set(resources), set(licenses)]
         if synonyms:
             for synonym in synonyms:
                 add_name_to_dict(synonym, chemical_id, dict_name_to_chemical_id)
@@ -114,7 +114,7 @@ def load_all_pharmebinet_proteins_in_dictionary():
         name = node['name'] if 'name' in node else ''
         synonyms = node['synonyms'] if 'synonyms' in node else []
         resource = node['resource']
-        dict_protein_id_to_resource[identifier] = resource
+        dict_protein_id_to_resource[identifier] = [set(resource),set(node['licenses'])]
         add_name_to_dict(name, identifier, dict_name_to_protein_id)
         for synonym in synonyms:
             add_name_to_dict(synonym, identifier, dict_name_to_protein_id)
@@ -155,7 +155,7 @@ def load_manual_checked_proteins_or_not():
 # file mapping target chemical
 file_mapping_chemical = open('protein/mapping_chemical_target.tsv', 'w', encoding='utf-8')
 csv_mapping_chemical = csv.writer(file_mapping_chemical, delimiter='\t')
-csv_mapping_chemical.writerow(['chemical_id', 'id', 'resource'])
+csv_mapping_chemical.writerow(['chemical_id', 'id', 'resource', 'licenses'])
 
 
 def check_if_not_mapped_proteins_migth_be_chemical_targets_or_protein(drugbank_id, name, synonyms, labels,
@@ -186,10 +186,12 @@ def check_if_not_mapped_proteins_migth_be_chemical_targets_or_protein(drugbank_i
         # if not 'Target_DrugBank' in labels:
         #     sys.exit('not Target ')
         for identifier in ids:
-            resource = set(dict_to_resource[identifier])
+            resource = dict_to_resource[identifier][0]
             resource.add('DrugBank')
             resource = sorted(resource)
-            write_mapping_file.writerow([identifier, drugbank_id, "|".join(resource)])
+            licenses = dict_to_resource[identifier][1]
+            licenses.add(license)
+            write_mapping_file.writerow([identifier, drugbank_id, "|".join(resource), "|".join(licenses)])
     return found_mapping
 
 
@@ -199,7 +201,7 @@ dict_proteins = {}
 # list of all properties in drugbank proteins
 list_of_all_properties_of_proteins = ["allfields", "locus", "synonyms", "pfams", "cellular_location", "go_classifiers",
                                       "amino_acid_sequence", "drugbank_id", "id_source", "molecular_weight",
-                                      "gene_name", "license", "theoretical_pi", "name", "general_function", "xrefs",
+                                      "gene_name", "licenses", "theoretical_pi", "name", "general_function", "xrefs",
                                       "gene_sequence", "identifier", "specific_function", "chromosome_location",
                                       "transmembrane_regions", "signal_regions"]
 
@@ -254,7 +256,7 @@ dict_db_labels_to_tsv_label_file_mc = {
 # protein csv which should be updated
 generate_csv = open('protein/proteins.tsv', 'w')
 writer = csv.writer(generate_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer.writerow(['id', 'uniport', 'resource', 'sequences'])
+writer.writerow(['id', 'uniport', 'resource', 'sequences', 'licenses'])
 
 
 def integrate_infos_into_tsv(part_dict, protein_pharmebinet, list_input_protein):
@@ -295,6 +297,10 @@ def integrate_infos_into_tsv(part_dict, protein_pharmebinet, list_input_protein)
     # print(list_as_sequnces)
     list_as_sequnces = '|'.join(list_as_sequnces)
     list_input_protein.append(list_as_sequnces)
+
+    licenses = set(protein_pharmebinet['licenses'])
+    licenses.add(license)
+    list_input_protein.append('|'.join(licenses))
 
     writer.writerow(list_input_protein)
 
@@ -350,12 +356,12 @@ def load_proteins_from_drugbank_into_dict():
     # query = '''Match (n:Protein) Where exists(n.as_sequence) Set n.as_sequence=split(n.as_sequence,':')[1]'''
     # cypherfile.write(query)
 
-    query = ''' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Protein{identifier:line.uniport}) Create (p)-[:equal_to_DB_protein]->(n) Set p.drugbank='yes', p.resource=split(line.resource,"|"), p.locus=n.locus, p.molecular_weight=n.molecular_weight, p.as_sequences=split(line.sequences,'|'),p.pfams=split(line.pfams,'|') '''
+    query = ''' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Protein{identifier:line.uniport}) Create (p)-[:equal_to_DB_protein]->(n) Set p.drugbank=true, p.resource=split(line.resource,"|"), p.licenses=split(line.licenses,"|"), p.locus=n.locus, p.molecular_weight=n.molecular_weight, p.as_sequences=split(line.sequences,'|'),p.pfams=split(line.pfams,'|') '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/protein/proteins.tsv',
                                               query)
     cypherfile.write(query)
-    query = ''' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Chemical{identifier:line.chemical_id}) Create (p)-[:equal_to_DB_target]->(n) Set p.drugbank='yes', p:Target, p.resource=split(line.resource,"|") '''
+    query = ''' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Chemical{identifier:line.chemical_id}) Create (p)-[:equal_to_DB_target]->(n) Set p.drugbank=true, p:Target, p.resource=split(line.resource,"|"), p.licenses=split(line.licenses,"|") '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/protein/mapping_chemical_target.tsv',
                                               query)
@@ -381,7 +387,7 @@ def load_proteins_from_drugbank_into_dict():
                                               f'mapping_and_merging_into_hetionet/drugbank/protein/proteins_transporter.tsv',
                                               query)
     cypherfile.write(query)
-    query = f''' MATCH (n:Protein_DrugBank{{identifier:line.identifier}}) Create (p:MolecularComplex{{identifier:line.identifier, name:line.name, source:'DurgBank', resource: ['DrugBank'], drugbank:'yes', license:'{license}', url:'https://go.drugbank.com/bio_entities/'+line.identifier}}) Create (p)-[:equal_to_DB_protein]->(n) '''
+    query = f''' MATCH (n:Protein_DrugBank{{identifier:line.identifier}}) Create (p:MolecularComplex{{identifier:line.identifier, name:line.name, source:'DurgBank', resource: ['DrugBank'], drugbank:true, licenses:['{license}'], url:'https://go.drugbank.com/bio_entities/'+line.identifier}}) Create (p)-[:equal_to_DB_protein]->(n) '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/protein/complex.tsv',
                                               query)
@@ -424,8 +430,8 @@ def load_proteins_from_drugbank_into_dict():
     header_not_mapped = ["gene_name", "pfams", "synonyms", "id_source", "amino_acid_sequence", "gene_sequence",
                          "chromosome_location", "xrefs", "cellular_location", "theoretical_pi", "signal_regions",
                          "molecular_weight", "general_function", "specific_function", "locus", "go_classifiers",
-                         "license", "drugbank_id", "name", "identifier", "organism", "transmembrane_regions",
-                         "alternative_uniprot_id"]
+                         "licenses", "drugbank_id", "name", "identifier", "organism", "transmembrane_regions",
+                         "alternative_uniprot_id",'license']
     file_not_mapped = open('protein/not_mapped.tsv', 'w')
     writer_not_mapped = csv.DictWriter(file_not_mapped, fieldnames=header_not_mapped, delimiter='\t')
     writer_not_mapped.writeheader()
@@ -491,8 +497,11 @@ def load_proteins_from_drugbank_into_dict():
                 print('protein without uniprot id')
                 counter_not_a_protein += 1
                 print(node['name'])
-                writer_not_mapped.writerow(dict(node))
-                if node['organism'] == 'Humans':
+                node = dict(node)
+                if not 'licenses' in node:
+                    node['licenses'] = license
+                writer_not_mapped.writerow(node)
+                if not 'organism' in node or node['organism'] != 'Humans':
                     counter_human_not_found += 1
 
                 drugbank_id = node['drugbank_id']
@@ -531,10 +540,10 @@ cypher_rela = open('protein/cypher_protein_rela.cypher', 'w')
 def main():
     global path_of_directory
     if len(sys.argv) < 2:
-        sys.exit('need license and path')
+        sys.exit('need path')
     global license
-    license = sys.argv[1]
-    path_of_directory = sys.argv[2]
+    license = pharmebinetutils.dict_source_to_license['drugbank']
+    path_of_directory = sys.argv[1]
 
     print(datetime.datetime.now())
     print('create connection with neo4j')
