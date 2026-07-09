@@ -27,7 +27,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo prepare clinvar data
 
-python transform_xml_to_nodes_and_edges.py $path_to_clinvar_data > output/output_generate_integration_file.txt
+python new_transform_xml_to_nodes_and_edges.py $path_to_clinvar_data > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -41,6 +41,10 @@ python ../../check_indices.py
 python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 
 python ../../check_indices.py
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate clinvar edge into neo4j
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_file_edges.cypher > output/cypher1.txt
 
