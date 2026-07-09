@@ -12,6 +12,9 @@ biodwh2=$3
 #password
 password=$4
 
+#neo4j_bolt
+neo4j_bolt=$5
+
 # prepare directories
 if [ ! -d output ]; then
   mkdir output
@@ -39,7 +42,7 @@ echo Unpacking GraphML files
 
 echo integrate markerdb into neo4j
 
-java -jar ../$import_tool.jar -i sources/MarkerDB/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix MarkerDB_ --indices "MarkerDB_Chemical.hmdb_id;MarkerDB_Condition.name;MarkerDB_Protein.uniprot_id;MarkerDB_Protein.id;MarkerDB_SequenceVariant.variation;MarkerDB_SequenceVariant.id" > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/MarkerDB/intermediate.graphml.gz  -e bolt://localhost:$neo4j_bolt --username neo4j --password $password --label-prefix MarkerDB_ --indices "MarkerDB_Chemical.hmdb_id;MarkerDB_Condition.name;MarkerDB_Protein.uniprot_id;MarkerDB_Protein.id;MarkerDB_SequenceVariant.variation;MarkerDB_SequenceVariant.id" > output/import_tool_output.txt
 
 echo finished integration
 

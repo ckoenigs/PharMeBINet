@@ -1,6 +1,6 @@
 https://diseases.jensenlab.org/Search
 
-Version: 2025-09-06
+Version: 2026-05-29
 
 BioDWH2 prepare transformation into GraphML file and with the GraphmML importert the data are add to Neo4j.
 

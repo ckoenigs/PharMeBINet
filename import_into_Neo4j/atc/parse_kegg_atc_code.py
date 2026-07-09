@@ -94,6 +94,7 @@ def get_website_source(url: str) -> str:
         return response.read().decode('utf-8')
 
 def check_for_new_version():
+    last_update_date = None
     try:
         source=get_website_source('https://www.genome.jp/kegg-bin/get_htext?br08303.keg')
         if '<br>Last updated: ' in source:

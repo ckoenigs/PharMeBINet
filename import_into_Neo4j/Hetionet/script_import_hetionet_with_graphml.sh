@@ -12,6 +12,9 @@ password=$3
 #path other data source space
 path_to_project=$4
 
+#neo4j_bolt
+neo4j_bolt=$5
+
 
 # prepare directories
 if [ ! -d output ]; then
@@ -55,7 +58,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'import with tool'
 
-java -jar ../$import_tool.jar -i $path_to_project"import_into_Neo4j/Hetionet/data/hetionet.graphml"  -e bolt://localhost:7687 --username neo4j --password $password --label-suffix $suffix --modify-edge-labels false --indices "Pathway_hetionet.identifier;SideEffect_hetionet.identifier;CellularComponent_hetionet.identifier;Anatomy_hetionet.identifier;Symptom_hetionet.identifier;Disease_hetionet.identifier;BiologicalProcess_hetionet.identifier;Gene_hetionet.identifier;PharmacologicClass_hetionet.identifier;MolecularFunction_hetionet.identifier;Compound_hetionet.identifier;CellularComponent_hetionet.name;BiologicalProcess_hetionet.name;PharmacologicClass_hetionet.name;Disease_hetionet.name;Gene_hetionet.name;SideEffect_hetionet.name;Pathway_hetionet.name;Compound_hetionet.name;MolecularFunction_hetionet.name;Symptom_hetionet.name;Anatomy_hetionet.name" > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i $path_to_project"import_into_Neo4j/Hetionet/data/hetionet.graphml"  -e bolt://localhost:$neo4j_bolt --username neo4j --password $password --label-suffix $suffix --modify-edge-labels false --indices "Pathway_hetionet.identifier;SideEffect_hetionet.identifier;CellularComponent_hetionet.identifier;Anatomy_hetionet.identifier;Symptom_hetionet.identifier;Disease_hetionet.identifier;BiologicalProcess_hetionet.identifier;Gene_hetionet.identifier;PharmacologicClass_hetionet.identifier;MolecularFunction_hetionet.identifier;Compound_hetionet.identifier;CellularComponent_hetionet.name;BiologicalProcess_hetionet.name;PharmacologicClass_hetionet.name;Disease_hetionet.name;Gene_hetionet.name;SideEffect_hetionet.name;Pathway_hetionet.name;Compound_hetionet.name;MolecularFunction_hetionet.name;Symptom_hetionet.name;Anatomy_hetionet.name" > output/import_tool_output.txt
 
 sleep 30
 

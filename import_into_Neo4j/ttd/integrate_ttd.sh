@@ -12,6 +12,9 @@ biodwh2=$3
 #password
 password=$4
 
+#neo4j_bolt
+neo4j_bolt=$5
+
 
 # prepare directories
 if [ ! -d output ]; then
@@ -40,7 +43,7 @@ echo $import_tool
 
 echo integrate TTD into neo4j
 
-java -jar ../$import_tool.jar -i sources/TTD/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix TTD_ --indices "TTD_Biomarker.id;TTD_Compound.id;TTD_Disease.id;TTD_Drug.id;TTD_Pathway.id;TTD_Target.id" > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/TTD/intermediate.graphml.gz  -e bolt://localhost:$neo4j_bolt --username neo4j --password $password --label-prefix TTD_ --indices "TTD_Biomarker.id;TTD_Compound.id;TTD_Disease.id;TTD_Drug.id;TTD_Pathway.id;TTD_Target.id" > output/import_tool_output.txt
 
 sleep 30
 

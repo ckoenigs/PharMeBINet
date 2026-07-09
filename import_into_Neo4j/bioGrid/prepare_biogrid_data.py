@@ -14,7 +14,8 @@ dict_gene_infos = {}
 # set of chemical ids
 set_of_chemical_ids = set()
 
-version = '5.0.250'
+# 26-02-25
+version = '5.0.256'
 
 
 def check_if_value_exist(line, key):

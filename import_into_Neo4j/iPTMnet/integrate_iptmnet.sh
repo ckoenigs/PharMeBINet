@@ -12,6 +12,9 @@ biodwh2=$3
 #password
 password=$4
 
+#neo4j_bolt
+neo4j_bolt=$5
+
 # prepare directories
 if [ ! -d output ]; then
   mkdir output
@@ -37,7 +40,7 @@ echo $import_tool
 
 echo integrate iPTMnet into neo4j
 
-java -jar ../$import_tool.jar -i sources/iPTMnet/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix iPTMnet_ --indices "iPTMnet_Protein.uniprot_id;iPTMnet_Protein.uniprot_accession;iPTMnet_Organism.ncbi_taxid" > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/iPTMnet/intermediate.graphml.gz  -e bolt://localhost:$neo4j_bolt --username neo4j --password $password --label-prefix iPTMnet_ --indices "iPTMnet_Protein.uniprot_id;iPTMnet_Protein.uniprot_accession;iPTMnet_Organism.ncbi_taxid" > output/import_tool_output.txt
 
 echo finished integration
 

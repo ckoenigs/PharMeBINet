@@ -12,8 +12,11 @@ biodwh2=$3
 #password
 password=$4
 
+#neo4j_bolt
+neo4j_bolt=$5
+
 #path other data source space
-path_data_source=$5
+path_data_source=$6
 
 # prepare directories
 if [ ! -d output ]; then
@@ -47,14 +50,13 @@ echo $import_tool
 
 echo integrate DurgCentral into neo4j
 
-java -jar ../$import_tool.jar -i $path_data_source/drugcentral/sources/DrugCentral/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix DC_ --indices "DC_ATC.id;DC_ATCDDD.id;DC_ActionType.id;DC_ActiveIngredient.id;DC_Approval.id;DC_AttributeType.id;DC_Bioactivity.id;DC_DOTerm.id;DC_DOTermXref.id;DC_DataSource.id;DC_DbVersion.id;DC_DrugClass.id;DC_DrugLabel.id;DC_GOTerm.id;DC_Identifier.id;DC_IdentifierType.id;DC_InnStem.id;DC_OMOPConcept.id;DC_OrangeBookExclusivity.id;DC_OrangeBookPatent.id;DC_OrangeBookProduct.id;DC_PDB.id;DC_ParentDrugMolecule.id;DC_PharmaClass.id;DC_Product.id;DC_Property.id;DC_Reference.id;DC_Structure.id;DC_Synonyms.id;DC_Target.id;DC_TargetComponent.id;DC_TargetKeyword.id;DC_VetOmop.id;DC_VetProd.id" > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i $path_data_source/drugcentral/sources/DrugCentral/intermediate.graphml.gz  -e bolt://localhost:$neo4j_bolt --username neo4j --password $password --label-prefix DC_ --indices "DC_ATC.id;DC_ATCDDD.id;DC_ActionType.id;DC_ActiveIngredient.id;DC_Approval.id;DC_AttributeType.id;DC_Bioactivity.id;DC_DOTerm.id;DC_DOTermXref.id;DC_DataSource.id;DC_DbVersion.id;DC_DrugClass.id;DC_DrugLabel.id;DC_GOTerm.id;DC_Identifier.id;DC_IdentifierType.id;DC_InnStem.id;DC_OMOPConcept.id;DC_OrangeBookExclusivity.id;DC_OrangeBookPatent.id;DC_OrangeBookProduct.id;DC_PDB.id;DC_ParentDrugMolecule.id;DC_PharmaClass.id;DC_Product.id;DC_Property.id;DC_Reference.id;DC_Structure.id;DC_Synonyms.id;DC_Target.id;DC_TargetComponent.id;DC_TargetKeyword.id;DC_VetOmop.id;DC_VetProd.id" > output/import_tool_output.txt
 
-sleep 30
+python ../../check_indices.py
 
 python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
 
-
-sleep 30
+python ../../check_indices.py
 
 
 

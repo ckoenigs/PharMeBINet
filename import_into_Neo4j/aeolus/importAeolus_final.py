@@ -166,7 +166,7 @@ def load_standard_case_indication():
     file = open(filepath + 'standard_case_indication.tsv', 'r', encoding='utf-8')
     csv_reader = csv.reader(file, delimiter='\t')
     write_file = open('output/indications.tsv', 'w', encoding='utf-8')
-    csv_writer = csv.writer(write_file)
+    csv_writer = csv.writer(write_file, delimiter='\t')
     csv_writer.writerow(['drug_concept_id', 'indication_concept_id'])
     for line in csv_reader:
         primaryid = line[0]
@@ -384,7 +384,7 @@ def create_csv_and_cypher_file_neo4j():
     query = ''' Match (n1:Aeolus_Drug {drug_concept_id: line.drug_id}), (n2:Aeolus_Outcome {outcome_concept_id: line.adr_id}) Create (n1)-[:Causes{countA: line.countA , countB: line.countB , countC: line.countC , countD: line.countD, drug_outcome_pair_count: line.drug_outcome_pair_count, prr: line.prr, prr_95_percent_upper_confidence_limit: line.prr_95_percent_upper_confidence_limit , prr_95_percent_lower_confidence_limit: line.prr_95_percent_lower_confidence_limit , ror: line.ror , ror_95_percent_upper_confidence_limit: line.ror_95_percent_upper_confidence_limit , ror_95_percent_lower_confidence_limit: line.ror_95_percent_lower_confidence_limit}]->(n2)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'import_into_Neo4j/aeolus/{file_name_drug_outcome}', query)
-    cypher_file.write(query)
+    cypher_file_edge.write(query)
 
     query = ''' Match (n1:Aeolus_Drug {drug_concept_id: line.drug_concept_id}), (n2:Aeolus_Outcome {outcome_concept_id: line.indication_concept_id}) Create (n1)-[:Indicates]->(n2)'''
     query = pharmebinetutils.get_query_import(path_of_directory,

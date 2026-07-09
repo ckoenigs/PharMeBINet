@@ -2,7 +2,7 @@
 
 https://www.bindingdb.org/rwd/bind/index.jsp
 
-Version: 2025-10-06
+Version: 2026-02-28
 
 
 Important steps for importing BindingDB into MySQL:

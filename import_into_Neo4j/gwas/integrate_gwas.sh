@@ -12,12 +12,17 @@ biodwh2=$3
 #password
 password=$4
 
+#neo4j_bolt
+echo $5
+neo4j_bolt="bolt://localhost:${5}"
+echo $neo4j_bolt
+
 # prepare directories
 if [ ! -d output ]; then
   mkdir output
 fi
 
-echo load latest version of GWAS and generat GraphML file
+echo load latest version of GWAS and generate GraphML file
 
 dir=./sources/
 
@@ -38,7 +43,7 @@ echo $import_tool
 
 echo integrate GWASCatalog into neo4j
 
-java -jar ../$import_tool.jar -i sources/GWASCatalog/intermediate.graphml.gz  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix GWASCatalog_ --indices "GWASCatalog_Ancestry.individuals;GWASCatalog_Association.;GWASCatalog_Publication.pmid;GWASCatalog_Study.id;GWASCatalog_Trait.id" > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/GWASCatalog/intermediate.graphml.gz  -e $neo4j_bolt --username neo4j --password $password --label-prefix GWASCatalog_ --indices "GWASCatalog_Ancestry.individuals;GWASCatalog_Publication.pmid;GWASCatalog_Study.id;GWASCatalog_Trait.id" > output/import_tool_output.txt
 
 sleep 30
 
