@@ -20,7 +20,6 @@ create a connection with neo4j
 
 def create_connetion_with_neo4j():
     # set up authentication parameters and connection
-    # authenticate("localhost:7474", "neo4j", "test")
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session(database='graph')
@@ -111,7 +110,7 @@ do_label = 'diseaseontology'
 
 # generate tsv files for integration
 header_nodes = ['identifier', 'mondo_id', 'definition', "synonyms", "umls_cuis", "alternative_ids", 'resource',
-                'how_mapped']
+                'how_mapped', 'licenses']
 # tsv file for DOID which are already in pharmebinet
 file_included = open('output/mapped.tsv', 'w', encoding='utf-8')
 csv_writer_included = csv.DictWriter(file_included, delimiter='\t', fieldnames=header_nodes)
@@ -138,12 +137,12 @@ def generate_cypher_file():
     for header in header_nodes:
         if header in ['how_mapped', 'mondo_id', 'umls_cuis', 'identifier']:
             continue
-        if header in ['synonyms', 'alternative_ids', 'resource']:
+        if header in ['synonyms', 'alternative_ids', 'resource', 'licenses']:
             query_middel_set += 'n.' + header + '=split(line.' + header + ',"|"), '
             continue
         query_middel_set += 'n.' + header + '=line.' + header + ', '
 
-    query_set = ' Match (n:Disease{identifier:line.mondo_id}), (b:%s{id:line.identifier}) Set ' + query_middel_set + ' n.diseaseOntology="yes" Create (n)-[:equal_to {how_mapped:line.how_mapped}]->(b)'
+    query_set = ' Match (n:Disease{identifier:line.mondo_id}), (b:%s{id:line.identifier}) Set ' + query_middel_set + ' n.diseaseOntology=True Create (n)-[:equal_to {how_mapped:line.how_mapped}]->(b)'
     print(query_set)
     query_set = query_set % (do_label)
     query_set = pharmebinetutils.get_query_import(path_of_directory,
@@ -151,8 +150,8 @@ def generate_cypher_file():
                                                   query_set)
     cypher_file.write(query_set)
 
-    query_rela = '''Match (d:Disease {identifier:line.child}), (d2:Disease {identifier:line.parent}) Merge (d)-[r:IS_A_DiaD]->(d2) On Create Set r.license="%s", r.source="%s", r.unbiased=false, r.resource=["Disease Ontology"] ,r.diseaseOntology='yes', r.url="http://purl.obolibrary.org/obo/DOID_"+line.doid  On Match Set r.resource="Disease Ontology"+ r.resource ,r.diseaseOntology='yes'  '''
-    query_rela = query_rela % (license, do_name)
+    query_rela = '''Match (d:Disease {identifier:line.child}), (d2:Disease {identifier:line.parent}) Merge (d)-[r:IS_A_DiaD]->(d2) On Create Set r.licenses=["%s"], r.source="%s", r.unbiased=false, r.resource=["Disease Ontology"] ,r.diseaseOntology=True, r.url="http://purl.obolibrary.org/obo/DOID_"+line.doid  On Match Set r.resource="Disease Ontology"+ r.resource, r.licenses= r.licenses + "%s" ,r.diseaseOntology=true  '''
+    query_rela = query_rela % (pharmebinetutils.dict_source_to_license["do"], do_name, pharmebinetutils.dict_source_to_license["do"])
     query_rela = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/do/output/new_rela.tsv',
                                               query_rela)
@@ -445,6 +444,9 @@ def prepare_data_for_tsv():
         resource = list(resource)
         resource.sort()
         dict_of_information['resource'] = resource
+        licenses = set(disease_mondo['licenses'])
+        licenses.add(pharmebinetutils.dict_source_to_license['do'])
+        dict_of_information['licenses'] = licenses
 
         for key in header_nodes:
             # need in case in DO are no information the mondo information else this information will be empty

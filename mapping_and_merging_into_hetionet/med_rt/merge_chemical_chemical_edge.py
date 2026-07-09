@@ -20,17 +20,19 @@ def create_connection_with_neo4j_and_mysql():
 # dictionary chemical tuple to resource
 dict_chemical_tuple_to_resource = {}
 
+license = pharmebinetutils.dict_source_to_license['medrt']
+
 
 def load_load_interaction_pairs():
     """
     Load all interaction tuple into a dictionary
     :return:
     """
-    query = 'Match (n:Chemical)-[r:INTERACTS_CHiCH]->(m:Chemical) Return n.identifier, r.resource, m.identifier'
+    query = 'Match (n:Chemical)-[r:INTERACTS_CHiCH]->(m:Chemical) Return n.identifier, r.resource,r.licenses, m.identifier'
     results = g.run(query)
     for result in results:
-        [chemical_id1, resource, chemical_id2] = result.values()
-        dict_chemical_tuple_to_resource[(chemical_id1, chemical_id2)] = resource
+        [chemical_id1, resource, licenses, chemical_id2] = result.values()
+        dict_chemical_tuple_to_resource[(chemical_id1, chemical_id2)] = [resource, set(licenses)]
 
 
 # open cypher file
@@ -50,11 +52,11 @@ def write_files(label, direction_1, direction_2, rela_name, rela_type):
     file_name = 'chemical_edge/rela_' + rela_name + '_' + label + rela_type + '.tsv'
     file_rela = open(file_name, 'w', encoding='utf-8')
     csv_rela = csv.writer(file_rela, delimiter='\t')
-    header_rela = ['chemical_id1', 'chemical_id2', 'source', 'resource', 'rela_type']
+    header_rela = ['chemical_id1', 'chemical_id2', 'source', 'resource', 'rela_type', 'licenses']
     csv_rela.writerow(header_rela)
 
-    query = '''Match (c:Chemical{identifier:line.chemical_id1}), (p:Chemical{identifier:line.chemical_id2}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['MED-RT'], r.url='https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=medrt' , r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html', r.unbiased=false, r.med_rt='yes', r.types=split(line.rela_type,"|") On Match Set r.resource=split(line.resource,"|") , r.med_rt='yes', r.types=split(line.rela_type,"|") '''
-    query = query % (direction_1, rela_name, direction_2)
+    query = '''Match (c:Chemical{identifier:line.chemical_id1}), (p:Chemical{identifier:line.chemical_id2}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['MED-RT'], r.url='https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=medrt' , r.licenses=['%s'], r.unbiased=false, r.med_rt=true, r.types=split(line.rela_type,"|") On Match Set r.resource=split(line.resource,"|") ,r.licenses=split(line.licenses,"|") , r.med_rt=true, r.types=split(line.rela_type,"|") '''
+    query = query % (direction_1, rela_name, direction_2, license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/med_rt/{file_name}',
                                               query)
@@ -112,7 +114,7 @@ def load_connections(label):
             continue
 
         if (chemical_id1, chemical_id2) not in dict_mapping_pairs[rela_type]:
-            dict_mapping_pairs[rela_type][(chemical_id1, chemical_id2)] = {'source':set(),'rela':set()}
+            dict_mapping_pairs[rela_type][(chemical_id1, chemical_id2)] = {'source': set(), 'rela': set()}
 
         dict_mapping_pairs[rela_type][(chemical_id1, chemical_id2)]['source'].add(source)
         dict_mapping_pairs[rela_type][(chemical_id1, chemical_id2)]['rela'].add(rela_type)
@@ -127,17 +129,20 @@ def load_connections(label):
 
                 rela_types = '|'.join(dict_sources_rela_type['rela'])
                 if (chemical_id1, chemical_id2) in dict_chemical_tuple_to_resource:
-
+                    dict_chemical_tuple_to_resource[(chemical_id1, chemical_id2)][1].add(license)
                     dict_rela_to_tsv[rela_type].writerow(
                         [chemical_id1, chemical_id2, ' and '.join(sources), pharmebinetutils.resource_add_and_prepare(
-                            dict_chemical_tuple_to_resource[(chemical_id1, chemical_id2)], 'MED-RT'), rela_types])
+                            dict_chemical_tuple_to_resource[(chemical_id1, chemical_id2)][0], 'MED-RT'), rela_types,
+                         '|'.join(dict_chemical_tuple_to_resource[(chemical_id1, chemical_id2)][1])])
                 elif (chemical_id2, chemical_id1) in dict_chemical_tuple_to_resource:
+                    dict_chemical_tuple_to_resource[(chemical_id2, chemical_id1)][1].add(license)
                     dict_rela_to_tsv[rela_type].writerow(
                         [chemical_id1, chemical_id2, ' and '.join(sources), pharmebinetutils.resource_add_and_prepare(
-                            dict_chemical_tuple_to_resource[(chemical_id2, chemical_id1)], 'MED-RT'), rela_types])
+                            dict_chemical_tuple_to_resource[(chemical_id2, chemical_id1)][0], 'MED-RT'), rela_types,
+                         '|'.join(dict_chemical_tuple_to_resource[(chemical_id2, chemical_id1)][1])])
                 else:
                     dict_rela_to_tsv[rela_type].writerow(
-                        [chemical_id1, chemical_id2, ' and '.join(sources), 'MED-RT',rela_types])
+                        [chemical_id1, chemical_id2, ' and '.join(sources), 'MED-RT', rela_types, license])
         else:
             for (chemical_id1, chemical_id2), dict_sources_rela_type in dict_pairs.items():
                 sources = ['MED-RT' if x == 'MED-RT:Authority:MEDRT' else x.split(':')[-1] + ' via MED-RT' for x in

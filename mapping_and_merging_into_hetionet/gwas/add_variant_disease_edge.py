@@ -7,7 +7,7 @@ import create_connection_to_databases
 import pharmebinetutils
 
 # disease ontology license
-license = 'CC BY 4.0'
+license = pharmebinetutils.dict_source_to_license['gwas']
 
 '''
 create a connection with neo4j
@@ -47,10 +47,10 @@ def load_existing_pairs():
     Load all pairs of a ND WRITE RESOURCE AND PUBMED INFORMATION INTO dictionary
     :return:
     """
-    query = f'Match (m:Phenotype)-[r]-(n:Variant) Where type(r) starts with "ASSOCIATES_" Return m.identifier, n.identifier, r.resource, r.pubMed_ids'
+    query = f'Match (m:Phenotype)-[r]-(n:Variant) Where type(r) starts with "ASSOCIATES_" Return m.identifier, n.identifier, r.resource, r.pubMed_ids, r.licenses'
     results = g.run(query)
-    for node_id, node_id_2, resource, pubmed_ids, in results:
-        dict_pair_to_resource_and_pmids[(node_id, node_id_2)] = [resource, set(pubmed_ids) if pubmed_ids else set()]
+    for node_id, node_id_2, resource, pubmed_ids, licenses, in results:
+        dict_pair_to_resource_and_pmids[(node_id, node_id_2)] = [resource, set(pubmed_ids) if pubmed_ids else set(), set(licenses)]
 
 
 def create_file_with_header(other_label, header, addition):
@@ -78,16 +78,16 @@ def create_tsv_file(other_label):
                                                         ['variant_id', 'phenotype_id', 'pubmed_ids', 'additional_info',
                                                          'study_id'], 'new')
     file_name_merge, csv_writer_merge = create_file_with_header(other_label,
-                                                                ['variant_id', 'phenotype_id', 'resource', 'pubmed_ids',
+                                                                ['variant_id', 'phenotype_id', 'resource', 'pubmed_ids', 'licenses',
                                                                  'additional_info'], 'merge')
 
-    query = f'Match (n:Variant{{identifier:line.variant_id}})-[r:ASSOCIATES_Va{pharmebinetutils.dictionary_label_to_abbreviation[other_label]}]->(m:{other_label} {{identifier:line.phenotype_id}}) Set r.resource=split(line.resource,"|"), r.gwas="yes", r.pubMed_ids=split(line.pubmed_ids,"|"), r.gwas_information=split(line.additional_info,"|") '
+    query = f'Match (n:Variant{{identifier:line.variant_id}})-[r:ASSOCIATES_Va{pharmebinetutils.dictionary_label_to_abbreviation[other_label]}]->(m:{other_label} {{identifier:line.phenotype_id}}) Set r.resource=split(line.resource,"|"),r.licenses=split(line.licenses,"|"), r.gwas=True, r.pubMed_ids=split(line.pubmed_ids,"|"), r.gwas_information=split(line.additional_info,"|") '
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/gwas/{file_name_merge}',
                                               query)
     cypher_file.write(query)
 
-    query = f'Match (n:Variant{{identifier:line.variant_id}}), (m:{other_label} {{identifier:line.phenotype_id}}) Create (m)<-[:ASSOCIATES_Va{pharmebinetutils.dictionary_label_to_abbreviation[other_label]} {{source:"GWAS Catalog", resource:["GWAS Catalog"], gwas:"yes", pubMed_ids:split(line.pubmed_ids,"|"), gwas_information:split(line.additional_info,"|"), url:"https://www.ebi.ac.uk/gwas/studies/"+line.study_id, license:"https://www.ebi.ac.uk/about/terms-of-use/"}}]-(n)'
+    query = f'Match (n:Variant{{identifier:line.variant_id}}), (m:{other_label} {{identifier:line.phenotype_id}}) Create (m)<-[:ASSOCIATES_Va{pharmebinetutils.dictionary_label_to_abbreviation[other_label]} {{source:"GWAS Catalog", resource:["GWAS Catalog"], gwas:True, pubMed_ids:split(line.pubmed_ids,"|"), gwas_information:split(line.additional_info,"|"), url:"https://www.ebi.ac.uk/gwas/studies/"+line.study_id, licenses:["{license}"]}}]-(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/gwas/{file_name}',
                                               query)
@@ -137,8 +137,9 @@ def go_through_all_gwas_pairs(label_pharmebinet):
         if label not in dict_label_to_tsv_files:
             dict_label_to_tsv_files[label] = create_tsv_file(label)
         if pair in dict_pair_to_resource_and_pmids:
+            dict_pair_to_resource_and_pmids[pair][2].add(license)
             dict_label_to_tsv_files[label][1].writerow(
-                [pair[1], pair[0], pharmebinetutils.resource_add_and_prepare(dict_pair_to_resource_and_pmids[pair][0],'GWAS Catalog'), '|'.join(dict_pair_to_resource_and_pmids[pair][1].union(set_pubmed_ids)), '|'.join([json.dumps(x) for x in dict_study_id_to_study_info.values()]) ])
+                [pair[1], pair[0], pharmebinetutils.resource_add_and_prepare(dict_pair_to_resource_and_pmids[pair][0],'GWAS Catalog'), '|'.join(dict_pair_to_resource_and_pmids[pair][1].union(set_pubmed_ids)), '|'.join(dict_pair_to_resource_and_pmids[pair][2]), '|'.join([json.dumps(x) for x in dict_study_id_to_study_info.values()]) ])
         else:
             dict_label_to_tsv_files[label][0].writerow(
                 [pair[1], pair[0],

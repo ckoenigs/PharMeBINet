@@ -58,7 +58,7 @@ def add_query_to_cypher_file(omim_label, database_label, rela_name_addition, fil
         part = "Match (n:%s {identifier:line.identifier}), (m:%s{identifier:line.database_id}) " % (
             omim_label, database_label)
     this_start_query = part
-    this_start_query += "Set m.resource=split(line.resource,'|'),m.licenses=split(line.licenses,'|'), m.omim=true %s  Create (m)-[:equal_to_omim_%s{how_mapped:line.how_mapped}]->(n)"
+    this_start_query += "Set m.resource=split(line.resource,'|'),m.licenses=split(line.licenses,'|'), m.omim=True %s  Create (m)-[:equal_to_omim_%s{how_mapped:line.how_mapped}]->(n)"
     query = this_start_query % (', m.xrefs=split(line.xrefs,"|")' if database_label == 'Gene' else '',
                                 rela_name_addition)
     query = pharmebinetutils.get_query_import(path_of_directory,
@@ -250,8 +250,8 @@ def create_query_for_phenotype(label, file_name):
             query_create += property + ':n.' + property + ', '
         else:
             query_create += 'synonyms:n.' + property + ', '
-    query_create += ' license:"https://www.omim.org/help/agreement",  url:"https://www.omim.org/entry/"+line.identifier, source:"OMIM", resource:["OMIM"], omim:true}) Create (p)-[:equal_to_omim{how_mapped:"new"}]->(n)'
-    query_create = query_create % label
+    query_create += ' licenses:["%s"],  url:"https://www.omim.org/entry/"+line.identifier, source:"OMIM", resource:["OMIM"], omim:true}) Create (p)-[:equal_to_omim{how_mapped:"new"}]->(n)'
+    query_create = query_create % (label, pharmebinetutils.dict_source_to_license['omim'])
     query_create = pharmebinetutils.get_query_import(path_of_directory,
                                                      f'mapping_and_merging_into_hetionet/omim/{file_name}',
                                                      query_create)

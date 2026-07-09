@@ -92,11 +92,11 @@ while len(a) > 0:
 f.close()
 
 # Cypher query erstellen
-cypher = f' MATCH (n:Chemical), (m:Disease) WHERE n.identifier = line.chemical AND m.identifier = line.disease CREATE (n)-[:TREATS_CHtD{{nodes:split(line.nodes,"|"), count:line.count, resource:split(line.resource,"|"), source:line.resource, openfda:"yes"}}]->(m)'
+cypher = f' MATCH (n:Chemical), (m:Disease) WHERE n.identifier = line.chemical AND m.identifier = line.disease CREATE (n)-[:TREATS_CHtD{{nodes:split(line.nodes,"|"), count:line.count, resource:split(line.resource,"|"), source:line.resource, openfda=true}}]->(m)'
 cypher = pharmebinetutils.get_query_import(path_of_directory,
                                            f'mapping_and_merging_into_hetionet/openFDA/FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge.tsv',
                                            cypher)
-cypher2 = f' MATCH (n:Chemical)-[e:TREATS_CHtD]->(m:Disease) WHERE n.identifier = line.chemical AND m.identifier = line.disease SET e.nodes = split(line.nodes,"|"), e.count = line.count, e.openfda="yes", e.resource = split(line.resource,"|")'
+cypher2 = f' MATCH (n:Chemical)-[e:TREATS_CHtD]->(m:Disease) WHERE n.identifier = line.chemical AND m.identifier = line.disease SET e.nodes = split(line.nodes,"|"), e.count = line.count, e.openfda=true, e.resource = split(line.resource,"|")'
 cypher2 = pharmebinetutils.get_query_import(path_of_directory,
                                             f'mapping_and_merging_into_hetionet/openFDA/FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge_append.tsv',
                                             cypher2)

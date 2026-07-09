@@ -50,7 +50,7 @@ def load_pw_from_database():
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_pathway_id_to_resource[identifier] = set(node['resource'])
+        dict_pathway_id_to_resource[identifier] = [set(node['resource']), set(node['licenses'])]
         name = node['name'] if 'name' in node else ''
         if name is not None:
             add_entry_to_dictionary(dict_name_to_pathway_ids, name.lower(), identifier)
@@ -76,7 +76,7 @@ def generate_files(path_of_directory):
     # file from relationship between gene and variant
     file_name = 'pathway/mapping_pathway.tsv'
     file = open(file_name, 'w', encoding='utf-8')
-    header = ['pathway_hmdb_id', 'pathway_id', 'resource', 'how_mapped']
+    header = ['pathway_hmdb_id', 'pathway_id', 'resource', 'how_mapped', 'licenses']
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
 
@@ -89,7 +89,7 @@ def generate_files(path_of_directory):
 
     cypher_file = open('output/cypher_part2.cypher', 'w', encoding='utf-8')
 
-    query = '''Match (n:Pathway{identifier:line.pathway_id}), (v:Pathway_HMDB{identifier:line.pathway_hmdb_id}) Create (n)-[r:equal_to_pathway_hmdb{how_mapped:line.how_mapped}]->(v) Set n.hmdb="yes", n.resource=split(line.resource,"|") '''
+    query = '''Match (n:Pathway{identifier:line.pathway_id}), (v:Pathway_HMDB{identifier:line.pathway_hmdb_id}) Create (n)-[r:equal_to_pathway_hmdb{how_mapped:line.how_mapped}]->(v) Set n.hmdb=true, n.licenses=split(line.licenses,"|"), n.resource=split(line.resource,"|") '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/hmdb/{file_name}',
                                               query)
@@ -122,8 +122,9 @@ def load_all_hmdb_pw_and_map(csv_mapping, csv_not_mapped):
             for pathway_id in dict_hmdb_id_to_pathway_ids[smpdb_id]:
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'smpdb_id_mapped'
+                    dict_pathway_id_to_resource[pathway_id][1].add(pharmebinetutils.dict_source_to_license['hmdb'])
                     csv_mapping.writerow([identifier, pathway_id, pharmebinetutils.resource_add_and_prepare(
-                        dict_pathway_id_to_resource[pathway_id], 'HMDB'), 'smpdb_id_mapped'])
+                        dict_pathway_id_to_resource[pathway_id][0], 'HMDB'), 'smpdb_id_mapped', '|'.join(dict_pathway_id_to_resource[pathway_id][1])])
                 else:
                     print('multy mapping')
         if found_mapping:
@@ -135,8 +136,9 @@ def load_all_hmdb_pw_and_map(csv_mapping, csv_not_mapped):
             for pathway_id in dict_name_to_pathway_ids[name]:
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'name_mapped'
+                    dict_pathway_id_to_resource[pathway_id][1].add(pharmebinetutils.dict_source_to_license['hmdb'])
                     csv_mapping.writerow([identifier, pathway_id, pharmebinetutils.resource_add_and_prepare(
-                        dict_pathway_id_to_resource[pathway_id], 'HMDB'), 'name_mapped'])
+                        dict_pathway_id_to_resource[pathway_id][0], 'HMDB'), 'name_mapped', '|'.join(dict_pathway_id_to_resource[pathway_id][1])])
                 else:
                     print('multy mapping with name')
         if found_mapping:

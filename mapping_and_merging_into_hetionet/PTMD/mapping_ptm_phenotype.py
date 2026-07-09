@@ -45,6 +45,7 @@ dict_type_to_rela = {
     "absence": 'IS_ABSENT_IN'
 }
 
+license = pharmebinetutils.dict_source_to_license['ptmd']
 
 def prepare_query(label, file_name, file_cypher, rela_type):
     """
@@ -57,8 +58,8 @@ def prepare_query(label, file_name, file_cypher, rela_type):
         rela_type_query=pharmebinetutils.prepare_rela_great(dict_type_to_rela[rela_type], "PTM", label)
 
         query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:{label} {{identifier:line.phenotype_id}}) Create ('
-                 f'p)-[:{rela_type_query} {{resource:["PTMD"],ptmd:"yes", '
-                 f'is_experimental_verification:line.is_experimental_verification, license:"ONLY freely available for academic research", '
+                 f'p)-[:{rela_type_query} {{resource:["PTMD"],ptmd:True, '
+                 f'is_experimental_verification:line.is_experimental_verification, licenses:["{license}"], '
                  f'mutation_site_impacts:split(line.mutation_site_impacts,"|"), url:"https://ptmd.biocuckoo.cn/index.php", source:"PTMD", '
                  f'mutation_sites:split(line.mutation_sites,"|"), pubMed_ids:split(line.pmids,"|"), regulation:line.regulation, '
                  f'sources:split(line.sources,"|"), ptmd_properties:split(line.ptmd_properties,"|"), url:"https://ptmd.biocuckoo.cn/index.php", license:"ONLY freely available for academic research"}}]->(d)')
@@ -66,8 +67,8 @@ def prepare_query(label, file_name, file_cypher, rela_type):
         rela_type_query = pharmebinetutils.prepare_rela_great(dict_type_to_rela[rela_type], label, "PTM" )
 
         query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:{label} {{identifier:line.phenotype_id}}) Create ('
-                 f'p)<-[:{rela_type_query} {{resource:["PTMD"],ptmd:"yes", '
-                 f'is_experimental_verification:line.is_experimental_verification, license:"ONLY freely available for academic research", '
+                 f'p)<-[:{rela_type_query} {{resource:["PTMD"],ptmd:True, '
+                 f'is_experimental_verification:line.is_experimental_verification, licenses:["{license}"], '
                  f'mutation_site_impacts:split(line.mutation_site_impacts,"|"), url:"https://ptmd.biocuckoo.cn/index.php", source:"PTMD", '
                  f'mutation_sites:split(line.mutation_sites,"|"), pubMed_ids:split(line.pmids,"|"), regulation:line.regulation, '
                  f'sources:split(line.sources,"|"), ptmd_properties:split(line.ptmd_properties,"|"), url:"https://ptmd.biocuckoo.cn/index.php", license:"ONLY freely available for academic research"}}]-(d)')

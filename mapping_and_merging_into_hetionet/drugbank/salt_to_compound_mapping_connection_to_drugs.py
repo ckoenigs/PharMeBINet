@@ -46,8 +46,8 @@ def create_cypher_and_tsv_files():
         property = record.data()['l']
         part += property + ':line.' + property + ', '
         header.append(property)
-    query = part + ' source:"DrugBank", license:"%s" ,drugbank:"yes", resource:["DrugBank"], url:"https://www.drugbank.ca/salts/"+line.identifier}) Create (b)-[:equal_to_drugbank]->(a)'
-    query = query % (license)
+    query = part + ' source:"DrugBank", licenses:["%s"] ,drugbank:true, resource:["DrugBank"], url:"https://www.drugbank.ca/salts/"+line.identifier}) Create (b)-[:equal_to_drugbank]->(a)'
+    query = query % (pharmebinetutils.dict_source_to_license['drugbank'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/salts/{file_node}.tsv',
                                               query)
@@ -60,8 +60,8 @@ def create_cypher_and_tsv_files():
     csv_node.writeheader()
     cypher_rela = open('output/cypher_rela.cypher', 'a', encoding='utf-8')
     rela_header = ['salt_id', 'compound_id']
-    query_rela = 'Match (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:PART_OF_CpoSA{license:"%s", url:"https://go.drugbank.com/drugs/"+line.compound_id, source:"DrugBank", resource:["DrugBank"], drugbank:"yes" }]->(b)'
-    query_rela = query_rela % (license)
+    query_rela = 'Match (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:PART_OF_CpoSA{licenses:["%s"], url:"https://go.drugbank.com/drugs/"+line.compound_id, source:"DrugBank", resource:["DrugBank"], drugbank:true }]->(b)'
+    query_rela = query_rela % (pharmebinetutils.dict_source_to_license['drugbank'])
     query_rela = pharmebinetutils.get_query_import(path_of_directory,
                                                    f'mapping_and_merging_into_hetionet/drugbank/salts/{file_rela}.tsv',
                                                    query_rela)
@@ -113,10 +113,8 @@ def main():
     # path to directory of project
     global path_of_directory
     if len(sys.argv) < 2:
-        sys.exit('need a license')
-    global license
-    license = sys.argv[1]
-    path_of_directory = sys.argv[2]
+        sys.exit('need a path')
+    path_of_directory = sys.argv[1]
     print(datetime.datetime.now())
     print('create connection with neo4j')
 

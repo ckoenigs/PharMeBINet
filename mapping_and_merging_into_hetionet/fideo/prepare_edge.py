@@ -60,7 +60,8 @@ def prepare_query(file_name):
     :return:
     """
     with open('output/cypher_edge.cypher', 'w', encoding='utf8') as f:
-        query = '''Match (s:Chemical{identifier:line.chemical_id }), (m:Food{identifier:line.food_id}) Create (s)<-[:INTERACTS_FOiCH{fideo:"yes", license:"CC-BY 4.0", text:line.edge_info , interaction_text:split(line.interaction_text,'|'), source:"FIDEO", resource:["FIDEO"], url:"https://gitub.u-bordeaux.fr/erias/fideo",  hedrine_ids:split(line.hedrine,'|') ,reference:split(line.reference,'|')}]-(m) '''
+        query = '''Match (s:Chemical{identifier:line.chemical_id }), (m:Food{identifier:line.food_id}) Create (s)<-[:INTERACTS_FOiCH{fideo:true, licenses:["%s"], text:line.edge_info , interaction_texts:split(line.interaction_text,'|'), source:"FIDEO", resource:["FIDEO"], url:"https://gitub.u-bordeaux.fr/erias/fideo",  hedrine_ids:split(line.hedrine,'|') ,reference:split(line.reference,'|')}]-(m) '''
+        query = query % (pharmebinetutils.dict_source_to_license['fideo'])
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/fideo/{file_name}',
                                                   query)

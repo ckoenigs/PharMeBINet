@@ -38,7 +38,7 @@ def load_pharmebinet_nodes_in(label, dict_xref_to_ids, dict_id_to_resource_and_x
             if xref.startswith('miRBase:'):
                 mirbase_id = xref.rsplit(':', 1)[1]
                 pharmebinetutils.add_entry_to_dict_to_set(dict_xref_to_ids, mirbase_id, identifier)
-        dict_id_to_resource_and_xrefs[identifier] = [node['resource'], xrefs]
+        dict_id_to_resource_and_xrefs[identifier] = [node['resource'], xrefs, set(node['licenses'])]
 
     print('number of gene nodes in pharmebinet:', len(dict_id_to_resource_and_xrefs))
 
@@ -50,11 +50,11 @@ def generate_files(label, additional_condition=''):
     file_name = f'output/mapping_{label}.tsv'
     csvfile = open(file_name, 'w', encoding='utf-8')
     writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(['rna_id', 'mirbase_id', 'how_mapped', 'resource', 'xrefs'])
+    writer.writerow(['rna_id', 'mirbase_id', 'how_mapped', 'resource', 'xrefs','licenses'])
 
     # generate cypher file
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = f''' Match (c:RNA{{ identifier:line.rna_id}}), (n:{label}{{id:line.mirbase_id}})  Create (c)-[:equal_to_miRBase_rna{{how_mapped:line.how_mapped}}]->(n) Set c.mirbase="yes", c.resource=split(line.resource,"|"), c.xrefs=split(line.xrefs,"|"), c.sequence=n.sequence {additional_condition} '''
+    query = f''' Match (c:RNA{{ identifier:line.rna_id}}), (n:{label}{{id:line.mirbase_id}})  Create (c)-[:equal_to_miRBase_rna{{how_mapped:line.how_mapped}}]->(n) Set c.mirbase=True, c.resource=split(line.resource,"|"), c.licenses=split(line.licenses,"|"), c.xrefs=split(line.xrefs,"|"), c.sequence=n.sequence {additional_condition} '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/miRBase/{file_name}',
                                               query)
@@ -84,9 +84,11 @@ def map_to_RNA(label, writer, dict_mirbase_id_to_mapped_node, dict_id_to_resourc
                 for rna_id in dict_mirbase_id_to_mapped_node[mirbase_id]:
                     own_xrefs=dict_id_to_resource[rna_id][1]
                     own_xrefs=own_xrefs.union(xrefs)
+                    licenses = dict_id_to_resource[rna_id][2]
+                    licenses.add(pharmebinetutils.dict_source_to_license['mirbase'])
                     writer.writerow([rna_id, identifier, 'mirBase_id',
                                      pharmebinetutils.resource_add_and_prepare(dict_id_to_resource[rna_id][0],
-                                                                               'miRBase'), '|'.join(own_xrefs)])
+                                                                               'miRBase'), '|'.join(own_xrefs), '|'.join(licenses)])
                     mapped += 1
                     continue
 

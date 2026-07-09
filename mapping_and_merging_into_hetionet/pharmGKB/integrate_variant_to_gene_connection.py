@@ -63,8 +63,8 @@ def generate_cypher_file(file_name):
     :param label: string
     :return:
     """
-    query = '''  MATCH (n:Variant{identifier:line.variant_id}), (c:Gene{identifier:line.gene_id}) Merge (c)-[r:HAS_GhGV]->(n) On Create Set r.source="PharmGKB", r.resource=["PharmGKB"], r.pharmgkb="yes" , r.license="%s", r.url="https://www.pharmgkb.org/variant/"+line.pGKB_id On Match Set r.resource=r.resource + "PharmGKB", r.pharmgkb="yes"'''
-    query = query % (license)
+    query = '''  MATCH (n:Variant{identifier:line.variant_id}), (c:Gene{identifier:line.gene_id}) Merge (c)-[r:HAS_GhGV]->(n) On Create Set r.source="PharmGKB", r.resource=["PharmGKB"], r.pharmgkb=true , r.licenses=["%s"], r.url="https://www.pharmgkb.org/variant/"+line.pGKB_id On Match Set r.resource=r.resource + "PharmGKB",r.licenses=r.licenses + "%s", r.pharmgkb=true'''
+    query = query % (license, license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
                                               query)
@@ -73,11 +73,11 @@ def generate_cypher_file(file_name):
 
 def main():
     global path_of_directory, license
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        license = sys.argv[2]
     else:
         sys.exit('need a path and license')
+    license = pharmebinetutils.dict_source_to_license['pharmgkb']
 
     print(datetime.datetime.now())
     print('Generate connection with neo4j')

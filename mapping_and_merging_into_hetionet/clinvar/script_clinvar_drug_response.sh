@@ -19,12 +19,10 @@ echo "Current time: $now"
 
 python ../../execute_cypher_shell.py $path_neo4j $password drug/cypher_drug.cypher > output/cypher3.txt
 
-sleep 30
+python ../../check_indices.py
 
-python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
-
-
-sleep 40
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+python ../../check_indices.py
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -38,9 +36,7 @@ echo "Current time: $now"
 
 python ../../execute_cypher_shell.py $path_neo4j $password variant_drug/cypher.cypher > output/cypher4.txt
 
-sleep 30
+python ../../check_indices.py
 
-python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
-
-
-sleep 40
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+python ../../check_indices.py

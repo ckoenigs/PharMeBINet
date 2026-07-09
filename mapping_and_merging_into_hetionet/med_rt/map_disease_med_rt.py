@@ -50,7 +50,7 @@ def load_pharmebinet_disease_in(label, dict_synonyms_to_node_ids, dict_umls_to_n
 
     for record in results:
         [identifier, node] = record.values()
-        dict_disease_pharmebinet_to_resource[identifier] = dict(node)['resource']
+        dict_disease_pharmebinet_to_resource[identifier] = [dict(node)['resource'], set(node['licenses'])]
         name = node['name'].lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_synonyms_to_node_ids, name, identifier)
 
@@ -80,15 +80,22 @@ def prepare_csv_file_and_cypher_file(label, label_2):
     file_name = f'disease/map_{label}_{label_2}.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['med_id', 'id', 'resource', 'how_mapped'])
+    csv_writer.writerow(['med_id', 'id', 'resource', 'how_mapped', 'license'])
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = f'Match (n:{label}{{id:line.med_id}}), (r:{label_2}{{identifier:line.id}}) Set r.resource=split(line.resource,"|"), r.med_rt="yes" Create (r)-[:equal_disease_med_rt{{how_mapped:line.how_mapped}}]->(n)'
+    query = f'Match (n:{label}{{id:line.med_id}}), (r:{label_2}{{identifier:line.id}}) Set r.resource=split(line.resource,"|"), r.licenses=split(line.license,"|"), r.med_rt=true Create (r)-[:equal_disease_med_rt{{how_mapped:line.how_mapped}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               'mapping_and_merging_into_hetionet/med_rt/' + file_name, query)
     cypher_file.write(query)
 
     return csv_writer
+
+
+def write_to_tsv_file(csv_writer, identifier, other_id, mapping_method):
+    dict_disease_pharmebinet_to_resource[other_id][1].add(pharmebinetutils.dict_source_to_license['medrt'])
+    csv_writer.writerow([identifier, other_id, pharmebinetutils.resource_add_and_prepare(
+        dict_disease_pharmebinet_to_resource[other_id][0], 'MED-RT'), mapping_method,
+                         '|'.join(dict_disease_pharmebinet_to_resource[other_id][1])])
 
 
 def load_med_rt_drug_in(label):
@@ -119,13 +126,10 @@ def load_med_rt_drug_in(label):
                 if (identifier, disease_id) in set_of_mapping_pairs:
                     continue
                 set_of_mapping_pairs.add((identifier, disease_id))
-                csv_writer_disease.writerow([identifier, disease_id, pharmebinetutils.resource_add_and_prepare(
-                    dict_disease_pharmebinet_to_resource[disease_id], 'MED-RT'), 'name'])
+                write_to_tsv_file(csv_writer_disease, identifier, disease_id,'name')
 
         if mapped:
             continue
-
-
 
         query = ('Select Distinct CUI  From MRCONSO Where STR ="%s" ;')
         query = query % (name)
@@ -144,8 +148,7 @@ def load_med_rt_drug_in(label):
                         if (identifier, disease_id) in set_of_mapping_pairs:
                             continue
                         set_of_mapping_pairs.add((identifier, disease_id))
-                        csv_writer_disease.writerow([identifier, disease_id, pharmebinetutils.resource_add_and_prepare(
-                            dict_disease_pharmebinet_to_resource[disease_id], 'MED-RT'), 'umls'])
+                        write_to_tsv_file(csv_writer_disease, identifier, disease_id, 'umls')
 
         if mapped:
             counter_mapped += 1
@@ -158,8 +161,7 @@ def load_med_rt_drug_in(label):
                 if (identifier, symptom_id) in set_of_mapping_pairs:
                     continue
                 set_of_mapping_pairs.add((identifier, symptom_id))
-                csv_writer_symptom.writerow([identifier, symptom_id, pharmebinetutils.resource_add_and_prepare(
-                    dict_disease_pharmebinet_to_resource[symptom_id], 'MED-RT'), 'name'])
+                write_to_tsv_file(csv_writer_symptom, identifier, symptom_id, 'name')
 
         if mapped:
             continue
@@ -173,8 +175,7 @@ def load_med_rt_drug_in(label):
                     if (identifier, symptom_id) in set_of_mapping_pairs:
                         continue
                     set_of_mapping_pairs.add((identifier, symptom_id))
-                    csv_writer_symptom.writerow([identifier, symptom_id, pharmebinetutils.resource_add_and_prepare(
-                        dict_disease_pharmebinet_to_resource[symptom_id], 'MED-RT'), 'mesh'])
+                    write_to_tsv_file(csv_writer_symptom, identifier, symptom_id, 'mesh')
 
         if mapped:
             continue
@@ -187,8 +188,7 @@ def load_med_rt_drug_in(label):
                         if (identifier, symptom_id) in set_of_mapping_pairs:
                             continue
                         set_of_mapping_pairs.add((identifier, symptom_id))
-                        csv_writer_symptom.writerow([identifier, symptom_id, pharmebinetutils.resource_add_and_prepare(
-                            dict_disease_pharmebinet_to_resource[symptom_id], 'MED-RT'), 'umls'])
+                        write_to_tsv_file(csv_writer_symptom, identifier, symptom_id, 'umls')
 
         if mapped:
             counter_mapped += 1

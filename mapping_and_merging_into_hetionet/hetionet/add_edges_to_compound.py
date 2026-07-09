@@ -17,14 +17,21 @@ def create_connection_with_neo4j():
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     graph_database = driver.session()
 
+
 # license  got from hetionet or manually found
-dict_source_to_license= {
+dict_source_to_license = {
     'PubChem': 'https://www.ncbi.nlm.nih.gov/home/about/policies/',
-    'LINCS L1000':'https://lincsproject.org/LINCS/data/release-policy',
+    'LINCS L1000': 'https://lincsproject.org/LINCS/data/release-policy',
     # this have the hetionet license
-    'US Patent':'CC0',
-    'PDSP Ki':'CC0',
+    'US Patent': 'CC0',
+    'PDSP Ki': 'CC0',
+    'DrugCentral': pharmebinetutils.dict_source_to_license['drugcentral'],
+    'DrugBank': pharmebinetutils.dict_source_to_license['drugbank'],
+    'ChEMBL': 'CC BY-SA 3.0',
+    'BindingDB': pharmebinetutils.dict_source_to_license['bindingdb'],
+    'PharmacotherapyDB': ''
 }
+
 
 def load_pharmebinet_pharmebinet_node_in(csv_file, pharmebinet_node_label1, pharmebinet_node_label2, hetionet_label_1,
                                          hetionet_label_2, relationship):
@@ -46,9 +53,9 @@ def load_pharmebinet_pharmebinet_node_in(csv_file, pharmebinet_node_label1, phar
 
     for (node1, node2), rela_infos in dict_pair_to_edges.items():
         if len(rela_infos) > 1:
-            dict_all={}
-            dict_all['id1']=node1
-            dict_all['id2']=node2
+            dict_all = {}
+            dict_all['id1'] = node1
+            dict_all['id2'] = node2
             for rela_info in rela_infos:
                 for key, value in rela_info.items():
                     if not key in dict_all:
@@ -57,32 +64,36 @@ def load_pharmebinet_pharmebinet_node_in(csv_file, pharmebinet_node_label1, phar
                         if value != dict_all[key]:
                             print('ohno')
         else:
-            dict_all=rela_infos[0]
-            dict_all['id1']=node1
-            dict_all['id2']=node2
+            dict_all = rela_infos[0]
+            dict_all['id1'] = node1
+            dict_all['id2'] = node2
 
-        if 'license' not in dict_all or not dict_all['license']:
+        if 'licenses' not in dict_all or not dict_all['licenses']:
             if 'source' in dict_all:
-                dict_all['license'] = dict_source_to_license[dict_all['source']]
+                if 'license' in dict_all:
+                    dict_all['licenses'] = set([dict_all['license']])
+                else:
+                    dict_all['licenses'] = set([dict_source_to_license[dict_all['source']] ])
             elif 'sources' in dict_all:
-                possible_license = ''
+                possible_licenses = set()
                 for source in dict_all['sources']:
-                    if not possible_license:
-                        possible_license = dict_source_to_license[source]
-                        if '4' in possible_license:
-                            break
-                    elif '4' in dict_source_to_license[source]:
-                        possible_license = dict_source_to_license[source]
-                dict_all['license']= possible_license
+                    if  source.lower().startswith('drugbank') or source.lower().startswith('drugcentral'):
+                        source = 'DrugBank' if 'drugbank' in source.lower() else 'DrugCentral'
+                    possible_license = dict_source_to_license[source] if not 'drugbank' in source.lower() else \
+                    dict_source_to_license['DrugBank']
+                    possible_licenses.add(possible_license)
+                dict_all['licenses'] = possible_licenses
+            else:
+                dict_all['licenses'] = set(pharmebinetutils.dict_source_to_license['hetionet'])
+            dict_all['licenses'].add(pharmebinetutils.dict_source_to_license['hetionet'])
 
         for key, value in dict_all.items():
             if type(value) in [list, set]:
-                dict_all[key]='|'.join(value)
+                dict_all[key] = '|'.join(value)
         csv_file.writerow(dict_all)
 
     print(f'number of {pharmebinet_node_label1}-{pharmebinet_node_label2} relationships in pharmebinet:' + str(
         len(dict_pair_to_edges)))
-
 
 
 def check_relationships_and_generate_file(pharmebinet_label1, pharmebinet_label2, hetionet_label1, hetionet_label2,
@@ -100,25 +111,26 @@ def check_relationships_and_generate_file(pharmebinet_label1, pharmebinet_label2
                        RETURN allfields as l;'''
     query = query % (hetionet_label1, rela_hetionet, hetionet_label2)
     result = graph_database.run(query)
-    query = f'Match (a:{pharmebinet_label1}{{identifier:line.id1}}), (b:{pharmebinet_label2}{{identifier:line.id2}}) Create (a)-[:{rela_type}{{%s , hetionet:"yes", url:"https://het.io/", resource:["Hetionet"]}}]->(b)'
+    query = f'Match (a:{pharmebinet_label1}{{identifier:line.id1}}), (b:{pharmebinet_label2}{{identifier:line.id2}}) Create (a)-[:{rela_type}{{%s , hetionet:true, url:"https://het.io/", resource:["Hetionet"]}}]->(b)'
     list_prop = []
     header = ['id1', 'id2']
     for record in result:
         prop = record.data()['l']
-        if prop not in ['source','sources','pubmed_ids']:
+        if prop not in ['source', 'sources', 'pubmed_ids','actions', 'unbiased']:
             list_prop.append(f'{prop}:line.{prop}')
-        elif prop == 'pubmed_ids':
+        elif prop == 'unbiased':
+            list_prop.append(f'{prop}:toBoolean(line.{prop})')
+        elif prop in ['pubmed_ids', 'actions']:
             list_prop.append(f'{prop}:split(line.{prop},"|")')
         elif prop == 'source':
             list_prop.append(f'{prop}:line.{prop}+" via Hetionet"')
         else:
             list_prop.append(f'{prop}:split(line.{prop},"|"), source:replace(line.{prop},"|",",") +" via Hetionet"')
 
-
         header.append(prop)
-    if 'license' not in header:
-        header.append('license')
-        list_prop.append(f'license:line.license')
+    if 'licenses' not in header:
+        header.append('licenses')
+        list_prop.append(f'licenses:split(line.licenses,"|")')
 
     query = query % (', '.join(list_prop))
     query = pharmebinetutils.get_query_import(path_of_directory,
@@ -137,6 +149,7 @@ def check_relationships_and_generate_file(pharmebinet_label1, pharmebinet_label2
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
+
 
 def main():
     global path_of_directory, license

@@ -21,6 +21,8 @@ def create_connection_with_neo4j():
 list_bindingdb_pharmebinet_labels = [['bindingDB_polymer_and_names', 'Protein'],
                                      ['bindingDB_mono_struct_names', 'Chemical']]
 
+license = pharmebinetutils.dict_source_to_license['bindingdb']
+
 
 def prepare_tsv_file_and_cypher_query_for_node():
     """
@@ -33,7 +35,8 @@ def prepare_tsv_file_and_cypher_query_for_node():
     header = ['complexid']
     csv_mapping.writerow(header)
 
-    query = f'Match (n:bindingDB_complex_and_names{{complexid:line.complexid}}) Create (m:MolecularComplex) Set m=n, m.identifier=line.complexid, m.url="https://www.bindingdb.org/rwd/jsp/dbsearch/PrimarySearch_ki.jsp?tag=com&submit=Search&complexid="+line.complexid, m.name=n.display_name, m.bindingdb="yes", m.resource=["BindingDB"], m.source="BindingDB", m.license="CC BY 3.0 US Deed" Remove m.complexid, m.display_name Create (m)-[:equal]->(n)'
+    query = f'Match (n:bindingDB_complex_and_names{{complexid:line.complexid}}) Create (m:MolecularComplex) Set m=n, m.identifier=line.complexid, m.url="https://www.bindingdb.org/rwd/jsp/dbsearch/PrimarySearch_ki.jsp?tag=com&submit=Search&complexid="+line.complexid, m.name=n.display_name, m.bindingdb=true, m.resource=["BindingDB"], m.source="BindingDB", m.licenses=["%s"] Remove m.complexid, m.display_name Create (m)-[:equal]->(n)'
+    query = query % (license)
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file.write(query)
 
@@ -61,7 +64,8 @@ def generate_tsv_file_and_cypher_query_for_edge(label):
     header2 = ['complexid', 'identifier', 'type', 'componentid']
     csv_mapping.writerow(header2)
 
-    query = f'Match (n:MolecularComplex{{identifier:line.complexid}}), (m:{label}{{identifier:line.identifier}}) Create (n)-[:HAS_COMPONENT_{pharmebinetutils.dictionary_label_to_abbreviation["MolecularComplex"]}hc{pharmebinetutils.dictionary_label_to_abbreviation[label]}{{type:line.type, componentid:line.componentid, bindingdb:"yes", url:"https://www.bindingdb.org/rwd/jsp/dbsearch/PrimarySearch_ki.jsp?tag=com&submit=Search&complexid="+line.complexid, license:"CC BY 3.0 US Deed", source:"BindingDB", resource:["BindingDB"]}}] -> (m)'
+    query = f'Match (n:MolecularComplex{{identifier:line.complexid}}), (m:{label}{{identifier:line.identifier}}) Create (n)-[:HAS_COMPONENT_{pharmebinetutils.dictionary_label_to_abbreviation["MolecularComplex"]}hc{pharmebinetutils.dictionary_label_to_abbreviation[label]}{{type:line.type, componentid:line.componentid, bindingdb:true, url:"https://www.bindingdb.org/rwd/jsp/dbsearch/PrimarySearch_ki.jsp?tag=com&submit=Search&complexid="+line.complexid, licenses:["%s"], source:"BindingDB", resource:["BindingDB"]}}] -> (m)'
+    query = query % (license)
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file.write(query)
 

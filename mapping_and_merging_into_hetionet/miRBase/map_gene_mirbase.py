@@ -55,7 +55,8 @@ def generate_files():
 
     # generate cypher file
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query = ''' Match (c:Gene{ identifier:line.id}), (n:miRBase_Gene) Where ID(n)=toInteger(line.node_id)  Create (c)-[:equal_to_miRBase_gene]->(n) Set c.mirbase="yes", c.resource=c.resource+"miRBase"'''
+    query = ''' Match (c:Gene{ identifier:line.id}), (n:miRBase_Gene) Where ID(n)=toInteger(line.node_id)  Create (c)-[:equal_to_miRBase_gene]->(n) Set c.mirbase=True, c.resource=c.resource+"miRBase", c.licenses=c.licenses+"%s"'''
+    query = query % (pharmebinetutils.dict_source_to_license['mirbase'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/miRBase/{file_name}',
                                               query)

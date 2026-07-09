@@ -69,11 +69,11 @@ def load_pharmacological_class():
     load pharmacological information
     :return:
     """
-    query = '''Match (n:PharmacologicClass) Return n.identifier, n.name, n.synonyms, n.resource, n.atc_codes '''
+    query = '''Match (n:PharmacologicClass) Return n.identifier, n.name, n.synonyms, n.resource, n.atc_codes, n.licenses '''
 
     for record in g.run(query):
-        [identifier, name, synonyms, resource, atc_codes] = record.values()
-        dict_pc_to_resource[identifier] = resource
+        [identifier, name, synonyms, resource, atc_codes, licenses] = record.values()
+        dict_pc_to_resource[identifier] = [resource, set(licenses)]
         dict_identifier_to_pharmacologic_class[identifier] = identifier
         if atc_codes:
             for atc_code in atc_codes:
@@ -114,12 +114,12 @@ def load_db_info_in():
     Load chemical and write information into dictionaries
     :return:
     """
-    query = '''MATCH (n:Chemical)  RETURN n.identifier,n.inchi, n.xrefs, n.resource, n.name, n.synonyms, n.alternative_ids'''
+    query = '''MATCH (n:Chemical)  RETURN n.identifier,n.inchi, n.xrefs, n.resource, n.name, n.synonyms, n.alternative_ids, n.licenses'''
     results = g.run(query)
 
     for record in results:
-        [identifier, inchi, xrefs, resource, name, synonyms, alternative_drug_ids] = record.values()
-        dict_chemical_to_resource[identifier] = resource if resource else []
+        [identifier, inchi, xrefs, resource, name, synonyms, alternative_drug_ids, licenses] = record.values()
+        dict_chemical_to_resource[identifier] = [resource, set(licenses)]
         dict_mesh_db_id_to_chemical_id[identifier] = set([identifier])
         if inchi:
             dict_inchi_to_chemical_id[inchi] = identifier
@@ -177,8 +177,9 @@ def add_information_to_file(drugbank_id, identifier, csv_writer, how_mapped, tup
     tuple_set.add((drugbank_id, identifier))
     xref.add('PharmGKB:' + identifier)
     xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xref, 'chemical'))
+    dict_to_resource[drugbank_id][1].add(pharmebinetutils.dict_source_to_license['pharmgkb'])
     csv_writer.writerow(
-        [drugbank_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_to_resource[drugbank_id], 'PharmGKB'),
+        [drugbank_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_to_resource[drugbank_id][0], 'PharmGKB'), '|'.join(dict_to_resource[drugbank_id][1]),
          how_mapped, xrefs])
 
 
@@ -212,14 +213,14 @@ def load_pharmgkb_in(label):
     file_name = 'chemical/mapping_' + label.split('_')[1] + '.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped', 'xrefs'])
+    csv_writer.writerow(['identifier', 'pharmgkb_id', 'resource', 'licenses', 'how_mapped', 'xrefs'])
     generate_cypher_file(file_name, label, 'Chemical')
 
     # tsv file pharmacological file
     file_name_pc = 'chemical/mapping_pharmacological_class_' + label.split('_')[1] + '.tsv'
     file_pc = open(file_name_pc, 'w', encoding='utf-8')
     csv_writer_pc = csv.writer(file_pc, delimiter='\t')
-    csv_writer_pc.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped'])
+    csv_writer_pc.writerow(['identifier', 'pharmgkb_id', 'resource', 'licenses', 'how_mapped'])
     generate_cypher_file(file_name_pc, label, 'PharmacologicClass')
 
     not_mapped_file = open('chemical/not_mapping_' + label.split('_')[1] + '.tsv', 'w', encoding='utf-8')
@@ -444,7 +445,7 @@ def generate_cypher_file(file_name, label, to_label):
     else:
         extra_string = ''
     cypher_file = open('output/cypher.cypher', 'a')
-    query = '''  MATCH (n:%s{id:line.pharmgkb_id}), (c:%s{identifier:line.identifier})  Set c.pharmgkb='yes', c.resource=split(line.resource,'|') %s Create (c)-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n)'''
+    query = '''  MATCH (n:%s{id:line.pharmgkb_id}), (c:%s{identifier:line.identifier})  Set c.pharmgkb=true, c.resource=split(line.resource,'|'), c.licenses=split(line.licenses,'|') %s Create (c)-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n)'''
     query = query % (label, to_label, extra_string, label.split('_')[1].lower())
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',

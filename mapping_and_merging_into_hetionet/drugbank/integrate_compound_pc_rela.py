@@ -31,8 +31,8 @@ def generate_files(path_of_directory):
 
     cypher_file = open('rela_protein/cypher.cypher', 'a', encoding='utf-8')
 
-    query = ''' Match (n:Compound{identifier:line.compound_id}), (v:PharmacologicClass{identifier:line.pc_id}) MERGE (v)-[r:INCLUDES_PCiCH]->(n) On Create set  r.license="%s",  r.source="DrugBank", r.drugbank="yes", r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.compound_id On Match Set r.drugbank="yes", r.resource=["DrugBank"]+r.resource '''
-    query = query % (license)
+    query = ''' Match (n:Compound{identifier:line.compound_id}), (v:PharmacologicClass{identifier:line.pc_id}) MERGE (v)-[r:INCLUDES_PCiCH]->(n) On Create set  r.licenses=["%s"],  r.source="DrugBank", r.drugbank=true, r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.compound_id On Match Set r.drugbank=true, r.resource=["DrugBank"]+r.resource, r.licenses=["%s"]+r.licenses '''
+    query = query % (license, license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/compound_pc/{file_name}.tsv',
                                               query)
@@ -62,11 +62,11 @@ def load_all_pair_and_prepare_for_dictionary(csv_mapping):
 def main():
     print(datetime.datetime.now())
     global path_of_directory, license
-    if len(sys.argv) < 3:
-        sys.exit('need path and license to directory compound- pc ' + ' '.join(sys.argv) + ' ' + str(len(sys.argv)))
+    if len(sys.argv) < 2:
+        sys.exit('need path to directory compound- pc ' + ' '.join(sys.argv) + ' ' + str(len(sys.argv)))
 
     path_of_directory = sys.argv[1]
-    license = sys.argv[2]
+    license = pharmebinetutils.dict_source_to_license['drugbank']
     print('##########################################################################')
 
     print(datetime.datetime.now())

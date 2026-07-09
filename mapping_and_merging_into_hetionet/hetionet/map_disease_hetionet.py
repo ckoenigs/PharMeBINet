@@ -1,6 +1,6 @@
 import sys, csv
 import datetime
-
+import utils_hetionet
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
@@ -28,7 +28,7 @@ def generate_csv_files():
     # tsv with nodes which needs to be updated
     map_node_file = open('output/map_nodes.tsv', 'w', encoding='utf-8')
     tsv_map_nodes = csv.writer(map_node_file, delimiter='\t')
-    tsv_map_nodes.writerow(['id','doid','how_mapped', 'resource'])
+    tsv_map_nodes.writerow(['id','doid','how_mapped', 'resource','licenses'])
 
 
 
@@ -45,13 +45,13 @@ generate cypher queries to integrate and merge disease nodes and create the subc
 def generate_cypher_queries():
     # cypher file to integrate mondo
     with open('output/cypher.cypher', 'a', encoding='utf-8') as cypher_file:
-        query = ''' Match (a:Disease_hetionet{identifier:line.doid}), (b:Disease{identifier:line.id}) Set b.hetionet='yes', b.resource=split(line.resource,"|") Create (b)-[:equal_to_hetionet_disease{how_mapped:line.how_mapped}]->(a) '''
+        query = ''' Match (a:Disease_hetionet{identifier:line.doid}), (b:Disease{identifier:line.id}) Set b.hetionet=true, b.resource=split(line.resource,"|"), b.licenses=split(line.licenses,"|") Create (b)-[:equal_to_hetionet_disease{how_mapped:line.how_mapped}]->(a) '''
 
         query= pharmebinetutils.get_query_import(path_of_directory,'mapping_and_merging_into_hetionet/hetionet/output/map_nodes.tsv',query)
         cypher_file.write(query)
 
 # dictionary mondo to resource
-dict_mondo_to_resource={}
+dict_mondo_to_resource_and_licenses={}
 
 # dictionary doid to mondo
 dict_doid_to_mondo ={}
@@ -71,7 +71,7 @@ def load_in_all_disease_in_dictionary():
     for record in results:
         disease = record.data()['n']
         mondo_id = disease['identifier']
-        dict_mondo_to_resource[mondo_id]=set(disease['resource'])
+        dict_mondo_to_resource_and_licenses[mondo_id]=[set(disease['resource']),set(disease['licenses'])]
 
         xrefs = disease['xrefs'] if 'xrefs' in disease else []
         for xref in xrefs:
@@ -96,8 +96,7 @@ def mapping_hetionet_disease():
         if doid in dict_doid_to_mondo:
             for mondo_id in dict_doid_to_mondo[doid]:
                 is_mapped=True
-                tsv_map_nodes.writerow([mondo_id,doid,'DOID', pharmebinetutils.resource_add_and_prepare(dict_mondo_to_resource[mondo_id],
-                                                                           'Hetionet')])
+                utils_hetionet.write_to_file(mondo_id,doid,'DOID',dict_mondo_to_resource_and_licenses, tsv_map_nodes)
 
         if is_mapped:
             counter_mapped+=1
@@ -106,8 +105,7 @@ def mapping_hetionet_disease():
         if name in dict_name_to_mondo:
             for mondo_id in dict_name_to_mondo[name]:
                 is_mapped = True
-                tsv_map_nodes.writerow([mondo_id, doid, 'name', pharmebinetutils.resource_add_and_prepare(dict_mondo_to_resource[mondo_id],
-                                                                           'Hetionet')])
+                utils_hetionet.write_to_file(mondo_id,doid,'name',dict_mondo_to_resource_and_licenses, tsv_map_nodes)
 
         if is_mapped:
             counter_mapped += 1

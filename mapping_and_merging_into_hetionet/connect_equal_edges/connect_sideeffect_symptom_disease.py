@@ -123,6 +123,7 @@ dict_label_to_url_label = {
     'Phenotype': 'phenotypes'
 }
 
+license = pharmebinetutils.dict_source_to_license['pharmebinet']
 
 def create_cypher_query(header, from_label, to_label, file_name):
     """
@@ -141,9 +142,9 @@ def create_cypher_query(header, from_label, to_label, file_name):
         short_first = 'PT'
     else:
         short_first = from_label[0]
-    query = '''Match (first:%s {identifier:line.%s}), (second:%s {identifier:line.%s})  Create (first)-[:EQUAL_%se%s{how_mapped:line.%s, pharmebinet:'yes', resource:["PharMeBINet"], url:"https://pharmebi.net/#/%s/"+line.%s , source:"PharMeBINet", license:"CC0 1.0"}]->(second)'''
+    query = '''Match (first:%s {identifier:line.%s}), (second:%s {identifier:line.%s})  Create (first)-[:EQUAL_%se%s{how_mapped:line.%s, pharmebinet:true, resource:["PharMeBINet"], url:"https://pharmebi.net/#/%s/"+line.%s , source:"PharMeBINet", licenses:["%s"]}]->(second)'''
     query = query % (from_label, header[0], to_label, header[1], short_first, short_second, header[2],
-                     dict_label_to_url_label[from_label], header[0])
+                     dict_label_to_url_label[from_label], header[0], license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/connect_equal_edges/{file_name}',
                                               query)

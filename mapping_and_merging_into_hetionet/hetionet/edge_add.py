@@ -87,9 +87,16 @@ def load_pharmebinet_pharmebinet_node_in(csv_file, pharmebinet_node_label1, phar
                     elif '4' in dict_source_to_license[source]:
                         possible_license=dict_source_to_license[source]
                 dict_all['license']= possible_license
+        if type(dict_all['license']) in [set,list]:
+            dict_all['license'] = set(dict_all['license'])
+        else:
+            dict_all['license'] = {dict_all['license']}
+        dict_all['license'].add(pharmebinetutils.dict_source_to_license['hetionet'])
+
         for key, value in dict_all.items():
             if type(value) in [list, set]:
                 dict_all[key]='|'.join(value)
+
         csv_file.writerow(dict_all)
 
     print(f'number of {pharmebinet_node_label1}-{pharmebinet_node_label2} relationships in pharmebinet:' + str(
@@ -112,15 +119,18 @@ def check_relationships_and_generate_file(pharmebinet_label1, pharmebinet_label2
     query = query % (hetionet_label1, rela_hetionet, hetionet_label2)
     result = graph_database.run(query)
     if rela_type!='ASSOCIATES_GaD':
-        query = f'Match (a:{pharmebinet_label1}{{identifier:line.id1}}), (b:{pharmebinet_label2}{{identifier:line.id2}}) Create (a)-[:{rela_type}{{%s , hetionet:"yes", url:"https://het.io/", resource:["Hetionet"]}}]->(b)'
+        query = f'Match (a:{pharmebinet_label1}{{identifier:line.id1}}), (b:{pharmebinet_label2}{{identifier:line.id2}}) Create (a)-[:{rela_type}{{%s , hetionet:true, url:"https://het.io/", resource:["Hetionet"], licenses:["%s"]}}]->(b)'
     else:
-        query = f'Match (a:{pharmebinet_label1}{{identifier:line.id1}}), (b:{pharmebinet_label2}{{identifier:line.id2}}) Create (b)-[:{rela_type}{{%s , hetionet:"yes", url:"https://het.io/", resource:["Hetionet"]}}]->(a)'
+        query = f'Match (a:{pharmebinet_label1}{{identifier:line.id1}}), (b:{pharmebinet_label2}{{identifier:line.id2}}) Create (b)-[:{rela_type}{{%s , hetionet:true, url:"https://het.io/", resource:["Hetionet"], licenses:["%s"]}}]->(a)'
+
     list_prop = []
     header = ['id1', 'id2']
     for record in result:
         prop = record.data()['l']
-        if prop not in ['source','sources']:
+        if prop not in ['source','sources', 'unbiased']:
             list_prop.append(f'{prop}:line.{prop}')
+        if prop == 'unbiased':
+            list_prop.append(f'{prop}:toBoolean(line.{prop})')
         elif prop == 'source':
             list_prop.append(f'{prop}:line.{prop}+" via Hetionet"')
         else:
@@ -132,7 +142,7 @@ def check_relationships_and_generate_file(pharmebinet_label1, pharmebinet_label2
         header.append('license')
         list_prop.append(f'license:line.license')
 
-    query = query % (', '.join(list_prop))
+    query = query % (', '.join(list_prop), pharmebinetutils.dict_source_to_license['hetionet'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/hetionet/{file_name}',
                                               query)

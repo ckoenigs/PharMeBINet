@@ -29,8 +29,7 @@ def create_cypher_and_tsv_files():
     rela_header = ['complex_id', 'protein_id']
 
     cypher_rela = open('rela_protein/cypher.cypher', 'a', encoding='utf-8')
-    query_rela = 'Match (b:MolecularComplex{identifier:line.complex_id}), (a:Protein {identifier:line.protein_id}) Create (b)-[r:HAS_COMPONENT_MChcP{license:"%s", url:"https://go.drugbank.com/bio_entities/"+line.complex_id, source:"DrugBank", resource:["DrugBank"], drugbank:"yes" }]->(a)'
-    query_rela = query_rela % (license)
+    query_rela = 'Match (b:MolecularComplex{identifier:line.complex_id}), (a:Protein {identifier:line.protein_id}) Create (b)-[r:HAS_COMPONENT_MChcP{ url:"https://go.drugbank.com/bio_entities/"+line.complex_id, source:"DrugBank", resource:["DrugBank"], licenses:["'+pharmebinetutils.dict_source_to_license["drugbank"]+'"], drugbank:true }]->(a)'
     query_rela = pharmebinetutils.get_query_import(path_of_directory,
                                                    f'mapping_and_merging_into_hetionet/drugbank/{file_name}',
                                                    query_rela)
@@ -58,8 +57,6 @@ def main():
     global path_of_directory
     if len(sys.argv) < 2:
         sys.exit('need a license')
-    global license
-    license = sys.argv[2]
     path_of_directory = sys.argv[1]
     print(datetime.datetime.now())
     print('create connection with neo4j')

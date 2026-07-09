@@ -59,7 +59,7 @@ def load_pharmacological_class_in():
             dict_name_to_pc_ids[pharma_name] = set()
         dict_name_to_pc_ids[pharma_name].add(identifier)
 
-        dict_PharmaClassId_to_resource[identifier] = resource
+        dict_PharmaClassId_to_resource[identifier] = [resource, set(node['licenses'])]
 
 
 def load_atc_in():
@@ -102,8 +102,9 @@ def load_atc_in():
         for atc_id in dict_atc_mapping[node_id]:
             methodes = list(dict_atc_mapping[node_id][atc_id])
             methodes = '|'.join(methodes)
+            dict_PharmaClassId_to_resource[atc_id][1].add(pharmebinetutils.dict_source_to_license['drugcentral'])
             csv_mapped_pharma_atc.writerow([node_id, atc_id, pharmebinetutils.resource_add_and_prepare(
-                dict_PharmaClassId_to_resource[atc_id], 'DrugCentral'), methodes])
+                dict_PharmaClassId_to_resource[atc_id][0], 'DrugCentral'), methodes, '|'.join(dict_PharmaClassId_to_resource[atc_id][1])])
 
 
 # file for mapped or not mapped identifier
@@ -115,7 +116,7 @@ csv_not_mapped = csv.writer(file_not_mapped_atc, delimiter='\t', lineterminator=
 csv_not_mapped.writerow(['id', 'code', 'name'])
 file_mapped_pharma_atc = open('atc/mapped_pharma_atc.tsv', 'w', encoding="utf-8")
 csv_mapped_pharma_atc = csv.writer(file_mapped_pharma_atc, delimiter='\t', lineterminator='\n')
-csv_mapped_pharma_atc.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
+csv_mapped_pharma_atc.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped', 'licenses'])
 
 
 def generate_cyper_file(file_name_pharma):
@@ -126,7 +127,7 @@ def generate_cyper_file(file_name_pharma):
     """
     cypher_file = open('output/cypher.cypher', 'a')
 
-    query_pharma = '''MATCH (n:DC_ATC), (c:PharmacologicClass{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_atc_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query_pharma = '''MATCH (n:DC_ATC), (c:PharmacologicClass{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral=true, c.resource=split(line.resource,'|'), c.licenses=split(line.licenses,'|') Create (c)-[:equal_to_atc_drugcentral{how_mapped:line.how_mapped}]->(n)'''
     query_pharma = pharmebinetutils.get_query_import(path_of_directory,
                                                      "mapping_and_merging_into_hetionet/drugcentral/atc/" + file_name_pharma,
                                                      query_pharma)

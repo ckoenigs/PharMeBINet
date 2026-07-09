@@ -47,7 +47,7 @@ def load_metabolites_from_database_and_add_to_dict():
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_metabolite_id_to_resource[identifier] = node['resource']
+        dict_metabolite_id_to_resource[identifier] = [node['resource'], set(node['licenses'])]
         inchi_key = node['inchikey'] if 'inchikey' in node else None
         if inchi_key:
             add_entry_to_dictionary(dict_inchi_key_to_metabolite_ids, inchi_key, identifier)
@@ -63,10 +63,10 @@ def generate_files(path_of_directory, label):
     file_name = 'metabolite/smpdb_metabolite_to_%s' % label
     file = open(file_name + '.tsv', 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
-    header = ['identifier', 'other_id', 'resource', 'mapped_with']
+    header = ['identifier', 'other_id', 'resource', 'mapped_with', 'licenses']
     csv_mapping.writerow(header)
 
-    query = ''' Match (n:metabolite_smpdb{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.smpdb='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_smpdb_%s{how_mapped:line.mapped_with}]->(n)'''
+    query = ''' Match (n:metabolite_smpdb{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.smpdb=true, v.licenses=split(line.licenses,"|"), v.resource=split(line.resource,"|") Create (v)-[:equal_to_smpdb_%s{how_mapped:line.mapped_with}]->(n)'''
     query = query % (label, label.lower())
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/smpdb/{file_name}.tsv',
@@ -96,10 +96,11 @@ def load_all_smpdb_metabolite_and_finish_the_files(csv_mapping_metabolite, csv_n
         if hmdb_id != '':
             if hmdb_id in dict_metabolite_id_to_resource:
                 has_mapped = True
+                dict_metabolite_id_to_resource[hmdb_id][1].add(pharmebinetutils.dict_source_to_license['smpdb'])
                 csv_mapping_metabolite.writerow(
                     [identifier, hmdb_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[hmdb_id], 'SMPDB'),
-                     'hmdb_id'])
+                     pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[hmdb_id][0], 'SMPDB'),
+                     'hmdb_id', '|'.join(dict_metabolite_id_to_resource[hmdb_id][1])])
         if has_mapped:
             continue
 
@@ -107,9 +108,10 @@ def load_all_smpdb_metabolite_and_finish_the_files(csv_mapping_metabolite, csv_n
             if inchi_key in dict_inchi_key_to_metabolite_ids:
                 has_mapped = True
                 for metabolite_id in dict_inchi_key_to_metabolite_ids[inchi_key]:
+                    dict_metabolite_id_to_resource[metabolite_id][1].add(pharmebinetutils.dict_source_to_license['smpdb'])
                     csv_mapping_metabolite.writerow(
-                        [identifier, metabolite_id, pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[metabolite_id],'SMPDB'),
-                         'inchi_key'])
+                        [identifier, metabolite_id, pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[metabolite_id][0],'SMPDB'),
+                         'inchi_key', '|'.join(dict_metabolite_id_to_resource[metabolite_id][1])])
 
         if has_mapped:
             continue

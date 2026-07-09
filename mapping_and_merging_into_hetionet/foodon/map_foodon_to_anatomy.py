@@ -8,6 +8,7 @@ import pharmebinetutils
 # label of co nodes
 label_fo = 'FoodOn_Food'
 
+
 def create_connection_with_neo4j():
     """
     create a connection with neo4j
@@ -31,10 +32,10 @@ def generate_tsv_files_and_cypher_file():
     file_name_mapped = 'output/update_anatomies.tsv'
     update_nodes = open(file_name_mapped, 'w', encoding='utf-8')
     csv_update = csv.writer(update_nodes, delimiter='\t')
-    csv_update.writerow(['id', 'resource'])
+    csv_update.writerow(['id', 'resource', 'licenses'])
 
     query_start = f' Match (a:{label_fo}{{id:line.id}})'
-    query_match = query_start + ' , (l:Anatomy{identifier:line.id}) Set l.foodon="yes", l.resource=split(line.resource,"|") Create (l)-[:equal_anatomy_fo]->(a)'
+    query_match = query_start + ' , (l:Anatomy{identifier:line.id}) Set l.foodon=true, l.resource=split(line.resource,"|"), l.licenses=split(line.licenses,"|") Create (l)-[:equal_anatomy_fo]->(a)'
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
@@ -55,10 +56,10 @@ def load_all_pharmebinet_anatomy_in_dictionary():
     Load all existing Anatomy nodes into dictionaries
     :return:
     """
-    query = '''Match (n:Anatomy) RETURN n.identifier, n.resource '''
+    query = '''Match (n:Anatomy) RETURN n.identifier, n.resource, n.licenses '''
     results = g.run(query)
-    for identifier, resource,  in results:
-        dict_anatomy_id_to_resource[identifier] = set(resource)
+    for identifier, resource, licenses, in results:
+        dict_anatomy_id_to_resource[identifier] = [set(resource), set(licenses)]
 
     print('size of anatomies in pharmebinet before the rest of DrugBank is added: ', len(dict_anatomy_id_to_resource))
 
@@ -79,10 +80,12 @@ def map_foodon_anatomy():
 
         if node_id in dict_anatomy_id_to_resource:
             counter_mapped += 1
-            resource = dict_anatomy_id_to_resource[node_id]
+            resource = dict_anatomy_id_to_resource[node_id][0]
+            dict_anatomy_id_to_resource[node_id][1].add(pharmebinetutils.dict_source_to_license['foodon'])
             csv_update.writerow(
                 [node_id,
-                 pharmebinetutils.resource_add_and_prepare(resource, 'FoodOn')])
+                 pharmebinetutils.resource_add_and_prepare(resource, 'FoodOn'),
+                 '|'.join(dict_anatomy_id_to_resource[node_id][1])])
 
     print('number of nodes in uberon: ', counter)
     print('number of mapped nodes in uberon: ', counter_mapped)

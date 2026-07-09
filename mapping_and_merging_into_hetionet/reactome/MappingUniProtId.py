@@ -38,13 +38,13 @@ load in all uniprotIDs of Protein from pharmebinet in a dictionary
 
 
 def load_pharmebinet_uniprotIDs_in():
-    query = '''MATCH (n:Protein) RETURN n.identifier, n.name, n.alternative_ids, n.resource'''
+    query = '''MATCH (n:Protein) RETURN n.identifier, n.name, n.alternative_ids, n.resource, n.licenses'''
     results = graph_database.run(query)
 
     for record in results:
-        [identifier, name, alternative_ids, resource] = record.values()
+        [identifier, name, alternative_ids, resource, licenses] = record.values()
         dict_uniprot_id_to_name[identifier] = name.lower()
-        dict_uniprot_to_resource[identifier] = resource if resource else []
+        dict_uniprot_to_resource[identifier] = [resource, set(licenses)]
         if alternative_ids:
             for alt_id in alternative_ids:
                 # print(alt_id)
@@ -59,7 +59,7 @@ csv_not_mapped.writerow(['id', 'name'])
 
 file_mapped_uniprotIDs = open('uniprotIDs/mapped_uniprotIDs.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_uniprotIDs, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_pharmebinet', 'resource'])
+csv_mapped.writerow(['id', 'id_pharmebinet', 'resource', 'licenses'])
 
 '''
 load all reactome uniprotIDs ReferenceEntity and check if they are in pharmebinet or not
@@ -80,17 +80,21 @@ def load_reactome_referenceEntity_in():
             if not (identifier, identifier) in set_pairs:
                 counter_map_with_id += 1
                 # print(identifier)
+                dict_uniprot_to_resource[identifier][1].add(pharmebinetutils.dict_source_to_license['reactome'])
                 csv_mapped.writerow([identifier, identifier,
-                                     pharmebinetutils.resource_add_and_prepare(dict_uniprot_to_resource[identifier],
-                                                                               'Reactome')])
+                                     pharmebinetutils.resource_add_and_prepare(dict_uniprot_to_resource[identifier][0],
+                                                                               'Reactome'),
+                                     '|'.join(dict_uniprot_to_resource[identifier][1])])
                 set_pairs.add((identifier, identifier))
         elif identifier in dict_alternative_id_to_protein_id:
             pharmebinet_uniprotID = dict_alternative_id_to_protein_id[identifier]
             if not (identifier, pharmebinet_uniprotID) in set_pairs:
+                dict_uniprot_to_resource[pharmebinet_uniprotID][1].add(
+                    pharmebinetutils.dict_source_to_license['reactome'])
                 csv_mapped.writerow([identifier, pharmebinet_uniprotID,
                                      pharmebinetutils.resource_add_and_prepare(
-                                         dict_uniprot_to_resource[pharmebinet_uniprotID],
-                                         'Reactome')])
+                                         dict_uniprot_to_resource[pharmebinet_uniprotID][0],
+                                         'Reactome'), '|'.join(dict_uniprot_to_resource[pharmebinet_uniprotID][1])])
                 set_pairs.add((identifier, pharmebinet_uniprotID))
         else:
             csv_not_mapped.writerow([identifier, name])
@@ -105,7 +109,7 @@ generate connection between mapping ReferenceEntity of reactome and Protein phar
 
 def create_cypher_file():
     cypher_file = open('output/cypher_mapping2.cypher', 'a', encoding="utf-8")
-    query = ''' MATCH (d:Protein{identifier:line.id_pharmebinet}),(c:ReferenceEntity_reactome{identifier:line.id}) CREATE (d)-[: equal_to_reactome_uniprot]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes"'''
+    query = ''' MATCH (d:Protein{identifier:line.id_pharmebinet}),(c:ReferenceEntity_reactome{identifier:line.id}) CREATE (d)-[: equal_to_reactome_uniprot]->(c) SET d.resource = split(line.resource, '|'), d.licenses = split(line.licenses, '|'), d.reactome = true'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/uniprotIDs/mapped_uniprotIDs.tsv',
                                               query)

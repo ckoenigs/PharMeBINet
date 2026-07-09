@@ -56,7 +56,7 @@ while len(a) > 0:
 f.close()
 
 # create cypher query
-cypher = f' MATCH (n:Chemical), (m:SideEffect) WHERE n.identifier = line.chemical AND m.identifier = line.sideeffect CREATE (n)-[:openFDA{{nodes:split(line.nodes,"|"), count:line.count, openfda:"yes"}}]->(m)'
+cypher = f' MATCH (n:Chemical), (m:SideEffect) WHERE n.identifier = line.chemical AND m.identifier = line.sideeffect CREATE (n)-[:openFDA{{nodes:split(line.nodes,"|"), count:line.count, openfda=true}}]->(m)'
 f = open("FDA_edges/edge_cypher.cypher", 'a', encoding="utf-8")
 
 cypher = pharmebinetutils.get_query_import(path_of_directory,

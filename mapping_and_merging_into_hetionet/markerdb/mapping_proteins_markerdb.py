@@ -25,11 +25,11 @@ def load_proteins_from_database_and_add_to_dict():
     """
     Load all Proteins from pharmebinet and add them into a dictionary
     """
-    query = "MATCH (n:Protein) RETURN n.identifier, n.name, n.resource, n.synonyms"
+    query = "MATCH (n:Protein) RETURN n.identifier, n.name, n.resource, n.synonyms, n.licenses"
     results = g.run(query)
 
-    for identifier, name, resource, synonyms, in results:
-        dict_identifier_to_resource[identifier] = resource
+    for identifier, name, resource, synonyms, licenses,  in results:
+        dict_identifier_to_resource[identifier] = [resource, set(licenses)]
         name = name.lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_to_identifier, name, identifier)
         if synonyms:
@@ -55,7 +55,7 @@ def generate_files(path_of_directory):
 
     file_name = 'MarkerDB_protein_to_Protein'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['MarkerDB_id', 'identifier', 'resource', 'mapping_method']
+    header = ['MarkerDB_id', 'identifier', 'resource', 'mapping_method', 'licenses']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
@@ -67,13 +67,21 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/MakerDB/
-    query = f' Match (n:MarkerDB_Protein{{id:toInteger(line.MarkerDB_id)}}), (v:Protein{{identifier:line.identifier}}) Set v.markerdb="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_MarkerDB_protein{{mapped_with:line.mapping_method}}]->(n)'
+    query = f' Match (n:MarkerDB_Protein{{id:toInteger(line.MarkerDB_id)}}), (v:Protein{{identifier:line.identifier}}) Set v.markerdb=true, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") Create (v)-[:equal_to_MarkerDB_protein{{mapped_with:line.mapping_method}}]->(n)'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
 
     return csv_mapping
+
+
+def write_to_tsv_file(csv_mapping, markerdb_id, pharmebinet_id, mapping_method):
+    dict_identifier_to_resource[pharmebinet_id][1].add(pharmebinetutils.dict_source_to_license['markerdb'])
+    csv_mapping.writerow(
+        [markerdb_id, pharmebinet_id,
+         pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[pharmebinet_id][0], "MarkerDB"),
+         mapping_method, '|'.join(dict_identifier_to_resource[pharmebinet_id][1])])
 
 def load_all_MarkerDB_proteins_and_finish_the_files(csv_mapping):
     """
@@ -101,40 +109,28 @@ def load_all_MarkerDB_proteins_and_finish_the_files(csv_mapping):
         if protein_name in dict_protein_name_to_identifier:
             mapped=True
             for identifier in dict_protein_name_to_identifier[protein_name]:
-                csv_mapping.writerow(
-                    [unique_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
-                    'name'])
+                write_to_tsv_file(csv_mapping, unique_id, identifier, 'name')
         if mapped:
             continue
 
         if protein_name in dict_protein_synonym_to_identifier and not identifier in ['P04070','Q13982']:
             mapped = True
             for identifier in dict_protein_synonym_to_identifier[protein_name]:
-                csv_mapping.writerow(
-                    [unique_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "MarkerDB"),
-                     'synonym'])
+                write_to_tsv_file(csv_mapping, unique_id, identifier, 'synonym')
         if mapped:
             continue
 
         if gene_name not in ['col9a1','dnase1l3'] and gene_name in dict_gene_symbol_to_protein_ids and dict_gene_symbol_to_protein_ids[gene_name]:
             mapped=True
             for identifier in dict_gene_symbol_to_protein_ids[gene_name]:
-                csv_mapping.writerow(
-                    [unique_id, identifier,
-                    pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier],"MarkerDB"),
-                    'gene_symbol'])
+                write_to_tsv_file(csv_mapping, unique_id, identifier, 'gene_symbol')
         if mapped:
             continue
 
         if identifier not in ignored_id:
             if identifier in dict_identifier_to_resource:
                 mapped=True
-                csv_mapping.writerow(
-                    [unique_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "MarkerDB"),
-                        'id'])
+                write_to_tsv_file(csv_mapping, unique_id, identifier, 'id')
         if mapped:
             continue
         counter_not_mapped += 1

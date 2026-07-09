@@ -30,8 +30,10 @@ def write_infos_into_file(csv_writer, raw_id, mapped_ids, how_mapped):
     :return:
     """
     for map_id in mapped_ids:
+        Chemical[map_id][1].add(pharmebinetutils.dict_source_to_license['rnainter'])
         csv_writer.writerow(
-            [raw_id, map_id, pharmebinetutils.resource_add_and_prepare(Chemical[map_id], "RNAInter"), how_mapped])
+            [raw_id, map_id, pharmebinetutils.resource_add_and_prepare(Chemical[map_id][0], "RNAInter"), how_mapped,
+             '|'.join(Chemical[map_id][1])])
 
 
 def compound_RNAInter():
@@ -47,13 +49,13 @@ def compound_RNAInter():
     chemical_xrefs = {}
     chemical_name = {}
 
-    query = "MATCH (n:Chemical) RETURN n.identifier, n.xrefs, n.resource, n.name, n.synonyms"
+    query = "MATCH (n:Chemical) RETURN n.identifier, n.xrefs, n.resource, n.name, n.synonyms, n.licenses"
     result = g.run(query)
 
     for record in result:
-        [id, xref, resource, name, syn] = record.values()
+        [id, xref, resource, name, syn, licenses] = record.values()
 
-        Chemical[id] = resource
+        Chemical[id] = [resource, set(licenses)]
 
         if xref is not None:
             for x in xref:
@@ -85,7 +87,7 @@ def compound_RNAInter():
     file_name = 'output/Compound_mapping.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
-        line = ["Raw_ID", "identifier", "resource", "how_mapped"]
+        line = ["Raw_ID", "identifier", "resource", "how_mapped", 'licenses']
         writer.writerow(line)
         query = "MATCH (n:compound_RNAInter) RETURN n.Raw_ID, n.Interactor"
         result = g.run(query)
@@ -108,7 +110,7 @@ def compound_RNAInter():
                 write_infos_into_file(writer, raw_id, chemical_name[inter.lower()], 'name')
 
     print("######### Start: Cypher #########")
-    query = f'Match (p1:compound_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Chemical{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.rnainter="yes" Create (p1)-[:associateCompoundRNAInter{{how_mapped:line.how_mapped }}]->(p2)'
+    query = f'Match (p1:compound_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Chemical{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"),p2.licenses = split(line.licenses,"|"), p2.rnainter=true Create (p1)-[:associateCompoundRNAInter{{how_mapped:line.how_mapped }}]->(p2)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/RNAinter/{file_name}',
                                               query)

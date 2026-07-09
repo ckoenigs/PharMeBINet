@@ -53,7 +53,7 @@ generate new relationships between pathways of pharmebinet and pharmebinet nodes
 
 
 def create_cypher_file(file_name, node_label, rela_name):
-    query = ''' MATCH (d:Pathway{identifier:line.id_pharmebinet_pathway}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", source:"Reactome", license:"%s", url:"https://reactome.org/content/detail/"+line.stid}]->(c)'''
+    query = ''' MATCH (d:Pathway{identifier:line.id_pharmebinet_pathway}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: true, source:"Reactome", licenses:["%s"], url:"https://reactome.org/content/detail/"+line.stid}]->(c)'''
     query = query % (node_label, rela_name, license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/{file_name}',
@@ -92,12 +92,11 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
 
 def main():
     global path_of_directory, license
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        license = sys.argv[2]
     else:
         sys.exit('need a path reactome pathway edges and license')
-
+    license = pharmebinetutils.dict_source_to_license['reactome']
     global cypher_file
     print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')

@@ -32,12 +32,12 @@ def integrate_information_into_dict(dict_node_id_to_resource):
     get all node ids from the database
     :return:
     """
-    query = '''MATCH (n:Chemical) RETURN n.identifier, n.name, n.synonyms, n.resource'''
+    query = '''MATCH (n:Chemical) RETURN n.identifier, n.name, n.synonyms, n.resource, n.licenses'''
     results = g.run(query)
 
     for record in results:
-        [identifier, name, synonyms, resource] = record.values()
-        dict_node_id_to_resource[identifier] = resource
+        [identifier, name, synonyms, resource, licenses] = record.values()
+        dict_node_id_to_resource[identifier] = [resource, set(licenses)]
 
         name = name.lower()
         dict_name_to_id[name].add(identifier)
@@ -57,7 +57,7 @@ def prepare_query(file_name):
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query = '''MATCH (n:Chemical{identifier:line.db_id}), (g:drug_ddinter{identifier:line.ddinter_id}) Set n.resource=split(line.resource,"|"), n.ddinter='yes' Create (n)-[:equal_ddinter_chemical{how_mapped:line.how_mapped}]->(g)'''
+    query = '''MATCH (n:Chemical{identifier:line.db_id}), (g:drug_ddinter{identifier:line.ddinter_id}) Set n.resource=split(line.resource,"|"),n.licenses=split(line.licenses,"|"), n.ddinter=true Create (n)-[:equal_ddinter_chemical{how_mapped:line.how_mapped}]->(g)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/DDinter/{file_name}',
                                               query)
@@ -73,10 +73,11 @@ def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_
     :param csv_mapping: csv writer
     :return:
     """
+    dict_node_id_to_resource[identifier_db][1].add(pharmebinetutils.dict_source_to_license['ddinter'])
     csv_mapping.writerow(
         [identifier_db, identifier_act_id,
-         pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier_db], "DDinter"),
-         how_mapped])
+         pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier_db][0], "DDinter"),
+         how_mapped, '|'.join(dict_node_id_to_resource[identifier_db][1])])
 
 
 def get_all_ddinter_and_map(dict_node_id_to_resource):
@@ -89,7 +90,7 @@ def get_all_ddinter_and_map(dict_node_id_to_resource):
     file_name = 'output/mapping.tsv'
     mapping_file = open(file_name, 'w', encoding='utf-8')
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
-    csv_mapping.writerow(['db_id', 'ddinter_id', 'resource', 'how_mapped'])
+    csv_mapping.writerow(['db_id', 'ddinter_id', 'resource', 'how_mapped', 'licenses'])
 
     prepare_query(file_name)
 

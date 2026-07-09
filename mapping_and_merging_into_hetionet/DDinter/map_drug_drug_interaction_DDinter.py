@@ -24,11 +24,11 @@ def load_existing_drug_interaction():
     Load all drug interaction from database
     :return:
     """
-    query = '''MATCH (a:Chemical)-[s:INTERACTS_CHiCH]->(b:Chemical) RETURN a.identifier, b.identifier, s.resource'''
+    query = '''MATCH (a:Chemical)-[s:INTERACTS_CHiCH]->(b:Chemical) RETURN a.identifier, b.identifier, s.resource, s.licenses'''
     results = g.run(query)
     for record in results:
-        [chemical_1, chemical_2, resource] = record.values()
-        dict_existing_drug_interaction_to_resource[(chemical_1, chemical_2)] = resource
+        [chemical_1, chemical_2, resource, licenses] = record.values()
+        dict_existing_drug_interaction_to_resource[(chemical_1, chemical_2)] = [resource, set(licenses)]
 
     print('number of interaction in database already:', len(dict_existing_drug_interaction_to_resource))
 
@@ -41,7 +41,7 @@ def create_file_and_tsv_writer(file_name):
     """
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['chemical1', 'chemical2', 'level', 'rela_infos', 'resource'])
+    csv_writer.writerow(['chemical1', 'chemical2', 'level', 'rela_infos', 'resource', 'licenses'])
     return csv_writer
 
 
@@ -79,18 +79,19 @@ def load_ddinter_interaction(directory):
         rela_infos = set(rela_infos)
         if (chemical_id1, chemical_id2) in dict_existing_drug_interaction_to_resource:
             print('chemical 1; chemical 2')
+            dict_existing_drug_interaction_to_resource[(chemical_id1, chemical_id2)][1].add(license)
             csv_writer_mapped.writerow([chemical_id1, chemical_id2, levels.pop(), '|'.join(rela_infos),
                                         pharmebinetutils.resource_add_and_prepare(
-                                            dict_existing_drug_interaction_to_resource[(chemical_id1, chemical_id2)],
-                                            "DDinter")])
+                                            dict_existing_drug_interaction_to_resource[(chemical_id1, chemical_id2)][0],
+                                            "DDinter"), '|'.join(
+                    dict_existing_drug_interaction_to_resource[(chemical_id1, chemical_id2)][1])])
         elif (chemical_id2, chemical_id1) in dict_existing_drug_interaction_to_resource:
             print(';P')
-            resource = set(dict_existing_drug_interaction_to_resource[(chemical_id2, chemical_id1)])
-            resource.add('DDinter')
+            resource = set(dict_existing_drug_interaction_to_resource[(chemical_id2, chemical_id1)][0])
+            dict_existing_drug_interaction_to_resource[(chemical_id2, chemical_id1)][1].add(license)
             csv_writer_mapped.writerow([chemical_id2, chemical_id1, levels.pop(), '|'.join(rela_infos),
-                                        pharmebinetutils.resource_add_and_prepare(
-                                            dict_existing_drug_interaction_to_resource[(chemical_id2, chemical_id1)],
-                                            "DDinter")])
+                                        pharmebinetutils.resource_add_and_prepare(resource, "DDinter"), '|'.join(
+                    dict_existing_drug_interaction_to_resource[(chemical_id2, chemical_id1)][1])])
         else:
             counter_new += 1
             csv_writer_new.writerow(
@@ -111,12 +112,12 @@ def generate_cypher_file(file_name, file_name_new):
     :param file_name_new: string
     :return:
     """
-    query = ''' MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Match (n)-[r:INTERACTS_CHiCH]->(c)  Set r.resource=split(line.resource,"|"), r.ddinter="yes", r.level=line.level, r.rela_infos=split(line.rela_infos,"|")'''
+    query = ''' MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Match (n)-[r:INTERACTS_CHiCH]->(c)  Set r.resource=split(line.resource,"|"),r.licenses=split(line.licenses,"|"), r.ddinter=true, r.level=line.level, r.rela_infos=split(line.rela_infos,"|")'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/DDinter/{file_name}', query)
     cypher_file.write(query)
 
-    query = '''MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Create (n)-[r:INTERACTS_CHiCH{source:"DDinter", resource:["DDinter"], source:"DDinter", ddinter:"yes" , license:"%s", url:"https://ddinter.scbdd.com/", level:line.level, rela_infos:split(line.rela_infos,"|")}]->(c) '''
+    query = '''MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Create (n)-[r:INTERACTS_CHiCH{source:"DDinter", resource:["DDinter"], source:"DDinter", ddinter:true , licenses:["%s"], url:"https://ddinter.scbdd.com/", level:line.level, rela_infos:split(line.rela_infos,"|")}]->(c) '''
     query = query % (license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/DDinter/{file_name_new}',
@@ -126,10 +127,9 @@ def generate_cypher_file(file_name, file_name_new):
 
 def main():
     global path_of_directory, license
-    license = ''
+    license = pharmebinetutils.dict_source_to_license['ddinter']
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        license = sys.argv[2]
     else:
         sys.exit('need a path and license ')
 

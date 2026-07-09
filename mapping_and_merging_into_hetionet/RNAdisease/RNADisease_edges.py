@@ -40,7 +40,8 @@ def cypher_edge(file_name, label1, label2, properties, edge_name):
         else:
             query += f'{header}:line.{header}, '
 
-    query = query + 'source:"RNADisease", resource:["RNADisease"],rnadisease:"yes", url:"http://www.rnadisease.org/", license:"Provide data for non-commercial use, distribution, or reproduction in any medium, only if you properly cite the original work."}]->(p2)'
+    query = query + 'source:"RNADisease", resource:["RNADisease"],rnadisease:true, url:"http://www.rnadisease.org/", licenses:["%s"]}]->(p2)'
+    query = query % pharmebinetutils.dict_source_to_license['rnadisease']
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/RNAdisease/{file_name}',
                                               query)

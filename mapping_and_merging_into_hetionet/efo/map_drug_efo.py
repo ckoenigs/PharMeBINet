@@ -32,7 +32,7 @@ def generate_cypher_queries_and_tsv_files():
     # cypher file for mapping and integration
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query_match = '''Match (s:Chemical{identifier:line.pharmebinet_id }) , (n:efo{id:line.efo_id}) Set s.efo=true,  s.resource=split(line.resource,"|"),  s.licenses=split(line.licenses,"|")  Create (s)-[:equal_to_efo_drug{how_mapped:line.how_mapped}]->(n)'''
+    query_match = '''Match (s:Chemical{identifier:line.pharmebinet_id }) , (n:efo{id:line.efo_id}) Set s.efo=True,  s.resource=split(line.resource,"|"),  s.licenses=split(line.licenses,"|")  Create (s)-[:equal_to_efo_drug{how_mapped:line.how_mapped}]->(n)'''
     query_match = pharmebinetutils.get_query_import(path_of_directory,
                                                     f'mapping_and_merging_into_hetionet/efo/{file_name_mapped}',
                                                     query_match)

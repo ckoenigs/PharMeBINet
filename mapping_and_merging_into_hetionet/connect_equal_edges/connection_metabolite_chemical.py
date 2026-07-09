@@ -47,7 +47,8 @@ def load_and_map_metabolite():
     """
     file_name = 'output/metabolite_chemical.tsv'
     with open('output/cypher.cypher', 'a', encoding='utf-8') as f:
-        cypher_query = ''' Match (n:Metabolite{identifier:line.metabolite_id}), (m:Compound{identifier:line.chemical_id})  Create (n)-[:EQUAL_MeC{mapping:line.mapped, url:"https://pharmebi.net/#/metabolites/"+line.metabolite_id, source:'PharMeBINet', resource:['PharMeBINet'], pharmebinet:'yes', license:'CC0 1.0'}]->(m)'''
+        cypher_query = ''' Match (n:Metabolite{identifier:line.metabolite_id}), (m:Compound{identifier:line.chemical_id})  Create (n)-[:EQUAL_MeC{mapping:line.mapped, url:"https://pharmebi.net/#/metabolites/"+line.metabolite_id, source:'PharMeBINet', resource:['PharMeBINet'], pharmebinet:true, licenses:['%s']}]->(m)'''
+        cypher_query = cypher_query % ( pharmebinetutils.dict_source_to_license['pharmebinet'])
         cypher_query = pharmebinetutils.get_query_import(path_of_directory,
                                                          f'mapping_and_merging_into_hetionet/connect_equal_edges/{file_name}',
                                                          cypher_query)

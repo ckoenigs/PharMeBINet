@@ -12,6 +12,8 @@ import pharmebinetutils
 # dictionary disease name to resource
 dict_phenotype_id_to_resource = {}
 
+license = pharmebinetutils.dict_source_to_license['ptmd']
+
 
 def create_connection_with_neo4j():
     """
@@ -31,13 +33,13 @@ def load_disease_from_database_and_add_to_dict(label, condition=''):
     """
     Load all Genes from my database and add them into a dictionary
     """
-    query = f"MATCH (n:{label}) {condition} RETURN n.identifier, n.name, n.synonyms, n.xrefs, n.resource"
+    query = f"MATCH (n:{label}) {condition} RETURN n.identifier, n.name, n.synonyms, n.xrefs, n.resource, n.licenses"
     results = g.run(query)
 
     dict_different_mappings_for_a_label = {'name': {}, 'synonyms': {}, 'umls': {}, 'omim': {}, 'ncit': {}}
 
-    for identifier, name, synonyms, xrefs, resource, in results:
-        dict_phenotype_id_to_resource[identifier] = resource
+    for identifier, name, synonyms, xrefs, resource, licenses, in results:
+        dict_phenotype_id_to_resource[identifier] = [resource,set(licenses)]
         name = name.lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_different_mappings_for_a_label['name'], name, identifier)
         if synonyms:
@@ -95,7 +97,7 @@ def generate_files(path_of_directory):
 
     file_name = 'PTMD_disease_to_disease'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['PTMD_disease_name', 'identifier', 'resource', 'mapping_method']
+    header = ['PTMD_disease_name', 'identifier', 'resource', 'mapping_method', 'licenses']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'a'
     file = open(file_path, mode, encoding='utf-8')
@@ -107,7 +109,7 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     query = (f' MATCH (n:PTMD_Disease), (v:Phenotype{{identifier: line.identifier}}) WHERE id(n) = '
-             f'toInteger(line.PTMD_disease_name) SET v.ptmd = "yes", v.resource = split(line.resource, "|") '
+             f'toInteger(line.PTMD_disease_name) SET v.ptmd = True, v.resource = split(line.resource, "|") , v.licenses = split(line.licenses, "|") '
              f'CREATE (v)-[:equal_to_PTMD_disease {{mapped_with: line.mapping_method}}]->(n)')
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     mode = 'w' if os.path.exists(file_path) else 'w+'
@@ -126,6 +128,13 @@ dict_manual_mapping={
 }
 
 set_not_map_with_disease=set(["lactate dehydrogenase b deficiency","pyrin-associated autoinflammatory disease", "keratosis follicularis"])
+
+def write_to_tsv_file(csv_mapping,neo4j_id, pharmebinet_id,mapping_method):
+    dict_phenotype_id_to_resource[pharmebinet_id][1].add(license)
+    csv_mapping.writerow(
+        [neo4j_id, pharmebinet_id,
+         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[pharmebinet_id][0], "PTMD"),
+         mapping_method, '|'.join(dict_phenotype_id_to_resource[pharmebinet_id][1])])
 
 def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_symptom, dict_phenotype):
     """
@@ -146,10 +155,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
         if name in dict_disease['name']:
             mapped = True
             for identifier in dict_disease['name'][name]:
-                csv_mapping.writerow(
-                    [neo4j_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "PTMD"),
-                     'name'])
+                write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'name')
 
         if mapped:
             continue
@@ -157,10 +163,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
         if name in dict_symptom['name']:
             mapped = True
             for identifier in dict_symptom['name'][name]:
-                csv_mapping.writerow(
-                    [neo4j_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "PTMD"),
-                     'name'])
+                write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'name')
 
         if mapped:
             continue
@@ -168,22 +171,14 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
         if name in dict_phenotype['name']:
             mapped = True
             for identifier in dict_phenotype['name'][name]:
-                csv_mapping.writerow(
-                    [neo4j_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "PTMD"),
-                     'name'])
+                write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'name')
 
         if mapped:
             continue
         # manual mapping
         if name in dict_manual_mapping:
-            print('manual')
             mapped = True
-            csv_mapping.writerow(
-                [neo4j_id, dict_manual_mapping[name],
-                 pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[dict_manual_mapping[name]],
-                                                           "PTMD"),
-                 'manual'])
+            write_to_tsv_file(csv_mapping, neo4j_id, dict_manual_mapping[name], 'manual')
 
         if mapped:
             continue
@@ -195,11 +190,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
                 if umls_cui in dict_disease['umls']:
                     mapped = True
                     for identifier in dict_disease['umls'][umls_cui]:
-                        csv_mapping.writerow(
-                            [neo4j_id, identifier,
-                             pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                       "PTMD"),
-                             'umls'])
+                        write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls')
 
         if mapped:
             continue
@@ -208,10 +199,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
         if name in dict_disease['synonyms']:
             mapped = True
             for identifier in dict_disease['synonyms'][name]:
-                csv_mapping.writerow(
-                    [neo4j_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "PTMD"),
-                     'synonym'])
+                write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'synonym')
 
         if mapped:
             continue
@@ -220,11 +208,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
             if umls_cui in dict_symptom['umls']:
                 mapped = True
                 for identifier in dict_symptom['umls'][umls_cui]:
-                    csv_mapping.writerow(
-                        [neo4j_id, identifier,
-                         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                   "PTMD"),
-                         'umls'])
+                    write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls')
 
         if mapped:
             continue
@@ -232,10 +216,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
         if name in dict_symptom['synonyms']:
             mapped = True
             for identifier in dict_symptom['synonyms'][name]:
-                csv_mapping.writerow(
-                    [neo4j_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "PTMD"),
-                     'synonym'])
+                write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'synonym')
 
         if mapped:
             continue
@@ -244,11 +225,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
             if umls_cui in dict_phenotype['umls']:
                 mapped = True
                 for identifier in dict_phenotype['umls'][umls_cui]:
-                    csv_mapping.writerow(
-                        [neo4j_id, identifier,
-                         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                   "PTMD"),
-                         'umls'])
+                    write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls')
 
         if mapped:
             continue
@@ -256,10 +233,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
         # if name in dict_phenotype['synonyms']:
         #     mapped = True
         #     for identifier in dict_phenotype['synonyms'][name]:
-        #         csv_mapping.writerow(
-        #             [neo4j_id, identifier,
-        #              pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "PTMD"),
-        #              'synonym'])
+        #         write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'synonym')
         #
         # if mapped:
         #     continue
@@ -276,11 +250,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
         #             if nci_id in dict_disease['ncit']:
         #                 mapped = True
         #                 for identifier in dict_disease['ncit'][nci_id]:
-        #                     csv_mapping.writerow(
-        #                         [neo4j_id, identifier,
-        #                          pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-        #                                                                    "PTMD"),
-        #                          'umls_nci'])
+        #                     write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls_nci')
         #
         # if mapped:
         #     continue
@@ -298,11 +268,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
         #             if name_umls in dict_disease['name']:
         #                 mapped = True
         #                 for identifier in dict_disease['name'][name_umls]:
-        #                     csv_mapping.writerow(
-        #                         [neo4j_id, identifier,
-        #                          pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-        #                                                                    "PTMD"),
-        #                          'umls_name'])
+        #                     write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls_name')
         #
         # if mapped:
         #     continue
@@ -313,11 +279,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
         #         if name_umls in dict_symptom['name']:
         #             mapped = True
         #             for identifier in dict_symptom['name'][name_umls]:
-        #                 csv_mapping.writerow(
-        #                     [neo4j_id, identifier,
-        #                      pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-        #                                                                "PTMD"),
-        #                      'umls_name'])
+        #                 write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls_name')
         #
         # if mapped:
         #     continue
@@ -327,11 +289,7 @@ def load_all_PTMD_diseases_and_finish_the_files(csv_mapping, dict_disease, dict_
         #         if name_umls in dict_phenotype['name']:
         #             mapped = True
         #             for identifier in dict_phenotype['name'][name_umls]:
-        #                 csv_mapping.writerow(
-        #                     [neo4j_id, identifier,
-        #                      pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-        #                                                                "PTMD"),
-        #                      'umls_name'])
+        #                 write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls_name')
 
         if not mapped:
             counter_not_mapped += 1

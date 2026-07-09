@@ -53,7 +53,7 @@ for entry in a:
         f.close()
         # Cypher Eintrag für Datei erstellen
         f = open("FDA_edges/edge_cypher.cypher", 'a', encoding="utf-8")
-        cypher = f' MATCH (n:Chemical), (m:Chemical) WHERE n.identifier = line.id1 AND m.identifier = line.id2 CREATE (n)-[:{name}{{additional_type:line.type, openfda:"yes", resource:["openFDA"], source:"openFDA"}}]->(m)'
+        cypher = f' MATCH (n:Chemical), (m:Chemical) WHERE n.identifier = line.id1 AND m.identifier = line.id2 CREATE (n)-[:{name}{{additional_type:line.type, openfda=true, resource:["openFDA"], source:"openFDA"}}]->(m)'
         cypher = pharmebinetutils.get_query_import(path_of_directory,
                                                    f'mapping_and_merging_into_hetionet/openFDA/FDA_edges/SubstanceData_Chemical_Chemical_Edge_{name}.tsv',
                                                    cypher)

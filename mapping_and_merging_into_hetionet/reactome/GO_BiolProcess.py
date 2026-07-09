@@ -40,17 +40,17 @@ load in all gobiolproc from pharmebinet in a dictionary
 
 def load_pharmebinet_gobiolproc_in():
     # query ist ein String
-    query = '''MATCH (n:BiologicalProcess) RETURN n.identifier, n.alternative_ids, n.resource'''
+    query = '''MATCH (n:BiologicalProcess) RETURN n.identifier, n.alternative_ids, n.resource, n.licenses'''
     # query = '''MATCH (n:Pathway) RETURN n.identifier,n.names, n.source, n.idOwns'''
     # graph_database.run(query) führt den Befehl aus query aus, Ergebnisse sind in results als Liste gespeichert
     results = graph_database.run(query)
 
     # results werden einzeln durchlaufen
     for record in results:
-        [identifier, alt_ids, resource] = record.values()
+        [identifier, alt_ids, resource, licenses] = record.values()
         # im dictionary werden passend zu den Identifiern die Namen und die idOwns gespeichert
         # dict_gobiolproc_pharmebinet_identifier[identifier] = names
-        dict_gobiolprocId_to_resource[identifier] = resource
+        dict_gobiolprocId_to_resource[identifier] = [resource,set(licenses)]
         identifier = identifier.replace("GO:", "")
         dict_gobiolproc_pharmebinet_identifier[identifier] = 1
         if alt_ids:
@@ -71,7 +71,7 @@ csv_not_mapped.writerow(['id'])
 
 file_mapped_gobiolproc = open('gobiolproc/mapped_gobiolproc.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_gobiolproc, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_pharmebinet', 'resource'])
+csv_mapped.writerow(['id', 'id_pharmebinet', 'resource', 'licenses'])
 
 '''
 load all reactome gobiolproc and check if they are in pharmebinet or not
@@ -96,13 +96,14 @@ def load_reactome_gobiolproc_in():
             counter_map_with_id += 1
             # if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:
             #     print('multiple für identifier')
-
+            dict_gobiolprocId_to_resource["GO:" + gobiolproc_id][1].add(pharmebinetutils.dict_source_to_license['reactome'])
             csv_mapped.writerow([gobiolproc_id, "GO:" + gobiolproc_id, pharmebinetutils.resource_add_and_prepare(
-                dict_gobiolprocId_to_resource["GO:" + gobiolproc_id],
-                'Reactome')])  # erster eintrag reactome, zweiter pharmebinet
+                dict_gobiolprocId_to_resource["GO:" + gobiolproc_id][0],
+                'Reactome'), '|'.join(dict_gobiolprocId_to_resource["GO:" + gobiolproc_id][1])])  # erster eintrag reactome, zweiter pharmebinet
         elif gobiolproc_id in dict_gobiolproc_pharmebinet_alt_ids:
+            dict_gobiolprocId_to_resource["GO:" + dict_gobiolproc_pharmebinet_alt_ids[gobiolproc_id]][1].add(pharmebinetutils.dict_source_to_license['reactome'])
             csv_mapped.writerow([gobiolproc_id, "GO:" + gobiolproc_id, pharmebinetutils.resource_add_and_prepare(
-                dict_gobiolprocId_to_resource["GO:" + dict_gobiolproc_pharmebinet_alt_ids[gobiolproc_id]], 'Reactome')])
+                dict_gobiolprocId_to_resource["GO:" + dict_gobiolproc_pharmebinet_alt_ids[gobiolproc_id]][0], 'Reactome'), '|'.join(dict_gobiolprocId_to_resource["GO:" + dict_gobiolproc_pharmebinet_alt_ids[gobiolproc_id]][1])])
         else:
             csv_not_mapped.writerow([gobiolproc_id])
             # file_not_mapped_pathways.write(pathways_id+ '\t' +pathways_name+ '\t' + pathways_id_type+ '\n' )
@@ -120,7 +121,7 @@ generate connection between mapping gobiolproc of reactome and pharmebinet and g
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
     # mappt die Knoten, die es in pharmebinet und reactome gibt und fügt die properties hinzu
-    query = '''Match (d: BiologicalProcess {identifier: line.id_pharmebinet}),(c:GO_BiologicalProcess_reactome{accession:line.id}) Create (d)-[: equal_to_reactome_gobiolproc]->(c)  SET d.resource = split(line.resource, '|'), d.reactome = "yes"'''
+    query = '''Match (d: BiologicalProcess {identifier: line.id_pharmebinet}),(c:GO_BiologicalProcess_reactome{accession:line.id}) Create (d)-[: equal_to_reactome_gobiolproc]->(c)  SET d.resource = split(line.resource, '|'),d.licenses = split(line.licenses, '|'), d.reactome = true'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/gobiolproc/mapped_gobiolproc.tsv',
                                               query)

@@ -44,7 +44,8 @@ def get_pairs_information():
 
     # I check manually on the new edges between gene and protein and most are not accurate, so only the existing are
     # updated
-    query =  f' Match (n:Protein{{identifier:line.protein_id}})-[r:PRODUCES_GpP]-(v:Gene{{identifier:line.gene_id}})  Set r.resource="DisGeNet"+r.resource, r.disgenet="yes"'''
+    query =  f' Match (n:Protein{{identifier:line.protein_id}})-[r:PRODUCES_GpP]-(v:Gene{{identifier:line.gene_id}})  Set r.resource="DisGeNet"+r.resource,r.licenses=r.licenses+"%s", r.disgenet=true'''
+    query = query % (pharmebinetutils.dict_source_to_license['disgenet'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name,
                                               query)

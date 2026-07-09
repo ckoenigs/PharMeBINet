@@ -33,7 +33,7 @@ dict_gene_to_name = {}
 dict_gene_id_to_synonyms = {}
 
 # dictionary gene id to gene name
-dict_gene_id_to_resource = {}
+dict_gene_id_to_resource_and_licenses = {}
 
 # dictionary gene name to genes without uniprot list
 dict_gene_symbol_to_gene_without_uniprot = {}
@@ -78,15 +78,15 @@ Find mapping between genes and proteins
 
 
 def get_all_genes():
-    query = '''MATCH (n:Gene) RETURN n.identifier,  n.gene_symbols, n.xrefs, n.name, n.synonyms, n.resource'''
+    query = '''MATCH (n:Gene) RETURN n.identifier,  n.gene_symbols, n.xrefs, n.name, n.synonyms, n.resource, n.licenses'''
     results = g.run(query)
     counter_uniprot_to_multiple_genes = 0
     counter_all_genes = 0
     list_double_names = set([])
     for record in results:
-        [gene_id, genesymbols, xrefs, name, synonyms, resource] = record.values()
+        [gene_id, genesymbols, xrefs, name, synonyms, resource, licenses] = record.values()
         counter_all_genes += 1
-        dict_gene_id_to_resource[gene_id] = set(resource)
+        dict_gene_id_to_resource_and_licenses[gene_id] = [set(resource), set(licenses) ]
 
         if xrefs:
             for xref in xrefs:
@@ -132,7 +132,7 @@ def get_all_genes():
 file_uniprots_gene_rela = open('uniprot_gene/db_uniprot_to_gene_rela.tsv', 'w')
 writer_rela = csv.writer(file_uniprots_gene_rela, delimiter='\t')
 writer_rela.writerow(
-    ['uniprot_id', 'gene_id', 'alternative_ids', 'name_mapping', 'resource_node', 'how_mapped'])
+    ['uniprot_id', 'gene_id', 'alternative_ids', 'name_mapping', 'resource_node', 'how_mapped','licenses'])
 
 # list of all uniprot ids which where wrong mapped and already found in the program to avoid duplication in the file
 list_already_included = []
@@ -151,13 +151,15 @@ if not integrate them into the tsv
 
 def check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, name_mapping, how_mapped):
     for gene_id in gene_ids:
-        if gene_id not in dict_gene_id_to_resource:
+        if gene_id not in dict_gene_id_to_resource_and_licenses:
             print('gene problem', gene_id)
             continue
         if not (identifier, gene_id) in list_already_integrated_pairs_gene_protein:
+            licenses = dict_gene_id_to_resource_and_licenses[gene_id][1]
+            licenses.add(pharmebinetutils.dict_source_to_license['uniprot'])
             writer_rela.writerow(
                 [identifier, gene_id, secondary_uniprot_ids, name_mapping,
-                 add_resource(dict_gene_id_to_resource[gene_id]), how_mapped])
+                 add_resource(dict_gene_id_to_resource_and_licenses[gene_id][0]), how_mapped, "|".join(licenses)])
             list_already_integrated_pairs_gene_protein.append(
                 (identifier, gene_id))
             list_already_included.append(uniprot_id)
@@ -337,7 +339,8 @@ def write_cypher_file():
             query += property + 's:[p.' + property + '], '
         else:
             query += property + ':p.' + property + ', '
-    query += 'uniprot:"yes", url:"https://www.uniprot.org/uniprot/"+p.identifier, source:"UniProt", resource:["UniProt"], license:"CC BY 4.0"}) '
+    query += 'uniprot:true, url:"https://www.uniprot.org/uniprot/"+p.identifier, source:"UniProt", resource:["UniProt"], licenses:["%s"]}) '
+    query = query % (pharmebinetutils.dict_source_to_license['uniprot'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/uniprot/output/db_uniprot_ids.tsv',
                                               query)
@@ -345,7 +348,8 @@ def write_cypher_file():
     file_cypher.write(pharmebinetutils.prepare_index_query_text('Protein', 'name'))
     file_cypher.write(query)
 
-    query = ''' MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:"yes" ,resource:['UniProt'],license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source:"UniProt", how_mapped:line.how_mapped}]->(n)'''
+    query = ''' MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'),g.licenses=split(line.licenses,'|'), g.uniprot=true Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:true ,resource:['UniProt'],licenses:['%s'], url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source:"UniProt", how_mapped:line.how_mapped}]->(n)'''
+    query = query % (pharmebinetutils.dict_source_to_license['uniprot'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.tsv',
                                               query)

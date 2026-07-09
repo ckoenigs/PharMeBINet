@@ -26,11 +26,11 @@ def load_gene_from_database_and_add_to_dict():
     Load all Genes from my database and add them into a dictionary
     :return:
     """
-    query = "MATCH (n:Gene) RETURN n.identifier, n.resource"
+    query = "MATCH (n:Gene) RETURN n.identifier, n.resource, n.licenses"
     results = g.run(query)
     for record in results:
-        [identifier, resource] = record.values()
-        dict_identifier_to_resource[identifier] = resource
+        [identifier, resource, licenses] = record.values()
+        dict_identifier_to_resource[identifier] = [resource, set(licenses)]
 
 
 # cypher file
@@ -46,10 +46,10 @@ def generate_files(path_of_directory):
     file_name = 'output_mapping/gene_to_gene'
     file = open(file_name + '.tsv', 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
-    header = ['dbsnp_gene_id', 'gene_id', 'resource']
+    header = ['dbsnp_gene_id', 'gene_id', 'resource', 'licenses']
     csv_mapping.writerow(header)
 
-    query = ''' Match (n:gene_dbSNP{identifier:line.dbsnp_gene_id}), (v:Gene{identifier:line.gene_id}) Set v.dbsnp="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_drugbank_variant]->(n)'''
+    query = ''' Match (n:gene_dbSNP{identifier:line.dbsnp_gene_id}), (v:Gene{identifier:line.gene_id}) Set v.dbsnp=true, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") Create (v)-[:equal_to_drugbank_variant]->(n)'''
 
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/dbSNP/{file_name}.tsv',
@@ -75,11 +75,9 @@ def load_all_dbSnp_gene_and_finish_the_files(csv_mapping):
 
         if identifier in dict_identifier_to_resource:
             counter_map += 1
-            resource = dict_identifier_to_resource[identifier]
-            resource.append('dbSNP')
-            resource = '|'.join(sorted(set(resource)))
-
-            csv_mapping.writerow([identifier, identifier, resource])
+            resource = pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier][0],'dbSNP')
+            dict_identifier_to_resource[identifier][1].add(pharmebinetutils.dict_source_to_license['dbsnp'])
+            csv_mapping.writerow([identifier, identifier, resource, '|'.join(dict_identifier_to_resource[identifier][1])])
         else:
             counter_not_mapped += 1
             print(identifier)

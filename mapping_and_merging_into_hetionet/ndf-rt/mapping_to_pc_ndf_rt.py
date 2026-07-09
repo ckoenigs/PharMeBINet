@@ -23,6 +23,7 @@ cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 dict_pharmacologic_class_id_to_resource_xrefs = {}
 # dictionary name to pc ids
 dict_name_to_pharmacologic_class_id = {}
+license = pharmebinetutils.dict_source_to_license['ndfrt']
 
 
 def load_pharmacologic_class_from_database_and_add_to_dict():
@@ -37,9 +38,9 @@ def load_pharmacologic_class_from_database_and_add_to_dict():
         identifier = node['identifier']
         resource = node['resource']
         name = node['name'].lower()
-        xrefs= set(node['xrefs']) if 'xrefs' in node else set()
+        xrefs = set(node['xrefs']) if 'xrefs' in node else set()
         pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_pharmacologic_class_id, name, identifier)
-        dict_pharmacologic_class_id_to_resource_xrefs[identifier] = [set(resource), xrefs]
+        dict_pharmacologic_class_id_to_resource_xrefs[identifier] = [set(resource), xrefs, set(node['licenses'])]
 
 
 def write_files(path_of_directory, label):
@@ -47,10 +48,10 @@ def write_files(path_of_directory, label):
     file_name_mapped = 'pharmacologicClass/mapped_' + label + '.tsv'
     file_mapped = open(file_name_mapped, 'w', encoding='utf-8')
     csv_mapped = csv.writer(file_mapped, delimiter='\t')
-    header_mapped = ['id', 'pc_id', 'resource', 'mapped', 'xrefs']
+    header_mapped = ['id', 'pc_id', 'resource', 'mapped', 'xrefs', 'licenses']
     csv_mapped.writerow(header_mapped)
 
-    query = f'''Match (n:{label}{{code:line.id}}) , (v:PharmacologicClass{{identifier:line.pc_id}}) Set v.resource=split(line.resource,"|"), v.ndf_rt="yes", v.xrefs=split(line.xrefs,"|") Create (v)-[:equal_to_ndf_rt{{how_mapped:line.mapped}}]->(n)'''
+    query = f'''Match (n:{label}{{code:line.id}}) , (v:PharmacologicClass{{identifier:line.pc_id}}) Set v.resource=split(line.resource,"|"),v.licenses=split(line.licenses,"|"), v.ndf_rt=true, v.xrefs=split(line.xrefs,"|") Create (v)-[:equal_to_ndf_rt{{how_mapped:line.mapped}}]->(n)'''
 
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ndf-rt/{file_name_mapped}',
@@ -88,16 +89,20 @@ def load_all_label_and_map(label, csv_mapped):
         if id_nui in dict_pharmacologic_class_id_to_resource_xrefs:
             counter_mapped += 1
             print(dict_pharmacologic_class_id_to_resource_xrefs[id_nui][1])
-            xrefs=xrefs.union(dict_pharmacologic_class_id_to_resource_xrefs[id_nui][1])
+            xrefs = xrefs.union(dict_pharmacologic_class_id_to_resource_xrefs[id_nui][1])
+            dict_pharmacologic_class_id_to_resource_xrefs[id_nui][2].add(license)
             csv_mapped.writerow([identifier, id_nui, pharmebinetutils.resource_add_and_prepare(
-                dict_pharmacologic_class_id_to_resource_xrefs[id_nui][0], 'NDF-RT'), 'ndf_rt_id', '|'.join(xrefs)])
+                dict_pharmacologic_class_id_to_resource_xrefs[id_nui][0], 'NDF-RT'), 'ndf_rt_id', '|'.join(xrefs),
+                                 '|'.join(dict_pharmacologic_class_id_to_resource_xrefs[id_nui][2])])
 
         elif name in dict_name_to_pharmacologic_class_id:
             counter_mapped += 1
             for pc_id in dict_name_to_pharmacologic_class_id[name]:
-                xrefs=xrefs.union(dict_pharmacologic_class_id_to_resource_xrefs[pc_id][1])
+                xrefs = xrefs.union(dict_pharmacologic_class_id_to_resource_xrefs[pc_id][1])
+                dict_pharmacologic_class_id_to_resource_xrefs[pc_id][2].add(license)
                 csv_mapped.writerow([identifier, pc_id, pharmebinetutils.resource_add_and_prepare(
-                    dict_pharmacologic_class_id_to_resource_xrefs[pc_id][0], 'NDF-RT'), 'name', '|'.join(xrefs)])
+                    dict_pharmacologic_class_id_to_resource_xrefs[pc_id][0], 'NDF-RT'), 'name', '|'.join(xrefs),
+                                     '|'.join(dict_pharmacologic_class_id_to_resource_xrefs[pc_id][2])])
 
     print(label, 'number of nodes', counter)
     print(label, 'number of mapped nodes', counter_mapped)
@@ -114,7 +119,7 @@ def map_drug_to_pc(csv_mapped):
     counter = 0
     counter_mapped = 0
     for record in results:
-        counter+=1
+        counter += 1
         node = record.data()['n']
         identifier = node['code']
         name = node['name'].lower().split(' [')[0]
@@ -132,11 +137,10 @@ def map_drug_to_pc(csv_mapped):
         if id_nui in dict_pharmacologic_class_id_to_resource_xrefs:
             counter_mapped += 1
             xrefs = xrefs.union(dict_pharmacologic_class_id_to_resource_xrefs[id_nui][1])
+            dict_pharmacologic_class_id_to_resource_xrefs[id_nui][2].add(license)
             csv_mapped.writerow([identifier, id_nui, pharmebinetutils.resource_add_and_prepare(
-                dict_pharmacologic_class_id_to_resource_xrefs[id_nui][0], 'NDF-RT'), 'ndf_rt_id', '|'.join(xrefs)])
-
-
-
+                dict_pharmacologic_class_id_to_resource_xrefs[id_nui][0], 'NDF-RT'), 'ndf_rt_id', '|'.join(xrefs),
+                                 '|'.join(dict_pharmacologic_class_id_to_resource_xrefs[id_nui][2])])
 
     print('drug number of nodes', counter)
     print('drug number of mapped nodes', counter_mapped)

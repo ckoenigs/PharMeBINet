@@ -44,7 +44,7 @@ def load_pc_from_database():
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_identifier_to_resource[identifier] = node['resource']
+        dict_identifier_to_resource[identifier] = [node['resource'], set(node['licenses'])]
         name = node['name'].lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_pc_ids, name, identifier)
 
@@ -71,13 +71,13 @@ def generate_files(path_of_directory):
     # file from relationship between gene and variant
     file_name = 'pharmacological_class/map_pc'
     file = open(file_name + '.tsv', 'w', encoding='utf-8')
-    header = ['pc_id_DB', 'pc_id', "how_mapped", "resource"]
+    header = ['pc_id_DB', 'pc_id', "how_mapped", "resource", "licenses"]
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
 
     cypher_file = open('protein/cypher_protein.cypher', 'a', encoding='utf-8')
 
-    query = '''Match (n:PharmacologicClass_DrugBank{identifier:line.pc_id_DB}), (v:PharmacologicClass{identifier:line.pc_id}) Set v.drugbank="yes", v.resource=split(line.resource,"|") Create (v)-[r:equal_to_pc_drugbank{how_mapped:line.how_mapped}]->(n)  '''
+    query = '''Match (n:PharmacologicClass_DrugBank{identifier:line.pc_id_DB}), (v:PharmacologicClass{identifier:line.pc_id}) Set v.drugbank=true, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") Create (v)-[r:equal_to_pc_drugbank{how_mapped:line.how_mapped}]->(n)  '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/{file_name}.tsv',
                                               query)
@@ -90,6 +90,18 @@ def generate_files(path_of_directory):
 # dictionary_pc_db_to_pc_id
 dict_pc_db_to_pc_id = {}
 
+def write_mapping_to_tsv(pc_id, identifier, csv_mapping, mapping_method):
+    if (identifier, pc_id) not in dict_pc_db_to_pc_id:
+        dict_pc_db_to_pc_id[(identifier, pc_id)] = mapping_method
+
+        licenses = dict_identifier_to_resource[pc_id][1]
+        licenses.add(pharmebinetutils.dict_source_to_license['drugbank'])
+
+        csv_mapping.writerow([identifier, pc_id, mapping_method,
+                              pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[pc_id][0],
+                                                                        'DrugBank'), '|'.join(licenses)])
+    else:
+        print('multy mapping with '+mapping_method)
 
 def load_all_drugbank_pc_and_map(csv_mapping):
     """
@@ -113,24 +125,13 @@ def load_all_drugbank_pc_and_map(csv_mapping):
         if mesh_id in dict_mesh_id_to_pc_ids:
             found_mapping = True
             for pc_id in dict_mesh_id_to_pc_ids[mesh_id]:
-                if (identifier, pc_id) not in dict_pc_db_to_pc_id:
-                    dict_pc_db_to_pc_id[(identifier, pc_id)] = 'mesh_mapped'
-                    csv_mapping.writerow([identifier, pc_id, 'mesh_mapped',
-                                          pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[pc_id],
-                                                                                    'DrugBank')])
-                else:
-                    print('multy mapping with mesh')
+                write_mapping_to_tsv(pc_id, identifier, csv_mapping, 'mesh_mapped')
         if not found_mapping:
             if name in dict_name_to_pc_ids:
                 found_mapping = True
                 for pc_id in dict_name_to_pc_ids[name]:
-                    if (identifier, pc_id) not in dict_pc_db_to_pc_id:
-                        dict_pc_db_to_pc_id[(identifier, pc_id)] = 'name_mapped'
-                        csv_mapping.writerow([identifier, pc_id, 'name_synonyms_mapped',
-                                              pharmebinetutils.resource_add_and_prepare(
-                                                  dict_identifier_to_resource[pc_id], 'DrugBank')])
-                    else:
-                        print('multy mapping with name')
+                    write_mapping_to_tsv(pc_id, identifier, csv_mapping, 'name_synonyms_mapped')
+
         if found_mapping:
             counter_mapped += 1
             continue
@@ -145,13 +146,7 @@ def load_all_drugbank_pc_and_map(csv_mapping):
                 if cui in dict_umls_cui_to_pc_ids:
                     found_mapping = True
                     for pc_id in dict_umls_cui_to_pc_ids[cui]:
-                        if (identifier, pc_id) not in dict_pc_db_to_pc_id:
-                            dict_pc_db_to_pc_id[(identifier, pc_id)] = 'name_umls_mapped'
-                            csv_mapping.writerow([identifier, pc_id, 'name_umls_mapped',
-                                                  pharmebinetutils.resource_add_and_prepare(
-                                                      dict_identifier_to_resource[pc_id], 'DrugBank')])
-                        else:
-                            print('multy mapping with name_umls_mapped')
+                        write_mapping_to_tsv(pc_id, identifier, csv_mapping, 'name_umls_mapped')
         if found_mapping:
             counter_mapped += 1
             continue
@@ -166,13 +161,7 @@ def load_all_drugbank_pc_and_map(csv_mapping):
                 if cui in dict_umls_cui_to_pc_ids:
                     found_mapping = True
                     for pc_id in dict_umls_cui_to_pc_ids[cui]:
-                        if (identifier, pc_id) not in dict_pc_db_to_pc_id:
-                            dict_pc_db_to_pc_id[(identifier, pc_id)] = 'mesh_umls_mapped'
-                            csv_mapping.writerow([identifier, pc_id, 'mesh_umls_mapped',
-                                                  pharmebinetutils.resource_add_and_prepare(
-                                                      dict_identifier_to_resource[pc_id], 'DrugBank')])
-                        else:
-                            print('multy mapping with mesh_umls_mapped')
+                        write_mapping_to_tsv(pc_id, identifier, csv_mapping, 'mesh_umls_mapped')
 
         if found_mapping:
             counter_mapped += 1
@@ -184,12 +173,11 @@ def load_all_drugbank_pc_and_map(csv_mapping):
 
 def main():
     print(datetime.datetime.now())
-    global path_of_directory, license
-    if len(sys.argv) < 3:
-        sys.exit('need path and license pc drugbank')
+    global path_of_directory
+    if len(sys.argv) < 2:
+        sys.exit('need path  pc drugbank')
 
     path_of_directory = sys.argv[1]
-    license = sys.argv[2]
     print('##########################################################################')
 
     print(datetime.datetime.now())

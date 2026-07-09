@@ -15,7 +15,7 @@ def generate_files(path_of_directory, file_name, source, label_bindingdb, label_
         os.mkdir(path_of_directory)
 
     file_path = os.path.join(path_of_directory, file_name)
-    header = ['node_id', 'pharmebinet_node_id', 'resource', 'mapping_method', 'xrefs']
+    header = ['node_id', 'pharmebinet_node_id', 'resource', 'mapping_method', 'licenses', 'xrefs']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8', newline="")
@@ -26,7 +26,7 @@ def generate_files(path_of_directory, file_name, source, label_bindingdb, label_
     prepare_where_string = ''
     for id_property_bindingdb in id_property_bindingdbs:
         prepare_where_string += f'n.{id_property_bindingdb}=line.node_id or '
-    query = f' Match (n:{label_bindingdb}), (v:{label_pharmebinet}{{identifier:line.pharmebinet_node_id}}) Where {prepare_where_string[:-3]} Set v.bindingdb="yes", v.resource=split(line.resource,"|") {additoinal_property} Create (v)-[:equal_to_bindingDB_{label_pharmebinet.lower()}{{mapped_with:line.mapping_method}}]->(n)'
+    query = f' Match (n:{label_bindingdb}), (v:{label_pharmebinet}{{identifier:line.pharmebinet_node_id}}) Where {prepare_where_string[:-3]} Set v.bindingdb=true, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") {additoinal_property} Create (v)-[:equal_to_bindingDB_{label_pharmebinet.lower()}{{mapped_with:line.mapping_method}}]->(n)'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     query = pharmebinetutils.get_query_import(path_of_directory,

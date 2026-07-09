@@ -9,7 +9,7 @@ sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
 # disease ontology license
-license = 'CC BY 4.0'
+license = pharmebinetutils.dict_source_to_license['foodon']
 
 '''
 create a connection with neo4j
@@ -74,7 +74,7 @@ def get_FO_properties():
     query_end = ''' Create (a)-[:equal_to_FO]->(b)'''
 
     # combine the important parts of node creation
-    query_new = query_nodes_start + query_middle_new + 'resource:["FoodOn"], foodon:"yes", source:"FoodOn", url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.identifier, license:"' + license + '"})' + query_end
+    query_new = query_nodes_start + query_middle_new + 'resource:["FoodOn"], foodon:true, source:"FoodOn", url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.identifier, licenses:["' + license + '"]})' + query_end
     return query_new
 
 
@@ -131,7 +131,7 @@ def get_is_a_relationships_and_add_to_tsv(cypher_file):
             tsv_file = csv.writer(file, delimiter='\t')
             tsv_file.writerow(['identifier_1', 'identifier_2'])
 
-            query = '''Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:%s{license:"%s", source:"FoodOn", unbiased:false, resource:["FoodOn"], foodon:'yes', url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.identifier_1}]->(a2)'''
+            query = '''Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:%s{licenses:["%s"], source:"FoodOn", unbiased:false, resource:["FoodOn"], foodon:true, url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.identifier_1}]->(a2)'''
             query = query % (label, label,
                              pharmebinetutils.prepare_rela_great(rela_type, label, label), license)
             query = pharmebinetutils.get_query_import(path_of_directory,

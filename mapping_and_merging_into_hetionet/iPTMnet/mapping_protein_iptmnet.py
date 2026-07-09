@@ -23,11 +23,11 @@ def load_proteins_from_database_and_add_to_dict():
     """
     Load all Proteins from pharmebinet and add them into a dictionary
     """
-    query = ("MATCH (n:Protein) RETURN n.identifier, n.name, n.resource, n.alternative_ids")
+    query = ("MATCH (n:Protein) RETURN n.identifier, n.name, n.resource, n.alternative_ids, n.licenses")
     results = g.run(query)
 
-    for identifier, name, resource, alternative_ids in results:
-        dict_identifier_to_resource[identifier] = resource
+    for identifier, name, resource, alternative_ids, licenses in results:
+        dict_identifier_to_resource[identifier] = [resource, set(licenses)]
         name = name.lower()
         dict_protein_name_to_identifier[name] = identifier
         #pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_to_identifier, name, identifier)
@@ -58,7 +58,7 @@ def generate_files(path_of_directory):
 
     file_name = 'iPTMnet_protein_to_Protein'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['iPTMnet_identifier', 'identifier', 'resource', 'mapping_method']
+    header = ['iPTMnet_identifier', 'identifier', 'resource', 'mapping_method', 'licenses']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
@@ -69,13 +69,20 @@ def generate_files(path_of_directory):
         os.mkdir(source)
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
-    query = f' Match (n:iPTMnet_Protein{{uniprot_accession:line.iPTMnet_identifier}}), (v:Protein{{identifier:line.identifier}}) Set v.iptmnet="yes", v.resource=split(line.resource,"|") MERGE (v)-[:equal_to_iPTMnet_protein{{mapped_with:line.mapping_method}}]->(n)'
+    query = f' Match (n:iPTMnet_Protein{{uniprot_accession:line.iPTMnet_identifier}}), (v:Protein{{identifier:line.identifier}}) Set v.iptmnet=true, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") MERGE (v)-[:equal_to_iPTMnet_protein{{mapped_with:line.mapping_method}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
     cypher_file.write(query)
 
     return csv_mapping
 
+def write_to_tsv_file(csv_mapping, node_id, pharmebinet_id, mapping_method):
+    dict_identifier_to_resource[pharmebinet_id][1].add(pharmebinetutils.dict_source_to_license['iptmnet'])
+    csv_mapping.writerow([
+        node_id, pharmebinet_id,
+        pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[pharmebinet_id][0], "iPTMnet"),
+        mapping_method, '|'.join(dict_identifier_to_resource[pharmebinet_id][1])
+    ])
 
 def load_all_iPTMnet_proteins_and_finish_the_files(csv_mapping):
     """
@@ -104,21 +111,13 @@ def load_all_iPTMnet_proteins_and_finish_the_files(csv_mapping):
 
         # Mapping by uniprot_accession
         if identifier in dict_identifier_to_resource:
-            csv_mapping.writerow([
-                identifier, identifier,
-                pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "iPTMnet"),
-                'uniprot_accession'
-            ])
+            write_to_tsv_file(csv_mapping, identifier, identifier, 'uniprot_accession')
             counter_mapped_id += 1
             continue  # Skip further checks
 
         # Mapping by isoform identifier
         if isoform_identifier and isoform_identifier in dict_identifier_to_resource:
-            csv_mapping.writerow([
-                identifier, isoform_identifier,
-                pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[isoform_identifier], "iPTMnet"),
-                'isoform_identifier'
-            ])
+            write_to_tsv_file(csv_mapping, identifier, isoform_identifier, 'isoform_identifier')
             counter_mapped_isoform_id += 1
             continue
 
@@ -127,22 +126,14 @@ def load_all_iPTMnet_proteins_and_finish_the_files(csv_mapping):
             lower_gene_name = gene_name.lower()
             if lower_gene_name in dict_gene_symbol_to_identifer:
                 main_id = dict_gene_symbol_to_identifer[lower_gene_name]
-                csv_mapping.writerow([
-                    identifier, main_id,
-                    pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id], "iPTMnet"),
-                    'gene_symbol'
-                ])
+                write_to_tsv_file(csv_mapping, identifier, main_id, 'gene_symbol')
                 counter_gene_names += 1
                 continue
 
         # Mapping by alternative IDs
         for main_id, alternatives in dict_identifier_to_alternative_ids.items():
             if identifier in alternatives:
-                csv_mapping.writerow([
-                    identifier, main_id,
-                    pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id], "iPTMnet"),
-                    'alternative_id'
-                ])
+                write_to_tsv_file(csv_mapping, identifier, main_id, 'alternative_id')
                 counter_mapped_alternative_id += 1
                 mapped = True
                 break
@@ -152,11 +143,7 @@ def load_all_iPTMnet_proteins_and_finish_the_files(csv_mapping):
         # Mapping by protein name
         if name_lower in dict_protein_name_to_identifier:
             main_id = dict_protein_name_to_identifier[name_lower]
-            csv_mapping.writerow([
-                identifier, main_id,
-                pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id], "iPTMnet"),
-                'name'
-            ])
+            write_to_tsv_file(csv_mapping, identifier, main_id, 'name')
             counter_mapped_name += 1
             continue
 

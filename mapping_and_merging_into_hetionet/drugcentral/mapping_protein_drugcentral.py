@@ -27,6 +27,8 @@ dict_protein_uniProt = {}
 dict_protein_mapping = defaultdict(dict)
 dict_target_mapping = defaultdict(dict)
 
+license = pharmebinetutils.dict_source_to_license['drugcentral']
+
 
 def load_protein_in():
     """
@@ -50,7 +52,7 @@ def load_protein_in():
         # xrefs = node["xrefs"] if "xrefs" in node else []
         # im dictionary werden passend zu den Identifiern die Namen und die idOwns gespeichert
         dict_protein_to_name[identifier] = prot_name
-        dict_proteinId_to_resource[identifier] = resource
+        dict_proteinId_to_resource[identifier] = [resource, set(node['licenses'])]
 
         if uniProt:
             dict_protein_uniProt[uniProt] = identifier
@@ -123,9 +125,10 @@ def load_bioactivity_in():
     for node_id in mapped_proteins:
         for protein_id in dict_protein_mapping[node_id]:
             methodes = list(dict_protein_mapping[node_id][protein_id])
+            dict_proteinId_to_resource[protein_id][1].add(license)
             csv_mapped.writerow([node_id, protein_id,
-                                 pharmebinetutils.resource_add_and_prepare(dict_proteinId_to_resource[protein_id],
-                                                                           'DrugCentral'), '|'.join(methodes)])
+                                 pharmebinetutils.resource_add_and_prepare(dict_proteinId_to_resource[protein_id][0],
+                                                                           'DrugCentral'), '|'.join(methodes),'|'.join(dict_proteinId_to_resource[protein_id][1])])
 
 
 def load_target_in():
@@ -182,8 +185,9 @@ def load_target_in():
         for protein_id in dict_target_mapping[node_id]:
             methodes = list(dict_target_mapping[node_id][protein_id])
             methodes = '|'.join(methodes)
+            dict_proteinId_to_resource[protein_id][1].add(license)
             csv_mapped_target.writerow([node_id, protein_id, pharmebinetutils.resource_add_and_prepare(
-                dict_proteinId_to_resource[protein_id], 'DrugCentral'), methodes])
+                dict_proteinId_to_resource[protein_id][0], 'DrugCentral'), methodes, '|'.join(dict_proteinId_to_resource[protein_id][1])])
 
 
 # file for mapped or not mapped identifier
@@ -193,7 +197,7 @@ csv_not_mapped.writerow(['id', 'accession_number', 'name', 'organismus'])
 
 file_mapped_protein = open('protein/mapped_protein.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_protein, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
+csv_mapped.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped', 'licenses'])
 
 file_not_mapped_target = open('protein/not_mapped_target.tsv', 'w', encoding="utf-8")
 csv_not_mapped_target = csv.writer(file_not_mapped_target, delimiter='\t', lineterminator='\n')
@@ -201,7 +205,7 @@ csv_not_mapped_target.writerow(['id', 'accession_number', 'name'])
 
 file_mapped_target = open('protein/mapped_target.tsv', 'w', encoding="utf-8")
 csv_mapped_target = csv.writer(file_mapped_target, delimiter='\t', lineterminator='\n')
-csv_mapped_target.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
+csv_mapped_target.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped', 'licenses'])
 
 
 def generate_cypher_file(file_name_protein, file_name_target):
@@ -213,13 +217,13 @@ def generate_cypher_file(file_name_protein, file_name_target):
     """
     cypher_file = open('output/cypher.cypher', 'a')
 
-    query_protein = '''MATCH (n:DC_Bioactivity), (c:Protein{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_Bioactivity_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query_protein = '''MATCH (n:DC_Bioactivity), (c:Protein{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral=true, c.resource=split(line.resource,'|'), c.licenses=split(line.licenses,'|') Create (c)-[:equal_to_Bioactivity_drugcentral{how_mapped:line.how_mapped}]->(n)'''
     query_protein = pharmebinetutils.get_query_import(path_of_directory,
                                                       "mapping_and_merging_into_hetionet/drugcentral/protein/" + file_name_protein,
                                                       query_protein)
     cypher_file.write(query_protein)
 
-    query_target = '''MATCH (n:DC_TargetComponent), (c:Protein{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_TargetComponent_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query_target = '''MATCH (n:DC_TargetComponent), (c:Protein{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral=true, c.resource=split(line.resource,'|'), c.licenses=split(line.licenses,'|') Create (c)-[:equal_to_TargetComponent_drugcentral{how_mapped:line.how_mapped}]->(n)'''
     query_target = pharmebinetutils.get_query_import(path_of_directory,
                                                      "mapping_and_merging_into_hetionet/drugcentral/protein/" + file_name_target,
                                                      query_target)

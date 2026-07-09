@@ -137,8 +137,8 @@ def create_cypher_file():
         # else:
         query_create += property + ':a.' + property + ', '
 
-    query_create = query_start + 'Create (b:Compound{identifier:line.identifier, drugbank:"yes", ' + query_create + 'resource:["DrugBank"], source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.identifier, license:"%s"}) Create (b)-[:equal_to_drugbank]->(a)'
-    query_create = query_create % (neo4j_label_drugbank, license)
+    query_create = query_start + 'Create (b:Compound{identifier:line.identifier, drugbank:true, ' + query_create + 'resource:["DrugBank"], source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.identifier, licenses:["%s"]}) Create (b)-[:equal_to_drugbank]->(a)'
+    query_create = query_create % (neo4j_label_drugbank, pharmebinetutils.dict_source_to_license["drugbank"])
 
     query_create = pharmebinetutils.get_query_import(path_of_directory,
                                                      f'mapping_and_merging_into_hetionet/drugbank/output/new_nodes.tsv',
@@ -165,8 +165,8 @@ def generation_of_interaction_file():
     csv_writer = csv.writer(g_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     csv_writer.writerow(['db1', 'db2', 'description'])
     cypherfile = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
-    query = ''' Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CHiCH{source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.db1, unbiased:false, resource:['DrugBank'], drugbank:'yes',  license:'%s', descriptions:split(line.description,'||')}]->(c2) '''
-    query = query % (license)
+    query = ''' Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CHiCH{source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.db1, unbiased:false, resource:['DrugBank'], drugbank:true,  licenses:['%s'], descriptions:split(line.description,'||')}]->(c2) '''
+    query = query % ( pharmebinetutils.dict_source_to_license["drugbank"])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.tsv',
                                               query)
@@ -198,10 +198,8 @@ path_of_directory = ''
 def main():
     global path_of_directory
     if len(sys.argv) < 2:
-        sys.exit('need license')
-    global license
-    license = sys.argv[1]
-    path_of_directory = sys.argv[2]
+        sys.exit('need path')
+    path_of_directory = sys.argv[1]
     print(sys.argv)
     print(path_of_directory)
     print(datetime.datetime.now())

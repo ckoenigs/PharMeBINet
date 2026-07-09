@@ -35,7 +35,7 @@ def load_metabolite_from_database():
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_metabolite_id_to_resource[identifier] = set(node['resource'])
+        dict_metabolite_id_to_resource[identifier] = [set(node['resource']), set(node['licenses'])]
         name = node['name'].lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_different_mapping_methods['name'], name, identifier)
 
@@ -60,7 +60,7 @@ def generate_files(path_of_directory):
     # file from relationship between gene and variant
     file_name = 'metabolite/mapping_metabolite.tsv'
     file = open(file_name, 'w', encoding='utf-8')
-    header = ['metabolite_db_id', 'metabolite_id', 'resource', 'how_mapped']
+    header = ['metabolite_db_id', 'metabolite_id', 'resource', 'how_mapped', 'licenses']
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
 
@@ -73,7 +73,7 @@ def generate_files(path_of_directory):
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Match (n:Metabolite{identifier:line.metabolite_id}), (v:Metabolite_DrugBank{identifier:line.metabolite_db_id}) Create (n)-[r:equal_to_metabolite_drugbank{how_mapped:line.how_mapped}]->(v) Set n.drugbank="yes", n.resource=split(line.resource,"|") '''
+    query = '''Match (n:Metabolite{identifier:line.metabolite_id}), (v:Metabolite_DrugBank{identifier:line.metabolite_db_id}) Create (n)-[r:equal_to_metabolite_drugbank{how_mapped:line.how_mapped}]->(v) Set n.drugbank=true, n.resource=split(line.resource,"|"), n.licenses=split(line.licenses,"|") '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/{file_name}',
                                               query)
@@ -89,6 +89,15 @@ set_of_metabolite_pairs = set()
 # dictionary db metabolite to metabolite_ids
 dict_db_metabolite_id_to_metabolite_ids = {}
 
+def write_to_file(identifier,metabolite_id, csv_mapping, mapping_method):
+    set_of_metabolite_pairs.add((identifier, metabolite_id))
+    licenses = dict_metabolite_id_to_resource[metabolite_id][1]
+    licenses.add(pharmebinetutils.dict_source_to_license['drugbank'])
+    csv_mapping.writerow(
+        [identifier, metabolite_id,
+         pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[metabolite_id][0],
+                                                   'DrugBank'),
+         mapping_method, "|".join(licenses)])
 
 def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
     query = "MATCH (v:Metabolite_DrugBank) RETURN v"
@@ -112,12 +121,7 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
                     inchi_key]
                 for metabolite_id in dict_different_mapping_methods['inchikey'][inchi_key]:
                     if (identifier, metabolite_id) not in set_of_metabolite_pairs:
-                        set_of_metabolite_pairs.add((identifier, metabolite_id))
-                        csv_mapping.writerow(
-                            [identifier, metabolite_id,
-                             pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[metabolite_id],
-                                                                       'DrugBank'),
-                             'inchi_key'])
+                        write_to_file(identifier, metabolite_id, csv_mapping,'inchi_key')
                     else:
                         print('multy mapping with inchikey')
 
@@ -130,12 +134,7 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
             dict_db_metabolite_id_to_metabolite_ids[identifier] = dict_different_mapping_methods['smiles'][smiles]
             for metabolite_id in dict_different_mapping_methods['smiles'][smiles]:
                 if (identifier, metabolite_id) not in set_of_metabolite_pairs:
-                    set_of_metabolite_pairs.add((identifier, metabolite_id))
-                    csv_mapping.writerow(
-                        [identifier, metabolite_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[metabolite_id],
-                                                                   'DrugBank'),
-                         'smiles'])
+                    write_to_file(identifier, metabolite_id, csv_mapping, 'smiles')
                 else:
                     print('multy mapping with smiles')
 
@@ -148,12 +147,7 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
             dict_db_metabolite_id_to_metabolite_ids[identifier] = dict_different_mapping_methods['name'][name]
             for metabolite_id in dict_different_mapping_methods['name'][name]:
                 if (identifier, metabolite_id) not in set_of_metabolite_pairs:
-                    set_of_metabolite_pairs.add((identifier, metabolite_id))
-                    csv_mapping.writerow(
-                        [identifier, metabolite_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[metabolite_id],
-                                                                   'DrugBank'),
-                         'name'])
+                    write_to_file(identifier, metabolite_id, csv_mapping, 'name')
                 else:
                     print('multy mapping with name')
 
@@ -169,11 +163,10 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
 def main():
     print(datetime.datetime.now())
     global path_of_directory, license
-    if len(sys.argv) < 3:
+    if len(sys.argv) < 2:
         sys.exit('need path and license metabolite drugbank')
 
-    path_of_directory = sys.argv[2]
-    license = sys.argv[1]
+    path_of_directory = sys.argv[1]
     print('##########################################################################')
 
     print(datetime.datetime.now())

@@ -26,14 +26,14 @@ def load_edges_from_database_and_add_to_dict():
     Load all Gene-Variant edges from Graph-DB and add rela-info into a dictionary
     '''
     print("query_started--------")
-    query = "MATCH (n:Gene)-[r:HAS_GhGV]-(p:Variant) RETURN n.identifier,r.resource,p.identifier"
+    query = "MATCH (n:Gene)-[r:HAS_GhGV]-(p:Variant) RETURN n.identifier,r.resource,r.licenses,p.identifier"
     results = g.run(query)
     print("query_ended----------")
 
     count = 0
     print(datetime.datetime.now())
     for record in results:
-        [gene_id, resource, variant_id] = record.values()
+        [gene_id, resource, licenses, variant_id] = record.values()
         count += 1
         if count % 50000 == 0:
             print(f"process: {count}")
@@ -43,7 +43,7 @@ def load_edges_from_database_and_add_to_dict():
             print(gene_id)
             print(resource)
             print(dict_pairs_to_info[(gene_id, variant_id)])
-        dict_pairs_to_info[(gene_id, variant_id)] = resource
+        dict_pairs_to_info[(gene_id, variant_id)] = [resource, set(licenses)]
 
 
 def get_DisGeNet_information():
@@ -61,7 +61,7 @@ def get_DisGeNet_information():
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file_gene_variant = open(file_path, mode)
     csv_gene_variant = csv.writer(file_gene_variant, delimiter='\t')
-    csv_gene_variant.writerow(['gene_id', 'variant_id', 'resource', 'sources'])
+    csv_gene_variant.writerow(['gene_id', 'variant_id', 'resource', 'sources', 'licenses'])
 
     # Create tsv for NON-existing edges
     file_name_not_mapped = 'new_gene_variant_edges.tsv'
@@ -83,10 +83,11 @@ def get_DisGeNet_information():
         # mapping of existing edges
         if (gene_id, variant_id) in dict_pairs_to_info:
             # 4 columns: Id, Var_id, SourceId, resource, sourceS
+            dict_pairs_to_info[(gene_id, variant_id)][1].add(pharmebinetutils.dict_source_to_license['disgenet'])
             csv_gene_variant.writerow(
                 [gene_id, variant_id,
-                 pharmebinetutils.resource_add_and_prepare(dict_pairs_to_info[(gene_id, variant_id)], "DisGeNet"),
-                 '|'.join(rela['sourceId'])])
+                 pharmebinetutils.resource_add_and_prepare(dict_pairs_to_info[(gene_id, variant_id)][0], "DisGeNet"),
+                 '|'.join(rela['sourceId']), '|'.join(dict_pairs_to_info[(gene_id, variant_id)][1])])
         else:
             counter_not_mapped += 1
             writer.writerow([gene_id, variant_id, '|'.join(rela['sourceId']), snp_id])
@@ -100,7 +101,7 @@ def get_DisGeNet_information():
     mode = 'a' if os.path.exists(cypher_path) else 'w'
     file_cypher = open(cypher_path, mode, encoding='utf-8')
     # 1. Set…
-    query = f' Match (n:Variant{{identifier:line.variant_id}})-[r:HAS_GhGV]-(v:Gene{{identifier:line.gene_id}}) Set r.disgenet="yes",  r.resource = split(line.resource,"|"), r.sources = split(line.sources,"|") '
+    query = f' Match (n:Variant{{identifier:line.variant_id}})-[r:HAS_GhGV]-(v:Gene{{identifier:line.gene_id}}) Set r.disgenet=true,  r.resource = split(line.resource,"|"),r.licenses = split(line.licenses,"|"), r.sources = split(line.sources,"|") '
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name,
                                               query)
@@ -108,7 +109,8 @@ def get_DisGeNet_information():
 
     # 2. Create… (finde beide KNOTEN)
     # url:"https://www.disgenet.org/browser/2/1/0/"+line.variant_id
-    query = f' Match (n:Variant{{identifier:line.variant_id}}), (v:Gene{{identifier:line.gene_id}}) Create (v)-[:HAS_GhGV{{source:"DisGeNet", resource:["DisGeNet"] , license:"Attribution-NonCommercial-ShareAlike 4.0 International License", sources:split(line.sources,"|"), disgenet:"yes", url:"https://disgenet.com/search?view=VARIANTS&idents="+line.snp_id+"&source=ALL&tab=VDA"}}]->(n)'
+    query = f' Match (n:Variant{{identifier:line.variant_id}}), (v:Gene{{identifier:line.gene_id}}) Create (v)-[:HAS_GhGV{{source:"DisGeNet", resource:["DisGeNet"] , licenses:["%s"], sources:split(line.sources,"|"), disgenet:true, url:"https://disgenet.com/search?view=VARIANTS&idents="+line.snp_id+"&source=ALL&tab=VDA"}}]->(n)'
+    query = query % (pharmebinetutils.dict_source_to_license['disgenet'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_not_mapped,
                                               query)

@@ -58,7 +58,7 @@ generate new relationships between reaction of pharmebinet and protein of pharme
 
 
 def create_cypher_file(file_path, node_label, rela_name):
-    query = ''' MATCH (d:Reaction{identifier:line.id_pharmebinet_Reaction}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (c)-[: %s{order:line.order, stoichiometry:line.stoichiometry, from_names:split(line.from_name,"|") , source:"Reactome", resource: ['Reactome'], reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.id_pharmebinet_Reaction}]->(d)'''
+    query = ''' MATCH (d:Reaction{identifier:line.id_pharmebinet_Reaction}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (c)-[: %s{order:line.order, stoichiometry:line.stoichiometry, from_names:split(line.from_name,"|") , source:"Reactome", resource: ['Reactome'], reactome: true, licenses:["%s"], url:"https://reactome.org/content/detail/"+line.id_pharmebinet_Reaction}]->(d)'''
     query = query % (node_label, rela_name, license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/{file_path}',
@@ -96,12 +96,12 @@ def check_relationships_and_generate_file(node_pharmebinet_label,
 
 def main():
     global path_of_directory, license
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        license = sys.argv[2]
     else:
-        sys.exit('need a path and license reactome edge')
+        sys.exit('need a path reactome edge')
 
+    license = pharmebinetutils.dict_source_to_license['reactome']
     global cypher_file
     print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')

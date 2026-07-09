@@ -23,7 +23,7 @@ dict_omim_to_disease_ids = {}
 dict_name_to_disease_ids = {}
 
 # dictionary disease id to resource
-dict_id_to_resource = {}
+dict_id_to_resource_and_license = {}
 
 # dictionary disease id to set of name and synonyms
 dict_disease_id_to_set_of_name_and_synonyms = {}
@@ -40,7 +40,7 @@ def load_all_disease_information():
         node = record.data()['n']
         identifier = node['identifier']
         resource = node['resource']
-        dict_id_to_resource[identifier] = resource
+        dict_id_to_resource_and_license[identifier] = [resource, set(node['licenses'])]
         xrefs = node['xrefs'] if 'xrefs' in node else []
         name = node['name'].lower()
         dict_disease_id_to_set_of_name_and_synonyms[identifier] = {name}
@@ -68,9 +68,11 @@ def write_pair_into_file(disease_id, identifier, csv_disease, how_mapped):
     :param how_mapped:
     :return:
     """
-    resource = set(dict_id_to_resource[disease_id])
+    resource = set(dict_id_to_resource_and_license[disease_id][0])
+    licenses = dict_id_to_resource_and_license[disease_id][1]
+    licenses.add(pharmebinetutils.dict_source_to_license['uniprot'])
     csv_disease.writerow(
-        [identifier, disease_id, pharmebinetutils.resource_add_and_prepare(resource, 'UniProt'), how_mapped])
+        [identifier, disease_id, pharmebinetutils.resource_add_and_prepare(resource, 'UniProt'), how_mapped, '|'.join(licenses)])
 
 
 def gather_uniprot_disease_infos_and_add_to_file():
@@ -81,13 +83,13 @@ def gather_uniprot_disease_infos_and_add_to_file():
     file_name = 'uniprot_disease/mapping_disease.tsv'
     file_gene_disease = open(file_name, 'w')
     csv_disease = csv.writer(file_gene_disease, delimiter='\t')
-    csv_disease.writerow(['uniprot_disease_id', 'disease_id', 'resource', 'how_mapped'])
+    csv_disease.writerow(['uniprot_disease_id', 'disease_id', 'resource', 'how_mapped', 'licenses'])
     # csv_gene_disease.writerow(['gene_ids', 'disease_id','source','note','resource'])
 
     # query gene-disease association
 
     file_cypher = open('output/cypher.cypher', 'a')
-    query = '''MATCH (g:Disease_Uniprot{identifier:line.uniprot_disease_id}),(b:Disease{identifier:line.disease_id}) Create (b)-[r:equal_to_uniprot_disease{how_mapped:line.how_mapped}]->(g) Set b.resource=split(line.resource,"|"), b.uniprot='yes' '''
+    query = '''MATCH (g:Disease_Uniprot{identifier:line.uniprot_disease_id}),(b:Disease{identifier:line.disease_id}) Create (b)-[r:equal_to_uniprot_disease{how_mapped:line.how_mapped}]->(g) Set b.resource=split(line.resource,"|"),b.licenses=split(line.licenses,"|"), b.uniprot=true '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/uniprot/{file_name}',
                                               query)

@@ -80,7 +80,7 @@ def integrate_relationship_from_sider_into_pharmebinet():
     cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
     query_start = ''' Match (a:Chemical{identifier:line.chemical_id})'''
 
-    query = query_start + ''', (b:SideEffect{identifier:line.se_id}) Create (a)-[r:CAUSES_CHcSE{upperFrequency:line.upperFrequency, placebo:line.placebo, avg_frequency:line.avg_frequency, lowerFrequency:line.lowerFrequency, placeboAvgFrequency: line.placeboAvgFrequency, resource:["SIDER"] , placeboLowerFrequency: line.placeboLowerFrequency, placeboUpperFrequency: line.placeboUpperFrequency, url:"http://sideeffects.embl.de/se/"+ line.se_id , source:"SIDER",   sider:"yes", license:"CC BY-NC-SA 4.0"}]->(b) '''
+    query = query_start + ''', (b:SideEffect{identifier:line.se_id}) Create (a)-[r:CAUSES_CHcSE{upperFrequency:line.upperFrequency, placebo:line.placebo, avg_frequency:line.avg_frequency, lowerFrequency:line.lowerFrequency, placeboAvgFrequency: line.placeboAvgFrequency, resource:["SIDER"] , placeboLowerFrequency: line.placeboLowerFrequency, placeboUpperFrequency: line.placeboUpperFrequency, url:"http://sideeffects.embl.de/se/"+ line.se_id , source:"SIDER",   sider:true, licenses:["'''+pharmebinetutils.dict_source_to_license["sider"]+'''"]}]->(b) '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/sider/output/new_rela_se.tsv',
                                               query)

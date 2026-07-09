@@ -22,20 +22,22 @@ def create_connection_with_neo4j():
 def load_edge_into_dictionary():
     """Load existing interaction pairs between chemical-product nodes from Pharmebinet"""
 
-    query = f'''MATCH (n:Chemical)-[r:HAS_CHhPR]->(m:Product) RETURN n.identifier,m.identifier, r.resource'''
+    query = f'''MATCH (n:Chemical)-[r:HAS_CHhPR]->(m:Product) RETURN n.identifier,m.identifier, r.resource, r.licenses'''
     results = graph_database.run(query)
 
     dict_pair_to_resource = {}
     for record in results:
-        [node_1_id, node_2_id, resource, ] = record.values()
+        [node_1_id, node_2_id, resource, licenses] = record.values()
 
         pair = (node_1_id, node_2_id)
-        dict_pair_to_resource[pair] = resource
+        dict_pair_to_resource[pair] = [resource, set(licenses)]
     return dict_pair_to_resource
 
 
 # generate cypher file
 cypher_file = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
+
+license = pharmebinetutils.dict_source_to_license['drugcentral']
 
 
 def prepare_tsv_and_cypher():
@@ -46,11 +48,11 @@ def prepare_tsv_and_cypher():
     file_name = f'edge/edge_to_product.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['id1', 'id2', 'resource', 'props'])
+    csv_writer.writerow(['id1', 'id2', 'resource', 'licenses', 'props'])
 
     url = '"https://drugcentral.org/"'
 
-    query = f'''Match (n:Chemical{{identifier:line.id1}}),(o:Product{{identifier:line.id2}}) Merge (n)-[m:HAS_CHhPR]->(o) On Match Set m.active_moiety_substance_list=split(line.props,"|"), m.resource=split(line.resource,"|"), m.drugcentral='yes' On Create Set m.resource=['DrugCentral'], m.source='DrugCentral', m.url={url}, m.license="Creative Commons Attribution-ShareAlike 4.0 International Public License", m.drugcentral='yes', m.active_moiety_substance_list=split(line.props,"|") '''
+    query = f'''Match (n:Chemical{{identifier:line.id1}}),(o:Product{{identifier:line.id2}}) Merge (n)-[m:HAS_CHhPR]->(o) On Match Set m.active_moiety_substance_list=split(line.props,"|"), m.resource=split(line.resource,"|"),m.licenses=split(line.licenses,"|"), m.drugcentral=true On Create Set m.resource=['DrugCentral'], m.source='DrugCentral', m.url={url}, m.licenses=["{license}"], m.drugcentral=true, m.active_moiety_substance_list=split(line.props,"|") '''
     query_create = pharmebinetutils.get_query_import(path_of_directory,
                                                      'mapping_and_merging_into_hetionet/drugcentral/' + file_name,
                                                      query)
@@ -90,8 +92,10 @@ def load_and_map_DC_chemical_product_edges(dict_pair_to_resource):
             list_of_info.append(json.dumps(dict_info))
 
         if (node_1_id, node_2_id) in dict_pair_to_resource:
+            dict_pair_to_resource[(node_1_id, node_2_id)][1].add(license)
             row = [node_1_id, node_2_id, pharmebinetutils.resource_add_and_prepare(
-                dict_pair_to_resource[(node_1_id, node_2_id)], 'DrugCentral'), '|'.join(list_of_info)]
+                dict_pair_to_resource[(node_1_id, node_2_id)][0], 'DrugCentral'),
+                   '|'.join(dict_pair_to_resource[(node_1_id, node_2_id)][1]), '|'.join(list_of_info)]
             tsv_writer.writerow(row)
         else:
             row = [node_1_id, node_2_id, '', '|'.join(list_of_info)]

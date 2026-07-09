@@ -53,34 +53,40 @@ def protein_RNAInter():
     # save the IDs that appear in both of them in a dictionary
     # structure dictionary => { "identifier": "{rawid: "Raw_ID", resource: "resource"}}
     Protein_RNAInter = {}
-    query = "MATCH (n:Protein) RETURN n.identifier, n.resource"
+    query = "MATCH (n:Protein) RETURN n.identifier, n.resource, n.licenses"
     result = g.run(query)
     for record in result:
-        [id, resource] = record.values()
+        [id, resource, licenses] = record.values()
         if id in proteinRNAInter["UniProt"]:
             Protein_RNAInter[id] = {}
             Protein_RNAInter[id]["rawid"] = proteinRNAInter["UniProt"][id]
             newresource = pharmebinetutils.resource_add_and_prepare(resource, "RNAInter")
             Protein_RNAInter[id]["resource"] = newresource
+            licenses = set(licenses)
+            licenses.add(pharmebinetutils.dict_source_to_license['rnainter'])
+            Protein_RNAInter[id]["licenses"] = '|'.join(licenses)
 
     # for the Raw_ID's that belong to the database "NCBI":
     # get the identifier of the protein using the connection between 'Gene' and 'Protein'
     identifier = "','".join(Identifier)
-    query = "MATCH a=(m:Gene)--(b:Protein) WHERE m.identifier in ['" + identifier + "'] RETURN m.identifier,b.identifier, b.resource"
+    query = "MATCH a=(m:Gene)--(b:Protein) WHERE m.identifier in ['" + identifier + "'] RETURN m.identifier,b.identifier, b.resource, b.licenses"
     result = g.run(query)
     for record in result:
-        [gene, protein, resource] = record.values()
+        [gene, protein, resource, licenses] = record.values()
         if protein not in Protein_RNAInter:
             Protein_RNAInter[protein] = {}
             Protein_RNAInter[protein]["rawid"] = "NCBI:" + gene
             newresource = pharmebinetutils.resource_add_and_prepare(resource, "RNAInter")
             Protein_RNAInter[protein]["resource"] = newresource
+            licenses = set(licenses)
+            licenses.add(pharmebinetutils.dict_source_to_license['rnainter'])
+            Protein_RNAInter[protein]["licenses"] = '|'.join(licenses)
 
     # save the identifier and the Raw_ID in a tsv file
     file_name = 'output/Protein_mapping.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
-        line = ["identifier", "Raw_ID", "resource"]
+        line = ["identifier", "Raw_ID", "resource", "licenses"]
         writer.writerow(line)
         for key, value in Protein_RNAInter.items():
             list = []
@@ -91,7 +97,7 @@ def protein_RNAInter():
     tsv_file.close()
 
     print("######### Start: Cypher #########")
-    query = f'Match (p1:protein_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Protein{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.rnainter = "yes" Create (p1)-[:associateProteinRNAInter{{  '
+    query = f'Match (p1:protein_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Protein{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.licenses = split(line.licenses,"|"), p2.rnainter = true Create (p1)-[:associateProteinRNAInter{{  '
     query = query[:-2] + '}]->(p2)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/RNAinter/{file_name}',

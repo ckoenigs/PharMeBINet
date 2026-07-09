@@ -83,7 +83,7 @@ def load_chemical_from_database_and_add_to_dict():
         [node, labels] = record.values()
         identifier = node['identifier']
         resource = node['resource']
-        dict_chemical_id_to_resource[identifier] = resource
+        dict_chemical_id_to_resource[identifier] = [resource, set(node['licenses'])]
 
         if 'Compound' not in labels:
             if identifier not in dict_mesh_to_chemical_id:
@@ -133,12 +133,12 @@ def write_files(path_of_directory):
     file_name = 'ingredient/mapping.tsv'
     file_rela = open(file_name, 'w', encoding='utf-8')
     csv_rela = csv.writer(file_rela, delimiter='\t')
-    header_rela = ['code', 'chemical_id', 'resource', 'how_mapped']
+    header_rela = ['code', 'chemical_id', 'resource', 'how_mapped', 'licenses']
     csv_rela.writerow(header_rela)
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Match (n:NDFRT_INGREDIENT_KIND{code:line.code}), (v:Chemical{identifier:line.chemical_id}) Set v.ndf_rt='yes', v.resource=split(line.resource,'|') Create (v)-[:equal_to_ingredient_ndf_rt{how_mapped:line.how_mapped}]->(n)'''
+    query = '''Match (n:NDFRT_INGREDIENT_KIND{code:line.code}), (v:Chemical{identifier:line.chemical_id}) Set v.ndf_rt=true, v.resource=split(line.resource,'|'), v.licenses=split(line.licenses,'|') Create (v)-[:equal_to_ingredient_ndf_rt{how_mapped:line.how_mapped}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ndf-rt/{file_name}',
                                               query)
@@ -195,9 +195,9 @@ def load_all_ingredients_and_map():
 
 def write_mapping_into_file(csv_map):
     for (identifier, chemical_id), how_mapped in dict_mapping_pairs.items():
-        resource = set(dict_chemical_id_to_resource[chemical_id])
-        resource.add('NDF-RT')
-        csv_map.writerow([identifier, chemical_id, '|'.join(sorted(resource)), ';'.join(how_mapped)])
+        resource = pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[chemical_id][0], 'NDF-RT')
+        dict_chemical_id_to_resource[chemical_id][1].add(pharmebinetutils.dict_source_to_license['ndfrt'])
+        csv_map.writerow([identifier, chemical_id, resource, ';'.join(how_mapped),'|'.join(dict_chemical_id_to_resource[chemical_id][1])])
 
 
 def main():

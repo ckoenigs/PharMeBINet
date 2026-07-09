@@ -64,13 +64,13 @@ def prepare_query(file_name, file_name_new, db_label, adrecs_label, db_id, adrec
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = ''' MATCH (n:%s{identifier:line.%s}), (g:%s{%s:line.%s}) Set n.resource=split(line.resource,"|"), n.adrecs_target='yes' Create (n)-[:equal_adrecs_target_%s{how_mapped:line.how_mapped}]->(g)'''
+    query = ''' MATCH (n:%s{identifier:line.%s}), (g:%s{%s:line.%s}) Set n.resource=split(line.resource,"|"), n.adrecs_target=true Create (n)-[:equal_adrecs_target_%s{how_mapped:line.how_mapped}]->(g)'''
     query = query % (db_label, db_id, adrecs_label, adrecs_id_internal, adrecs_id, db_label.lower())
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/{director}/{file_name}', query)
     cypher_file.write(query)
 
-    query = f' Match (g:{adrecs_label}{{{adrecs_id_internal}:line.{adrecs_id}}})  Merge (n:SideEffect :Phenotype{{identifier:line.umls_id}}) On Create Set  n.name=g.ADR_TERM, n.source="UMLS via ADReCS-Target", n.adrecs_target="yes", n.resource=["ADReCS-Target"], n.license="", n.url="" Create (n)<-[:equal_to_adrecs_target_adr]-(g)'
+    query = f' Match (g:{adrecs_label}{{{adrecs_id_internal}:line.{adrecs_id}}})  Merge (n:SideEffect :Phenotype{{identifier:line.umls_id}}) On Create Set  n.name=g.ADR_TERM, n.source="UMLS via ADReCS-Target", n.adrecs_target=true, n.resource=["ADReCS-Target"], n.license="", n.url="" Create (n)<-[:equal_to_adrecs_target_adr]-(g)'
 
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/{director}/{file_name_new}', query)

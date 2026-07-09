@@ -39,8 +39,8 @@ def write_files(path_of_directory, addition_name, label):
     header_new = ['med_id', 'id', 'xrefs']
     csv_new.writerow(header_new)
 
-    query = '''Match (n:%s{id:line.med_id}) Create (v:PharmacologicClass{identifier:line.id, med_rt:'yes', xrefs:split(line.xrefs,'|'), synonyms:n.synonyms, resource:['MED-RT'], source:'MED-RT', url:'http://purl.bioontology.org/ontology/NDFRT/'+line.id, name:n.name, license:'UMLS license, available at https://uts.nlm.nih.gov/license.html', class_type:["%s"]}) Create (v)-[:equal_to_med_rt{how_mapped:'new'}]->(n)'''
-    query = query % (label, addition_name.replace('_', ' ').title().replace('Of', 'of'))
+    query = '''Match (n:%s{id:line.med_id}) Create (v:PharmacologicClass{identifier:line.id, med_rt:true, xrefs:split(line.xrefs,'|'), synonyms:n.synonyms, resource:['MED-RT'], source:'MED-RT', url:'http://purl.bioontology.org/ontology/NDFRT/'+line.id, name:n.name, licenses:['%s'], class_type:["%s"]}) Create (v)-[:equal_to_med_rt{how_mapped:'new'}]->(n)'''
+    query = query % (label, pharmebinetutils.dict_source_to_license['medrt'], addition_name.replace('_', ' ').title().replace('Of', 'of'))
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/med_rt/{file_name_new}',
                                               query)
@@ -110,7 +110,8 @@ def write_files_edge(path_of_directory,  label1, label2):
     header_new = ['id_1', 'id_2']
     csv_new.writerow(header_new)
 
-    query = '''Match (v1:PharmacologicClass{identifier:line.id_1}), (v2:PharmacologicClass{identifier:line.id_2}) Create (v1)-[:PARENT_OF_PCpoPC{med_rt:"yes", source:"MED-RT", resource:["MED-RT"], license:"UMLS license, available at https://uts.nlm.nih.gov/license.html", url:"https://thesaurus.cancer.gov/ncitbrowser/pages/concept_details.jsf?dictionary=MED-RT&code="+line.id_1}]->(v2)'''
+    query = '''Match (v1:PharmacologicClass{identifier:line.id_1}), (v2:PharmacologicClass{identifier:line.id_2}) Create (v1)-[:PARENT_OF_PCpoPC{med_rt:true, source:"MED-RT", resource:["MED-RT"], licenses:["%s"], url:"https://thesaurus.cancer.gov/ncitbrowser/pages/concept_details.jsf?dictionary=MED-RT&code="+line.id_1}]->(v2)'''
+    query = query % (pharmebinetutils.dict_source_to_license['medrt'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/med_rt/{file_name_new}',
                                               query)

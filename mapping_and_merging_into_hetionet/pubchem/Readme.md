@@ -1,6 +1,6 @@
 https://pubchem.ncbi.nlm.nih.gov/
 
-Version: 2025_08_26
+Version: 2025-08-26
 
 The script of PubChem is different from the others. It is because PubChem is too big. 
 

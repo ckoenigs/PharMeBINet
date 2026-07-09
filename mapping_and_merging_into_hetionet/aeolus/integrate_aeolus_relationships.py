@@ -25,6 +25,7 @@ def create_connection_with_neo4j():
 # path to directory
 path_of_directory = ''
 
+license = pharmebinetutils.dict_source_to_license['aeolus']
 
 def generate_cypher_file():
     """
@@ -34,12 +35,14 @@ def generate_cypher_file():
     # relationship queries
     cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
 
-    query = ''' Match (c:Chemical{identifier:line.chemical_id}),(r:SideEffect{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_CAUSES_CHmcSE{license:"CC0 1.0", url:"https://datadryad.org/dataset/doi:10.5061/dryad.8q0s4", unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', resource:['AEOLUS']}]->(r)'''
+    query = ''' Match (c:Chemical{identifier:line.chemical_id}),(r:SideEffect{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_CAUSES_CHmcSE{licenses:["%s"], url:"https://datadryad.org/dataset/doi:10.5061/dryad.8q0s4", unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:True, resource:['AEOLUS']}]->(r)'''
+    query = query % (license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/aeolus/drug/new_rela_se.tsv', query)
     cypher_file.write(query)
 
-    query = ''' Match (c:Chemical{identifier:line.chemical_id}),(r:Disease{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_INDUCES_CHmiD{license:"CC0 1.0", url:"https://datadryad.org/dataset/doi:10.5061/dryad.8q0s4", unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', resource:['AEOLUS']}]->(r)'''
+    query = ''' Match (c:Chemical{identifier:line.chemical_id}),(r:Disease{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_INDUCES_CHmiD{licenses:["%s"], url:"https://datadryad.org/dataset/doi:10.5061/dryad.8q0s4", unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:True, resource:['AEOLUS']}]->(r)'''
+    query = query % license
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/aeolus/drug/new_rela_disease.tsv',
                                               query)
@@ -118,7 +121,7 @@ def get_aeolus_connection_information_in_dict(label_search, dict_connection_info
     :return:
     """
     # and toFloat(l.countA)/(toFloat(l.countA)+toFloat(l.countC))>0.0001
-    query = '''Match (c:Chemical{aeolus:'yes'}) With c  Match (c)-[:equal_to_Aeolus_drug]-(r:Aeolus_Drug)-[l:Causes]-(:Aeolus_Outcome)--(d:%s) Where toInteger(l.countA)>100 and toFloat(l.countA)/(toFloat(l.countA)+toFloat(l.countB))>0.001  Return c.identifier, l, d.identifier '''
+    query = '''Match (c:Chemical{aeolus:True}) With c  Match (c)-[:equal_to_Aeolus_drug]-(r:Aeolus_Drug)-[l:Causes]-(:Aeolus_Outcome)--(d:%s) Where toInteger(l.countA)>100 and toFloat(l.countA)/(toFloat(l.countA)+toFloat(l.countB))>0.001  Return c.identifier, l, d.identifier '''
     query = query % (label_search)
     results = g.run(query)
     found_something_with_query = False

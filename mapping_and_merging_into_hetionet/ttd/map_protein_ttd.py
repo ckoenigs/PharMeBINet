@@ -6,6 +6,7 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
+
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global graph_database, driver
@@ -52,7 +53,7 @@ def load_protein_in():
 
             dict_seq_to_ids[seq].add(identifier)
 
-        dict_proteinId_to_resource[identifier] = resource
+        dict_proteinId_to_resource[identifier] = [resource, set(node["licenses"])]
 
         dict_protein_uniProt_to_id[uniProt] = identifier
         # synonyms
@@ -75,6 +76,14 @@ def load_gene_to_protein_ids():
     for record in results:
         [gene_symbol, protein_id] = record.values()
         pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_protein_ids, gene_symbol, protein_id)
+
+
+def write_to_tsv_file(csv_mapped, node_id, protein_id, mapping_method):
+    dict_proteinId_to_resource[protein_id][1].add(pharmebinetutils.dict_source_to_license['ttd'])
+    csv_mapped.writerow([node_id, protein_id,
+                         pharmebinetutils.resource_add_and_prepare(
+                             dict_proteinId_to_resource[protein_id][0],
+                             'TTD'), mapping_method, '|'.join(dict_proteinId_to_resource[protein_id][1])])
 
 
 def load_and_map_ttd_protein(csv_mapped, csv_not_mapped):
@@ -102,10 +111,7 @@ def load_and_map_ttd_protein(csv_mapped, csv_not_mapped):
                     counter_mapped += 1
                     found_mapping = True
                     protein_id = dict_protein_uniProt_to_id[uniprot_accssion]
-                    csv_mapped.writerow([node_id, protein_id,
-                                         pharmebinetutils.resource_add_and_prepare(
-                                             dict_proteinId_to_resource[protein_id],
-                                             'TTD'), 'uniprot_accession'])
+                    write_to_tsv_file(csv_mapped, node_id, protein_id, 'uniprot_accession')
 
         if found_mapping:
             continue
@@ -117,10 +123,7 @@ def load_and_map_ttd_protein(csv_mapped, csv_not_mapped):
                 counter_mapped += 1
                 found_mapping = True
                 for protein_id in dict_protein_name_ids[name]:
-                    csv_mapped.writerow([node_id, protein_id,
-                                         pharmebinetutils.resource_add_and_prepare(
-                                             dict_proteinId_to_resource[protein_id],
-                                             'TTD'), 'name'])
+                    write_to_tsv_file(csv_mapped, node_id, protein_id, 'name')
         if found_mapping:
             continue
 
@@ -131,10 +134,7 @@ def load_and_map_ttd_protein(csv_mapped, csv_not_mapped):
                     counter_mapped += 1
                     found_mapping = True
                     for protein_id in dict_gene_symbol_to_protein_ids[gene_name]:
-                        csv_mapped.writerow([node_id, protein_id,
-                                             pharmebinetutils.resource_add_and_prepare(
-                                                 dict_proteinId_to_resource[protein_id],
-                                                 'TTD'), 'gene_symbol'])
+                        write_to_tsv_file(csv_mapped, node_id, protein_id, 'gene_symbol')
         if found_mapping:
             continue
 
@@ -143,9 +143,7 @@ def load_and_map_ttd_protein(csv_mapped, csv_not_mapped):
         #     counter_mapped += 1
         #     found_mapping = True
         #     for protein_id in dict_seq_to_ids[sequence]:
-        #         csv_mapped.writerow([node_id, protein_id,
-        #                              pharmebinetutils.resource_add_and_prepare(dict_proteinId_to_resource[protein_id],
-        #                                                                        'TTD'), 'sequences'])
+        #         write_to_tsv_file(csv_mapped, node_id, protein_id, 'sequences')
         # if found_mapping:
         #     continue
 
@@ -162,7 +160,7 @@ def generate_cypher_file(file_name):
     """
     cypher_file = open('output/cypher.cypher', 'w')
 
-    query_Protein = ''' MATCH (n:TTD_Target{id:line.node_id}), (c:Protein{identifier:line.id_pharmebinet})  Set c.ttd='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_protein_ttd{how_mapped:line.how_mapped}]->(n)'''
+    query_Protein = ''' MATCH (n:TTD_Target{id:line.node_id}), (c:Protein{identifier:line.id_pharmebinet})  Set c.ttd=True, c.resource=split(line.resource,'|'), c.licenses=split(line.licenses,'|') Create (c)-[:equal_to_protein_ttd{how_mapped:line.how_mapped}]->(n)'''
     query_Protein = pharmebinetutils.get_query_import(path_of_directory,
                                                       f'mapping_and_merging_into_hetionet/ttd/{file_name}',
                                                       query_Protein)
@@ -183,7 +181,7 @@ def create_tsv_and_cypher_query():
     file_name = 'protein/mapped_protein.tsv'
     file_mapped_protein = open(file_name, 'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_protein, delimiter='\t', lineterminator='\n')
-    csv_mapped.writerow(['node_id', 'id_pharmebinet', 'resource', 'how_mapped'])
+    csv_mapped.writerow(['node_id', 'id_pharmebinet', 'resource', 'how_mapped', 'licenses'])
     generate_cypher_file(file_name)
     return csv_mapped, csv_not_mapped
 

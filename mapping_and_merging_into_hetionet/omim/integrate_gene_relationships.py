@@ -25,7 +25,7 @@ dict_first_letter_to_rela_letter = {
     'P': 'PT'
 }
 
-query_start = '''Match (g:Gene{identifier:line.%s}),(to:%s{identifier:line.%s}) Merge (g)-[r:ASSOCIATES_Ga%s]->(to) On Create Set r.resource=['OMIM'], r.source='OMIM', r.url="https://www.omim.org/entry/"+line.%s , r.omim=true, r.licenses=['%s'], %s On Match Set r.resource=r.resource+'OMIM', r.licenses=r.licenses+'%s', r.omim=true, %s '''
+query_start = '''Match (g:Gene{identifier:line.%s}),(to:%s{identifier:line.%s}) Merge (g)-[r:ASSOCIATES_Ga%s]->(to) On Create Set r.resource=['OMIM'], r.source='OMIM', r.url="https://www.omim.org/entry/"+line.%s , r.omim=True, r.licenses=['%s'], %s On Match Set r.resource=r.resource+'OMIM', r.licenses=r.licenses+'%s', r.omim=true, %s '''
 
 
 def prepare_cypher_query(file, header_start, to_label):

@@ -19,7 +19,9 @@ if [ ! -d output ]; then
   mkdir interaction
 fi
 
-rm output/cypher.cypher
+if [ -f output/cypher.cypher ]; then
+  rm output/cypher.cypher
+fi
 
 
 now=$(date +"%F %T")
@@ -53,9 +55,10 @@ echo integrate mappings into neo4j
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
 
-sleep 30
-python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
-sleep 60
+python ../../check_indices.py
+
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+python ../../check_indices.py
 
 
 
@@ -77,6 +80,7 @@ echo integrate rela into neo4j
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
 
-sleep 30
-python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
-sleep 60
+python ../../check_indices.py
+
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+python ../../check_indices.py

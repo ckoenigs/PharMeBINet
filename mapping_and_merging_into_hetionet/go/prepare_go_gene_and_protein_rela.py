@@ -7,7 +7,7 @@ import create_connection_to_databases
 import pharmebinetutils
 
 # disease ontology license
-license = 'CC BY 4.0'
+license = pharmebinetutils.dict_source_to_license['go']
 
 '''
 create a connection with neo4j
@@ -72,7 +72,7 @@ def get_go_rela_properties():
     global query_rela
 
     # combine the important parts of node creation
-    query_rela = part + 'resource:["GO"], go:"yes", source:"Gene Ontology", url:"http://purl.obolibrary.org/obo/"+line.go_id, license:"' + license + '"}]->(b)'
+    query_rela = part + 'resource:["GO"], go:True, source:"Gene Ontology", url:"http://purl.obolibrary.org/obo/"+line.go_id, licenses:["' + license + '"]}]->(b)'
 
 
 def create_tsv_file(go_label, other_label, rela_type):

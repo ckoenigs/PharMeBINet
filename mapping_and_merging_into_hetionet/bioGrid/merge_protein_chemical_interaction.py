@@ -20,6 +20,8 @@ def create_connection_with_neo4j():
 # dictionary protein pair to dictionary with resource and interaction id and other information
 dict_pair_chemical_protein_to_resource_and_pubmed = {}
 
+license = pharmebinetutils.dict_source_to_license['biogrid']
+
 
 def get_information_from_pharmebinet():
     """
@@ -28,14 +30,14 @@ def get_information_from_pharmebinet():
     """
     global maximal_id
 
-    query = '''MATCH (n:Chemical)-[a]->(m:Protein)  RETURN n.identifier, m.identifier, a.resource,  a.pubMed_ids, type(a);'''
+    query = '''MATCH (n:Chemical)-[a]->(m:Protein)  RETURN n.identifier, m.identifier, a.resource,  a.pubMed_ids, a.licenses ,type(a);'''
     results = g.run(query)
 
     for record in results:
-        [chemical_id, protein_id, resource, pubMed_ids, type_rela] = record
+        [chemical_id, protein_id, resource, pubMed_ids, licenses, type_rela] = record
         pubMed_ids = pubMed_ids if pubMed_ids is not None else []
         dict_pair_chemical_protein_to_resource_and_pubmed[
-            (chemical_id, protein_id, type_rela)] = {'resource': resource, 'pubmed_ids': pubMed_ids}
+            (chemical_id, protein_id, type_rela)] = {'resource': resource, 'pubmed_ids': pubMed_ids, 'licenses':set(licenses)}
 
 
 # dictionary_label_to file
@@ -82,8 +84,8 @@ def generate_file_and_cypher():
             continue
         set_of_rela_types.add(rela_type)
         rename_file_name = file_name + rela_type
-        query = '''Match (p1:Chemical{identifier:line.id_1}), (p2:Protein{identifier:line.id_2}) Create (p1)-[:%s{biogrid:'yes', source:'BioGRID', resource:['BioGRID'], url:"https://thebiogrid.org/"+line.gene_id ,license:"The MIT License", '''
-        query = query % (rela_type)
+        query = '''Match (p1:Chemical{identifier:line.id_1}), (p2:Protein{identifier:line.id_2}) Create (p1)-[:%s{biogrid:true, source:'BioGRID', resource:['BioGRID'], url:"https://thebiogrid.org/"+line.gene_id ,licenses:["%s"], '''
+        query = query % (rela_type, license)
 
         query += query_middle[:-2] + '}]->(p2)'
 
@@ -95,7 +97,7 @@ def generate_file_and_cypher():
         rename_file_name_update = file_name_update + rela_type
         query_update = '''Match (p1:Chemical{identifier:line.id_1})-[a:%s]->(p2:Protein{identifier:line.id_2}) Set '''
         query_update = query_update % (rela_type)
-        query_update += query_middle_update + 'a.biogrid="yes",  a.resource=split(line.resource,"|")'
+        query_update += query_middle_update + 'a.biogrid=true,  a.resource=split(line.resource,"|"),  a.licenses=split(line.licenses,"|")'
         query_update = pharmebinetutils.get_query_import(path_of_directory,
                                                          'mapping_and_merging_into_hetionet/bioGrid/' + rename_file_name_update + '.tsv',
                                                          query_update)
@@ -109,6 +111,7 @@ def generate_file_and_cypher():
 
         header_merge = header.copy()
         header_merge.append('resource')
+        header_merge.append('licenses')
         file_merge = open(rename_file_name_update + '.tsv', 'w', encoding='utf-8')
         csv_writer_merge = csv.DictWriter(file_merge, fieldnames=header_merge, delimiter='\t')
         csv_writer_merge.writeheader()
@@ -232,6 +235,9 @@ def prepareMappedEdges(p1, p2, rela_type, list_of_dict):
         dict_pair_chemical_protein_to_resource_and_pubmed[(p1, p2, rela_type)]['resource'], 'BioGRID')
     gene_id = final_dictionary['gene_id'] if type(final_dictionary['gene_id']) == str else final_dictionary[
         'gene_id'].pop()
+    licenses = dict_pair_chemical_protein_to_resource_and_pubmed[(p1, p2, rela_type)]['licenses']
+    licenses.add(license)
+    final_dictionary['licenses']= licenses
     if type(final_dictionary['pubmed_id']) != str:
         for pubmed_id in final_dictionary['pubmed_id']:
             pubmed_ids.add(pubmed_id)

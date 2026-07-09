@@ -110,8 +110,8 @@ def create_cypher_file(file_name, label):
     :return:
     """
 
-    query = ''' MATCH (d:%s{identifier:line.node_id_1}),(c:Metabolite{identifier:line.node_id_2}) CREATE (d)-[: ASSOCIATES_%saM{ resource: ['HMDB'], hmdb: "yes", url:"https://hmdb.ca/metabolites/"+line.node_id_2, source:"HMDB", pubMed_ids:split(line.pubmed_ids,"|"), reference_urls:split(line.urls,"|"), references:split(line.references,"|"), license:"Creative Commons (CC) Attribution-NonCommercial (NC) 4.0 International Licensing "}]->(c)'''
-    query = query % (label, label[0])
+    query = ''' MATCH (d:%s{identifier:line.node_id_1}),(c:Metabolite{identifier:line.node_id_2}) CREATE (d)-[: ASSOCIATES_%saM{ resource: ['HMDB'], hmdb: true, url:"https://hmdb.ca/metabolites/"+line.node_id_2, source:"HMDB", pubMed_ids:split(line.pubmed_ids,"|"), reference_urls:split(line.urls,"|"), references:split(line.references,"|"), licenses:["%s"]}]->(c)'''
+    query = query % (label, label[0], pharmebinetutils.dict_source_to_license['hmdb'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/hmdb/{file_name}',
                                               query)

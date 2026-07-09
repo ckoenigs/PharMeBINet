@@ -33,15 +33,15 @@ def load_existing_interactions():
     :return:
     '''
     global highest_interaction_id
-    query = 'Match (a:Protein)-->(i:Interaction)-->(b:Protein) Where not (i.iso_of_protein_from is not NULL or i.iso_of_protein_to is not NULL)  Return a.identifier, b.identifier, i.identifier, i.resource, i.pubMed_ids,i.methods '
+    query = 'Match (a:Protein)-->(i:Interaction)-->(b:Protein) Where not (i.iso_of_protein_from is not NULL or i.iso_of_protein_to is not NULL)  Return a.identifier, b.identifier, i.identifier, i.resource,i.licenses, i.pubMed_ids,i.methods '
     results = g.run(query)
     for record in results:
-        [protein1, protein2, interaction_id, resource, pubmed_ids, methods] = record.values()
+        [protein1, protein2, interaction_id, resource, licenses, pubmed_ids, methods] = record.values()
         dict_protein_pair_to_interaction_id[(protein1, protein2)] = interaction_id
         methods = set(methods) if methods is not None else set()
         pubmed_ids = set(pubmed_ids) if pubmed_ids is not None else set()
         dict_interaction_id_to_interaction_dictionary[interaction_id] = {"resource": resource, "pubmed_ids": pubmed_ids,
-                                                                         "methods": methods}
+                                                                         "methods": methods, "licenses": set(licenses)}
 
     query = 'MATCH (n:Interaction) With toInteger(n.identifier ) as int_id RETURN max(int_id) as m'
 
@@ -62,8 +62,8 @@ def generate_file_and_cypher(file_name_mapped, file_name_new):
 
     cypher_file = open('output/cypher_edge.cypher', 'w', encoding='utf-8')
 
-    query = '''Match (p1:Protein{identifier:line.protein_id_1}), (p2:Protein{identifier:line.protein_id_2}) Create (p1)-[:INTERACTS_PiI{hippie:'yes', source:'HIPPIE', resource:['HIPPIE'], url:"http://cbdm-01.zdv.uni-mainz.de/~mschaefer/hippie/query.php?s="+line.protein_id_1 ,license:"free to use for academic purposes"}]->(b:Interaction{ '''
-    query_update = '''Match (p1:Protein{identifier:line.id_1})-[r]->(i:Interaction{identifier:line.id})-[b]->(p2:Protein{identifier:line.id_2}) Set r.resource=split(line.resource, "|"), r.hippie="yes",  b.resource=split(line.resource, "|"), b.hippie="yes", i.resource=split(line.resource, "|"), '''
+    query = '''Match (p1:Protein{identifier:line.protein_id_1}), (p2:Protein{identifier:line.protein_id_2}) Create (p1)-[:INTERACTS_PiI{hippie:true, source:'HIPPIE', resource:['HIPPIE'], url:"http://cbdm-01.zdv.uni-mainz.de/~mschaefer/hippie/query.php?s="+line.protein_id_1 ,licenses:["%s"]}]->(b:Interaction{ '''
+    query_update = '''Match (p1:Protein{identifier:line.id_1})-[r]->(i:Interaction{identifier:line.id})-[b]->(p2:Protein{identifier:line.id_2}) Set r.resource=split(line.resource, "|"),r.licenses=split(line.licenses, "|"), r.hippie=true,b.resource=split(line.resource, "|"),  b.licenses=split(line.licenses, "|"), b.hippie=true, i.resource=split(line.resource, "|"),i.licenses=split(line.licenses, "|"), '''
 
     header = ['protein_id_1', 'protein_id_2', 'id']
     for record in results:
@@ -86,16 +86,19 @@ def generate_file_and_cypher(file_name_mapped, file_name_new):
             query += head + ':line.' + head + ', '
             query_update += 'i.' + head + '=line.' + head + ', '
 
-    query += ' license:"free to use for academic purposes", identifier:line.id,url:"http://cbdm-01.zdv.uni-mainz.de/~mschaefer/hippie/query.php?s="+line.protein_id_1, source:"HIPPIE", node_edge:true, hippie:"yes", resource:["HIPPIE"]})-[:INTERACTS_IiP{hippie:"yes", source:"HIPPIE", resource:["HIPPIE"], url:"http://cbdm-01.zdv.uni-mainz.de/~mschaefer/hippie/query.php?s="+line.protein_id_1 ,license:"free to use for academic purposes"}]->(p2)'
+    query += ' licenses:["%s"], identifier:line.id,url:"http://cbdm-01.zdv.uni-mainz.de/~mschaefer/hippie/query.php?s="+line.protein_id_1, source:"HIPPIE", node_edge:true, hippie:true, resource:["HIPPIE"]})-[:INTERACTS_IiP{hippie:true, source:"HIPPIE", resource:["HIPPIE"], url:"http://cbdm-01.zdv.uni-mainz.de/~mschaefer/hippie/query.php?s="+line.protein_id_1 ,licenses:["%s"]}]->(p2)'
+    query = query % (pharmebinetutils.dict_source_to_license['hippie'],
+                     pharmebinetutils.dict_source_to_license['hippie'],
+                     pharmebinetutils.dict_source_to_license['hippie'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/hippie/{file_name_new}',
                                               query)
     cypher_file.write(query)
-    query_update += '''i.pubMed_ids=split(line.pubmed_ids, "|"), i.methods=split(line.methods, "|"), i.hippie="yes" '''
+    query_update += '''i.pubMed_ids=split(line.pubmed_ids, "|"), i.methods=split(line.methods, "|"), i.hippie=true '''
 
     query_update = pharmebinetutils.get_query_import(path_of_directory,
-                                              f'mapping_and_merging_into_hetionet/hippie/{file_name_mapped}',
-                                              query_update)
+                                                     f'mapping_and_merging_into_hetionet/hippie/{file_name_mapped}',
+                                                     query_update)
     cypher_file.write(query_update)
 
     cypher_file.close()
@@ -106,7 +109,7 @@ def generate_file_and_cypher(file_name_mapped, file_name_new):
 
     file_mapped = open(file_name_mapped, 'w', encoding='utf-8')
     csv_writer_mapped = csv.writer(file_mapped, delimiter='\t')
-    csv_writer_mapped.writerow(['id', 'resource', 'id_1', 'id_2', 'pubmed_ids', 'methods'])
+    csv_writer_mapped.writerow(['id', 'resource', 'id_1', 'id_2', 'pubmed_ids', 'methods', 'licenses'])
 
     return csv_writer, csv_writer_mapped
 
@@ -269,10 +272,12 @@ def write_info_into_files():
         for rela_information in list_rela_information:
             prepare_pubmed_information(rela_information, publications)
             prepare_method_information(rela_information, methods)
-
+        dict_interaction_id_to_interaction_dictionary[interaction_id]['licenses'].add(
+            pharmebinetutils.dict_source_to_license['hippie'])
         csv_writer_mapping.writerow([interaction_id, pharmebinetutils.resource_add_and_prepare(
             dict_interaction_id_to_interaction_dictionary[interaction_id]['resource'], 'HIPPIE'), protein_1,
-                                     protein_2, '|'.join(publications), '|'.join(methods)])
+                                     protein_2, '|'.join(publications), '|'.join(methods), '|'.join(
+                dict_interaction_id_to_interaction_dictionary[interaction_id]['licenses'])])
 
 
 # path to directory

@@ -56,7 +56,7 @@ def get_all_variants_with_rs(csv_writer):
         [clinvar_id, xrefs] = record.values()
         for xref in xrefs:
             if xref.startswith('dbSNP'):
-                identifier = xref.split(':')[1].replace('rs', '')
+                identifier = xref.split(':')[1].replace('rs','')
                 if identifier in set_of_rs_ids_in_pharmebinet:
                     csv_writer.writerow([identifier, clinvar_id, 'https://www.ncbi.nlm.nih.gov/home/about/policies/'])
 
@@ -146,10 +146,10 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
     file_name = 'output/rs_clinvar_rela.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['rs_id', 'clinvar_id', 'license'])
+    csv_writer.writerow(['rs_id', 'clinvar_id'])
 
     cypher_file = open('output/cypher_dbSNP_clinVar.cypher', 'w', encoding='utf-8')
-    query = ''' Match (n:Variant{identifier:line.rs_id}), (m:Variant{identifier:line.clinvar_id}) Create (m)-[:IS_ALLEL_OF_ViaoV{url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.clinvar_id, license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", source:"external identifier from ClinVar", resource:["ClinVar"], clinvar:"yes"}]->(n)'''
+    query = f''' Match (n:Variant{{identifier:line.rs_id}}), (m:Variant{{identifier:line.clinvar_id}}) Create (m)-[:IS_ALLEL_OF_ViaoV{{url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.clinvar_id, licenses:["{pharmebinetutils.dict_source_to_license["clinvar"]}"], source:"external identifier from ClinVar", resource:["ClinVar"], clinvar:True}}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory_dbSNP,
                                               file_name,
                                               query)
@@ -228,12 +228,11 @@ def open_json_file_write_into_csv(path_to_data):
 
 
 def main():
-    global license, path_of_directory_dbSNP, path_to_data
-    if len(sys.argv) > 3:
+    global path_of_directory_dbSNP, path_to_data
+    if len(sys.argv) > 2:
         path_of_directory = sys.argv[1]
         path_of_directory_dbSNP = path_of_directory + 'mapping_and_merging_into_hetionet/dbSNP/'
-        license = sys.argv[2]
-        path_to_data =sys.argv[3]
+        path_to_data =sys.argv[2]
     else:
         sys.exit('need a path and license and path to data ')
 
@@ -256,8 +255,8 @@ def main():
     prepare_a_single_node.path_to_data = path_of_directory_dbSNP
     prepare_a_single_node.prepare_snp_file()
 
-
     load_dbSNP_data_for_nodes_with_dbSNP_in_db()
+
 
     print(
         '###########################################################################################################################')
@@ -267,6 +266,9 @@ def main():
 
 
     load_already_extracted_infos_from_file(path_to_data)
+
+
+
 
     print(
         '###########################################################################################################################')

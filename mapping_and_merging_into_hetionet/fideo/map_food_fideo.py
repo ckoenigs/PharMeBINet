@@ -31,10 +31,10 @@ def generate_tsv_files_and_cypher_file():
     file_name_mapped = 'output/map_food.tsv'
     update_nodes = open(file_name_mapped, 'w', encoding='utf-8')
     csv_update = csv.writer(update_nodes, delimiter='\t')
-    csv_update.writerow(['id', 'resource'])
+    csv_update.writerow(['id', 'resource', 'licenses'])
 
     query_start = f' Match (a:{label_co}{{id:line.id}})'
-    query_match = query_start + ' , (l:Food{identifier:line.id}) Set l.fideo="yes", l.resource=split(line.resource,"|") Create (l)-[:equal_food_cl]->(a)'
+    query_match = query_start + ' , (l:Food{identifier:line.id}) Set l.fideo=true, l.resource=split(line.resource,"|"), l.licenses=split(line.licenses,"|") Create (l)-[:equal_food_cl]->(a)'
 
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
@@ -55,10 +55,10 @@ def load_all_pharmebinet_food_in_dictionary():
     Load all existing food nodes into dictionaries
     :return:
     """
-    query = '''Match (n:Food) RETURN n.identifier, n.resource '''
+    query = '''Match (n:Food) RETURN n.identifier, n.resource, n.licenses '''
     results = g.run(query)
-    for identifier, resource,  in results:
-        dict_food_id_to_resource[identifier] = set(resource)
+    for identifier, resource, licenses,  in results:
+        dict_food_id_to_resource[identifier] = [set(resource), set(licenses)]
 
     print('size of anatomies in pharmebinet before the rest of DrugBank is added: ', len(dict_food_id_to_resource))
 
@@ -79,10 +79,12 @@ def map_food_nodes():
 
         if node_id in dict_food_id_to_resource:
             counter_mapped += 1
-            resource = dict_food_id_to_resource[node_id]
+            resource = dict_food_id_to_resource[node_id][0]
+            licenses = dict_food_id_to_resource[node_id][1]
+            licenses.add(pharmebinetutils.dict_source_to_license['fideo'])
             csv_update.writerow(
                 [node_id,
-                 pharmebinetutils.resource_add_and_prepare(resource, 'FIDEO')])
+                 pharmebinetutils.resource_add_and_prepare(resource, 'FIDEO'), '|'.join(licenses)])
 
     print('number of nodes in uberon: ', counter)
     print('number of mapped nodes in uberon: ', counter_mapped)

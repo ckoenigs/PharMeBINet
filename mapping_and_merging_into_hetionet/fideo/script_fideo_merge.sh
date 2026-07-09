@@ -33,11 +33,10 @@ echo "Current time: $now"
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
 
-sleep 30
+python ../../check_indices.py
 
-python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
-
-sleep 40
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+python ../../check_indices.py
 
 echo add edges
 now=$(date +"%F %T")
@@ -52,8 +51,8 @@ echo "Current time: $now"
 
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
-sleep 30
 
-python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
+python ../../check_indices.py
 
-sleep 40
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+python ../../check_indices.py

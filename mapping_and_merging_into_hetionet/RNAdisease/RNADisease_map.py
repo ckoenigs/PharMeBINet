@@ -33,8 +33,9 @@ def write_infos_into_file(csv_writer, raw_id, mapped_ids, how_mapped, dictionary
     :return:
     """
     for map_id in mapped_ids:
+        dictionary[map_id][1].add(pharmebinetutils.dict_source_to_license['rnadisease'])
         csv_writer.writerow(
-            [raw_id, map_id, pharmebinetutils.resource_add_and_prepare(dictionary[map_id], "RNADisease"), how_mapped])
+            [raw_id, map_id, pharmebinetutils.resource_add_and_prepare(dictionary[map_id][0], "RNADisease"), how_mapped, '|'.join(dictionary[map_id][1])])
 
 
 def disease_RNAdisease():
@@ -48,12 +49,12 @@ def disease_RNAdisease():
     disease_ids = {}
     disease_name = {}
 
-    query = "MATCH (n:Disease) RETURN n.identifier, n.alternative_ids, n.xrefs, n.resource, n.name, n.synonyms"
+    query = "MATCH (n:Disease) RETURN n.identifier, n.alternative_ids, n.xrefs, n.resource, n.name, n.synonyms, n.licenses"
     result = g.run(query)
 
     for record in result:
-        [id, ids, xrefs, resource, name, synonym] = record.values()
-        disease[id] = resource
+        [id, ids, xrefs, resource, name, synonym, licenses] = record.values()
+        disease[id] = [resource,set(licenses)]
 
         if xrefs is not None:
             for x in xrefs:
@@ -86,12 +87,12 @@ def disease_RNAdisease():
     symptom_name = {}
     symptom_xref = {}
 
-    query = "MATCH (n:Symptom) RETURN n.identifier, n.resource, n.name, n.synonyms, n.xrefs"
+    query = "MATCH (n:Symptom) RETURN n.identifier, n.resource, n.name, n.synonyms, n.xrefs, n.licenses"
     result = g.run(query)
 
     for record in result:
-        [id, resource, name, synonym, xref] = record.values()
-        symptom[id] = resource
+        [id, resource, name, synonym, xref, licenses] = record.values()
+        symptom[id] = [resource, set(licenses)]
 
         if name is not None:
             if name.lower() not in symptom_name:
@@ -119,7 +120,7 @@ def disease_RNAdisease():
         with open(file_name_symptom, 'w', newline='') as tsv_file1:
             writer = csv.writer(tsv_file, delimiter='\t')
             writer1 = csv.writer(tsv_file1, delimiter='\t')
-            line = ["id1", "id2", "resource", "how_mapped"]
+            line = ["id1", "id2", "resource", "how_mapped", "licenses"]
             writer.writerow(line)
             writer1.writerow(line)
 
@@ -162,14 +163,14 @@ def disease_RNAdisease():
         tsv_file1.close()
 
     print("######### Start: Cypher #########")
-    query = f'Match (p1:disease_RNADisease{{Disease_Name:line.id1}}),(p2:Disease{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"), p2.rnadisease = "yes" Create (p1)-[:associateRNADisease_disease{{how_mapped:line.how_mapped}}]->(p2)'
+    query = f'Match (p1:disease_RNADisease{{Disease_Name:line.id1}}),(p2:Disease{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"),p2.licenses = split(line.licenses,"|"), p2.rnadisease = true Create (p1)-[:associateRNADisease_disease{{how_mapped:line.how_mapped}}]->(p2)'
 
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/RNAdisease/{file_name}',
                                               query)
     cypher_file.write(query)
 
-    query = f'Match (p1:disease_RNADisease{{Disease_Name:line.id1}}),(p2:Symptom{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"), p2.rnadisease = "yes" Create (p1)-[:associateRNADisease_disease{{how_mapped:line.how_mapped}}]->(p2)'
+    query = f'Match (p1:disease_RNADisease{{Disease_Name:line.id1}}),(p2:Symptom{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"),p2.licenses = split(line.licenses,"|"), p2.rnadisease = true Create (p1)-[:associateRNADisease_disease{{how_mapped:line.how_mapped}}]->(p2)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/RNAdisease/{file_name_symptom}',
                                               query)
@@ -188,11 +189,11 @@ def rna_RNAdisease():
     dict_gene_name_to_identifiers = {}
     dict_product_name_to_identifiers = {}
 
-    query = "MATCH (n:RNA) RETURN n.identifier, n.gene, n.product, n.xrefs, n.resource"
+    query = "MATCH (n:RNA) RETURN n.identifier, n.gene, n.product, n.xrefs, n.resource, n.licenses"
     result = g.run(query)
 
-    for id, name, product, xrefs, resource, in result:
-        rna[id] = resource
+    for id, name, product, xrefs, resource, licenses, in result:
+        rna[id] = [resource, set(licenses)]
 
         if xrefs is not None:
             for x in xrefs:
@@ -218,7 +219,7 @@ def rna_RNAdisease():
     file_name = 'rna/rna_RNADiseaseedges.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
-        line = ["id1", "id2", "resource", "how_mapped"]
+        line = ["id1", "id2", "resource", "how_mapped", "licenses"]
         writer.writerow(line)
 
         query = "MATCH (n:rna_RNADisease) RETURN n.RNA_Symbol"
@@ -248,7 +249,7 @@ def rna_RNAdisease():
         tsv_file.close()
 
     print("######### Start: Cypher #########")
-    query = f'Match (p1:rna_RNADisease{{RNA_Symbol:line.id1}}),(p2:RNA{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"), p2.rnadisease = "yes" Create (p1)-[:associateRNADisease_rna{{how_mapped:line.how_mapped}}]->(p2)'
+    query = f'Match (p1:rna_RNADisease{{RNA_Symbol:line.id1}}),(p2:RNA{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"),p2.licenses = split(line.licenses,"|"), p2.rnadisease = true Create (p1)-[:associateRNADisease_rna{{how_mapped:line.how_mapped}}]->(p2)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/RNAdisease/{file_name}',
                                               query)

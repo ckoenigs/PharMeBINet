@@ -44,7 +44,8 @@ def prepare_edge(tuple_label_and_refseq_label):
     print('number of edges', counter)
 
     with open('output/cypher_edge.cypher', 'a', encoding='utf-8') as cypher_file_edge:
-        query = f'MATCH (n:{tuple_label_and_refseq_label[0]}{{identifier:line.identifier}}),(m:RNA{{identifier:line.pre_id}}) Create (n)-[:{tuple_label_and_refseq_label[2]}{{start:line.start, end:line.end, source:"RefSeq from "+line.source, strand:line.strand, resource:["RefSeq"], license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", url:COALESCE("https://identifiers.org/refseq:"+line.url, "https://www.ncbi.nlm.nih.gov/refseq/"),  refseq:"yes"}}]->(m)'
+        query = f'MATCH (n:{tuple_label_and_refseq_label[0]}{{identifier:line.identifier}}),(m:RNA{{identifier:line.pre_id}}) Create (n)-[:{tuple_label_and_refseq_label[2]}{{start:line.start, end:line.end, source:"RefSeq from "+line.source, strand:line.strand, resource:["RefSeq"], licenses:["%s"], url:COALESCE("https://identifiers.org/refseq:"+line.url, "https://www.ncbi.nlm.nih.gov/refseq/"),  refseq:true}}]->(m)'
+        query = query % (pharmebinetutils.dict_source_to_license['refseq'])
 
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/refseq/{file_name}',

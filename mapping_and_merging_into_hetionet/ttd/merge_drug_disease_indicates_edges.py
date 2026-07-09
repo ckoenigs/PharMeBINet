@@ -5,6 +5,7 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
+
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global g, driver
@@ -21,10 +22,10 @@ def load_existing_pairs():
     Load all existing pairs into a dictionary
     :return:
     """
-    query = 'Match (n:Chemical)-[r:TREATS_CHtD]-(m:Disease) Return n.identifier, r.resource, m.identifier'
+    query = 'Match (n:Chemical)-[r:TREATS_CHtD]-(m:Disease) Return n.identifier, r.resource, m.identifier, m.licenses'
     for record in g.run(query):
-        [chemical_id, resource, disease_id] = record.values()
-        dict_chemical_disease_pair_to_resource[(chemical_id, disease_id)] = resource
+        [chemical_id, resource, disease_id, licenses] = record.values()
+        dict_chemical_disease_pair_to_resource[(chemical_id, disease_id)] = [resource, set(licenses)]
 
 
 def generate_csv_and_tsv(label):
@@ -35,10 +36,10 @@ def generate_csv_and_tsv(label):
     file_name = f'edges/drug_{label}.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['chemical_id', 'disease_id', 'resource', 'ttd_id'])
+    csv_writer.writerow(['chemical_id', 'disease_id', 'resource', 'ttd_id', 'licenses'])
 
-
-    query = f' Match (c:Chemical{{identifier:line.chemical_id}}), (d:{label}{{identifier:line.disease_id}}) Merge (c)-[l:TREATS_CHt{label[0]}]->(d) On Create Set l.ttd="yes", l.resource=["TTD"], l.source="TTD", l.url="https://db.idrblab.net/ttd/data/drug/details/"+line.ttd_id, l.license="No license" On Match Set l.resource=split(line.resource,"|"), l.ttd="yes" '
+    query = f' Match (c:Chemical{{identifier:line.chemical_id}}), (d:{label}{{identifier:line.disease_id}}) Merge (c)-[l:TREATS_CHt{label[0]}]->(d) On Create Set l.ttd=True, l.resource=["TTD"], l.source="TTD", l.url="https://db.idrblab.net/ttd/data/drug/details/"+line.ttd_id, l.licenses=["%s"] On Match Set l.resource=split(line.resource,"|"),l.licenses=split(line.licenses,"|"), l.ttd=true '
+    query = query % (pharmebinetutils.dict_source_to_license['ttd'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ttd/{file_name}',
                                               query)
@@ -62,10 +63,13 @@ def get_ttd_drug_disease_edge(label):
             print('double :O ', chemical_id, disease_id)
         set_of_pairs.add((chemical_id, disease_id))
         if (chemical_id, disease_id) in dict_chemical_disease_pair_to_resource:
+            dict_chemical_disease_pair_to_resource[(chemical_id, disease_id)][1].add(
+                pharmebinetutils.dict_source_to_license['ttd'])
             csv_writer.writerow([chemical_id, disease_id, pharmebinetutils.resource_add_and_prepare(
-                dict_chemical_disease_pair_to_resource[(chemical_id, disease_id)], 'TTD'), ttd_id])
+                dict_chemical_disease_pair_to_resource[(chemical_id, disease_id)][0], 'TTD'), ttd_id,
+                                 '|'.join(dict_chemical_disease_pair_to_resource[(chemical_id, disease_id)][1])])
             continue
-        csv_writer.writerow([chemical_id, disease_id, "TTD", ttd_id])
+        csv_writer.writerow([chemical_id, disease_id, "TTD", ttd_id, pharmebinetutils.dict_source_to_license['ttd']])
 
 
 def main():
@@ -89,7 +93,7 @@ def main():
     print('#' * 50)
     print(datetime.datetime.now())
     print('map compound')
-    for label in ['Disease','Symptom']:
+    for label in ['Disease', 'Symptom']:
         get_ttd_drug_disease_edge(label)
 
     cypher_file.close()

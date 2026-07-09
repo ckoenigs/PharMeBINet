@@ -74,13 +74,15 @@ def generate_files(path_of_directory):
     csv_new.writerow(header)
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Match (n:Mutated_protein_gene_DrugBank{identifier:line.gene_variant_drugbank}), (v:Variant{identifier:line.variant_id}) Set v.drugbank="yes", v.resource=v.resource+"DrugBank" Create (v)-[:equal_to_drugbank_variant]->(n)'''
+    query = '''Match (n:Mutated_protein_gene_DrugBank{identifier:line.gene_variant_drugbank}), (v:Variant{identifier:line.variant_id}) Set v.drugbank=true, v.resource=v.resource+"DrugBank",v.licenses=v.licenses+"%s"  Create (v)-[:equal_to_drugbank_variant]->(n)'''
+    query = query % (pharmebinetutils.dict_source_to_license['drugbank'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/gene_variant/{file_name}.tsv',
                                               query)
     cypher_file.write(query)
 
-    query = '''Match (n:Mutated_protein_gene_DrugBank{identifier:line.variant_id}) Create (v:Variant :GeneVariant{identifier:line.variant_id, defining_change:n.defining_change, gene_symbol:n.gene_symbol, license:"%s", allele:n.allele, protein_name:n.protein_name, drugbank:"yes",  source:"dbSNP from DrugBank", resource:["DrugBank"] ,xrefs:split(line.xrefs,"|"), url:'https://www.ncbi.nlm.nih.gov/snp/'+line.variant_id }) Create (v)-[:equal_to_drugbank_variant]->(n)'''
+    query = '''Match (n:Mutated_protein_gene_DrugBank{identifier:line.variant_id}) Create (v:Variant :GeneVariant{identifier:line.variant_id, defining_change:n.defining_change, gene_symbol:n.gene_symbol, licenses:["%s"], allele:n.allele, protein_name:n.protein_name, drugbank:true,  source:"dbSNP from DrugBank", resource:["DrugBank"] ,xrefs:split(line.xrefs,"|"), url:'https://www.ncbi.nlm.nih.gov/snp/'+line.variant_id }) Create (v)-[:equal_to_drugbank_variant]->(n)'''
+    query = query % (pharmebinetutils.dict_source_to_license['drugbank'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/gene_variant/{file_name_new}.tsv',
                                               query)
@@ -142,10 +144,8 @@ def main():
     global path_of_directory
     if len(sys.argv) < 2:
         print(len(sys.argv))
-        sys.exit('need license and path')
-    global license
-    license = sys.argv[1]
-    path_of_directory = sys.argv[2]
+        sys.exit('need path')
+    path_of_directory = sys.argv[1]
     print('##########################################################################')
 
     print(datetime.datetime.now())

@@ -43,6 +43,8 @@ dict_symptom_mapping = defaultdict(dict)
 dict_doi_disease_mapping = defaultdict(dict)
 dict_doi_symptom_mapping = defaultdict(dict)
 
+license = pharmebinetutils.dict_source_to_license['drugcentral']
+
 
 def load_disease_in():
     """
@@ -70,7 +72,7 @@ def load_disease_in():
             names.append(dis_name)
 
         # im dictionary werden passend zu den Identifiern die Namen und die idOwns gespeichert
-        dict_diseaseId_to_resource[identifier] = resource
+        dict_diseaseId_to_resource[identifier] = [resource, set(node['licenses'])]
 
         for ref in xrefs:
             # doid
@@ -165,7 +167,7 @@ def load_symptom_in():
             names.append(sym_name)
 
         xrefs = node["xrefs"] if "xrefs" in node else []
-        dict_symptomId_to_resource[identifier] = resource
+        dict_symptomId_to_resource[identifier] = [resource, set(node['licenses'])]
 
         for ref in xrefs:
             # umls_cui
@@ -197,6 +199,14 @@ def load_symptom_in():
 
             dict_symptom_name[name].add(identifier)
 
+def write_to_tsv_file(dict_node_mapping, dict_node_id_to_resource, node_id,disease_id, csv_writer):
+    methodes = list(dict_node_mapping[node_id][disease_id])
+    methodes = '|'.join(methodes)
+    resource = set(dict_node_id_to_resource[disease_id][0])
+    dict_node_id_to_resource[disease_id][1].add(license)
+    csv_writer.writerow(
+        [node_id, disease_id, pharmebinetutils.resource_add_and_prepare(resource, 'DrugCentral'), methodes,
+         '|'.join(dict_node_id_to_resource[disease_id][1])])
 
 def load_omopConcept_in():
     query = '''MATCH (n:DC_OMOPConcept) RETURN n, id(n)'''
@@ -294,19 +304,11 @@ def load_omopConcept_in():
 
     for node_id in mapped_diseases:
         for disease_id in dict_disease_mapping[node_id]:
-            methodes = list(dict_disease_mapping[node_id][disease_id])
-            methodes = '|'.join(methodes)
-            resource = set(dict_diseaseId_to_resource[disease_id])
-            csv_mapped.writerow(
-                [node_id, disease_id, pharmebinetutils.resource_add_and_prepare(resource, 'DrugCentral'), methodes])
+            write_to_tsv_file(dict_disease_mapping, dict_diseaseId_to_resource, node_id, disease_id, csv_mapped)
 
     for node_id in mapped_symptoms:
         for symptom_id in dict_symptom_mapping[node_id]:
-            methodes = list(dict_symptom_mapping[node_id][symptom_id])
-            methodes = '|'.join(methodes)
-            resource = set(dict_symptomId_to_resource[symptom_id])
-            csv_mapped_sym.writerow(
-                [node_id, symptom_id, pharmebinetutils.resource_add_and_prepare(resource, 'DrugCentral'), methodes])
+            write_to_tsv_file(dict_symptom_mapping, dict_symptomId_to_resource, node_id, symptom_id, csv_mapped_sym)
 
 
 dict_doTermID_to_xref = defaultdict(lambda: defaultdict(set))
@@ -460,19 +462,12 @@ def load_DOTerm_in():
 
     for node_id in mapped_diseases:
         for disease_id in dict_doi_disease_mapping[node_id]:
-            methodes = list(dict_doi_disease_mapping[node_id][disease_id])
-            methodes = '|'.join(methodes)
-            resource = set(dict_diseaseId_to_resource[disease_id])
-            csv_mapped_doid.writerow(
-                [node_id, disease_id, pharmebinetutils.resource_add_and_prepare(resource, 'DrugCentral'), methodes])
+            write_to_tsv_file(dict_doi_disease_mapping, dict_diseaseId_to_resource, node_id, disease_id, csv_mapped_doid)
 
     for node_id in mapped_symptoms:
         for symptom_id in dict_doi_symptom_mapping[node_id]:
-            methodes = list(dict_doi_symptom_mapping[node_id][symptom_id])
-            methodes = '|'.join(methodes)
-            resource = set(dict_symptomId_to_resource[symptom_id])
-            csv_mapped_doid_sym.writerow(
-                [node_id, symptom_id, pharmebinetutils.resource_add_and_prepare(resource, 'DrugCentral'), methodes])
+            write_to_tsv_file(dict_doi_symptom_mapping, dict_symptomId_to_resource, node_id, symptom_id,
+                              csv_mapped_doid_sym)
 
 
 # file for mapped or not mapped identifier
@@ -488,22 +483,22 @@ csv_not_mapped_doid.writerow(['id', 'doid'])
 file_name_mapped_disease = 'disease/mapped_disease.tsv'
 file_mapped_disease = open(file_name_mapped_disease, 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_disease, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_hetionet', 'resource', 'how_mapped'])
+csv_mapped.writerow(['id', 'id_hetionet', 'resource', 'how_mapped', 'licenses'])
 
 file_name_mapped_disease_doi = 'disease/mapped_doid_disease.tsv'
 file_mapped_doid = open(file_name_mapped_disease_doi, 'w', encoding="utf-8")
 csv_mapped_doid = csv.writer(file_mapped_doid, delimiter='\t', lineterminator='\n')
-csv_mapped_doid.writerow(['id', 'id_hetionet', 'resource', 'how_mapped'])
+csv_mapped_doid.writerow(['id', 'id_hetionet', 'resource', 'how_mapped', 'licenses'])
 
 file_name_mapped_symptom = 'disease/mapped_symptom.tsv'
 file_mapped_symptom = open(file_name_mapped_symptom, 'w', encoding="utf-8")
 csv_mapped_sym = csv.writer(file_mapped_symptom, delimiter='\t', lineterminator='\n')
-csv_mapped_sym.writerow(['id', 'id_hetionet', 'resource', 'how_mapped'])
+csv_mapped_sym.writerow(['id', 'id_hetionet', 'resource', 'how_mapped', 'licenses'])
 
 file_name_mapped_symptom_doid = 'disease/mapped_doid_symptom.tsv'
 file_mapped_doid_symptom = open(file_name_mapped_symptom_doid, 'w', encoding="utf-8")
 csv_mapped_doid_sym = csv.writer(file_mapped_doid_symptom, delimiter='\t', lineterminator='\n')
-csv_mapped_doid_sym.writerow(['id', 'id_hetionet', 'resource', 'how_mapped'])
+csv_mapped_doid_sym.writerow(['id', 'id_hetionet', 'resource', 'how_mapped', 'licenses'])
 
 
 def generate_cypher_file(file_name_term, file_name_concept, label):
@@ -515,13 +510,13 @@ def generate_cypher_file(file_name_term, file_name_concept, label):
     """
     cypher_file = open('output/cypher.cypher', 'a')
 
-    query = f' MATCH (n:DC_OMOPConcept), (c:{label}{{identifier:line.id_hetionet}}) Where ID(n)= ToInteger(line.id)  Set c.drugcentral="yes", c.resource=split(line.resource,"|") Create (c)-[:equal_to_{label}_drugcentral{{how_mapped:line.how_mapped}}]->(n)'
+    query = f' MATCH (n:DC_OMOPConcept), (c:{label}{{identifier:line.id_hetionet}}) Where ID(n)= ToInteger(line.id)  Set c.drugcentral=true, c.licenses=split(line.licenses,"|"), c.resource=split(line.resource,"|") Create (c)-[:equal_to_{label}_drugcentral{{how_mapped:line.how_mapped}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               "mapping_and_merging_into_hetionet/drugcentral/" + file_name_concept,
                                               query)
     cypher_file.write(query)
 
-    query = f' MATCH (n:DC_DOTerm), (c:{label}{{identifier:line.id_hetionet}}) Where ID(n)= ToInteger(line.id)  Set c.drugcentral="yes", c.resource=split(line.resource,"|") Create (c)-[:equal_to_{label}_drugcentral{{how_mapped:line.how_mapped}}]->(n)'''
+    query = f' MATCH (n:DC_DOTerm), (c:{label}{{identifier:line.id_hetionet}}) Where ID(n)= ToInteger(line.id)  Set c.drugcentral=true, c.licenses=split(line.licenses,"|"), c.resource=split(line.resource,"|") Create (c)-[:equal_to_{label}_drugcentral{{how_mapped:line.how_mapped}}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               "mapping_and_merging_into_hetionet/drugcentral/" + file_name_term,
                                               query)

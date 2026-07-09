@@ -45,14 +45,14 @@ def generate_cypher_queries():
                     UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
                     RETURN allfields as l;''' % ("Symptom_hetionet")
         result = g.run(query)
-        query = ''' Match (a:Symptom_hetionet{identifier:line.id}) Create (b:Symptom :Phenotype{identifier:line.id, hetionet:"yes",  url:"https://het.io/", resource:["Hetionet"], source:"MeSH via Hetionet", %s}) Create (b)-[:equal_to_hetionet_symptom]->(a) '''
+        query = ''' Match (a:Symptom_hetionet{identifier:line.id}) Create (b:Symptom :Phenotype{identifier:line.id, hetionet:true,  url:"https://het.io/", resource:["Hetionet"], licenses:["%s"], source:"MeSH via Hetionet", %s}) Create (b)-[:equal_to_hetionet_symptom]->(a) '''
         list_prop = []
         for record in result:
             prop = record.data()['l']
             if not prop in ['identifier', 'source']:
                 list_prop.append(f'{prop}:a.{prop}')
 
-        query = query % (", ".join(list_prop))
+        query = query % (pharmebinetutils.dict_source_to_license['hetionet'],", ".join(list_prop))
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   'mapping_and_merging_into_hetionet/hetionet/output/symptoms.tsv',
                                                   query)

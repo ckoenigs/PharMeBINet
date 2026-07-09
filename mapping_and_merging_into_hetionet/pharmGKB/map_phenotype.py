@@ -98,13 +98,13 @@ def load_db_nodes_in(label, dict_node_to_resource, dict_node_name_to_node_id, di
     :param identifier_umls:
     :return:
     """
-    query = '''MATCH (n:%s) RETURN n.identifier, n.name ,n.synonyms, n.resource, n.xrefs'''
+    query = '''MATCH (n:%s) RETURN n.identifier, n.name ,n.synonyms, n.resource, n.xrefs, n.licenses'''
     query = query % (label)
     results = g.run(query)
 
     for record in results:
-        [identifier, name, synonyms, resource, xrefs] = record.values()
-        dict_node_to_resource[identifier] = set(resource) if resource else set()
+        [identifier, name, synonyms, resource, xrefs, licenses] = record.values()
+        dict_node_to_resource[identifier] = [set(resource), set(licenses)]
         dict_node_to_xrefs[identifier] = set(xrefs) if xrefs else set()
 
         name = name.lower()
@@ -168,13 +168,15 @@ def check_for_mapping(dict_source_to_ids, source, source_extra, dict_source_to_d
             for disease_id in dict_source_to_disease_ids[cui]:
                 if (disease_id, identifier) in dict_source_to_pair[source_extra]:
                     continue
-                resource = dictionary_node_to_resource[disease_id]
-                resource.add("PharmGKB")
-                resource = "|".join(sorted(resource))
+                resource = pharmebinetutils.resource_add_and_prepare(dictionary_node_to_resource[disease_id][0],
+                                                                     'PharmGKB')
                 xrefs = dict_node_to_xrefs[disease_id]
                 xrefs.add('PharmGKB:' + identifier)
                 xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, label)
-                csv_writer.writerow([disease_id, identifier, resource, source_extra.lower(), '|'.join(xrefs)])
+                dictionary_node_to_resource[disease_id][1].add(license)
+                csv_writer.writerow(
+                    [disease_id, identifier, resource, '|'.join(dictionary_node_to_resource[disease_id][1]),
+                     source_extra.lower(), '|'.join(xrefs)])
                 dict_source_to_pair[source_extra].add((disease_id, identifier))
     return found_mapping
 
@@ -348,16 +350,16 @@ def generate_cypher_file():
         file_name = 'disease/mapping_' + label + '.tsv'
         file = open(file_name, 'w', encoding='utf-8')
         csv_writer = csv.writer(file, delimiter='\t')
-        csv_writer.writerow(['disease_id', 'pharmgkb_id', 'resource', 'how_mapped', 'xrefs'])
+        csv_writer.writerow(['disease_id', 'pharmgkb_id', 'resource', 'licenses', 'how_mapped', 'xrefs'])
         dict_label_to_tsv_mapping[label] = csv_writer
-        query = '''  MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}), (c:%s{identifier:line.disease_id})   Set c.pharmgkb='yes', c.xrefs=split(line.xrefs,"|"),  c.resource=split(line.resource,'|') Create (c)-[:equal_to_disease_pharmgkb{how_mapped:line.how_mapped}]->(n)'''
+        query = '''  MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}), (c:%s{identifier:line.disease_id})   Set c.pharmgkb=true, c.xrefs=split(line.xrefs,"|"),  c.resource=split(line.resource,'|'),  c.licenses=split(line.licenses,'|') Create (c)-[:equal_to_disease_pharmgkb{how_mapped:line.how_mapped}]->(n)'''
 
         query = query % (label)
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
                                                   query)
         cypher_file.write(query)
-    query = ''' MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}) Create (c:Phenotype{identifier:line.pharmgkb_id, name:n.name, synonyms:n.alternate_names ,xrefs:split(line.xrefs,'|'), source:"PharmGKB", url:'https://www.pharmgkb.org/disease/'+line.pharmgkb_id , license:"%s", pharmgkb:'yes', resource:['PharmGKB']})  Create (c)-[:equal_to_disease_pharmgkb{how_mapped:'new'}]->(n)'''
+    query = ''' MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}) Create (c:Phenotype{identifier:line.pharmgkb_id, name:n.name, synonyms:n.alternate_names ,xrefs:split(line.xrefs,'|'), source:"PharmGKB", url:'https://www.pharmgkb.org/disease/'+line.pharmgkb_id , licenses:["%s"], pharmgkb:true, resource:['PharmGKB']})  Create (c)-[:equal_to_disease_pharmgkb{how_mapped:'new'}]->(n)'''
 
     query = query % (license)
     query = pharmebinetutils.get_query_import(path_of_directory,
@@ -370,11 +372,11 @@ def generate_cypher_file():
 
 def main():
     global path_of_directory, license
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        license = sys.argv[2]
     else:
         sys.exit('need a path and license')
+    license = pharmebinetutils.dict_source_to_license['pharmgkb']
 
     print(datetime.datetime.now())
     print('diseaserate connection with neo4j')

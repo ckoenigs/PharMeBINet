@@ -35,7 +35,7 @@ def load_existing_association_edges():
         dict_gene_disease_to_rela[(gene_id, disease_id)] = rela
 
 
-def add_information_into_dictionary_and_merge(rela, dict_rela_to_info, gene_id, disease_id, hgnc_id, resource,
+def add_information_into_dictionary_and_merge(rela, dict_rela_to_info, gene_id, disease_id, hgnc_id, resource, licenses,
                                               pubMed_ids_merge=None, inheritances=None):
     """
     First get the different properties from the relationship. If the rela is not in the dicitionary generate an entry
@@ -63,7 +63,7 @@ def add_information_into_dictionary_and_merge(rela, dict_rela_to_info, gene_id, 
         dict_rela_to_info[(gene_id, disease_id)] = [set([rela['classification_title']]),
                                                     moi_titles, set([rela['submitter_title']]),
                                                     pubmed_ids, public_report_url, notes,
-                                                    assertion_criterial_url, hgnc_id, resource]
+                                                    assertion_criterial_url, hgnc_id, resource, licenses]
     else:
         dict_rela_to_info[(gene_id, disease_id)][0].add(rela['classification_title'])
         dict_rela_to_info[(gene_id, disease_id)][1].add(rela['moi_title'])
@@ -97,13 +97,13 @@ def generate_cypher_file_with_queries(properties, file_name, file_name_mapped):
 
         query_new = 'MATCH (n:Gene{identifier:line.gene_id}),(m:Disease{identifier:line.disease_id}) Create (m)<-[:ASSOCIATES_GaD{'
         query_new += ', '.join(
-            news) + ', license:"CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",  gencc:"yes" }]-(n)'
+            news) + ', license:"CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",  gencc:True }]-(n)'
         query_new = pharmebinetutils.get_query_import(path_of_directory,
                                                       f'mapping_and_merging_into_hetionet/gencc/{file_name}',
                                                       query_new)
         cypher_file_edge.write(query_new)
         query_mapped = 'MATCH (n:Gene{identifier:line.gene_id})-[r:ASSOCIATES_GaD]->(m:Disease{identifier:line.disease_id}) Set '
-        query_mapped += ', '.join(mapped) + ', r.gencc="yes"'
+        query_mapped += ', '.join(mapped) + ', r.gencc=True'
         query_mapped = pharmebinetutils.get_query_import(path_of_directory,
                                                          f'mapping_and_merging_into_hetionet/gencc/{file_name_mapped}',
                                                          query_mapped)
@@ -142,13 +142,13 @@ def prepare_tsv_file_and_cypher_file(dict_mapping_pairs_infos, dict_new_pairs_in
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
     properties = ['classifications', 'inheritance', 'source', 'pubMed_ids', 'public_report_url', 'notes',
-                  'assertion_criterial_url', 'url', 'resource']
+                  'assertion_criterial_url', 'url', 'resource', 'licenses']
     csv_writer.writerow(['gene_id', 'disease_id'] + properties)
     file_name_mapped = 'output/edge_disease_gene_mapped.tsv'
     file_mapped = open(file_name_mapped, 'w', encoding='utf-8')
     csv_writer_mapped = csv.writer(file_mapped, delimiter='\t')
     properties = ['classifications', 'inheritance', 'source', 'pubMed_ids', 'public_report_url', 'notes',
-                  'assertion_criterial_url', 'url', 'resource']
+                  'assertion_criterial_url', 'url', 'resource', 'licenses']
     csv_writer_mapped.writerow(['gene_id', 'disease_id'] + properties)
 
     generate_cypher_file_with_queries(properties, file_name, file_name_mapped)
@@ -169,6 +169,8 @@ def prepare_edge():
     dict_mapping_pairs_infos = {}
     dict_new_pairs_infos = {}
 
+    license = pharmebinetutils.dict_source_to_license['gencc']
+
     counter = 0
     for record in results:
         [gene_id, disease_id, rela, hgnc_id] = record.values()
@@ -179,11 +181,13 @@ def prepare_edge():
             pubMed_ids = set(rela_mapped['pubMed_ids']) if 'pubMed_ids' in rela_mapped else None
             resource = set(rela_mapped['resource'])
             resource.add('GenCC')
+            licenses = set(rela_mapped['licenses'])
+            licenses.add(license)
             add_information_into_dictionary_and_merge(rela, dict_mapping_pairs_infos, gene_id, disease_id, hgnc_id,
-                                                      resource, pubMed_ids, inheritances)
+                                                      resource, licenses, pubMed_ids, inheritances)
         else:
             add_information_into_dictionary_and_merge(rela, dict_new_pairs_infos, gene_id, disease_id, hgnc_id,
-                                                      set(['GenCC']))
+                                                      set(['GenCC']), set([license]))
         counter += 1
 
     prepare_tsv_file_and_cypher_file(dict_mapping_pairs_infos, dict_new_pairs_infos)

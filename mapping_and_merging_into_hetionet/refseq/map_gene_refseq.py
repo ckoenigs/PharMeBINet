@@ -56,7 +56,8 @@ def generate_files():
 
     # generate cypher file
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = ''' Match (c:Gene{ identifier:line.id}), (n:refSeq_Gene{ id:line.id_refseq})  Create (c)-[:equal_to_gene_refseq]->(n) Set c.refseq="yes", c.resource=c.resource+"RefSeq"'''
+    query = ''' Match (c:Gene{ identifier:line.id}), (n:refSeq_Gene{ id:line.id_refseq})  Create (c)-[:equal_to_gene_refseq]->(n) Set c.refseq=true, c.resource=c.resource+"RefSeq", c.licenses=c.licenses+"%s"'''
+    query = query % (pharmebinetutils.dict_source_to_license['refseq'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/refseq/{file_name}',
                                               query)

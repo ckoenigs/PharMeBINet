@@ -35,10 +35,10 @@ echo "Current time: $now"
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
 
-sleep 100
+python ../../check_indices.py
 
 python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
-sleep 100
+python ../../check_indices.py
 
 
 echo integrate connection SNP single with ne4j shell
@@ -46,9 +46,11 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_2.cypher > output/cypher.txt
 
-sleep 1000
-python ../../restart_neo4j.py $path_neo4j > output/neo4j4.txt
-sleep 800
+
+python ../../check_indices.py
+
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+python ../../check_indices.py
 
 
 $path_neo4j/neo4j stop
@@ -72,10 +74,8 @@ echo "add edges"
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
 
-sleep 60
+python ../../check_indices.py
 
-python ../../restart_neo4j.py $path_neo4j > output/neo4j2.txt
-
-
-sleep 120
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+python ../../check_indices.py
 

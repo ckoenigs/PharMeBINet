@@ -37,7 +37,7 @@ def load_protein_from_database_and_add_to_dict():
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_protein_id_to_resource[identifier] = node['resource']
+        dict_protein_id_to_resource[identifier] = [node['resource'], set(node['licenses'])]
         alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
         for alternative_id in alternative_ids:
             if alternative_id not in dict_alt_id_to_id:
@@ -55,10 +55,10 @@ def generate_files(path_of_directory, label):
     file_name = 'protein/hmdb_protein_to_%s' % label
     file = open(file_name + '.tsv', 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
-    header = ['identifier', 'other_id', 'resource', 'mapped_with']
+    header = ['identifier', 'other_id', 'resource', 'mapped_with', 'licenses']
     csv_mapping.writerow(header)
 
-    query = '''Match (n:Protein_HMDB{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.hmdb='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_hmdb_%s{how_mapped:line.mapped_with}]->(n)'''
+    query = '''Match (n:Protein_HMDB{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.hmdb=true, v.licenses=split(line.licenses,"|"), v.resource=split(line.resource,"|") Create (v)-[:equal_to_hmdb_%s{how_mapped:line.mapped_with}]->(n)'''
     query = query % (label, label.lower())
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/hmdb/{file_name}.tsv',
@@ -96,10 +96,11 @@ def load_all_hmdb_protein_and_map(csv_mapping_protein):
                 uniprot_id = split_xref[1]
                 if uniprot_id in dict_protein_id_to_resource:
                     found_mapping = True
+                    dict_protein_id_to_resource[uniprot_id][1].add(pharmebinetutils.dict_source_to_license['hmdb'])
                     csv_mapping_protein.writerow(
                         [identifier, uniprot_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[uniprot_id], 'HMDB'),
-                         'id'])
+                         pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[uniprot_id][0], 'HMDB'),
+                         'id', '|'.join( dict_protein_id_to_resource[uniprot_id][1])])
                 # elif uniprot_id in dict_alt_id_to_id:
                 #     found_mapping=True
                 #     for protein_id in dict_alt_id_to_id[uniprot_id]:

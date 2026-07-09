@@ -53,7 +53,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo disease
 
-python3 map_disease_ttd.py $path_to_project > disease/output_integration_compound.txt
+python3 map_disease_ttd.py $path_to_project > disease/output_integration_disease.txt
 
 
 

@@ -301,7 +301,7 @@ def find_shortest_list_and_indices(list_of_lists):
 
     return indices, all_with_the_same_length
 
-
+license = pharmebinetutils.dict_source_to_license['ctd']
 '''
 generate cypher queries
 '''
@@ -310,7 +310,7 @@ generate cypher queries
 def generate_cypher_queries(file_name, label, rela, start_node, end_node):
     query_first_part = '''Match (b:Chemical{identifier:line.chemical_id}), (go:%s{identifier:line.go_id}) Create (%s)-[:%s {'''
     query_first_part = query_first_part % (label, start_node, rela)
-    query_end = 'ctd:"yes", source:"CTD", ctd_url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ctd_chemical_id, url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ctd_chemical_id ,resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved"}]->(%s)'
+    query_end = f'ctd:True, source:"CTD", ctd_url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ctd_chemical_id, url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ctd_chemical_id ,resource:["CTD"], licenses:["{license}"]}}]->(%s)'
     for property in header:
         if property in ['chemical_id', 'go_id']:
             continue

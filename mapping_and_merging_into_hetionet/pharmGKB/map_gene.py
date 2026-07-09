@@ -40,12 +40,12 @@ def load_db_genes_in():
     load in all genes from pharmebinet in a dictionary
     :return:
     """
-    query = '''MATCH (n:Gene) RETURN n.identifier,n.gene_symbols, n.gene_symbol, n.resource, n.synonyms, n.xrefs'''
+    query = '''MATCH (n:Gene) RETURN n.identifier,n.gene_symbols, n.gene_symbol, n.resource, n.synonyms, n.xrefs, n.licenses'''
     results = g.run(query)
 
     for record in results:
-        [identifier, gene_symbols, gene_symbol, resource, synonyms, xrefs] = record.values()
-        dict_gene_to_resource[identifier] = resource if resource else []
+        [identifier, gene_symbols, gene_symbol, resource, synonyms, xrefs, licenses] = record.values()
+        dict_gene_to_resource[identifier] = [resource, set(licenses)]
         dict_gene_id_to_xrefs[identifier] = xrefs if xrefs else []
 
         if xrefs:
@@ -82,10 +82,11 @@ def add_information_to_file(gene_id, identifier, csv_writer, how_mapped):
     # print(xrefs)
     xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, 'Gene')
     # print(xrefs)
+    dict_gene_to_resource[gene_id][1].add(pharmebinetutils.dict_source_to_license['pharmgkb'])
 
     csv_writer.writerow(
-        [gene_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_gene_to_resource[gene_id], "PharmGKB"),
-         how_mapped, '|'.join(xrefs)])
+        [gene_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_gene_to_resource[gene_id][0], "PharmGKB"),
+         how_mapped, '|'.join(xrefs),'|'.join(dict_gene_to_resource[gene_id][1])])
 
 
 def load_pharmgkb_genes_in():
@@ -98,7 +99,7 @@ def load_pharmgkb_genes_in():
     file_name = 'gene/mapping.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['gene_id', 'pharmgkb_id', 'resource', 'how_mapped', 'xrefs'])
+    csv_writer.writerow(['gene_id', 'pharmgkb_id', 'resource', 'how_mapped', 'xrefs', 'licenses'])
 
     # generate cypher file
     generate_cypher_file(file_name)
@@ -164,7 +165,7 @@ def generate_cypher_file(file_name):
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'w')
-    query = '''  MATCH (n:PharmGKB_Gene{id:line.pharmgkb_id}), (c:Gene{identifier:line.gene_id})  Set c.pharmgkb='yes', c.xrefs=split(line.xrefs,"|"), c.resource=split(line.resource,'|') Create (c)-[:equal_to_gene_pharmgkb{how_mapped:line.how_mapped}]->(n)'''
+    query = '''  MATCH (n:PharmGKB_Gene{id:line.pharmgkb_id}), (c:Gene{identifier:line.gene_id})  Set c.pharmgkb=true, c.xrefs=split(line.xrefs,"|"), c.resource=split(line.resource,'|'), c.licenses=split(line.licenses,'|') Create (c)-[:equal_to_gene_pharmgkb{how_mapped:line.how_mapped}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
                                               query)

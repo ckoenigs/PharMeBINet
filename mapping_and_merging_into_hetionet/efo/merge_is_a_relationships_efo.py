@@ -37,7 +37,7 @@ def generate_cypher_queries_and_tsv_files():
     # cypher file for mapping and integration
     cypher_file = open('output/cypher_edge.cypher', 'w', encoding='utf-8')
 
-    query_match = '''Match (s:Disease{identifier:line.node_id_1 })-[r:IS_A_DiaD]->(m:Disease{identifier:line.node_id_2}) Set r.efo=true,  r.resource=split(line.resource,"|"),  r.licenses=split(line.licenses,"|") '''
+    query_match = '''Match (s:Disease{identifier:line.node_id_1 })-[r:IS_A_DiaD]->(m:Disease{identifier:line.node_id_2}) Set r.efo=True,  r.resource=split(line.resource,"|"),  r.licenses=split(line.licenses,"|") '''
     query_match = pharmebinetutils.get_query_import(path_of_directory,
                                                     f'mapping_and_merging_into_hetionet/efo/{file_name_mapped}',
                                                     query_match)

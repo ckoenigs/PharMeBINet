@@ -12,6 +12,8 @@ from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_cha
 
 REST_URL = "http://data.bioontology.org"
 
+license = pharmebinetutils.dict_source_to_license['aeolus']
+
 
 # http://bioportal.bioontology.org/ontologies/MEDDRA?p=classes&conceptid=10059299
 
@@ -38,7 +40,7 @@ class SideEffect:
         self.meddraType = meddraType
         self.synonyms = synonyms
         self.umls_label = umls_label
-        self.resource = resource if resource is not None else []
+        self.resource = resource
 
 
 class SideEffect_Aeolus():
@@ -167,8 +169,8 @@ def load_side_effects_from_pharmebinet_in_dict():
         synonyms = result['synonyms'] if 'synonyms' in result else []
         umls_label = result['umls_label'] if 'umls_label' in result else ''
         meddraType = result['meddraType'] if 'meddraType' in result else ''
-        license = result['license'] if 'license' in result else ''
-        sideEffect = SideEffect(license, result['identifier'], result['name'], result['source'],
+        licenses = set(result['licenses'])
+        sideEffect = SideEffect(licenses, result['identifier'], result['name'], result['source'],
                                 result['url'], meddraType, synonyms, umls_label,
                                 result['resource'])
         dict_all_side_effect[result['identifier']] = sideEffect
@@ -262,12 +264,12 @@ def load_disease_infos():
     Load all disease with umls, identifier and name (,synonyms?)
     :return:
     """
-    query = '''Match (n:Disease) Return n.identifier, n.name, n.xrefs, n.resource'''
+    query = '''Match (n:Disease) Return n.identifier, n.name, n.xrefs, n.resource, n.licenses'''
     results = g.run(query)
 
     for record in results:
-        [identifier, name, xrefs, resource] = record.values()
-        dict_mondo_to_xrefs_and_resource[identifier] = [xrefs, resource]
+        [identifier, name, xrefs, resource, licenses] = record.values()
+        dict_mondo_to_xrefs_and_resource[identifier] = [xrefs, resource, set(licenses)]
         if name:
             name = name.lower()
             if name in dict_disease_name_to_id:
@@ -490,9 +492,12 @@ def generate_tsv_file(list_of_delet_index, list_not_mapped, concept_code, diseas
         xref_disease = go_through_xrefs_and_change_if_needed_source_name(xref_disease, 'disease')
         xref_string = '|'.join(xref_disease)
 
+        licenses = dict_mondo_to_xrefs_and_resource[disease_id][2]
+        licenses.add(license)
+
         csv_writer.writerow(
             [concept_code, disease_id, mapping_method,
-             pharmebinetutils.resource_add_and_prepare(resource_disease, "AEOLUS"), xref_string])
+             pharmebinetutils.resource_add_and_prepare(resource_disease, "AEOLUS"), xref_string, '|'.join(licenses)])
 
 
 def mapping_to_disease():
@@ -503,7 +508,7 @@ def mapping_to_disease():
     # open file for mapping with disease
     file = open('output/se_disease_mapping.tsv', 'w')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['aSE', 'disease_id', 'mapping_method', 'resource', 'xrefs'])
+    csv_writer.writerow(['aSE', 'disease_id', 'mapping_method', 'resource', 'xrefs', 'licenses'])
 
     # open file for not mapping with anything
     file_not_mapped = open('output/se_not_mapping.tsv', 'w')
@@ -620,7 +625,7 @@ def integrate_aeolus_into_pharmebinet():
     # file for already existing se
     file_existing = open('output/se_existing.tsv', 'w', encoding='utf-8')
     csv_existing = csv.writer(file_existing, delimiter='\t')
-    csv_existing.writerow(['aSE', 'SE', 'cuis', 'resources', 'mapping_method'])
+    csv_existing.writerow(['aSE', 'SE', 'cuis', 'resources', 'mapping_method','licenses'])
 
     # query for mapping
     query_start = ''' Match (a:Aeolus_Outcome{concept_code:line.aSE})'''
@@ -633,14 +638,14 @@ def integrate_aeolus_into_pharmebinet():
                                                      f'mapping_and_merging_into_hetionet/aeolus/output/se_existing.tsv',
                                                      query)
     cypher_file.write(query)
-    query_update = query_start + ' , (n:SideEffect{identifier:line.SE}) Set a.cuis=split(line.cuis,"|"), n.resource=split(line.resources,"|") , n.aeolus="yes", n.xrefs=n.xrefs+("MedDRA:"+line.aSE) Create (n)-[:equal_to_Aeolus_SE{mapping_method:line.mapping_method}]->(a)'
+    query_update = query_start + ' , (n:SideEffect{identifier:line.SE}) Set a.cuis=split(line.cuis,"|"), n.resource=split(line.resources,"|") ,n.licenses=split(line.licenses,"|") , n.aeolus=true, n.xrefs=n.xrefs+("MedDRA:"+line.aSE) Create (n)-[:equal_to_Aeolus_SE{mapping_method:line.mapping_method}]->(a)'
     query_update = pharmebinetutils.get_query_import(path_of_directory,
                                                      f'mapping_and_merging_into_hetionet/aeolus/output/se_existing.tsv',
                                                      query_update)
     cypher_file.write(query_update)
 
     # query for mapping disease
-    query_update = query_start + ''' , (n:Disease{identifier:line.disease_id}) Set  n.resource=split(line.resource,"|") , n.aeolus="yes", n.xrefs=split(line.xrefs,"|") Create (n)-[:equal_to_Aeolus_SE{mapping_method:line.mapping_method}]->(a)'''
+    query_update = query_start + ''' , (n:Disease{identifier:line.disease_id}) Set  n.resource=split(line.resource,"|") ,n.licenses=split(line.licenses,"|") , n.aeolus=true, n.xrefs=split(line.xrefs,"|") Create (n)-[:equal_to_Aeolus_SE{mapping_method:line.mapping_method}]->(a)'''
     query_update = pharmebinetutils.get_query_import(path_of_directory,
                                                      f'mapping_and_merging_into_hetionet/aeolus/output/se_disease_mapping.tsv',
                                                      query_update)
@@ -659,8 +664,9 @@ def integrate_aeolus_into_pharmebinet():
             resource.append("AEOLUS")
             resource = list(set(resource))
             resources = '|'.join(resource)
-
-            csv_existing.writerow([outcome_concept, cui, cuis_string, resources, dict_side_effects_aeolus[outcome_concept].mapping])
+            licenses = dict_all_side_effect[cui].license
+            licenses.add(license)
+            csv_existing.writerow([outcome_concept, cui, cuis_string, resources, dict_side_effects_aeolus[outcome_concept].mapping, '|'.join(licenses)])
     print('number of mapped:', counter_mapped)
 
     # close file
@@ -672,7 +678,8 @@ def integrate_aeolus_into_pharmebinet():
     csv_new.writerow(['aSE', 'SE', 'cuis', 'meddras'])
 
     # query for the update nodes and relationship
-    query_new = query_start + ' Set a.cuis=split(line.cuis,"|") Merge (n:SideEffect {identifier:line.SE}) On Create Set n:Phenotype, n.license="CC0 1.0", n.name=a.name , n.source="UMLS via AEOLUS", n.url="http://identifiers.org/umls/"+line.SE , n.resource=["AEOLUS"],  n.aeolus="yes", n.xrefs=split(line.meddras,"|")  Create (n)-[:equal_to_Aeolus_SE]->(a)'
+    query_new = query_start + ' Set a.cuis=split(line.cuis,"|") Merge (n:SideEffect {identifier:line.SE}) On Create Set n:Phenotype, n.licenses=["%s"], n.name=a.name , n.source="UMLS via AEOLUS", n.url="http://identifiers.org/umls/"+line.SE , n.resource=["AEOLUS"],  n.aeolus=true, n.xrefs=split(line.meddras,"|")  Create (n)-[:equal_to_Aeolus_SE]->(a)'
+    query_new = query_new % license
     query_new = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/aeolus/output/se_new.tsv',
                                                   query_new)

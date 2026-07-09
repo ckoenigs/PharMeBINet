@@ -82,11 +82,11 @@ def get_all_already_existing_relationships():
     Get all already existing relationships from pharmebinet
     :return:
     """
-    query = '''MATCH p=(b:Disease)-[r:PRESENTS_DpS]->(a:Symptom) RETURN  b.identifier, r.resource, a.identifier;'''
+    query = '''MATCH p=(b:Disease)-[r:PRESENTS_DpS]->(a:Symptom) RETURN  b.identifier, r.resource,r.licenses, a.identifier;'''
     results = g.run(query)
     for record in results:
-        [disease_id, resource, symptom_id] = record.values()
-        dict_disease_symptom_pair_pharmebinet[(disease_id, symptom_id)] = resource
+        [disease_id, resource, licenses, symptom_id] = record.values()
+        dict_disease_symptom_pair_pharmebinet[(disease_id, symptom_id)] = [resource, set(licenses)]
 
 
 def prepare_all_relationships_infos(properties, connection, mondo_id, symptom_id):
@@ -156,7 +156,7 @@ def prepare_all_relationships_infos(properties, connection, mondo_id, symptom_id
     return rela_properties
 
 
-def check_for_pair_in_dictionary(mondo, symptom_id, rela_information_list, dictionary, add_resource=None):
+def check_for_pair_in_dictionary(mondo, symptom_id, rela_information_list, dictionary, add_resource=None, add_licenses = None):
     '''
     check if the pair is already in dictionary or not
     if not generate pair in dictionary
@@ -168,9 +168,9 @@ def check_for_pair_in_dictionary(mondo, symptom_id, rela_information_list, dicti
     '''
     if not (mondo, symptom_id) in dictionary:
         if add_resource is not None:
-            add_resource.append('HPO')
-            add_resource = sorted(set(add_resource))
-            rela_information_list.append('|'.join(add_resource))
+            rela_information_list.append(pharmebinetutils.resource_add_and_prepare(add_resource, 'HPO'))
+            add_licenses.add(pharmebinetutils.dict_source_to_license['hpo'])
+            rela_information_list.append('|'.join(add_licenses))
         dictionary[(mondo, symptom_id)] = rela_information_list
     else:
         # print(dictionary[(mondo, symptom_id)])
@@ -240,11 +240,15 @@ def generate_cypher_file_for_connection(cypher_file):
         if result == 'sources':
             properties.append(result)
             continue
-        if result != 'frequency_modifier':
+        if result not in ['frequency_modifier','aspect']:
 
             properties.append(result)
             query_exist += 'r.' + result + '=split(line.' + result + ',"|"), '
             query_new += result + ':split(line.' + result + ',"|"), '
+        elif result == 'aspect':
+            properties.append(result)
+            query_exist += 'r.' + result + '=line.' + result + ', '
+            query_new += result + ':line.' + result + ', '
         else:
             for x in ['frequency_name', 'frequency_def']:
                 properties.append(x)
@@ -254,8 +258,9 @@ def generate_cypher_file_for_connection(cypher_file):
     csv_rela_new.writerow(properties)
     other_properties = properties[:]
     other_properties.append('resource')
+    other_properties.append('licenses')
     csv_rela_update.writerow(other_properties)
-    query_exists = query_exist + "r.hpo='yes', r.version='phenotype_annotation.tab %s', r.resource=split(line.resource,'|'), r.url='https://hpo.jax.org/app/browse/disease/'+split(line.sources,'|')[0]"
+    query_exists = query_exist + "r.hpo=True, r.version='phenotype_annotation.tab %s', r.resource=split(line.resource,'|'),r.licenses=split(line.licenses,'|'), r.url='https://hpo.jax.org/app/browse/disease/'+split(line.sources,'|')[0]"
     query_exists = query_exists % (hpo_date)
 
     query_exists = pharmebinetutils.get_query_import(path_of_directory,
@@ -265,8 +270,8 @@ def generate_cypher_file_for_connection(cypher_file):
     # query = '''Match (n:Disease)-[r:PRESENTS_DpS]-(s:Symptom) Where r.hpo='yes SET r.resource=r.resource+'HPO' '''
     # cypher_file.write(query)
 
-    query_new = query_new + '''version:'phenotype_annotation.tab %s',unbiased:false,source:'Human Phenontype Ontology', license:'This service/product uses the Human Phenotype Ontology (January 2024). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', resource:['HPO'], hpo:'yes', sources:split(line.sources,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.sources,'|')[0]}]->(s)'''
-    query_new = query_new % (hpo_date)
+    query_new = query_new + '''version:'phenotype_annotation.tab %s',unbiased:false,source:'Human Phenontype Ontology', licenses:['%s'], resource:['HPO'], hpo:True, sources:split(line.sources,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.sources,'|')[0]}]->(s)'''
+    query_new = query_new % (hpo_date, pharmebinetutils.dict_source_to_license['hpo'])
 
     query_new = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/hpo/mapping_files/rela_new.tsv',
@@ -283,7 +288,8 @@ def generate_cypher_file_for_connection(cypher_file):
         rela_information_list = prepare_all_relationships_infos(properties, relationship, mondo, symptom_id)
         if (mondo, symptom_id) in dict_disease_symptom_pair_pharmebinet:
             check_for_pair_in_dictionary(mondo, symptom_id, rela_information_list, dict_mapped_pair_to_info,
-                                         add_resource=dict_disease_symptom_pair_pharmebinet[(mondo, symptom_id)])
+                                         add_resource=dict_disease_symptom_pair_pharmebinet[(mondo, symptom_id)][0],
+                                         add_licenses=dict_disease_symptom_pair_pharmebinet[(mondo, symptom_id)][1])
         else:
             check_for_pair_in_dictionary(mondo, symptom_id, rela_information_list, dict_new_pair_to_info)
 

@@ -39,14 +39,14 @@ load in all gomolfunc from pharmebinet in a dictionary
 
 
 def load_pharmebinet_gomolfunc_in():
-    query = '''MATCH (n:MolecularFunction) RETURN n.identifier, n.alternative_ids, n.resource'''
+    query = '''MATCH (n:MolecularFunction) RETURN n.identifier, n.alternative_ids, n.resource, n.licenses'''
     # query = '''MATCH (n:Pathway) RETURN n.identifier,n.names, n.source, n.idOwns'''
     results = graph_database.run(query)
 
     #
     for record in results:
-        [identifier, alt_ids, resource] = record.values()
-        dict_gomolfunc_to_resource[identifier] = resource
+        [identifier, alt_ids, resource, licenses] = record.values()
+        dict_gomolfunc_to_resource[identifier] = [resource, set(licenses)]
         identifier = identifier.replace("GO:", "")
         dict_gomolfunc_pharmebinet_identifier[identifier] = 1
         if alt_ids:
@@ -63,7 +63,7 @@ csv_not_mapped.writerow(['id'])
 
 file_mapped_gomolfunc = open('gomolfunc/mapped_gomolfunc.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_gomolfunc, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_pharmebinet', 'resource'])
+csv_mapped.writerow(['id', 'id_pharmebinet', 'resource', 'licenses'])
 
 '''
 load all reactome gomolfunc and check if they are in pharmebinet or not
@@ -82,12 +82,16 @@ def load_reactome_gomolfunc_in():
         # check if the reactome pathway id is part in the pharmebinet idOwn
         if gomolfunc_id in dict_gomolfunc_pharmebinet_identifier:
             counter_map_with_id += 1
+            dict_gomolfunc_to_resource["GO:" + gomolfunc_id][1].add(pharmebinetutils.dict_source_to_license['reactome'])
             csv_mapped.writerow([gomolfunc_id, "GO:" + gomolfunc_id, pharmebinetutils.resource_add_and_prepare(
-                dict_gomolfunc_to_resource["GO:" + gomolfunc_id], 'Reactome')])
+                dict_gomolfunc_to_resource["GO:" + gomolfunc_id][0], 'Reactome'),
+                                 '|'.join(dict_gomolfunc_to_resource["GO:" + gomolfunc_id][1])])
         elif gomolfunc_id in dict_gomolfunc_pharmebinet_alt_ids:
             real_go_identifier = "GO:" + dict_gomolfunc_pharmebinet_alt_ids[gomolfunc_id]
+            dict_gomolfunc_to_resource[real_go_identifier][1].add(pharmebinetutils.dict_source_to_license['reactome'])
             csv_mapped.writerow([gomolfunc_id, real_go_identifier, pharmebinetutils.resource_add_and_prepare(
-                dict_gomolfunc_to_resource[real_go_identifier], 'Reactome')])
+                dict_gomolfunc_to_resource[real_go_identifier][0], 'Reactome'),
+                                 '|'.join(dict_gomolfunc_to_resource[real_go_identifier][1])])
         else:
             csv_not_mapped.writerow([gomolfunc_id])
 
@@ -101,7 +105,7 @@ generate connection between mapping gomolfunc of reactome and pharmebinet and ge
 
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
-    query = '''Match (d: MolecularFunction {identifier: line.id_pharmebinet}),(c:GO_MolecularFunction_reactome{accession:line.id}) Create (d)-[:equal_to_reactome_gomolfunc]->(c)  SET d.resource = split(line.resource, '|'), d.reactome = "yes"'''
+    query = '''Match (d: MolecularFunction {identifier: line.id_pharmebinet}),(c:GO_MolecularFunction_reactome{accession:line.id}) Create (d)-[:equal_to_reactome_gomolfunc]->(c)  SET d.resource = split(line.resource, '|'), d.licenses = split(line.licenses, '|'), d.reactome = true'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/gomolfunc/mapped_gomolfunc.tsv',
                                               query)

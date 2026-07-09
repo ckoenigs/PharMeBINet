@@ -66,13 +66,13 @@ load in all disease from pharmebinet in a dictionary
 
 def load_pharmebinet_labels_in(label, dict_label_id_to_resource, dict_name_to_ids, dict_synonyms_to_ids,
                                dict_xref_id_to_ids):
-    query = '''MATCH (n:%s) RETURN n.identifier, n.name, n.xrefs, n.synonyms, n.resource''' % label
+    query = '''MATCH (n:%s) RETURN n.identifier, n.name, n.xrefs, n.synonyms, n.resource, n.licenses''' % label
     results = graph_database.run(query)
 
     #  run through results
     for record in results:
-        [identifier, name, xrefs, synonyms, resource] = record.values()
-        dict_label_id_to_resource[identifier] = set(resource)
+        [identifier, name, xrefs, synonyms, resource, licenses] = record.values()
+        dict_label_id_to_resource[identifier] = [set(resource), set(licenses)]
         dict_disease_id_to_omim_count[identifier] = 0
         if xrefs:
             for xref in xrefs:
@@ -104,7 +104,7 @@ generate connection between mapping disease of reactome and pharmebinet and gene
 
 def create_cypher_file(label, file_name):
     cypher_file = open('output/cypher_part2.cypher', 'a', encoding="utf-8")
-    query = ''' MATCH (d:%s{identifier:line.id_own_db}),(c:Disease_HMDB{identifier:line.id}) CREATE (d)-[: equal_to_hmdb_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.hmdb = "yes"'''
+    query = ''' MATCH (d:%s{identifier:line.id_own_db}),(c:Disease_HMDB{identifier:line.id}) CREATE (d)-[: equal_to_hmdb_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'),d.licenses = split(line.licenses, '|'), d.hmdb = true'''
     query = query % (label)
 
     query = pharmebinetutils.get_query_import(path_of_directory,
@@ -122,10 +122,18 @@ def create_files(label):
     file_name = 'disease/mapped_' + label + '.tsv'
     file_mapped_disease = open(file_name, 'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_disease, delimiter='\t', lineterminator='\n')
-    csv_mapped.writerow(['id', 'id_own_db', 'resource', 'how_mapped'])
+    csv_mapped.writerow(['id', 'id_own_db', 'resource', 'how_mapped', 'licenses'])
 
     create_cypher_file(label, file_name)
     return csv_mapped
+
+
+def write_to_tsv_file(csv_writer, node_id, pharmebinet_id, dict_id_to_resource_and_licenses, mapping_method):
+    dict_id_to_resource_and_licenses[pharmebinet_id][1].add(pharmebinetutils.dict_source_to_license['hmdb'])
+    csv_writer.writerow([node_id, pharmebinet_id,
+                         pharmebinetutils.resource_add_and_prepare(
+                             dict_id_to_resource_and_licenses[pharmebinet_id][0], 'HMDB'), mapping_method,
+                         '|'.join(dict_id_to_resource_and_licenses[pharmebinet_id][1])])
 
 
 '''
@@ -159,9 +167,8 @@ def load_hmdb_disease_and_map():
             is_mapped = True
 
             for database_identifier in dict_disease_name_to_disease_ids[disease_name]:
-                csv_writer_disease.writerow([disease_id, database_identifier,
-                                             pharmebinetutils.resource_add_and_prepare(
-                                                 dict_disease_id_to_resource[database_identifier], 'HMDB'), 'name'])
+                write_to_tsv_file(csv_writer_disease, disease_id, database_identifier, dict_disease_id_to_resource,
+                                  'name')
 
         if is_mapped:
             continue
@@ -172,10 +179,8 @@ def load_hmdb_disease_and_map():
             is_mapped = True
 
             for database_identifier in dict_synonym_to_disease_id[disease_name]:
-                csv_writer_disease.writerow([disease_id, database_identifier,
-                                             pharmebinetutils.resource_add_and_prepare(
-                                                 dict_disease_id_to_resource[database_identifier], 'HMDB'),
-                                             'name_to_synonyms'])
+                write_to_tsv_file(csv_writer_disease, disease_id, database_identifier, dict_disease_id_to_resource,
+                                  'name_to_synonyms')
 
         if is_mapped:
             continue
@@ -186,10 +191,8 @@ def load_hmdb_disease_and_map():
             is_mapped = True
 
             for database_identifier in dict_symptom_name_to_symptom_ids[disease_name]:
-                csv_writer_symptom.writerow([disease_id, database_identifier,
-                                             pharmebinetutils.resource_add_and_prepare(
-                                                 dict_symptom_id_to_resource[database_identifier], 'HMDB'),
-                                             'name'])
+                write_to_tsv_file(csv_writer_symptom, disease_id, database_identifier, dict_symptom_id_to_resource,
+                                  'name')
 
         if is_mapped:
             continue
@@ -200,10 +203,8 @@ def load_hmdb_disease_and_map():
             is_mapped = True
 
             for database_identifier in dict_synonym_to_symptom_id[disease_name]:
-                csv_writer_symptom.writerow([disease_id, database_identifier,
-                                             pharmebinetutils.resource_add_and_prepare(
-                                                 dict_symptom_id_to_resource[database_identifier], 'HMDB'),
-                                             'name_to_synonyms'])
+                write_to_tsv_file(csv_writer_symptom, disease_id, database_identifier, dict_symptom_id_to_resource,
+                                  'name_to_synonyms')
 
         # mapping with omim identifier
         if disease_id in dict_omim_id_to_disease_ids:
@@ -220,9 +221,8 @@ def load_hmdb_disease_and_map():
                     mondo_diseases.add(database_identifier)
 
             for mondo_disease in mondo_diseases:
-                csv_writer_disease.writerow([disease_id, mondo_disease,
-                                             pharmebinetutils.resource_add_and_prepare(
-                                                 dict_disease_id_to_resource[mondo_disease], 'HMDB'), 'omim_id'])
+                write_to_tsv_file(csv_writer_disease, disease_id, mondo_disease, dict_disease_id_to_resource,
+                                  'omim_id')
             if lowest_count != 1:
                 print(lowest_count, mondo_diseases)
                 print(dict_omim_id_to_disease_ids[disease_id])

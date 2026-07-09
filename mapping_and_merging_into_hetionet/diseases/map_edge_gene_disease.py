@@ -25,10 +25,10 @@ def load_existing_edges():
     Load all drug interaction from database
     :return:
     """
-    query = '''MATCH (a:Gene)-[s:ASSOCIATES_GaD]-(b:Disease) RETURN a.identifier, b.identifier, s.resource'''
+    query = '''MATCH (a:Gene)-[s:ASSOCIATES_GaD]-(b:Disease) RETURN a.identifier, b.identifier, s.resource, s.licenses'''
     results = g.run(query)
-    for gene_id, disease_id, resource, in results:
-        dict_existing_gene_disease_to_resource[(gene_id, disease_id)] = resource
+    for gene_id, disease_id, resource, licenses, in results:
+        dict_existing_gene_disease_to_resource[(gene_id, disease_id)] = [resource, set(licenses)]
 
     print('number of edges in database already:', len(dict_existing_gene_disease_to_resource))
 
@@ -41,7 +41,7 @@ def create_file_and_tsv_writer(file_name):
     """
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['gene_id', 'disease_id',  'rela_infos', 'doid' , 'resource'])
+    csv_writer.writerow(['gene_id', 'disease_id',  'rela_infos', 'doid' , 'resource', 'licenses'])
     return csv_writer
 
 
@@ -75,10 +75,11 @@ def load_diseases_edges(directory):
         if len(rela_infos)>1:
             print('ohje')
         if (gene_id,disease_id,) in dict_existing_gene_disease_to_resource:
+            dict_existing_gene_disease_to_resource[(gene_id, disease_id,)][1].add(license)
             csv_writer_mapped.writerow([gene_id,disease_id, '|'.join(rela_infos), diseases_ids[0],
                                         pharmebinetutils.resource_add_and_prepare(
-                                            dict_existing_gene_disease_to_resource[(gene_id,disease_id,)],
-                                            "DISEASES")])
+                                            dict_existing_gene_disease_to_resource[(gene_id,disease_id,)][0],
+                                            "DISEASES"), '|'.join(dict_existing_gene_disease_to_resource[(gene_id, disease_id,)][1])])
         else:
             counter_new += 1
             csv_writer_new.writerow(
@@ -99,12 +100,12 @@ def generate_cypher_file(file_name, file_name_new):
     :param file_name_new: string
     :return:
     """
-    query = ''' MATCH (n:Gene{identifier:line.gene_id}), (c:Disease{identifier:line.disease_id}) Match (c)<-[r:ASSOCIATES_GaD]-(n)  Set r.resource=split(line.resource,"|"), r.diseases="yes",  r.diseases_rela_infos=split(line.rela_infos,"|")'''
+    query = ''' MATCH (n:Gene{identifier:line.gene_id}), (c:Disease{identifier:line.disease_id}) Match (c)<-[r:ASSOCIATES_GaD]-(n)  Set r.resource=split(line.resource,"|"),r.licenses=split(line.licenses,"|"), r.diseases=TRUE,  r.diseases_rela_infos=split(line.rela_infos,"|")'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/diseases/{file_name}', query)
     cypher_file.write(query)
 
-    query = '''MATCH (n:Gene{identifier:line.gene_id}), (c:Disease{identifier:line.disease_id}) Create (c)<-[r:ASSOCIATES_GaD{ resource:["DISEASES"], source:"DISEASES", diseases:"yes" , license:"%s", url:"https://diseases.jensenlab.org/Entity?order=textmining,knowledge,experiments&textmining=10&knowledge=10&experiments=10&type1=-26&type2=9606&id1="+line.doid , diseases_rela_infos:split(line.rela_infos,"|")}]-(n) '''
+    query = '''MATCH (n:Gene{identifier:line.gene_id}), (c:Disease{identifier:line.disease_id}) Create (c)<-[r:ASSOCIATES_GaD{ resource:["DISEASES"], source:"DISEASES", diseases:TRUE , licenses:["%s"], url:"https://diseases.jensenlab.org/Entity?order=textmining,knowledge,experiments&textmining=10&knowledge=10&experiments=10&type1=-26&type2=9606&id1="+line.doid , diseases_rela_infos:split(line.rela_infos,"|")}]-(n) '''
     query = query % (license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/diseases/{file_name_new}',
@@ -114,7 +115,7 @@ def generate_cypher_file(file_name, file_name_new):
 
 def main():
     global path_of_directory, license
-    license = 'CC BY 4.0 Deed'
+    license = pharmebinetutils.dict_source_to_license['diseases']
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:

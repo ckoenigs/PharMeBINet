@@ -22,9 +22,10 @@ def write_infos_into_file(csv_writer, raw_id, mapped_ids, how_mapped, dict_resou
     :return:
     """
     for map_id in mapped_ids:
+        dict_resource[map_id][1].add(pharmebinetutils.dict_source_to_license['ttd'])
         csv_writer.writerow(
-            [raw_id, map_id, pharmebinetutils.resource_add_and_prepare(dict_resource[map_id], "TTD"),
-             how_mapped])
+            [raw_id, map_id, pharmebinetutils.resource_add_and_prepare(dict_resource[map_id][0], "TTD"),
+             how_mapped, '|'.join(dict_resource[map_id][1])])
 
 
 def load_disease_or_symptom_information(label, dictionary_label_to_mapper_to_key_values, dict_id_to_resource):
@@ -33,7 +34,7 @@ def load_disease_or_symptom_information(label, dictionary_label_to_mapper_to_key
     :return:
     """
 
-    query = f'MATCH (n:{label}) RETURN n.identifier, n.xrefs, n.resource, n.name, n.synonyms'
+    query = f'MATCH (n:{label}) RETURN n.identifier, n.xrefs, n.resource,n.licenses, n.name, n.synonyms'
     result = g.run(query)
 
     dictionary_label_to_mapper_to_key_values[label] = {
@@ -44,9 +45,9 @@ def load_disease_or_symptom_information(label, dictionary_label_to_mapper_to_key
     }
 
     for record in result:
-        [identifier, xref, resource, name, synonyms] = record.values()
+        [identifier, xref, resource, licenses, name, synonyms] = record.values()
 
-        dict_id_to_resource[identifier] = resource
+        dict_id_to_resource[identifier] = [resource, set(licenses)]
 
         if xref is not None:
             for x in xref:
@@ -86,7 +87,7 @@ def disease_ttd_mapping():
     file_name_symptom = 'disease/symptom_mapping.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
-        line = ["node_id", "identifier", "resource", "how_mapped"]
+        line = ["node_id", "identifier", "resource", "how_mapped", 'licenses']
         writer.writerow(line)
         tsv_file_symptom = open(file_name_symptom, 'w', encoding='utf-8')
         writer_symptom = csv.writer(tsv_file_symptom, delimiter='\t')
@@ -198,12 +199,12 @@ def disease_ttd_mapping():
 
     # cypher file
     with open("output/cypher.cypher", "a", encoding="utf-8") as cypher_file:
-        query = f'Match (p1:TTD_Disease{{id:line.node_id}}),(p2:Disease{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.ttd="yes" Create (p1)-[:equal_to_ttd_disease{{how_mapped:line.how_mapped }}]->(p2)'
+        query = f'Match (p1:TTD_Disease{{id:line.node_id}}),(p2:Disease{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"),p2.licenses = split(line.licenses,"|"), p2.ttd=true Create (p1)-[:equal_to_ttd_disease{{how_mapped:line.how_mapped }}]->(p2)'
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/ttd/{file_name}',
                                                   query)
         cypher_file.write(query)
-        query = f'Match (p1:TTD_Disease{{id:line.node_id}}),(p2:Symptom{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.ttd="yes" Create (p1)-[:equal_to_ttd_disease{{how_mapped:line.how_mapped }}]->(p2)'
+        query = f'Match (p1:TTD_Disease{{id:line.node_id}}),(p2:Symptom{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"),p2.licenses = split(line.licenses,"|"), p2.ttd=true Create (p1)-[:equal_to_ttd_disease{{how_mapped:line.how_mapped }}]->(p2)'
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/ttd/{file_name_symptom}',
                                                   query)

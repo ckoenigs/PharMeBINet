@@ -46,7 +46,7 @@ def load_symptoms_from_database_and_add_to_dict(g):
         node = record.data()['n']
         identifier = node['identifier']  # Mesh identifier
         # for mapping with MESH
-        dict_symptom_id_to_resource[identifier] = node['resource']
+        dict_symptom_id_to_resource[identifier] = [node['resource'], set(node['licenses'])]
 
         name = node['name'].lower()
         dict_name_to_identifier[name].add(identifier)
@@ -92,7 +92,7 @@ def generate_files(path_of_directory):
 
     file_name = 'DisGeNet_disease_to_symptom'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['DisGeNet_diseaseId', 'identifier', 'resource', 'mapping_method']
+    header = ['DisGeNet_diseaseId', 'identifier', 'resource', 'mapping_method', 'licenses']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
@@ -100,12 +100,18 @@ def generate_files(path_of_directory):
     csv_mapping.writerow(header)
 
     # mapping_and_merging_into_hetionet/DisGeNet/
-    query = f' Match (n:disease_DisGeNet{{diseaseId:line.DisGeNet_diseaseId}}), (v:Symptom{{identifier:line.identifier}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_disease{{mapped_with:line.mapping_method}}]->(n)'
+    query = f' Match (n:disease_DisGeNet{{diseaseId:line.DisGeNet_diseaseId}}), (v:Symptom{{identifier:line.identifier}}) Set v.disgenet=true, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") Create (v)-[:equal_to_DisGeNet_disease{{mapped_with:line.mapping_method}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name + '.tsv',
                                               query)
     return query
 
+def write_to_tsv_file(umls_id, identifier, mapping_method):
+    dict_symptom_id_to_resource[identifier][1].add(pharmebinetutils.dict_source_to_license['disgenet'])
+    csv_mapping.writerow(
+        [umls_id, identifier,
+         pharmebinetutils.resource_add_and_prepare(dict_symptom_id_to_resource[identifier][0], "DisGeNet"),
+         mapping_method, '|'.join(dict_symptom_id_to_resource[identifier][1])])
 
 def load_all_unmapped_DisGeNet_disease_and_finish_the_files(name, umls_id, xrefs):
     """
@@ -121,18 +127,14 @@ def load_all_unmapped_DisGeNet_disease_and_finish_the_files(name, umls_id, xrefs
         identifiers = dict_umls_id_to_identifier[umls_id]
         reduced_identifier = check_for_multiple_mapping_and_try_to_reduce_multiple_mapping(name, identifiers)
         for identifier in reduced_identifier:
-            csv_mapping.writerow(
-                [umls_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_symptom_id_to_resource[identifier], "DisGeNet"),
-                 'umls'])
+            write_to_tsv_file(umls_id, identifier, 'umls')
         return True
 
     # name mapping
     if name:
         if name in dict_name_to_identifier:
             for identifier in dict_name_to_identifier[name]:
-                csv_mapping.writerow(
-                    [umls_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_symptom_id_to_resource[identifier], "DisGeNet"),
-                     'name'])
+                write_to_tsv_file(umls_id, identifier, 'name')
             return True
 
     # mapping via xrefs
@@ -149,9 +151,7 @@ def load_all_unmapped_DisGeNet_disease_and_finish_the_files(name, umls_id, xrefs
                 identifiers = dict_xrefs_to_identifier[equ_id]
                 reduced_identifier = check_for_multiple_mapping_and_try_to_reduce_multiple_mapping(name, identifiers)
                 for ident in reduced_identifier:  # in case of several values for one id
-                    csv_mapping.writerow(
-                        [umls_id, ident, pharmebinetutils.resource_add_and_prepare(dict_symptom_id_to_resource[ident], "DisGeNet"),
-                         equivalent_id_map[name].lower()])
+                    write_to_tsv_file(umls_id, ident, equivalent_id_map[name].lower())
         return found_mapping
 
     else:

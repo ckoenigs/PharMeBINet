@@ -16,12 +16,13 @@ class Diseasepharmebinet:
     resource: list (all different sources which include this disease)
     """
 
-    def __init__(self, identifier, synonyms, umls_cuis, xrefs, resource):
+    def __init__(self, identifier, synonyms, umls_cuis, xrefs, resource, licenses):
         self.identifier = identifier
         self.umls_cuis = umls_cuis
         self.xrefs = xrefs
         self.synonyms = synonyms
         self.resource = resource
+        self.licenses = licenses
 
 
 class DiseaseCTD:
@@ -83,6 +84,8 @@ dict_name_synonym_to_mondo_id = {}
 # dictionary for pharmebinet identifier with name as value
 dict_pharmebinet_id_to_name = {}
 
+license = pharmebinetutils.dict_source_to_license['ctd']
+
 '''
 create connection to neo4j and mysql
 '''
@@ -105,12 +108,12 @@ load in all diseases from pharmebinet in a dictionary
 
 
 def load_pharmebinet_diseases_in():
-    query = '''MATCH (n:Disease) RETURN n.identifier,n.name, n.synonyms, n.xrefs,  n.resource, n.alternative_ids'''
+    query = '''MATCH (n:Disease) RETURN n.identifier,n.name, n.synonyms, n.xrefs,  n.resource, n.licenses, n.alternative_ids'''
     results = g.run(query)
 
     counter = 0
     for record in results:
-        [identifier, name, synonyms, xrefs,  resource, doids] = record.values()
+        [identifier, name, synonyms, xrefs,  resource,licenses, doids] = record.values()
         counter += 1
         # if identifier=='MONDO:0002165':
         #     print('BLUB')
@@ -174,7 +177,7 @@ def load_pharmebinet_diseases_in():
                         dict_doid_to_mondo[xref] = {identifier}
 
         # generate class Diseasepharmebinet and add to dictionary
-        disease = Diseasepharmebinet(identifier, synonyms, umls_cuis_without_label, xrefs, resource)
+        disease = Diseasepharmebinet(identifier, synonyms, umls_cuis_without_label, xrefs, resource, set(licenses))
         dict_diseases_pharmebinet[identifier] = disease
     print('length of counter:', counter)
     print('length of disease in pharmebinet:' + str(len(dict_diseases_pharmebinet)))
@@ -515,11 +518,11 @@ dict_symptom_mesh_to_ids = {}
 
 
 def load_symptoms_information():
-    query = "Match (n:Symptom) Return n.identifier, n.name, n.synonyms, n.xrefs, n.resource"
+    query = "Match (n:Symptom) Return n.identifier, n.name, n.synonyms, n.xrefs, n.resource, n.licenses"
     results = g.run(query)
     for record in results:
-        [identifier, name, synonyms, xrefs, resource] = record.values()
-        dict_symptom_id_to_resource[identifier] = resource
+        [identifier, name, synonyms, xrefs, resource, licenses] = record.values()
+        dict_symptom_id_to_resource[identifier] = [resource, set(licenses)]
         pharmebinetutils.add_entry_to_dict_to_set(dict_name_synonym_to_mondo_id, name.lower(), identifier)
         if synonyms:
             for synonym in synonyms:
@@ -535,7 +538,7 @@ def map_to_symptoms():
     delete_map_mondo = []
     file = open("disease_Disease/mapped_to_symptoms.tsv", 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    header = ['ctd_id', 'node_id', 'mondos', 'resource', 'how_mapped']
+    header = ['ctd_id', 'node_id', 'mondos', 'resource', 'how_mapped', 'licenses']
     csv_writer.writerow(header)
     counter_mapped = 0
     for ctd_disease_id in list_not_mapped_to_mondo:
@@ -548,10 +551,12 @@ def map_to_symptoms():
             mapped_ids = dict_name_synonym_to_mondo_id[name]
             mapping_ids_string = '|'.join(mapped_ids)
             for mapped_id in mapped_ids:
+                licenses = dict_symptom_id_to_resource[mapped_id][1]
+                licenses.add(license)
                 csv_writer.writerow(
                     [ctd_disease_id, mapped_id, mapping_ids_string,
-                     pharmebinetutils.resource_add_and_prepare(dict_symptom_id_to_resource[mapped_id], 'CTD'),
-                     'name'])
+                     pharmebinetutils.resource_add_and_prepare(dict_symptom_id_to_resource[mapped_id][0], 'CTD'),
+                     'name', '|'.join(licenses)])
 
         if found_mapping:
             counter_mapped += 1
@@ -569,10 +574,12 @@ def map_to_symptoms():
             mapped_ids = dict_symptom_mesh_to_ids[ctd_disease_id]
             mapping_ids_string = '|'.join(mapped_ids)
             for mapped_id in mapped_ids:
+                licenses = dict_symptom_id_to_resource[mapped_id][1]
+                licenses.add(license)
                 csv_writer.writerow(
                     [ctd_disease_id, mapped_id, mapping_ids_string,
-                     pharmebinetutils.resource_add_and_prepare(dict_symptom_id_to_resource[mapped_id], 'CTD'),
-                     'mesh'])
+                     pharmebinetutils.resource_add_and_prepare(dict_symptom_id_to_resource[mapped_id][0], 'CTD'),
+                     'mesh', '|'.join(licenses)])
 
         if found_mapping:
             counter_mapped += 1
@@ -648,7 +655,7 @@ def integrate_disease_into_pharmebinet():
     counter_with_mondos = 0
     csvfile_ctd_pharmebinet_disease = open('disease_Disease/ctd_pharmebinet.tsv', 'w', encoding='utf-8')
     writer = csv.writer(csvfile_ctd_pharmebinet_disease, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(['CTD_diseaseID', 'pharmebinetDiseaseId', 'mondos', 'resource', 'how_mapped'])
+    writer.writerow(['CTD_diseaseID', 'pharmebinetDiseaseId', 'mondos', 'resource', 'how_mapped','licenses'])
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
@@ -699,9 +706,10 @@ def integrate_disease_into_pharmebinet():
             for mondo in mondos:
                 disease_class = dict_diseases_pharmebinet[mondo]
                 resource = set(disease_class.resource)
+                disease_class.licenses.add(license)
                 writer.writerow(
                     [ctd_disease_id, mondo, string_mondos, pharmebinetutils.resource_add_and_prepare(resource, 'CTD'),
-                     how_mapped])
+                     how_mapped, '|'.join(disease_class.licenses)])
         else:
             counter_not_mapped += 1
             if ctd_disease_id not in list_not_mapped_to_mondo:
@@ -713,12 +721,12 @@ def integrate_disease_into_pharmebinet():
     print('number of mapped ctd disease:' + str(counter_with_mondos))
     print('counter intersection mondos:' + str(counter_intersection))
     print(dict_how_mapped_to_multiple_mapping)
-    query = '''MATCH (n:CTD_disease{disease_id:line.CTD_diseaseID}), (d:Disease{identifier:line.pharmebinetDiseaseId}) Merge (d)-[:equal_CTD_disease{how_mapped:line.how_mapped}]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where d.ctd is NULL Set d.resource=split(line.resource,"|") , d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.CTD_diseaseID '''
+    query = '''MATCH (n:CTD_disease{disease_id:line.CTD_diseaseID}), (d:Disease{identifier:line.pharmebinetDiseaseId}) Merge (d)-[:equal_CTD_disease{how_mapped:line.how_mapped}]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where d.ctd is NULL Set d.licenses=split(line.licenses,"|") ,d.resource=split(line.resource,"|") , d.ctd=True, d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.CTD_diseaseID '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ctd/disease_Disease/ctd_pharmebinet.tsv',
                                               query)
     cypher_file.write(query)
-    query = ''' MATCH (n:CTD_disease{disease_id:line.ctd_id}), (d:Symptom{identifier:line.node_id}) Merge (d)-[:equal_CTD_disease{how_mapped:line.how_mapped}]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where d.ctd is NULL Set d.resource=split(line.resource,"|") , d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.CTD_diseaseID '''
+    query = ''' MATCH (n:CTD_disease{disease_id:line.ctd_id}), (d:Symptom{identifier:line.node_id}) Merge (d)-[:equal_CTD_disease{how_mapped:line.how_mapped}]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where d.ctd is NULL Set d.licenses=split(line.licenses,"|") ,d.resource=split(line.resource,"|") , d.ctd=True, d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.CTD_diseaseID '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ctd/disease_Disease/mapped_to_symptoms.tsv',
                                               query)

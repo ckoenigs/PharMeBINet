@@ -22,11 +22,11 @@ def load_proteins_from_database_and_add_to_dict():
     """
     Load all Proteins from pharmebinet and add them into a dictionary
     """
-    query = "MATCH (n:Protein) RETURN n.identifier, n.name, n.resource, n.alternative_ids"
+    query = "MATCH (n:Protein) RETURN n.identifier, n.name, n.resource, n.alternative_ids, n.licenses"
     results = g.run(query)
 
-    for identifier, name, resource, alternative_ids in results:
-        dict_identifier_to_resource[identifier] = resource
+    for identifier, name, resource, alternative_ids, licenses in results:
+        dict_identifier_to_resource[identifier] = [resource, set(licenses)]
         name = name.lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_to_identifier, name, identifier)
         if alternative_ids is not None:
@@ -54,7 +54,7 @@ def generate_files(path_of_directory):
 
     file_name = 'qptm_protein_to_Protein'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['qptm_identifier', 'identifier', 'resource', 'mapping_method']
+    header = ['qptm_identifier', 'identifier', 'resource', 'mapping_method', 'licenses']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
@@ -66,13 +66,20 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/qptm/
-    query = f' Match (n:qPTM_Protein{{uniprot_id:line.qptm_identifier}}), (v:Protein{{identifier:line.identifier}}) Set v.qptm="yes", v.resource=split(line.resource,"|") MERGE (v)-[:equal_to_qPTM_protein{{mapped_with:line.mapping_method}}]->(n)'
+    query = f' Match (n:qPTM_Protein{{uniprot_id:line.qptm_identifier}}), (v:Protein{{identifier:line.identifier}}) Set v.qptm=true, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") MERGE (v)-[:equal_to_qPTM_protein{{mapped_with:line.mapping_method}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
     cypher_file.write(query)
 
     return csv_mapping
 
+def write_to_tsv_file(csv_mapping, node_id, pharmebinet_id, mapping_method):
+    dict_identifier_to_resource[pharmebinet_id][1].add(pharmebinetutils.dict_source_to_license['qptm'])
+    csv_mapping.writerow([
+        node_id, pharmebinet_id,
+        pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[pharmebinet_id][0], "qPTM"),
+        mapping_method, '|'.join(dict_identifier_to_resource[pharmebinet_id][1])
+    ])
 
 def load_all_qptm_proteins_and_finish_the_files(csv_mapping):
     """
@@ -95,11 +102,7 @@ def load_all_qptm_proteins_and_finish_the_files(csv_mapping):
 
         # Direct mapping by identifier
         if identifier in dict_identifier_to_resource:
-            csv_mapping.writerow([
-                identifier, identifier,
-                pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "qPTM"),
-                'uniprot_id'
-            ])
+            write_to_tsv_file(csv_mapping, identifier, identifier, 'uniprot_id')
             counter_mapped_id += 1
             continue
 
@@ -108,22 +111,14 @@ def load_all_qptm_proteins_and_finish_the_files(csv_mapping):
             lower_gene_name = gene_name.lower()
             if lower_gene_name in dict_gene_symbol_to_identifer:
                 main_id = dict_gene_symbol_to_identifer[lower_gene_name]
-                csv_mapping.writerow([
-                    identifier, main_id,
-                    pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id], "qPTM"),
-                    'gene_symbol'
-                ])
+                write_to_tsv_file(csv_mapping, identifier, main_id, 'gene_symbol')
                 counter_gene_names += 1
                 continue
 
         # Mapping by alternative IDs
         for main_id, alternatives in dict_identifier_to_alternative_ids.items():
             if identifier in alternatives:
-                csv_mapping.writerow([
-                    identifier, main_id,
-                    pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[main_id], "qPTM"),
-                    'alternative_id'
-                ])
+                write_to_tsv_file(csv_mapping, identifier, main_id, 'alternative_id')
                 counter_mapped_alternative_id += 1
                 mapped = True
                 break

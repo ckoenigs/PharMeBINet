@@ -26,24 +26,19 @@ dict_chemical_name = {}
 dict_chemical_smiles = {}
 dict_chemical_synonyms = {}
 
+license = pharmebinetutils.dict_source_to_license['drugcentral']
+
 
 def load_chemicals_in():
     """
     Load all chemicals and write information into dictionaries
     :return:
     """
-    query = '''MATCH (n:Chemical) RETURN n.identifier, n.inchikey, n.name, n.smiles, n.resource, n.synonyms, n.inchi'''
+    query = '''MATCH (n:Chemical) RETURN n.identifier, n.inchikey, n.name, n.smiles, n.resource, n.synonyms, n.inchi, n.licenses'''
     results = graph_database.run(query)
 
-    for record in results:
-        identifier = record.data()['n.identifier']
-        inchikey = record.data()['n.inchikey']
-        name = record.data()['n.name']
-        smiles = record.data()['n.smiles']
-        resource = record.data()['n.resource']
-        synonyms = record.data()['n.synonyms']
-        inchi = record.data()['n.inchi']
-        dict_chemical_to_resource[identifier] = resource
+    for identifier, inchikey, name, smiles, resource, synonyms, inchi, licenses, in results:
+        dict_chemical_to_resource[identifier] = [resource, set(licenses)]
 
         if inchikey:
             if inchikey not in dict_chemical_inchi:
@@ -152,9 +147,11 @@ def load_structure_in():
         for chem_id in chemical_mapping[ident]:
             methods = list(chemical_mapping[ident][chem_id])
             methods = '|'.join(methods)
+            dict_chemical_to_resource[chem_id][1].add(license)
             csv_mapped_chemical.writerow([ident, chem_id,
-                                          pharmebinetutils.resource_add_and_prepare(dict_chemical_to_resource[chem_id],
-                                                                                    'DrugCentral'), methods])
+                                          pharmebinetutils.resource_add_and_prepare(
+                                              dict_chemical_to_resource[chem_id][0],
+                                              'DrugCentral'), methods, '|'.join(dict_chemical_to_resource[chem_id][1])])
 
 
 def load_parent_drug_molecule_in():
@@ -233,10 +230,10 @@ def load_parent_drug_molecule_in():
             methods = list(parentMol_mapping[parent_mol_id][pm_id])
             methods = '|'.join(methods)
             # chemical_id = dict_nodes_to_parent_mol[parent_mol_id]
-            resource = set(dict_chemical_to_resource[pm_id])
-            resource.add('DrugCentral')
-            resource = '|'.join(resource)
-        csv_mapped_parent_mol.writerow([parent_mol_id, pm_id, resource, methods])
+            resource = pharmebinetutils.resource_add_and_prepare(dict_chemical_to_resource[pm_id][0], 'DrugCentral')
+            dict_chemical_to_resource[pm_id][1].add(license)
+        csv_mapped_parent_mol.writerow(
+            [parent_mol_id, pm_id, resource, methods, '|'.join(dict_chemical_to_resource[pm_id][1])])
 
 
 def load_drug_class_in():
@@ -289,10 +286,12 @@ def load_drug_class_in():
         for chem_id in chemical_mapping[ident]:
             methods = list(chemical_mapping[ident][chem_id])
             methods = '|'.join(methods)
+            dict_chemical_to_resource[chem_id][1].add(license)
             csv_mapped_drug_class.writerow([ident, chem_id,
                                             pharmebinetutils.resource_add_and_prepare(
-                                                dict_chemical_to_resource[chem_id],
-                                                'DrugCentral'), methods])
+                                                dict_chemical_to_resource[chem_id][0],
+                                                'DrugCentral'), methods,
+                                            '|'.join(dict_chemical_to_resource[chem_id][1])])
 
 
 # tsv for structure
@@ -305,7 +304,7 @@ csv_not_mapped_chemical = csv.writer(file_not_mapped_chemical, delimiter='\t', l
 csv_not_mapped_chemical.writerow(['id', 'inchikey', 'name'])
 file_mapped_chemical = open('chemical/mapped_chemical.tsv', 'w', encoding="utf-8")
 csv_mapped_chemical = csv.writer(file_mapped_chemical, delimiter='\t', lineterminator='\n')
-csv_mapped_chemical.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
+csv_mapped_chemical.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped', 'licenses'])
 
 # tsv for parentmol
 # file for mapped or not mapped identifier
@@ -317,12 +316,12 @@ csv_not_mapped_parentmol = csv.writer(file_not_mapped_parent_mol, delimiter='\t'
 csv_not_mapped_parentmol.writerow(['id', 'inchi', 'name'])
 file_mapped_parent_mol = open('chemical/mapped_parent_mol.tsv', 'w', encoding="utf-8")
 csv_mapped_parent_mol = csv.writer(file_mapped_parent_mol, delimiter='\t', lineterminator='\n')
-csv_mapped_parent_mol.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
+csv_mapped_parent_mol.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped', 'licenses'])
 
 # tsv for drug class
 file_mapped_drug_class = open('chemical/mapped_drug_class.tsv', 'w', encoding="utf-8")
 csv_mapped_drug_class = csv.writer(file_mapped_drug_class, delimiter='\t', lineterminator='\n')
-csv_mapped_drug_class.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
+csv_mapped_drug_class.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped', 'licenses'])
 
 
 def generate_cypher_file(file_name_structure, file_name_parentmol, file_name_drug_class):
@@ -336,21 +335,21 @@ def generate_cypher_file(file_name_structure, file_name_parentmol, file_name_dru
     # es gibt keine mappings zu Chemical, daher ist der cypher file nur für Pharmacological class erstellt
 
     # structure
-    query = '''MATCH (n:DC_Structure), (c:Chemical{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_Structure_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query = '''MATCH (n:DC_Structure), (c:Chemical{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral=true, c.resource=split(line.resource,'|') , c.licenses=split(line.licenses,'|') Create (c)-[:equal_to_Structure_drugcentral{how_mapped:line.how_mapped}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               "mapping_and_merging_into_hetionet/drugcentral/chemical/" + file_name_structure,
                                               query)
     cypher_file.write(query)
 
     # parentmol
-    query = '''MATCH (n:DC_ParentDrugMolecule), (c:Chemical{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_ParentDrugMolecule_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query = '''MATCH (n:DC_ParentDrugMolecule), (c:Chemical{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral=true, c.resource=split(line.resource,'|'), c.licenses=split(line.licenses,'|') Create (c)-[:equal_to_ParentDrugMolecule_drugcentral{how_mapped:line.how_mapped}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               "mapping_and_merging_into_hetionet/drugcentral/chemical/" + file_name_parentmol,
                                               query)
     cypher_file.write(query)
 
     # drugclass
-    query = '''MATCH (n:DC_DrugClass), (c:Chemical{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_DrugClass_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query = '''MATCH (n:DC_DrugClass), (c:Chemical{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral=true, c.resource=split(line.resource,'|'), c.licenses=split(line.licenses,'|') Create (c)-[:equal_to_DrugClass_drugcentral{how_mapped:line.how_mapped}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               "mapping_and_merging_into_hetionet/drugcentral/chemical/" + file_name_drug_class,
                                               query)

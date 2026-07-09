@@ -37,12 +37,12 @@ def load_db_info_in():
     load in all variants from pharmebinet in a dictionary
     :return:
     """
-    query = '''MATCH (n:Variant) RETURN n.identifier, n.xrefs, n.resource, n.name, n.synonyms'''
+    query = '''MATCH (n:Variant) RETURN n.identifier, n.xrefs, n.resource, n.name, n.synonyms, n.licenses '''
     results = g.run(query)
 
     for record in results:
-        [identifier, xrefs, resource, name, synonyms] = record.values()
-        dict_node_to_resource[identifier] = resource if resource else []
+        [identifier, xrefs, resource, name, synonyms, licenses] = record.values()
+        dict_node_to_resource[identifier] = [resource, set(licenses)]
         dict_node_to_xrefs[identifier] = xrefs if xrefs else []
         if identifier.startswith('rs'):
             pharmebinetutils.add_entry_to_dict_to_set(dict_dbSNP_to_id, identifier, identifier)
@@ -79,9 +79,10 @@ def add_information_to_file(variant_id, identifier, csv_writer, how_mapped, tupl
     if identifier.startswith('PA'):
         xrefs.append('PharmGKB:' + identifier)
     xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, 'Variant')
+    dict_to_resource[variant_id][1].add(license)
     csv_writer.writerow(
-        [variant_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_to_resource[variant_id], 'PharmGKB'),
-         how_mapped, '|'.join(xrefs)])
+        [variant_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_to_resource[variant_id][0], 'PharmGKB'),
+         how_mapped, '|'.join(xrefs), '|'.join(dict_to_resource[variant_id][1])])
 
 
 def load_pharmgkb_in(label, directory, mapped_label):
@@ -98,7 +99,7 @@ def load_pharmgkb_in(label, directory, mapped_label):
     file_name = directory + '/mapping_' + label.split('_')[1] + '.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped', 'xrefs'])
+    csv_writer.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped', 'xrefs', 'licenses'])
 
     # tsv_file for new
     file_name_new = directory + '/new_' + label.split('_')[1] + '.tsv'
@@ -174,10 +175,10 @@ def generate_cypher_file(file_name, label, mapped_label, mapped=True):
     """
     cypher_file = open('output/cypher.cypher', 'a')
     if mapped:
-        query = '''  MATCH (n:%s), (c:%s{identifier:line.identifier}) Where n.id=line.pharmgkb_id or n.name=line.pharmgkb_id  Set c.pharmgkb='yes', c.resource=split(line.resource,'|'), c.xrefs=split(line.xrefs,'|') Create (c)-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n)'''
+        query = '''  MATCH (n:%s), (c:%s{identifier:line.identifier}) Where n.id=line.pharmgkb_id or n.name=line.pharmgkb_id  Set c.pharmgkb=true, c.resource=split(line.resource,'|'),c.licenses=split(line.licenses,'|'), c.xrefs=split(line.xrefs,'|') Create (c)-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n)'''
         query = query % (label, mapped_label, label.split('_')[1].lower())
     else:
-        query = '''  MATCH (n:%s) Where n.id=line.identifier or n.name=line.identifier   Create (c:%s :GeneVariant{identifier:line.dbid, name:n.name, synonyms:n.synonyms, location:n.location, pharmgkb:'yes', resource:["PharmGKB"], xrefs:split(line.xrefs,"|") ,license:"%s" , source:"dbSNP from PharmGKB"})-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n) '''
+        query = '''  MATCH (n:%s) Where n.id=line.identifier or n.name=line.identifier   Create (c:%s :GeneVariant{identifier:line.dbid, name:n.name, synonyms:n.synonyms, location:n.location, pharmgkb:true, resource:["PharmGKB"], xrefs:split(line.xrefs,"|") ,licenses:["%s"] , source:"dbSNP from PharmGKB"})-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n) '''
         query = query % (label, mapped_label, license, label.split('_')[1].lower())
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
@@ -188,11 +189,11 @@ def generate_cypher_file(file_name, label, mapped_label, mapped=True):
 
 def main():
     global path_of_directory, license
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        license = sys.argv[2]
     else:
         sys.exit('need a path and license')
+    license = pharmebinetutils.dict_source_to_license['pharmgkb']
 
     print(datetime.datetime.now())
     print('Generate connection with neo4j')

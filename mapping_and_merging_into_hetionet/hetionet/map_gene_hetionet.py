@@ -1,6 +1,7 @@
 import datetime
 import sys, csv
 
+from packaging import licenses
 
 sys.path.append("../..")
 import create_connection_to_databases
@@ -27,11 +28,11 @@ load all ncbi identifier from the gene ides into a dictionary (or list)
 
 
 def get_all_ncbi_ids_from_pharmebinet_genes():
-    query = '''Match (g:Gene) Return g.identifier, g.resource;'''
+    query = '''Match (g:Gene) Return g.identifier, g.resource, g.licenses;'''
     results = g.run(query)
-    for identifier, resource, in results:
+    for identifier, resource, licenses, in results:
 
-        dict_pharmebinet_gene_ids_to_resource[identifier] = resource
+        dict_pharmebinet_gene_ids_to_resource[identifier] = [resource, set(licenses)]
 
     print('number of genes in pharmebinet:' + str(len(dict_pharmebinet_gene_ids_to_resource)))
 
@@ -45,12 +46,12 @@ load ncbi tsv file in and write only the important lines into a new tsv file for
 def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     # file for integration into pharmebinet
     file = open('output/genes.tsv', 'w')
-    header = ['id1', 'id2', 'resource']
+    header = ['id1', 'id2', 'resource', 'licenses']
     writer = csv.writer(file, delimiter='\t')
     writer.writerow(header)
 
     cypher_file = open('output/cypher.cypher', 'w')
-    query = '''Match (n:Gene_hetionet {identifier:line.id1}), (g:Gene{identifier:line.id2 }) Set g.hetionet="yes", g.resource=split(line.resource,"|") Create (n)<-[:equal_to_hetionet_gene]-(g) '''
+    query = '''Match (n:Gene_hetionet {identifier:line.id1}), (g:Gene{identifier:line.id2 }) Set g.hetionet=true, g.resource=split(line.resource,"|"), g.licenses=split(line.licenses,"|") Create (n)<-[:equal_to_hetionet_gene]-(g) '''
 
 
 
@@ -73,8 +74,10 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
 
         if gene_id in dict_pharmebinet_gene_ids_to_resource:
             counter_all_in_pharmebinet += 1
-            writer.writerow([gene_id,gene_id, pharmebinetutils.resource_add_and_prepare(dict_pharmebinet_gene_ids_to_resource[gene_id],
-                                                                           'Hetionet')])
+            licenses = dict_pharmebinet_gene_ids_to_resource[gene_id][1]
+            licenses.add(pharmebinetutils.dict_source_to_license['hetionet'])
+            writer.writerow([gene_id,gene_id, pharmebinetutils.resource_add_and_prepare(dict_pharmebinet_gene_ids_to_resource[gene_id][0],
+                                                                           'Hetionet'), "|".join(licenses)])
 
         else:
             print('not in pharmebinet')

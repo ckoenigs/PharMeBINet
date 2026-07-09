@@ -34,7 +34,7 @@ def load_protein_from_database_and_add_to_dict():
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_protein_id_to_resource[identifier] = node['resource']
+        dict_protein_id_to_resource[identifier] = [node['resource'], set(node['licenses'])]
         alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
         for alternative_id in alternative_ids:
             if alternative_id not in dict_alt_id_to_id:
@@ -52,11 +52,11 @@ def load_compound_from_database_and_add_to_dict():
     Load all compound data for mapping to drugbank.
     :return:
     """
-    query = "MATCH (n:Compound) RETURN n.identifier, n.name, n.resource"
+    query = "MATCH (n:Compound) RETURN n.identifier, n.name, n.resource, n.licenses"
     results = g.run(query)
     for record in results:
-        [identifier, name, resource] = record.values()
-        dict_compound_id_to_name[identifier] = {'name': name, 'resource': resource}
+        [identifier, name, resource, licenses] = record.values()
+        dict_compound_id_to_name[identifier] = {'name': name, 'resource': resource, 'licenses': set(licenses)}
     print('number of compound:', len(dict_compound_id_to_name))
 
 
@@ -69,10 +69,10 @@ def generate_files(path_of_directory, label):
     file_name = 'protein/smpdb_protein_to_%s' % label
     file = open(file_name + '.tsv', 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
-    header = ['identifier', 'other_id', 'resource', 'mapped_with']
+    header = ['identifier', 'other_id', 'resource', 'mapped_with', 'licenses']
     csv_mapping.writerow(header)
 
-    query = ''' Match (n:protein_smpdb{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.smpdb='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_smpdb_%s{how_mapped:line.mapped_with}]->(n)'''
+    query = ''' Match (n:protein_smpdb{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.smpdb=true, v.licenses=split(line.licenses,"|"), v.resource=split(line.resource,"|") Create (v)-[:equal_to_smpdb_%s{how_mapped:line.mapped_with}]->(n)'''
     query = query % (label, label.lower())
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/smpdb/{file_name}.tsv',
@@ -80,12 +80,6 @@ def generate_files(path_of_directory, label):
     cypher_file.write(query)
 
     return csv_mapping
-
-
-def resource(resource):
-    resource = set(resource)
-    resource.add('SMPDB')
-    return '|'.join(resource)
 
 
 '''
@@ -106,19 +100,29 @@ def load_all_smpdb_protein_and_finish_the_files(csv_mapping_protein, csv_mapping
         drugbank_id = node['drugbank_id'] if 'drugbank_id' in node else ''
         if uniprot_id != '':
             if uniprot_id in dict_protein_id_to_resource:
+                dict_protein_id_to_resource[uniprot_id][1].add(pharmebinetutils.dict_source_to_license['smpdb'])
                 csv_mapping_protein.writerow(
-                    [identifier, uniprot_id, resource(dict_protein_id_to_resource[uniprot_id]), 'id'])
+                    [identifier, uniprot_id,
+                     pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[uniprot_id][0], 'SMPDB'),
+                     'id', '|'.join(dict_protein_id_to_resource[uniprot_id][1])])
             elif uniprot_id in dict_alt_id_to_id:
                 for protein_id in dict_alt_id_to_id[uniprot_id]:
+                    dict_protein_id_to_resource[protein_id][1].add(pharmebinetutils.dict_source_to_license['smpdb'])
                     csv_mapping_protein.writerow(
-                        [identifier, protein_id, resource(dict_protein_id_to_resource[protein_id]), 'alternative id'])
+                        [identifier, protein_id,
+                         pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[protein_id][0], 'SMPDB'),
+                         'alternative id', '|'.join(dict_protein_id_to_resource[protein_id][1])])
             else:
                 counter_not_mapped += 1
                 print(identifier)
         elif drugbank_id != '':
             if identifier in dict_compound_id_to_name:
+                dict_compound_id_to_name[identifier]['licenses'].add(pharmebinetutils.dict_source_to_license['smpdb'])
                 csv_mapping_compound.writerow(
-                    [identifier, drugbank_id, resource(dict_compound_id_to_name[identifier]['resource']), 'id'])
+                    [identifier, drugbank_id,
+                     pharmebinetutils.resource_add_and_prepare(dict_compound_id_to_name[identifier]['resource'],
+                                                               'SMPDB'), 'id',
+                     '|'.join(dict_compound_id_to_name[identifier]['licenses'])])
             else:
                 counter_not_mapped += 1
         else:
@@ -136,7 +140,7 @@ def main():
     else:
         sys.exit('need a path smpdb protein')
 
-    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
+    cypher_file = open('output/cypher_2.cypher', 'w', encoding='utf-8')
 
     print('##########################################################################')
 

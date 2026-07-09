@@ -2,7 +2,6 @@ import csv, sys
 import datetime, time
 import pubchempy as pcp
 
-
 sys.path.append('..')
 import change_xref_source_name_to_a_specifice_form
 
@@ -30,16 +29,6 @@ dict_smiles_to_chemicals = {}
 dict_pubchem_c_ids_to_identifier = {}
 # dictionary ttd id to chemical ids
 dict_ttd_id_to_identifiers = {}
-
-# dictionary inchikey to pubchem id
-dict_inchikey_to_pubchem_id={}
-test = set()
-
-def check_for_dictionary_and_return_dict(dict_current, key):
-    if not key in dict_current:
-        dict_current[key] = {}
-    return dict_current[key]
-
 
 
 def load_already_extracted_infos_from_file():
@@ -76,13 +65,13 @@ def load_chemical_information():
     :return:
     """
 
-    query = "MATCH (n:Chemical) RETURN n.identifier, n.xrefs, n.resource, n.name, n.synonyms, n.inchikey, n.smiles"
+    query = "MATCH (n:Chemical) RETURN n.identifier, n.xrefs, n.resource,n.licenses, n.name, n.synonyms, n.inchikey, n.smiles"
     result = g.run(query)
 
     for record in result:
-        [identifier, xrefs, resource, name, synonyms, inchikey, smiles] = record.values()
+        [identifier, xrefs, resource, licenses, name, synonyms, inchikey, smiles] = record.values()
         xrefs = set(xrefs) if xrefs else set()
-        dict_chemical_id_to_resource[identifier] = [resource, xrefs]
+        dict_chemical_id_to_resource[identifier] = [resource, xrefs, set(licenses)]
 
         if xrefs is not None:
             for x in xrefs:
@@ -119,7 +108,7 @@ def prepare_cypher_file_and_queries(file_name, file_name_new):
     """
     # cypher file
     with open("output/cypher.cypher", "a", encoding="utf-8") as cypher_file:
-        query = f'Match (p1:TTD_Drug{{id:line.node_id}}),(p2:Chemical{{identifier:line.identifier}}) SET p2.xrefs=split(line.xrefs,"|"), p2.resource = split(line.resource,"|"), p2.ttd="yes" Create (p1)-[:equal_to_ttd_drug{{how_mapped:line.how_mapped }}]->(p2)'
+        query = f'Match (p1:TTD_Drug{{id:line.node_id}}),(p2:Chemical{{identifier:line.identifier}}) SET p2.xrefs=split(line.xrefs,"|"), p2.resource = split(line.resource,"|"),p2.licenses = split(line.licenses,"|"), p2.ttd=True Create (p1)-[:equal_to_ttd_drug{{how_mapped:line.how_mapped }}]->(p2)'
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/ttd/{file_name}',
                                                   query)
@@ -137,7 +126,7 @@ def prepare_cypher_file_and_queries(file_name, file_name_new):
                                                   query)
         cypher_file.write(query)
 
-        query_start = 'Match (p:TTD_Drug{id:line.id}) Merge (m:Compound :Chemical{identifier:line.new_id}) On Create Set '
+        query_start = 'Match (p:TTD_Drug{id:line.id}) Merge (m :Chemical{identifier:line.new_id}) On Create Set '
         query = 'MATCH (p:TTD_Drug) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
         list_of_props = []
         header = ['id', 'new_id', 'xrefs']
@@ -161,12 +150,20 @@ def prepare_cypher_file_and_queries(file_name, file_name_new):
             else:
                 list_of_props.append('m.' + allfields + '=line.' + allfields)
         query_start += ', '.join(
-            list_of_props) + ', m.identifier=line.new_id, m.xrefs=split(line.xrefs,"|") ,m.ttd="yes", m.source="PubChem via TTD", m.resource=["TTD"], m.url="https://db.idrblab.net/ttd/data/drug/details/"+line.id, m.license="https://www.nlm.nih.gov/copyright.html" Create (p)-[:equal_to_ttd_drug]->(m)'
+            list_of_props) + ', m.identifier=line.new_id, m.xrefs=split(line.xrefs,"|") ,m.ttd=True, m.source="PubChem via TTD", m.resource=["TTD"], m.url="https://db.idrblab.net/ttd/data/drug/details/"+line.id, m.licenses=["%s"] Create (p)-[:equal_to_ttd_drug]->(m)'
+        query_start = query_start % (pharmebinetutils.dict_source_to_license['ttd'])
 
         query_start = pharmebinetutils.get_query_import(path_of_directory,
                                                         f'mapping_and_merging_into_hetionet/ttd/{file_name_new}',
                                                         query_start)
         cypher_file.write(query_start)
+
+        query_add_label = 'Match  (m :Chemical{identifier:line .new_id}) Set m:Compound '
+        query_add_label = pharmebinetutils.get_query_import(path_of_directory,
+                                                            f'mapping_and_merging_into_hetionet/ttd/{file_name_new}',
+                                                            query_add_label)
+        cypher_file.write(query_add_label)
+
     return header
 
 
@@ -211,6 +208,15 @@ def prepare_xrefs(identifier, pubchem_cids):
     return '|'.join(dict_chemical_id_to_resource[identifier][1])
 
 
+def write_to_tsv_file(writer, node_id, identifier, mapping_method, inchikey, smiles, pubchem_cids):
+    dict_chemical_id_to_resource[identifier][2].add(pharmebinetutils.dict_source_to_license['ttd'])
+    writer.writerow([node_id, identifier,
+                     pharmebinetutils.resource_add_and_prepare(
+                         dict_chemical_id_to_resource[identifier][0],
+                         'TTD'), mapping_method, inchikey, smiles, prepare_xrefs(identifier, pubchem_cids),
+                     '|'.join(dict_chemical_id_to_resource[identifier][2])])
+
+
 def compound_ttd_mapping():
     # save the identifier and the Raw_ID in a tsv file
     file_name = 'drug/drug_mapping.tsv'
@@ -219,7 +225,7 @@ def compound_ttd_mapping():
     dict_new_nodes = {}
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
-        line = ["node_id", "identifier", "resource", "how_mapped", 'inchikey', 'smiles', 'xrefs']
+        line = ["node_id", "identifier", "resource", "how_mapped", 'inchikey', 'smiles', 'xrefs', 'licenses']
         writer.writerow(line)
         query = "MATCH (n:TTD_Drug) Where (n)--() RETURN n.id, n.canonical_smiles, n.inchi_key, n.name, n.pubchem_cids, n.chebi_id, n.pubchem_sids, n "
         result = g.run(query)
@@ -241,10 +247,7 @@ def compound_ttd_mapping():
                 counter_mapped += 1
                 mapping_found = True
                 for identifier in dict_inchikey_to_chemical_ids[inchikey]:
-                    writer.writerow([node_id, identifier,
-                                     pharmebinetutils.resource_add_and_prepare(
-                                         dict_chemical_id_to_resource[identifier][0],
-                                         'TTD'), 'inchikey', inchikey, smiles, prepare_xrefs(identifier, pubchem_cids)])
+                    write_to_tsv_file(writer, node_id, identifier, 'inchikey', inchikey, smiles, pubchem_cids)
 
             if mapping_found:
                 continue
@@ -254,9 +257,7 @@ def compound_ttd_mapping():
                     counter_mapped += 1
                     mapping_found = True
                     for identifier in dict_smiles_to_chemicals[smiles]:
-                        writer.writerow([node_id, identifier, pharmebinetutils.resource_add_and_prepare(
-                            dict_chemical_id_to_resource[identifier][0], 'TTD'), 'smiles', inchikey, smiles,
-                                         prepare_xrefs(identifier, pubchem_cids)])
+                        write_to_tsv_file(writer, node_id, identifier, 'smiles', inchikey, smiles, pubchem_cids)
             if mapping_found:
                 continue
 
@@ -275,12 +276,14 @@ def compound_ttd_mapping():
                 # check that they are not combined compounds
                 if name is None or not (' + ' in name or 'combination' in name.lower() or '; ' in name or '/ ' in name):
                     for pubchem_cid in pubchem_cids:
-                        if pubchem_cid in dict_pubchem_c_ids_to_identifier:
+
+                        if pubchem_cid in dict_chemical_id_to_resource:
+                            write_to_tsv_file(writer, node_id, identifier, 'pubchem_id', inchikey, smiles, pubchem_cids)
+                        elif pubchem_cid in dict_pubchem_c_ids_to_identifier:
                             mapping_found = True
                             for identifier in dict_pubchem_c_ids_to_identifier[pubchem_cid]:
-                                writer.writerow([node_id, identifier, pharmebinetutils.resource_add_and_prepare(
-                                    dict_chemical_id_to_resource[identifier][0], 'TTD'), 'pubchem', inchikey, smiles,
-                                                 prepare_xrefs(identifier, pubchem_cids)])
+                                write_to_tsv_file(writer, node_id, identifier, 'pubchem_xrefs', inchikey, smiles,
+                                                  pubchem_cids)
             if mapping_found:
                 counter_mapped += 1
                 continue
@@ -291,9 +294,7 @@ def compound_ttd_mapping():
                     counter_mapped += 1
                     mapping_found = True
                     for identifier in dict_name_to_chemical_ids[name]:
-                        writer.writerow([node_id, identifier, pharmebinetutils.resource_add_and_prepare(
-                            dict_chemical_id_to_resource[identifier][0], 'TTD'), 'name', inchikey, smiles,
-                                         prepare_xrefs(identifier, pubchem_cids)])
+                        write_to_tsv_file(writer, node_id, identifier, 'name', inchikey, smiles, pubchem_cids)
             if mapping_found:
                 continue
 
@@ -326,15 +327,15 @@ def compound_ttd_mapping():
                         if new_id in dict_pubchem_id_to_synonyms:
                             synonyms = dict_pubchem_id_to_synonyms[new_id]
                         else:
-                            print('pubchem id',new_id)
                             c = pcp.Compound.from_cid(int(new_id))
                             synonyms = c.synonyms
                             csv_writer_already_downloaded.writerow([new_id, '|'.join(synonyms)])
                             counter_request += 1
-                            if counter_request % 10 == 0:
+                            if counter_request % 5 == 0:
                                 time.sleep(5)
                             if counter_request % 100 == 0:
                                 print(counter_request, datetime.datetime.now())
+                                time.sleep(10)
                             if counter_request % 1000 == 0:
                                 time.sleep(60)
 
@@ -403,7 +404,6 @@ def main():
     print('create connection')
     create_connection_with_neo4j()
 
-
     print('#' * 50)
     print(datetime.datetime.now())
     print('load existing synonyms')
@@ -418,6 +418,10 @@ def main():
     print(datetime.datetime.now())
     print('map compound')
     compound_ttd_mapping()
+
+
+    print('#' * 50)
+    print(datetime.datetime.now())
 
     driver.close()
 

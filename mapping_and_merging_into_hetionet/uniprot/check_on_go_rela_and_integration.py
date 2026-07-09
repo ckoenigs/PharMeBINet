@@ -29,21 +29,21 @@ dict_go_to_rela_types = {
 }
 
 
-def load_existing_pairs(label, dict_pair_to_resource):
+def load_existing_pairs(label, dict_pair_to_resource_and_licenses):
     """
     Get all pairs for a specific label pair with a given relationship type and add to a set.
     :param label: string
     :param other_label: string
     :param rela_type: string
-    :param dict_pair_to_resource: dictionary
+    :param dict_pair_to_resource_and_licenses: dictionary
     :return:
     """
-    query = 'Match (n:%s)-[r]-(m:%s) Where  r.not is NULL and type(r) in ["%s"] Return n.identifier, m.identifier, r.resource, type(r)' % (
+    query = 'Match (n:%s)-[r]-(m:%s) Where  r.not is NULL and type(r) in ["%s"] Return n.identifier, m.identifier, r.resource,r.licenses, type(r)' % (
         label, 'Protein', '","'.join(dict_go_to_rela_types[label]))
     results = graph_database.run(query)
     for record in results:
-        [node_id_1, node_id_2, resource, rela_type] = record.values()
-        dict_pair_to_resource[(node_id_1, node_id_2)] = set(resource)
+        [node_id_1, node_id_2, resource, licenses, rela_type] = record.values()
+        dict_pair_to_resource_and_licenses[(node_id_1, node_id_2)] = [set(resource), set(licenses)]
         if (node_id_1, node_id_2) not in dict_go_protein_to_rela_type:
             dict_go_protein_to_rela_type[(node_id_1, node_id_2)] = set()
         dict_go_protein_to_rela_type[(node_id_1, node_id_2)].add(rela_type)
@@ -59,13 +59,13 @@ def prepare_resource(set_of_resource):
     return '|'.join(sorted(set_of_resource))
 
 
-def load_pair_edges(csv_mapped, csv_new, label, dict_pair_to_resource):
+def load_pair_edges(csv_mapped, csv_new, label, dict_pair_to_resource_and_licenses):
     """
     Load all pairs of go-.protein for this pair and write the into mapped or not mapped files.
     :param csv_mapped: csv writer
     :param csv_new: csv writer
     :param label: string
-    :param dict_pair_to_resource: dictionary
+    :param dict_pair_to_resource_and_licenses: dictionary
     :return:
     """
     file = open('uniprot_go/db_uniprots_to_' + dict_go[label] + '.tsv', 'r')
@@ -87,9 +87,11 @@ def load_pair_edges(csv_mapped, csv_new, label, dict_pair_to_resource):
         if (go_id, uniprot_id) in set_of_used_pairs:
             continue
         set_of_used_pairs.add((go_id, uniprot_id))
-        if (go_id, uniprot_id) in dict_pair_to_resource:
+        if (go_id, uniprot_id) in dict_pair_to_resource_and_licenses:
             counter_mapped += 1
-            csv_mapped.writerow([go_id, uniprot_id, prepare_resource(dict_pair_to_resource[(go_id, uniprot_id)])])
+            licenses = dict_pair_to_resource_and_licenses[(go_id, uniprot_id)][1]
+            licenses.add(pharmebinetutils.dict_source_to_license['uniprot'])
+            csv_mapped.writerow([go_id, uniprot_id, prepare_resource(dict_pair_to_resource_and_licenses[(go_id, uniprot_id)][0]), "|".join(licenses)])
             if len(dict_go_protein_to_rela_type[(go_id, uniprot_id)]) > 1:
                 print('multi rela types')
                 print(go_id, uniprot_id)
@@ -121,14 +123,14 @@ def create_cypher_file(file_name, file_name_new, label):
     :return:
     """
     # b.resource=split(line.resource,'|'),
-    query = ''' Match (g:Protein{identifier:line.node_id_2}),(b:%s{identifier:line.node_id_1}) Set  b.uniprot='yes' Create (g)-[:PARTICIPATES_Pp%s{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.node_id_2}]->(b)'''
-    query = query % (label, dict_label_to_rela_short[label])
+    query = ''' Match (g:Protein{identifier:line.node_id_2}),(b:%s{identifier:line.node_id_1}) Set  b.uniprot=true Create (g)-[:PARTICIPATES_Pp%s{resource:['UniProt'],source:'UniProt', uniprot:true, licenses:['%s'], url:'https://www.uniprot.org/uniprot/'+line.node_id_2}]->(b)'''
+    query = query % (label, dict_label_to_rela_short[label], pharmebinetutils.dict_source_to_license['uniprot'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/uniprot/{file_name_new}',
                                               query)
     cypher_file.write(query)
 
-    query = ''' MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:Protein{identifier:line.node_id_2}) Where r.not is NULL and type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.uniprot='yes' '''
+    query = ''' MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:Protein{identifier:line.node_id_2}) Where r.not is NULL and type(r) in ["%s"] Set  r.resource=split(line.resource,'|'),  r.licenses=split(line.licenses,'|'), r.uniprot=true '''
     query = query % (label, '","'.join(dict_go_to_rela_types[label]))
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/uniprot/{file_name}',
@@ -157,7 +159,7 @@ def check_relationships_and_generate_file(label):
 
     file_edge_pro_or_meta_to_node = open(file_name, 'w', encoding="utf-8")
     csv_edge = csv.writer(file_edge_pro_or_meta_to_node, delimiter='\t', lineterminator='\n')
-    csv_edge.writerow(['node_id_1', 'node_id_2', 'resource'])
+    csv_edge.writerow(['node_id_1', 'node_id_2', 'resource', 'licenses'])
 
     file_name_new = 'uniprot_go/edge_new_' + label + '_to_protein.tsv'
 
@@ -171,9 +173,9 @@ def check_relationships_and_generate_file(label):
     print(datetime.datetime.now())
     print('Load all relationships from pairs from pharmebinet into a set')
 
-    dict_pair_to_resource = {}
+    dict_pair_to_resource_and_licenses = {}
 
-    load_existing_pairs(label, dict_pair_to_resource)
+    load_existing_pairs(label, dict_pair_to_resource_and_licenses)
 
     print(
         '###########################################################################################################################')
@@ -181,7 +183,7 @@ def check_relationships_and_generate_file(label):
     print(datetime.datetime.now())
     print('Load all relationships pairs of uniprot')
 
-    load_pair_edges(csv_edge, csv_edge_new, label, dict_pair_to_resource)
+    load_pair_edges(csv_edge, csv_edge_new, label, dict_pair_to_resource_and_licenses)
 
     print(
         '###########################################################################################################################')

@@ -35,12 +35,12 @@ def load_pharmebinet_pathways_in():
     load in all pathways from pharmebinet in a dictionary
     :return:
     """
-    query = '''MATCH (n:Pathway) RETURN n.identifier,n.name, n.synonyms, n.source, n.xrefs, n.resource'''
+    query = '''MATCH (n:Pathway) RETURN n.identifier,n.name, n.synonyms, n.source, n.xrefs, n.resource, n.licenses'''
     results = g.run(query)
 
     for record in results:
-        [identifier, name, synonyms, source, xrefs, resource] = record.values()
-        dict_pathway_id_to_resource[identifier] = resource
+        [identifier, name, synonyms, source, xrefs, resource, licenses] = record.values()
+        dict_pathway_id_to_resource[identifier] = [resource, set(licenses)]
         synonyms = synonyms if not synonyms is None else []
         if xrefs:
             dict_own_id_to_xrefs[identifier] = set(xrefs)
@@ -74,7 +74,7 @@ csv_not_mapped.writerow(['id', 'name', 'source'])
 
 file_mapped_pathways = open('pathway/mapped_pathways.tsv', 'w')
 csv_mapped = csv.writer(file_mapped_pathways, delimiter='\t')
-csv_mapped.writerow(['id', 'id_pharmebinet', 'mapped', 'resource', 'xrefs'])
+csv_mapped.writerow(['id', 'id_pharmebinet', 'mapped', 'resource', 'xrefs', 'licenses'])
 
 # dictionary to transform the xrefs name of the pathway to the same as in TTD
 dict_source_ttd_to_source_pharmebinet = {
@@ -111,10 +111,12 @@ def load_ttd_pathways_in():
                     xrefs = dict_own_id_to_xrefs[identifier]
                     if source == 'NetPathway':
                         xrefs.add('netpath:' + identifier)
+                    dict_pathway_id_to_resource[identifier][1].add(pharmebinetutils.dict_source_to_license['ttd'])
                     csv_mapped.writerow([pathway_id, identifier, other_source_name,
                                          pharmebinetutils.resource_add_and_prepare(
-                                             dict_pathway_id_to_resource[identifier],
-                                             'TTD'), '|'.join(xrefs)])
+                                             dict_pathway_id_to_resource[identifier][0],
+                                             'TTD'), '|'.join(xrefs),
+                                         '|'.join(dict_pathway_id_to_resource[identifier][1])])
         if found_mapping:
             continue
 
@@ -127,9 +129,10 @@ def load_ttd_pathways_in():
                 xrefs = dict_own_id_to_xrefs[identifier]
                 if source == 'NetPathway':
                     xrefs.add('netpath:' + pathway_id)
+                dict_pathway_id_to_resource[identifier][1].add(pharmebinetutils.dict_source_to_license['ttd'])
                 csv_mapped.writerow([pathway_id, identifier, 'name', pharmebinetutils.resource_add_and_prepare(
-                    dict_pathway_id_to_resource[identifier],
-                    'TTD'), '|'.join(xrefs)])
+                    dict_pathway_id_to_resource[identifier][0],
+                    'TTD'), '|'.join(xrefs), '|'.join(dict_pathway_id_to_resource[identifier][1])])
 
 
         else:
@@ -148,7 +151,7 @@ def create_cypher_file():
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query = ''' Match (d:Pathway{identifier:line.id_pharmebinet}),(c:TTD_Pathway{id:line.id}) Create (d)-[:equal_to_ttd_pathway{how_mapped:line.mapped}]->(c) Set d.resource= split(line.resource, "|"), d.xrefs=split(line.xrefs,"|") , d.ttd="yes"'''
+    query = ''' Match (d:Pathway{identifier:line.id_pharmebinet}),(c:TTD_Pathway{id:line.id}) Create (d)-[:equal_to_ttd_pathway{how_mapped:line.mapped}]->(c) Set d.resource= split(line.resource, "|"),d.licenses= split(line.licenses, "|"), d.xrefs=split(line.xrefs,"|") , d.ttd=true'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ttd/pathway/mapped_pathways.tsv',
                                               query)

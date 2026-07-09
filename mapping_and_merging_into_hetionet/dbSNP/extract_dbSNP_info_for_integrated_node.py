@@ -189,7 +189,7 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
     csv_writer.writerow(['rs_id', 'clinvar_id', 'license'])
 
     cypher_file = open('output/cypher_dbSNP_clinVar.cypher', 'w', encoding='utf-8')
-    query = ''' Match (n:Variant{identifier:line.rs_id}), (m:Variant{identifier:line.clinvar_id}) Create (m)-[:IS_ALLEL_OF_ViaoV{url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.clinvar_id, license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", source:"external identifier from ClinVar", resource:["ClinVar"], clinvar:"yes"}]->(n)'''
+    query = ''' Match (n:Variant{identifier:line.rs_id}), (m:Variant{identifier:line.clinvar_id}) Create (m)-[:IS_ALLEL_OF_ViaoV{url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.clinvar_id, license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", source:"external identifier from ClinVar", resource:["ClinVar"], clinvar:true}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory_dbSNP,
                                               file_name,
                                               query)

@@ -20,6 +20,7 @@ def create_connection_with_neo4j_and_mysql():
 # open cypher file
 cypher_file = open('relationships/cypher.cypher', 'a', encoding='utf-8')
 
+license = pharmebinetutils.dict_source_to_license['ndfrt']
 
 def write_files(label, direction_1, direction_2, rela_name):
     '''
@@ -39,7 +40,7 @@ def write_files(label, direction_1, direction_2, rela_name):
     header_rela = ['chemical_id', 'ingredient_chemical_id', 'source']
     csv_rela.writerow(header_rela)
 
-    query = '''Match (c:%s{identifier:line.chemical_id}), (p:Chemical{identifier:line.ingredient_chemical_id}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['NDF-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.ingredient_chemical_id , r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html', r.unbiased=false, r.ndf_rt='yes' On Match Set r.resource=r.resource+'NDF-RT' , r.ndf_rt='yes' '''
+    query = f'''Match (c:%s{{identifier:line.chemical_id}}), (p:Chemical{{identifier:line.ingredient_chemical_id}}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['NDF-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.ingredient_chemical_id , r.licenses=['{license}'], r.unbiased=false, r.ndf_rt=true On Match Set r.resource=r.resource+'NDF-RT' , r.licenses=r.licenses+'{license}' , r.ndf_rt=true '''
     query = query % (label, direction_1, rela_name, direction_2)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ndf-rt/{file_name}',

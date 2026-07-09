@@ -54,7 +54,7 @@ class Drugpharmebinet:
     url: string
     """
 
-    def __init__(self, identifier, inchikey, inchi, name, resource, xrefs):
+    def __init__(self, identifier, inchikey, inchi, name, resource, xrefs, licenses):
         #        self.license=licenses
         self.identifier = identifier
         self.inchikey = inchikey
@@ -62,6 +62,7 @@ class Drugpharmebinet:
         self.name = name
         self.resource = resource
         self.xrefs = xrefs
+        self.licenses = licenses
 
 
 # list all compound ids in pharmebinet
@@ -109,12 +110,12 @@ def load_chemicals_from_database():
     url: url
     :return:
     """
-    query = 'MATCH (n:Chemical) RETURN n.identifier,n.inchikey, n.inchi, n.name, n.synonyms, n.international_brands_name_company, n.resource, n.mixtures_name_ingredients, n.xrefs, n.ChEMBL '
+    query = 'MATCH (n:Chemical) RETURN n.identifier,n.inchikey, n.inchi, n.name, n.synonyms, n.international_brands_name_company, n.resource, n.mixtures_name_ingredients, n.xrefs, n.ChEMBL, n.licenses '
     results = g.run(query)
 
     for record in results:
         [identifier, inchikey, inchi, name, synonyms, brand_name_and_companys, resource, mixtures_name_ingredients,
-         xrefs, chembl_id] = record.values()
+         xrefs, chembl_id, licenses] = record.values()
         inchikey = inchikey if inchikey else ''
         if not inchikey in dict_inchikey_to_compound and inchikey != '':
             dict_inchikey_to_compound[inchikey] = [identifier]
@@ -166,7 +167,7 @@ def load_chemicals_from_database():
         if chembl_id != '':
             dict_chembl_to_drugbank_id[chembl_id].append(identifier)
 
-        drug = Drugpharmebinet(identifier, inchikey, inchi, name, resource, xrefs)
+        drug = Drugpharmebinet(identifier, inchikey, inchi, name, set(resource), xrefs, set(licenses))
         dict_all_drug[identifier] = drug
 
 
@@ -598,7 +599,7 @@ def integrate_sider_drugs_into_pharmebinet():
     # cypher file
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = ''' Match (c:Chemical{identifier:line.chemical_id}), (d:drug_Sider{stitchIDstereo:line.sider_id}) Set c.xrefs=split(line.xrefs,'|'), c.sider="yes", c.resource=split(line.resource,'|'), d.name=line.name, d.how_mapped=line.how_mapped
+    query = ''' Match (c:Chemical{identifier:line.chemical_id}), (d:drug_Sider{stitchIDstereo:line.sider_id}) Set c.xrefs=split(line.xrefs,'|'), c.sider=true, c.resource=split(line.resource,'|'), c.licenses=split(line.licenses,'|'), d.name=line.name, d.how_mapped=line.how_mapped
                     Create (c)-[:equal_to_drug_Sider]->(d)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/sider/output/mapped_drug.tsv',
@@ -606,7 +607,7 @@ def integrate_sider_drugs_into_pharmebinet():
     cypher_file.write(query)
     cypher_file.close()
 
-    header = ['chemical_id', 'xrefs', 'resource', 'sider_id', 'name', 'how_mapped']
+    header = ['chemical_id', 'xrefs', 'resource', 'sider_id', 'name', 'how_mapped', 'licenses']
     file = open('output/mapped_drug.tsv', 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(header)
@@ -637,16 +638,17 @@ def integrate_sider_drugs_into_pharmebinet():
         #     pubchem_stereo].stitchIDstereo , string_drugbank_ids ])
 
         for chemical_id in chemical_ids:
-            resource = dict_all_drug[chemical_id].resource
-            resource.append('SIDER')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            dict_all_drug[chemical_id].resource.add('SIDER')
+            resource = '|'.join(dict_all_drug[chemical_id].resource)
 
             xrefs = dict_all_drug[chemical_id].xrefs
             xrefs.append('PubChem Compound:' + str(pubchem_stereo))
             xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, 'chemical')
             xrefs = '|'.join(xrefs)
-            csv_writer.writerow([chemical_id, xrefs, resource, stitch_stereo, name, how_mapped])
+
+            licenses = dict_all_drug[chemical_id].licenses
+            licenses.add(pharmebinetutils.dict_source_to_license['sider'])
+            csv_writer.writerow([chemical_id, xrefs, resource, stitch_stereo, name, how_mapped, '|'.join(licenses)])
 
     file.close()
 

@@ -44,7 +44,7 @@ def load_genes_from_database_and_add_to_dict():
         identifier = disease['identifier']
         dict_disease_id_to_disease_node[identifier] = dict(disease)
         xrefs = disease['xrefs'] if 'xrefs' in disease else []
-        dict_disease_id_to_resource[identifier] = disease['resource']
+        dict_disease_id_to_resource[identifier] = [disease['resource'], set(disease['licenses'])]
         for xref in xrefs:
             if xref not in dict_xref_to_disease_id:
                 dict_xref_to_disease_id[xref] = set()
@@ -66,7 +66,7 @@ def add_query_to_cypher_file():
     '''
     add query for a specific tsv to cypher file
     '''
-    this_start_query = "Match (n:trait_Disease_ClinVar {identifier:line.trait_id}), (m:Disease{identifier:line.disease_id}) Set m.clinvar='yes', m.resource=split(line.resource,'|') Create (m)-[:equal_to_clinvar_disease{mapping_methode:split(line.mapping_method,'|')}]->(n)"
+    this_start_query = "Match (n:trait_Disease_ClinVar {identifier:line.trait_id}), (m:Disease{identifier:line.disease_id}) Set m.clinvar=true, m.resource=split(line.resource,'|'), m.licenses=split(line.licenses,'|') Create (m)-[:equal_to_clinvar_disease{mapping_methode:split(line.mapping_method,'|')}]->(n)"
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/clinvar/disease/mapping.tsv',
                                               this_start_query)
@@ -103,6 +103,8 @@ def load_all_clinvar_disease_and_start_mapping():
     counter_mapped = 0
     for record in results:
         node = record.data()['n']
+        if not 'identifier' in node:
+            continue
         identifier = node['identifier']
 
         dict_clinvar_id_to_node[identifier] = dict(node)
@@ -206,10 +208,10 @@ def write_into_tsv_file(disease_id, trait_id, trait_name, tuple_pair, csv_mappin
                                                                           dict_disease_id_to_disease_node[
                                                                               disease_id] else ''
     mapping_set = dict_of_mapped_tuples[tuple_pair] if tuple_pair in dict_of_mapped_tuples else mapped_with
-    resource = set(dict_disease_id_to_resource[disease_id])
-    resource.add('ClinVar')
+    resource = set(dict_disease_id_to_resource[disease_id][0])
+    dict_disease_id_to_resource[disease_id][1].add(pharmebinetutils.dict_source_to_license['clinvar'])
     csv_mapping_writer.writerow(
-        [trait_id, disease_id, "|".join(list(mapping_set)), '|'.join(sorted(resource)), trait_name, disease_name])
+        [trait_id, disease_id, "|".join(list(mapping_set)), pharmebinetutils.resource_add_and_prepare(resource,'ClinVar'), '|'.join(dict_disease_id_to_resource[disease_id][1]), trait_name, disease_name])
 
 
 def check_for_mapping_and_write_in_tsv_file(name, dictionary, counter_new_mapped, trait_id, mapped_ids, mapped_with):
@@ -237,7 +239,7 @@ def check_for_mapping_and_write_in_tsv_file(name, dictionary, counter_new_mapped
 # files for mapping tsv
 file_mapping = open('disease/mapping.tsv', 'w', encoding='utf-8')
 csv_mapping_writer = csv.writer(file_mapping, delimiter='\t')
-csv_mapping_writer.writerow(['trait_id', 'disease_id', 'mapping_method', 'resource'])
+csv_mapping_writer.writerow(['trait_id', 'disease_id', 'mapping_method', 'resource', 'licenses'])
 
 
 def mapping_with_name():

@@ -23,17 +23,19 @@ def create_connection_with_neo4j():
 # dictionary variant identifier to resources and xrefs
 dict_identifier_to_resource_and_xrefs = {}
 
+license = pharmebinetutils.dict_source_to_license['dbsnp']
+
 
 def load_variant_from_database_and_add_to_dict():
     """
     Load all Genes from my database  and add them into a dictionary
     :return:
     """
-    query = "MATCH (n:GeneVariant) RETURN n.identifier, n.resource, n.xrefs"
+    query = "MATCH (n:GeneVariant) RETURN n.identifier, n.resource, n.xrefs, n.licenses"
     results = g.run(query)
     for record in results:
-        [identifier, resource, xrefs] = record.values()
-        dict_identifier_to_resource_and_xrefs[identifier] = [resource, xrefs]
+        [identifier, resource, xrefs, licenses] = record.values()
+        dict_identifier_to_resource_and_xrefs[identifier] = [resource, xrefs, set(licenses)]
 
 
 # cypher file
@@ -49,7 +51,7 @@ def generate_files(path_of_directory):
     file_name = 'output_mapping/gene_variant_to_variant'
     file = open(file_name + '.tsv', 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
-    header = ['dbsnp_id', 'variant_id', 'resource', 'xrefs']
+    header = ['dbsnp_id', 'variant_id', 'resource', 'xrefs','licenses']
     csv_mapping.writerow(header)
 
     information_query = '''MATCH (p:snp_dbSNP) WITH DISTINCT keys(p) AS keys
@@ -68,7 +70,7 @@ def generate_files(path_of_directory):
         else:
             query += 'v.' + property + f'=COALESCE(v.{property},n.' + property + '), '
 
-    query += '''v.dbsnp="yes", v.url="https://www.ncbi.nlm.nih.gov/snp/"+line.dbsnp_id, v.resource=split(line.resource,"|"), v.source='dbSNP', v.license='https://www.ncbi.nlm.nih.gov/home/about/policies/' ,v.xrefs=split(line.xrefs,"|") Create (v)-[:equal_to_drugbank_variant]->(n)'''
+    query += '''v.dbsnp=true, v.url="https://www.ncbi.nlm.nih.gov/snp/"+line.dbsnp_id, v.resource=split(line.resource,"|"),v.licenses=split(line.licenses,"|"), v.source='dbSNP' ,v.xrefs=split(line.xrefs,"|") Create (v)-[:equal_to_drugbank_variant]->(n)'''
 
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/dbSNP/{file_name}.tsv',
@@ -130,18 +132,20 @@ def load_all_variants_and_finish_the_files(csv_mapping):
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        [resource, xrefs] = dict_identifier_to_resource_and_xrefs['rs' + identifier]
+        [resource, xrefs, licenses] = dict_identifier_to_resource_and_xrefs['rs' + identifier]
         variant_type = node['variant_type']
         dbxrefs = node['xrefs'] if 'xrefs' in node else []
         clinical_variant_ids = ['ClinVar:' + x for x in
                                 node['clinical_variant_ids']] if 'clinical_variant_ids' in node else []
         dbxrefs.extend(clinical_variant_ids)
         dbxrefs.extend(xrefs)
-        resource.append('dbSNP')
-        resource = '|'.join(sorted(set(resource)))
+
+        resource = pharmebinetutils.resource_add_and_prepare(resource, 'dbSNP')
+
+        licenses.add(license)
 
         dbxrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(dbxrefs, 'Variant'))
-        csv_mapping.writerow([identifier, 'rs' + identifier, resource, dbxrefs])
+        csv_mapping.writerow([identifier, 'rs' + identifier, resource, dbxrefs, '|'.join(licenses)])
 
         if not variant_type in dict_variant_typ_to_tsv_file:
             generate_label_tsv_and_query(variant_type)
@@ -158,7 +162,7 @@ def main():
     if len(sys.argv) < 2:
         sys.exit('need  path to directory gene variant and license')
     path_of_directory = sys.argv[1]
-    license = sys.argv[2]
+    license = pharmebinetutils.dict_source_to_license['dbsnp']
     print('##########################################################################')
 
     print(datetime.datetime.now())

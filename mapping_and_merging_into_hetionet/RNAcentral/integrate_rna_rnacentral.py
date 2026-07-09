@@ -151,7 +151,7 @@ def cypher(keys, file_name, label, unique_identifier):
         else:
             query += x + ':line.' + x + ', '
 
-    query = query + ' rnacentral:"yes", url:"https://rnacentral.org/rna/"+split(line.identifier,"_")[0]+"/"+split(line.identifier,"_")[1], license:"CC0", resource:["RNAcentral"], source:"RNAcentral"})'
+    query = query + ' rnacentral=true, url:"https://rnacentral.org/rna/"+split(line.identifier,"_")[0]+"/"+split(line.identifier,"_")[1], license:"CC0", resource:["RNAcentral"], source:"RNAcentral"})'
     query = query + f' Create (p1)-[:equal_to_rnacenral]->(p)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/RNAcentral/{file_name}',

@@ -465,16 +465,6 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_names, db_disease_source)
     else:
         print('a different db disease source ' + db_disease_source)
 
-    # print('number of decipher:' + str(counter_decipher))
-    # print('number of not mapped decipher:' + str(counter_decipher_not_mapped))
-    # print('number of mapped decipher with name:' + str(counter_decipher_map_with_name))
-    # print('number of decipher with mapped umls cui:' + str(counter_decipher_map_with_mapped_umls_cui))
-    # print('number of mapped decipher with name splitted:' + str(counter_decipher_map_with_name_split))
-    # print('number of omim:' + str(counter_omim))
-    # print('number of not mapped omim:' + str(counter_omim_not_mapped))
-    # print('number of direct map omim:' + str(counter_omim_map_with_omim))
-    # print('number of map omim with umls cui:' + str(counter_omim_map_with_umls_cui))
-    # print('number of map omim with name:' + str(counter_omim_with_name))
 
 
 # dictionary with mondo as key and hpo ids as value
@@ -483,7 +473,7 @@ dict_mondo_to_hpo_ids = defaultdict(list)
 # csv file for mapping disease
 file_disease = open('mapping_files/disease_mapped.tsv', 'w', encoding='utf-8')
 csv_disease = csv.writer(file_disease, delimiter='\t')
-csv_disease.writerow(['hpo_id', 'pharmebinet_id', 'resource'])
+csv_disease.writerow(['hpo_id', 'pharmebinet_id', 'resource','licenses'])
 
 # cypher file for mapping and integration
 cypher_file = open('cypher/cypher.cypher', 'w')
@@ -495,7 +485,7 @@ Integrate mapping connection between disease and HPO_disease and make a dictiona
 
 def integrate_mapping_of_disease_into_pharmebinet():
     # query for mapping disease and written into file
-    query = '''Match (n:HPO_disease{id: line.hpo_id}), (d:Disease{identifier:line.pharmebinet_id}) Set d.hpo="yes", d.resource=split(line.resource,"|") Create (d)-[:equal_to_hpo_disease]->(n) '''
+    query = '''Match (n:HPO_disease{id: line.hpo_id}), (d:Disease{identifier:line.pharmebinet_id}) Set d.hpo=True, d.resource=split(line.resource,"|"), d.licenses=split(line.licenses,"|") Create (d)-[:equal_to_hpo_disease]->(n) '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/hpo/mapping_files/disease_mapped.tsv',
                                               query)
@@ -504,10 +494,10 @@ def integrate_mapping_of_disease_into_pharmebinet():
     for hpo_id, mondos in dict_disease_id_to_mondos.items():
         for mondo in mondos:
             resources = set(dict_mondo_to_node[mondo]['resource'])
-            resources.add('HPO')
-            resources = sorted(resources)
+            licenses = set(dict_mondo_to_node[mondo]['licenses'])
+            licenses.add(pharmebinetutils.dict_source_to_license['hpo'])
 
-            csv_disease.writerow([hpo_id, mondo, '|'.join(resources)])
+            csv_disease.writerow([hpo_id, mondo, pharmebinetutils.resource_add_and_prepare(resources, 'HPO'), '|'.join(licenses)])
 
             # fill mapped dictionary
             dict_mondo_to_hpo_ids[mondo].append(hpo_id)

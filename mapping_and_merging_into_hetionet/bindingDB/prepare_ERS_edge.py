@@ -48,6 +48,8 @@ article_dict = {}
 # dictionary containing reactant_set_id and entryid as key and relevant information from ki_result to be added to the ers nodes
 ki_result_dict = {}
 
+license = pharmebinetutils.dict_source_to_license['bindingdb']
+
 
 def create_connection_with_neo4j():
     '''
@@ -168,7 +170,8 @@ def get_enzyme_reactant_set_properties():
             query_middle_new += property + ":line." + property + ", "
     query_end = ''' Create (a)-[:equal]->(b)'''
     # combine the important parts of node creation
-    query_new = query_nodes_start + query_middle_new + 'url:"https://www.bindingdb.org/rwd/jsp/dbsearch/Summary_ki.jsp?entryid="+b.entryid+"&ki_result_id="+line.ki_result_id+"&reactant_set_id="+b.reactant_set_id, node_edge:true , license:"CC BY 3.0 US Deed", resource:["BindingDB"], source:"BindingDB", bindingdb:"yes"})' + query_end
+    query_new = query_nodes_start + query_middle_new + 'url:"https://www.bindingdb.org/rwd/jsp/dbsearch/Summary_ki.jsp?entryid="+b.entryid+"&ki_result_id="+line.ki_result_id+"&reactant_set_id="+b.reactant_set_id, node_edge:true , licenses:["%s"], resource:["BindingDB"], source:"BindingDB", bindingdb:true})' + query_end
+    query_new = query_new % (license)
     return query_new
 
 
@@ -326,9 +329,10 @@ def create_ers_edges(path_of_directory, cypher_file):
             csv_mapping.writerow(row)
         # for POLYMER: add unpid1 to edge (variant)
         if "prot" in file_name:
-            query = f'Match (n:EnzymeReactantSet{{identifier:line.ersid}}), (m:{node_name[i]}{{identifier:line.{header[1]}}}) Create (m)-[:{relationship_names[i]}_{pharmebinetutils.dictionary_label_to_abbreviation[node_name[i]]}{"".join([x[0].lower() for x in relationship_names[i].split("_")])}{pharmebinetutils.dictionary_label_to_abbreviation["EnzymeReactantSet"]}{{ source:"BindingDB", resource:["BindingDB"], url:"https://www.bindingdb.org/rwd/jsp/dbsearch/Summary_ki.jsp?entryid="+n.entryid+"&ki_result_id="+n.ki_result_id+"&reactant_set_id="+line.ersid, bindingdb:"yes", license:"CC BY 3.0 US Deed", variant: line.unpid1}}] -> (n)'
+            query = f'Match (n:EnzymeReactantSet{{identifier:line.ersid}}), (m:{node_name[i]}{{identifier:line.{header[1]}}}) Create (m)-[:{relationship_names[i]}_{pharmebinetutils.dictionary_label_to_abbreviation[node_name[i]]}{"".join([x[0].lower() for x in relationship_names[i].split("_")])}{pharmebinetutils.dictionary_label_to_abbreviation["EnzymeReactantSet"]}{{ source:"BindingDB", resource:["BindingDB"], url:"https://www.bindingdb.org/rwd/jsp/dbsearch/Summary_ki.jsp?entryid="+n.entryid+"&ki_result_id="+n.ki_result_id+"&reactant_set_id="+line.ersid, bindingdb:true, licenses:["%s"], variant: line.unpid1}}] -> (n)'
         else:
-            query = f'Match (n:EnzymeReactantSet{{identifier:line.ersid}}), (m:{node_name[i]}{{identifier:line.{header[1]}}}) Create (m)-[:{relationship_names[i]}_{pharmebinetutils.dictionary_label_to_abbreviation[node_name[i]]}{"".join([x[0].lower() for x in relationship_names[i].split("_")])}{pharmebinetutils.dictionary_label_to_abbreviation["EnzymeReactantSet"]}{{ source:"BindingDB", bindingdb:"yes", url:"https://www.bindingdb.org/rwd/jsp/dbsearch/Summary_ki.jsp?entryid="+n.entryid+"&ki_result_id="+n.ki_result_id+"&reactant_set_id="+line.ersid, license:"CC BY 3.0 US Deed", resource:["BindingDB"]}}] -> (n)'
+            query = f'Match (n:EnzymeReactantSet{{identifier:line.ersid}}), (m:{node_name[i]}{{identifier:line.{header[1]}}}) Create (m)-[:{relationship_names[i]}_{pharmebinetutils.dictionary_label_to_abbreviation[node_name[i]]}{"".join([x[0].lower() for x in relationship_names[i].split("_")])}{pharmebinetutils.dictionary_label_to_abbreviation["EnzymeReactantSet"]}{{ source:"BindingDB", bindingdb:true, url:"https://www.bindingdb.org/rwd/jsp/dbsearch/Summary_ki.jsp?entryid="+n.entryid+"&ki_result_id="+n.ki_result_id+"&reactant_set_id="+line.ersid, licenses:["%s"], resource:["BindingDB"]}}] -> (n)'
+        query = query % (license)
         query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
         cypher_file.write(query)
 
