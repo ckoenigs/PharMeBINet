@@ -57,12 +57,6 @@ These relationships are integrated into the database with cypher-shell.
 
 The next cypher file deletes all compounds which are not mapped.
 
-The last program is the preparation of similarity between the compounds:
-    First, prepare the structure file into the format of RDKIT and pybel.
-    Next, prepare the different fingerprints of the different toolkits.
-    Then, generate a TSV file for all pairs with all values of the different similarities. Also, the cypher query is generated.  In the following, all similarity metrics are used for all fingerprint combinations if possible. Only the pairs with a given similarity value over a threshold are saved.
-
-In the last step, the similarity relationships are integrated into the database with the cypher-shell.
                
                
 The second script focused on mapping and merging the protein/targets into the database.
