@@ -43,7 +43,7 @@ def generate_rela_files(directory, rela, rela_name, ):
     csv_file.writerow(['meta_id', 'other_id'])
     dict_rela_partner_to_tsv_file[rela] = csv_file
 
-    query_rela = 'Match  (b:ClinicalAnnotation{identifier:line.meta_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s{ pharmgkb:"yes", source:"PharmGKB", url:"https://www.pharmgkb.org/clinicalAnnotation/"+line.meta_id, resource:["PharmGKB"], license:"%s"}]->(c)'
+    query_rela = 'Match  (b:ClinicalAnnotation{identifier:line.meta_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s{ pharmgkb:true, source:"PharmGKB", url:"https://www.pharmgkb.org/clinicalAnnotation/"+line.meta_id, resource:["PharmGKB"], licenses:["%s"]}]->(c)'
     rela_name = rela_name % ('CA')
 
     query_rela = query_rela % (rela, rela_name, license)
@@ -94,7 +94,7 @@ def prepare_files(directory):
         else:
             query_meta_node += 'identifier:toString(n.' + property + '), '
 
-    query_meta_node += ' allele_infos:split(line.allele_infos,"|")  , pharmgkb:"yes", source:"PharmGKB", resource:["PharmGKB"], node_edge:true, license:"%s"}) Create (n)<-[:equal_metadata]-(b)'
+    query_meta_node += ' allele_infos:split(line.allele_infos,"|")  , pharmgkb:true, source:"PharmGKB", resource:["PharmGKB"], node_edge:true, licenses:["%s"]}) Create (n)<-[:equal_metadata]-(b)'
     query_meta_node = query_meta_node % (license)
     query_meta_node = pharmebinetutils.get_query_import(path_of_directory,
                                                         f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
@@ -242,12 +242,11 @@ def fill_the_rela_files():
 
 def main():
     global path_of_directory, license
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        license = sys.argv[2]
     else:
         sys.exit('need a path and license')
-
+    license = pharmebinetutils.dict_source_to_license['pharmgkb']
     print(datetime.datetime.now())
     print('Generate connection with neo4j')
 

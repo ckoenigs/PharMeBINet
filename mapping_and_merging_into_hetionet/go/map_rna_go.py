@@ -31,10 +31,10 @@ def generate_files(label, cypher_file):
     file_name = 'output/go_rna_to_%s' % label
     file = open(file_name + '.tsv', 'w', encoding='utf-8')
     tsv_mapping = csv.writer(file, delimiter='\t')
-    header = ['identifier', 'other_id', 'resource', 'mapped_with']
+    header = ['identifier', 'other_id', 'resource', 'mapped_with', 'licenses']
     tsv_mapping.writerow(header)
 
-    query = '''Match (n:gene_product_go{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.go='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_go_%s{how_mapped:line.mapped_with}]->(n)'''
+    query = '''Match (n:gene_product_go{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.go=True, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") Create (v)-[:equal_to_go_%s{how_mapped:line.mapped_with}]->(n)'''
     query = query % (label, label.lower())
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/go/{file_name}.tsv',
@@ -52,11 +52,11 @@ Load all RNAs from database  and add them into a dictionary
 
 
 def load_rna_and_add_to_dictionary():
-    query = "MATCH (n:RNA) RETURN n.identifier, n.resource, n.xrefs"
+    query = "MATCH (n:RNA) RETURN n.identifier, n.resource, n.xrefs, n.licenses"
     results = g.run(query)
-    for identifier, resource, xrefs, in results:
+    for identifier, resource, xrefs, licenses, in results:
 
-        dict_node_id_to_resource[identifier] = resource
+        dict_node_id_to_resource[identifier] = [resource, set(licenses)]
         if xrefs:
             for xref in xrefs:
                 if xref.startswith('RNAcentral:'):
@@ -84,9 +84,10 @@ def load_all_rna_form_go_and_map_and_write_to_file():
         identifier = node['identifier']
         if identifier in dict_rna_central_to_identifier:
             for id_pharmebinet in dict_rna_central_to_identifier[identifier]:
+                dict_node_id_to_resource[id_pharmebinet][1].add(pharmebinetutils.dict_source_to_license['go'])
                 tsv_writer.writerow(
                     [identifier, id_pharmebinet,
-                     pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[id_pharmebinet], 'GO'), 'id_mapped'])
+                     pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[id_pharmebinet][0], 'GO'), 'id_mapped','|'.join(dict_node_id_to_resource[id_pharmebinet][1])])
         else:
             counter_not_mapped += 1
 

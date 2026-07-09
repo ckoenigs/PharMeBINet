@@ -20,16 +20,18 @@ dbsnp_identifier_map = {}
 
 dict_id_to_name={}
 
+license = pharmebinetutils.dict_source_to_license['markerdb']
+
 def load_variants_from_database_and_add_to_dict():
 
 
     # Define the Cypher query to fetch dbSNP IDs and identifiers
     cypher_query = (
-        "MATCH (n:Variant)  RETURN n.identifier AS identifier, n.xrefs as xrefs, n.resource AS resource, n.name as name, n.cytogenetic_location" )
+        "MATCH (n:Variant)  RETURN n.identifier AS identifier, n.xrefs as xrefs, n.resource AS resource, n.name as name, n.cytogenetic_location, n.licenses" )
     results = g.run(cypher_query)
     for record in results:
-        [identifier, xrefs, resource, name, location] = record.values()
-        dict_variant_id_to_resource[identifier] = resource
+        [identifier, xrefs, resource, name, location, licenses] = record.values()
+        dict_variant_id_to_resource[identifier] = [resource, set(licenses)]
         if xrefs:
             for xref in xrefs:
                 if xref.startswith('dbSNP'):
@@ -57,7 +59,7 @@ def generate_files(path_of_directory):
 
     file_name = 'MarkerDB_variant_to_Variant'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['MarkerDB_variant_id', 'identifier', 'resource', 'mapping_method']
+    header = ['MarkerDB_variant_id', 'identifier', 'resource', 'mapping_method', 'licenses']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
@@ -76,20 +78,28 @@ def generate_files(path_of_directory):
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/MarkerDB/
     query = (f' Match (n:MarkerDB_SequenceVariant{{id:toInteger(line.MarkerDB_variant_id)}}), (v:Variant{{'
-             f'identifier:line.identifier}}) Set v.markerdb="yes", v.resource=split(line.resource,"|") Create (v)-['
+             f'identifier:line.identifier}}) Set v.markerdb=true, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") Create (v)-['
              f':equal_to_MarkerDB_variant{{mapped_with:line.mapping_method}}]->(n)')
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
 
-    query = f' Match (n:MarkerDB_SequenceVariant{{id:toInteger(line.MarkerDB_variant_id)}}) Merge (p:Variant :GeneVariant{{identifier:line.identifier }}) On Create Set p.cytogenetic_location=n.position , p.resource=["MarkerDB"], p.xrefs=["dbSNP:"+line.identifier], p.markerdb="yes", p.source="dbSNP from MarkerDB", p.license="CC BY-NC 4.0 Deed"  Create (p)-[:equal_to_MarkerDB_variant{{mapped_with:"new"}}]->(n)'
+    query = f' Match (n:MarkerDB_SequenceVariant{{id:toInteger(line.MarkerDB_variant_id)}}) Merge (p:Variant :GeneVariant{{identifier:line.identifier }}) On Create Set p.cytogenetic_location=n.position , p.resource=["MarkerDB"], p.xrefs=["dbSNP:"+line.identifier], p.markerdb=true, p.source="dbSNP from MarkerDB", p.licenses=["{license}"]  Create (p)-[:equal_to_MarkerDB_variant{{mapped_with:"new"}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_new,
                                               query)
     cypher_file.write(query)
 
     return csv_mapping, csv_new
+
+
+def write_to_tsv_file(csv_mapping, markerdb_id, pharmebinet_id, mapping_method):
+    dict_variant_id_to_resource[pharmebinet_id][1].add(pharmebinetutils.dict_source_to_license['markerdb'])
+    csv_mapping.writerow(
+        [markerdb_id, pharmebinet_id,
+         pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[pharmebinet_id][0], "MarkerDB"),
+         mapping_method, '|'.join(dict_variant_id_to_resource[pharmebinet_id][1])])
 
 def load_all_MarkerDB_variants_and_finish_the_files(csv_mapping, csv_new):
     """
@@ -125,29 +135,20 @@ def load_all_MarkerDB_variants_and_finish_the_files(csv_mapping, csv_new):
             clinvar_id=external_link.rsplit('/', 1)[-1]
             if 'clinvar' in  external_link and clinvar_id in dict_variant_id_to_resource:
                 is_mapped=True
-                csv_mapping.writerow(
-                    [unique_id, clinvar_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[clinvar_id], "MarkerDB"),
-                     'external_references'])
+                write_to_tsv_file(csv_mapping, unique_id, clinvar_id, 'external_references')
 
         if is_mapped:
             continue
 
         if rs_id in dict_variant_id_to_resource:
             is_mapped=True
-            csv_mapping.writerow(
-                [unique_id, rs_id,
-                 pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[rs_id], "MarkerDB"),
-                 'dbSNP'])
+            write_to_tsv_file(csv_mapping, unique_id, rs_id, 'dbSNP')
                     
         elif identifier in dict_name_to_id:
             for (variant_id,location) in dict_name_to_id[identifier]:
                 if location==position:
                     is_mapped=True
-                    csv_mapping.writerow(
-                        [unique_id, variant_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[variant_id], "MarkerDB"),
-                         'name'])
+                    write_to_tsv_file(csv_mapping, unique_id, variant_id, 'name')
 
         if is_mapped:
             continue
@@ -156,10 +157,7 @@ def load_all_MarkerDB_variants_and_finish_the_files(csv_mapping, csv_new):
         #     for (variant_id,location) in dict_name_to_id[name]:
         #         if location==position:
         #             is_mapped=True
-        #             csv_mapping.writerow(
-        #                 [unique_id, variant_id,
-        #                  pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[variant_id], "MarkerDB"),
-        #                  'name-split'])
+        #             write_to_tsv_file(csv_mapping, unique_id, variant_id, 'name-split')
         #
         # if is_mapped:
         #     continue

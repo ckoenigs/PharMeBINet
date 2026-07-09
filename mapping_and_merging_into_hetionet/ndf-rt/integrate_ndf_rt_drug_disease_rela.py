@@ -34,6 +34,8 @@ dict_type_to_label = {
 # cypher file
 cypher_file = open('relationships/cypher.cypher', 'w', encoding='utf-8')
 
+license = pharmebinetutils.dict_source_to_license['ndfrt']
+
 '''
 load all connection types from ndf-rt between drug and disease
 and integrate them in different tsv files
@@ -75,9 +77,9 @@ def integrate_connection_into_pharmebinet(label):
             results = g.run(query_check)
             result = results.single()
             if result:
-                query = query_start + 'Merge (a)-[r:%s]->(b) On Create Set r.source=line.source, r.resource=["NDF-RT"], r.url="https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=ndfrt", r.ndf_rt="yes", r.unbiased=false, r.license="UMLS license, available at https://uts.nlm.nih.gov/license.html" On Match Set r.resource=r.resource+"NDF-RT", r.ndf_rt="yes" '
+                query = query_start + f'Merge (a)-[r:%s]->(b) On Create Set r.source=line.source, r.resource=["NDF-RT"], r.url="https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=ndfrt", r.ndf_rt=true, r.unbiased=false, r.licenses=["{license}"] On Match Set r.resource=r.resource+"NDF-RT",r.licenses=r.licenses+"{license}", r.ndf_rt=true '
             else:
-                query = query_start + "Create (a)-[r:%s{source:line.source, resource:['NDF-RT'], url:'https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=ndfrt', ndf_rt:'yes', unbiased:false, license:'UMLS license, available at https://uts.nlm.nih.gov/license.html'}]->(b)"
+                query = query_start + f"Create (a)-[r:%s{{source:line.source, resource:['NDF-RT'], url:'https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=ndfrt', ndf_rt:true, unbiased:false, licenses:['{license}'}}]->(b)"
             query = query % (label, dict_type_to_label[rela_type])
             query = query % (letter)
 

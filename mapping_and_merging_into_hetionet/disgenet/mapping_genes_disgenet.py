@@ -25,12 +25,12 @@ def load_genes_from_database_and_add_to_dict():
     """
     Load all Genes from my database  and add them into a dictionary
     """
-    query = "MATCH (n:Gene) RETURN n.identifier, n.resource "
+    query = "MATCH (n:Gene) RETURN n.identifier, n.resource, n.licenses "
     results = g.run(query)
 
     for record in results:
-        [identifier, resource] = record.values()
-        dict_gene_id_to_resource[identifier] = resource
+        [identifier, resource, licenses] = record.values()
+        dict_gene_id_to_resource[identifier] = [resource, set(licenses)]
 
 
 def generate_files(path_of_directory):
@@ -44,7 +44,7 @@ def generate_files(path_of_directory):
 
     file_name = 'DisGeNet_gene_to_Gene'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['DisGeNet_gene_id', 'gene_id', 'resource', 'mapping_method']
+    header = ['DisGeNet_gene_id', 'gene_id', 'resource', 'mapping_method', 'licenses']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
@@ -53,7 +53,7 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/DisGeNet/
-    query = f' Match (n:gene_DisGeNet{{geneId:line.DisGeNet_gene_id}}), (v:Gene{{identifier:line.gene_id}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_gene{{mapped_with:line.mapping_method}}]->(n)'
+    query = f' Match (n:gene_DisGeNet{{geneId:line.DisGeNet_gene_id}}), (v:Gene{{identifier:line.gene_id}}) Set v.disgenet=true, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") Create (v)-[:equal_to_DisGeNet_gene{{mapped_with:line.mapping_method}}]->(n)'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
@@ -76,10 +76,11 @@ def load_all_DisGeNet_genes_and_finish_the_files(csv_mapping):
         counter_all += 1
 
         if identifier in dict_gene_id_to_resource:
+            dict_gene_id_to_resource[identifier][1].add(pharmebinetutils.dict_source_to_license['disgenet'])
             csv_mapping.writerow(
                 [identifier, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[identifier], "DisGeNet"),
-                 'id'])
+                 pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[identifier][0], "DisGeNet"),
+                 'id', '|'.join(dict_gene_id_to_resource[identifier][1])])
         else:
             counter_not_mapped += 1
             print(identifier)

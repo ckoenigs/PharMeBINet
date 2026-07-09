@@ -50,8 +50,12 @@ generate new relationships between pathways and nodes that have edges in smpdb
 
 
 def create_cypher_file(file_path, node_label, rela_name):
-    query = ''' MATCH (d:Pathway{identifier:line.pathway_id}),(c:%s{identifier:line.node_id}) CREATE (d)-[: %s{ resource: ['SMPDB'], smpdb: "yes", license:"SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication", url:"https://smpdb.ca/view/"+line.smpdb_pathway_id, source:"SMPDB"}]->(c)'''
-    query = query % (node_label, rela_name)
+    license = pharmebinetutils.dict_source_to_license['smpdb']
+    if rela_name !='ASSOCIATES_CaPW':
+        query = ''' MATCH (d:Pathway{identifier:line.pathway_id}),(c:%s{identifier:line.node_id}) CREATE (d)-[: %s{ resource: ['SMPDB'], smpdb: true, licenses:["%s"], url:"https://smpdb.ca/view/"+line.smpdb_pathway_id, source:"SMPDB"}]->(c)'''
+    else:
+        query = f''' MATCH (d:Pathway{{identifier:line.pathway_id}}),(c:%s{{identifier:line.node_id}}) Merge (c)-[r: %s]->(d) On Create Set r.resource= ['SMPDB'], r.smpdb= true, r.licenses=["%s"], r.url="https://smpdb.ca/view/"+line.smpdb_pathway_id, r.source="SMPDB" On Match Set r.resource= r.resource + 'SMPDB' ,r.licenses= r.licenses + '{license}', r.smpdb= true '''
+    query = query % (node_label, rela_name, license )
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/smpdb/{file_path}',
                                               query)
@@ -105,7 +109,7 @@ def main():
     list_of_combinations = [
         ['metabolite_smpdb', 'Metabolite', 'ASSOCIATES_PWaM'],
         ['protein_smpdb', 'Protein', 'ASSOCIATES_PWaP'],
-        ['protein_smpdb', 'Chemical', 'ASSOCIATES_PWaCH'],
+        ['protein_smpdb', 'Compound', 'ASSOCIATES_CaPW'],
     ]
 
     directory = 'edge_pathways'

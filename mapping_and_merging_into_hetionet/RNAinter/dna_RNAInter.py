@@ -43,28 +43,31 @@ def dna_RNAInter():
 
     # compare the identifiers from Gene with the RAW_IDs from dna_RNAInter
     # save the IDs that appear in both of them in a tsv
-    query = "MATCH (n:Gene) RETURN n.identifier, n.resource"
+    query = "MATCH (n:Gene) RETURN n.identifier, n.resource, n.licenses"
     result = g.run(query)
 
     file_name = 'output/DNA_mapping.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
-        line = ["identifier", "Raw_ID", "resource"]
+        line = ["identifier", "Raw_ID", "resource", "licenses"]
         writer.writerow(line)
         for record in result:
-            [id, resource] = record.values()
+            [id, resource, licenses] = record.values()
             if id in dnaRNAInter["NCBI"]:
                 list = []
                 list.append(id), list.append(dnaRNAInter["NCBI"][id])
                 newresource = pharmebinetutils.resource_add_and_prepare(resource, "RNAInter")
                 list.append(newresource)
+                licenses = set(licenses)
+                licenses.add(pharmebinetutils.dict_source_to_license['rnainter'])
+                list.append('|'.join(licenses))
                 writer.writerow(list)
     tsv_file.close()
 
     # cypher file
     cypher_file = open("output/cypher.cypher", "w", encoding="utf-8")
     print("######### Start: Cypher #########")
-    query = f'Match (p1:dna_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Gene{{identifier:line.identifier}})  SET p2.rnainter="yes", p2.resource = split(line.resource,"|") Create (p1)-[:associateGeneDnaRNAInter]->(p2)  '
+    query = f'Match (p1:dna_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Gene{{identifier:line.identifier}})  SET p2.rnainter=true, p2.resource = split(line.resource,"|"), p2.licenses = split(line.licenses,"|") Create (p1)-[:associateGeneDnaRNAInter]->(p2)  '
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/RNAinter/{file_name}',
                                               query)

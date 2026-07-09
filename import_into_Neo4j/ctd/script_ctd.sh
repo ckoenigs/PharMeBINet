@@ -57,7 +57,6 @@ echo "Current time: $now"
 
 python integrate_whole_CTD_into_neo4j_with_tsv.py $path_to_ctd_data True > output_integration.txt
 
-
 echo nodes
 now=$(date +"%F %T")
 echo "Current time: $now"

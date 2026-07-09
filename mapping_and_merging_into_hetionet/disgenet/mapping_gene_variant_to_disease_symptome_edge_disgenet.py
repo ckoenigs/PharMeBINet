@@ -22,6 +22,8 @@ def create_connection_with_neo4j():
 # dictionary pairs to info
 dict_pairs_to_info = {}
 
+license = pharmebinetutils.dict_source_to_license['disgenet']
+
 
 def load_edges_from_database_and_add_to_dict(label, other_label):
     '''
@@ -171,7 +173,7 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
     file_gene_other = open(file_path, mode)
     csv_gene_other = csv.writer(file_gene_other, delimiter='\t')
     csv_gene_other.writerow(
-        [f'{other_label.lower()}_id', other_id, 'resource', 'sources', 'EI', 'pmid', 'NofSnps', 'score',
+        [f'{other_label.lower()}_id', other_id, 'resource', 'licenses', 'sources', 'EI', 'pmid', 'NofSnps', 'score',
          'associationType', 'sentence'])
 
     edge_type_biomarker = f'IS_BIOMARKER_{other_label[0]}ibD' if type == 'Disease' else f'IS_BIOMARKER_{other_label[0]}ibS'
@@ -180,7 +182,7 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
     file_gene_other_biomarker = open(file_path_biomarker, 'w', encoding='utf-8')
     csv_gene_other_biomarker = csv.writer(file_gene_other_biomarker, delimiter='\t')
     csv_gene_other_biomarker.writerow(
-        [f'{other_label.lower()}_id', other_id, 'resource', 'sources', 'EI', 'pmid', 'NofSnps', 'score',
+        [f'{other_label.lower()}_id', other_id, 'resource','licenses', 'sources', 'EI', 'pmid', 'NofSnps', 'score',
          'associationType', 'sentence'])
 
     # Neo4j query
@@ -230,13 +232,15 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
 
         if 'Biomarker' in association_types:
             counter_not_mapped += 1
-            csv_gene_other_biomarker.writerow([gene_id, disease_id, 'DisGeNet', sources, ei, pmid, nofsnps, score,
+            csv_gene_other_biomarker.writerow([gene_id, disease_id, 'DisGeNet', license,  sources, ei, pmid, nofsnps, score,
                                      prepare_info_of_rela_property_to_string(combined_info, 'associationType'),
                                      prepare_info_of_rela_property_to_string(combined_info, 'sentence')])
 
         # mapping of existing edges
         if not 'Biomarker' in association_types or len(association_types) >1:
             if (gene_id, disease_id) in dict_pairs_to_info:
+                licenses = set(dict_pairs_to_info[(gene_id, disease_id)]['licenses'])
+                licenses.add(license)
                 # Verschiedene infos aus beiden Kanten kombinieren
                 resource = pharmebinetutils.resource_add_and_prepare(dict_pairs_to_info[(gene_id, disease_id)]['resource'],
                                                                      "DisGeNet")
@@ -248,12 +252,12 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
                 pubmed_id_existing = pubmed_id_existing.union(combined_info['pmid'])
                 # restliche Kanten-Informationen direkt übertragen
                 csv_gene_other.writerow(
-                    [gene_id, disease_id, resource, sources, ei, '|'.join(pubmed_id_existing), nofsnps, score,
+                    [gene_id, disease_id, resource, '|'.join(licenses) ,sources, ei, '|'.join(pubmed_id_existing), nofsnps, score,
                      prepare_info_of_rela_property_to_string(combined_info, 'associationType'),
                      prepare_info_of_rela_property_to_string(combined_info, 'sentence')])
             else:
                 counter_not_mapped += 1
-                csv_gene_other.writerow([gene_id, disease_id, 'DisGeNet', sources, ei, pmid, nofsnps, score,
+                csv_gene_other.writerow([gene_id, disease_id, 'DisGeNet', license ,sources, ei, pmid, nofsnps, score,
                                          prepare_info_of_rela_property_to_string(combined_info, 'associationType'),
                                          prepare_info_of_rela_property_to_string(combined_info, 'sentence')])
 
@@ -266,18 +270,18 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
     # 1. Set…
     url = '"https://disgenet.com/search?view=VARIANTS&idents="+line.variant_id+"&source=ALL&tab=VDA"' if other_label == 'Variant' else '"https://disgenet.com/search?view=GENES&idents=2811-"+line.gene_id+"&source=ALL&tab=GDA"'
 
-    query = f'  Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Merge (v)-[r:{edge_type}]->(n) On Match Set r.disgenet = "yes", r.sources = split(line.sources, "|"), r.resource = split(line.resource, "|"),  r.EI = line.EI, r.pubMed_ids = split(line.pmid, "|"),r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.score=line.score On Create Set r.source="DisGeNet", r.license="Attribution-NonCommercial-ShareAlike 4.0 International License", r.sources=split(line.sources,"|"), r.score=line.score,  r.resource=["DisGeNet"], r.disgenet="yes",  r.EI=line.EI, r.pubMed_ids=split(line.pmid,"|"), r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.url={url}'
+    query = f'  Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Merge (v)-[r:{edge_type}]->(n) On Match Set r.disgenet = true, r.sources = split(line.sources, "|"), r.resource = split(line.resource, "|"),r.licenses = split(line.licenses, "|"),  r.EI = line.EI, r.pubMed_ids = split(line.pmid, "|"),r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.score=line.score On Create Set r.source="DisGeNet", r.licenses=["{license}"], r.sources=split(line.sources,"|"), r.score=line.score,  r.resource=["DisGeNet"], r.disgenet=true,  r.EI=line.EI, r.pubMed_ids=split(line.pmid,"|"), r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.url={url}'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name,
                                               query)
     file_cypher.write(query)
-    query = f'  Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Merge (v)-[r:{edge_type_biomarker}]->(n) On Match Set r.disgenet = "yes", r.sources = split(line.sources, "|"), r.resource = split(line.resource, "|"),  r.EI = line.EI, r.pubMed_ids = split(line.pmid, "|"),r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.score=line.score On Create Set r.source="DisGeNet", r.license="Attribution-NonCommercial-ShareAlike 4.0 International License", r.sources=split(line.sources,"|"), r.score=line.score,  r.resource=["DisGeNet"], r.disgenet="yes",  r.EI=line.EI, r.pubMed_ids=split(line.pmid,"|"), r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.url={url}'
+    query = f'  Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Merge (v)-[r:{edge_type_biomarker}]->(n) On Match Set r.disgenet = true, r.sources = split(line.sources, "|"), r.resource = split(line.resource, "|"), r.licenses = split(line.licenses, "|"),  r.EI = line.EI, r.pubMed_ids = split(line.pmid, "|"),r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.score=line.score On Create Set r.source="DisGeNet", r.licenses=["{license}"], r.sources=split(line.sources,"|"), r.score=line.score,  r.resource=["DisGeNet"], r.disgenet=true,  r.EI=line.EI, r.pubMed_ids=split(line.pmid,"|"), r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.url={url}'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_biomarker,
                                               query)
     file_cypher.write(query)
     # 2. Create… (finde beide KNOTEN)
-    # query =get_query_start(path_of_directory, file_name + '.tsv') + f' Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Create (n)-[:{edge_type}{{source:"DisGeNet", sources:split(line.sources,"|"), score:line.score,  resource:["DisGeNet"], disgenet:"yes",  EI:line.EI, pubMed_ids:split(line.pmid,"|"), NofSnps:split(line.NofSnps,"|"), associationType:split(line.associationType,"|"), sentences:split(line.sentence,"|") , url:{url}}}]->(v)'
+    # query =get_query_start(path_of_directory, file_name + '.tsv') + f' Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Create (n)-[:{edge_type}{{source:"DisGeNet", sources:split(line.sources,"|"), score:line.score,  resource:["DisGeNet"], disgenet:true,  EI:line.EI, pubMed_ids:split(line.pmid,"|"), NofSnps:split(line.NofSnps,"|"), associationType:split(line.associationType,"|"), sentences:split(line.sentence,"|") , url:{url}}}]->(v)'
     # file_cypher.write(query)
     file_cypher.close()
 

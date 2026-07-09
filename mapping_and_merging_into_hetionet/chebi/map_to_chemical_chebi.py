@@ -22,6 +22,8 @@ def create_connection_with_neo4j():
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session(database='graph')
 
+# dictionary node id to resource
+dict_node_id_to_resource = {}
 
 # dictionary name to ids
 dict_name_to_id = defaultdict(set)
@@ -45,17 +47,17 @@ dict_chemical_to_salts = {}
 dict_chemical_id_to_name = {}
 
 
-def integrate_information_into_dict(dict_node_id_to_resource):
+def integrate_information_into_dict():
     """
     get all node ids from the database
     :return:
     """
-    query = '''MATCH (n:Chemical) RETURN n.identifier, n.name, n.synonyms, n.resource, n.xrefs, n.inchikey, n.formula'''
+    query = '''MATCH (n:Chemical) RETURN n.identifier, n.name, n.synonyms, n.resource, n.xrefs, n.inchikey, n.formula, n.licenses'''
     results = g.run(query)
 
-    for identifier, name, synonyms, resource, xrefs, inchikey, formula, in results:
+    for identifier, name, synonyms, resource, xrefs, inchikey, formula, licenses, in results:
         xrefs = set(xrefs) if xrefs else set()
-        dict_node_id_to_resource[identifier] = [resource, xrefs, formula]
+        dict_node_id_to_resource[identifier] = [resource, xrefs, formula, set(licenses)]
 
         name = name.lower()
         dict_name_to_id[name].add(identifier)
@@ -91,17 +93,16 @@ def prepare_query(file_name):
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query = '''MATCH (n:Chemical{identifier:line.db_id}), (g:Chemical_ChebiOntology{id:line.node_id}) Set n.resource=split(line.resource,"|"), n.xrefs=split(line.xrefs,"|"), n.chebi='yes', n.inchi = coalesce(n.inchi, line.inchi),  n.inchikey = coalesce(n.inchikey, line.inchikey),  n.smiles = coalesce(n.smiles, line.smiles) Create (n)-[:equal_chebi_chemical{how_mapped:line.how_mapped}]->(g)'''
+    query = '''MATCH (n:Chemical{identifier:line.db_id}), (g:Chemical_ChebiOntology{id:line.node_id}) Set n.resource=split(line.resource,"|"),n.licenses=split(line.licenses,"|"), n.xrefs=split(line.xrefs,"|"), n.chebi=True, n.inchi = coalesce(n.inchi, line.inchi),  n.inchikey = coalesce(n.inchikey, line.inchikey),  n.smiles = coalesce(n.smiles, line.smiles) Create (n)-[:equal_chebi_chemical{how_mapped:line.how_mapped}]->(g)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/chebi/{file_name}',
                                               query)
     cypher_file.write(query)
 
 
-def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_mapping, how_mapped, dict_property):
+def add_to_file( identifier_db, identifier_act_id, csv_mapping, how_mapped, dict_property):
     """
     add resource and write mapping pair in tsv file
-    :param dict_node_id_to_resource: dictionary
     :param identifier_db: string
     :param identifier_act_id: string
     :param csv_mapping: csv writer
@@ -112,10 +113,12 @@ def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_
     inchi = dict_property['inchi'] if 'inchi' in dict_property else ''
     inchikey = dict_property['inchikey'] if 'inchikey' in dict_property else ''
     smiles = dict_property['smiles'] if 'smiles' in dict_property else ''
+    licenses = dict_node_id_to_resource[identifier_db][3]
+    licenses.add(pharmebinetutils.dict_source_to_license['chebi'])
     csv_mapping.writerow(
         [identifier_db, identifier_act_id,
          pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier_db][0], "ChEBI"),
-         how_mapped, '|'.join(xrefs), inchi, inchikey, smiles])
+         how_mapped, '|'.join(xrefs), inchi, inchikey, smiles, '|'.join(licenses)])
 
 
 # dictionary chebi to drugbank manual
@@ -128,7 +131,7 @@ dict_manual_mapping = {
 }
 
 
-def get_all_chebi_and_map(dict_node_id_to_resource):
+def get_all_chebi_and_map():
     """
     prepare files and write information into files
     :return:
@@ -139,7 +142,7 @@ def get_all_chebi_and_map(dict_node_id_to_resource):
     mapping_file = open(file_name, 'w', encoding='utf-8', newline='')
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
     # ['monoisotopicmass',  'charge',  'mass', 'smiles', 'formula']
-    csv_mapping.writerow(['db_id', 'node_id', 'resource', 'how_mapped', 'xrefs', 'inchi', 'inchikey', 'smiles'])
+    csv_mapping.writerow(['db_id', 'node_id', 'resource', 'how_mapped', 'xrefs', 'inchi', 'inchikey', 'smiles', 'licenses'])
 
     prepare_query(file_name)
 
@@ -152,7 +155,6 @@ def get_all_chebi_and_map(dict_node_id_to_resource):
     counter_not_mapped = 0
     set_of_all_possible_properties = set()
     for identifier, name, synonyms, property_values, xrefs, in results:
-        print(identifier)
         only_number_id = identifier.split(':')[1]
 
         name = name.lower() if name else ''
@@ -163,7 +165,6 @@ def get_all_chebi_and_map(dict_node_id_to_resource):
         bool_formular_and_inchi_formular_equal = True
         if property_values:
             for value in property_values:
-                print(value)
                 value = value.replace('" xsd:string', '')
                 key_value_pair = value.split(' "')
                 dict_property_to_value[key_value_pair[0].replace('http://purl.obolibrary.org/obo/chebi/', '')] = \
@@ -185,7 +186,7 @@ def get_all_chebi_and_map(dict_node_id_to_resource):
                     is_mapped = True
                     counter_mapping += 1
                     for chemical_id in dict_inchikey_to_id[dict_property_to_value['inchikey']]:
-                        add_to_file(dict_node_id_to_resource, chemical_id, identifier, csv_mapping, 'inchikey',
+                        add_to_file( chemical_id, identifier, csv_mapping, 'inchikey',
                                     dict_property_to_value)
 
         if is_mapped:
@@ -200,14 +201,14 @@ def get_all_chebi_and_map(dict_node_id_to_resource):
                         start_chebi_inchikey = dict_property_to_value['inchikey'].split('-')[0]
                         start_pharmebinet_inchikey = dict_identifier_to_inchikey[drugbank_id].split('-')[0]
                         if start_pharmebinet_inchikey == start_chebi_inchikey:
-                            add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping,
+                            add_to_file( drugbank_id, identifier, csv_mapping,
                                         'name_and_part_inchikey_mapping', dict_property_to_value)
                             continue
                         else:
                             print(identifier, drugbank_id)
                             print('different inchikeys', start_pharmebinet_inchikey, start_chebi_inchikey)
                             continue
-                    add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping, 'name_mapping',
+                    add_to_file( drugbank_id, identifier, csv_mapping, 'name_mapping',
                                 dict_property_to_value)
 
         if is_mapped:
@@ -227,7 +228,7 @@ def get_all_chebi_and_map(dict_node_id_to_resource):
                                     print('different', formula_pmbin, dict_property_to_value['formula'])
                                     continue
                             found_real_mapping = True
-                            add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping,
+                            add_to_file( drugbank_id, identifier, csv_mapping,
                                         'synonym_and_part_inchikey_mapping', dict_property_to_value)
                             continue
                         else:
@@ -238,7 +239,7 @@ def get_all_chebi_and_map(dict_node_id_to_resource):
                     if drugbank_id.startswith('DB') or (
                     not (drugbank_id.startswith('D') or drugbank_id.startswith('C'))) and identifier not in ['CHEBI:15693']:
                         found_real_mapping = True
-                        add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping, 'synonyms_mapping',
+                        add_to_file( drugbank_id, identifier, csv_mapping, 'synonyms_mapping',
                                     dict_property_to_value)
                 if found_real_mapping:
                     is_mapped = True
@@ -251,7 +252,7 @@ def get_all_chebi_and_map(dict_node_id_to_resource):
             counter_mapping += 1
             drugbank_id = dict_manual_mapping[identifier]
             is_mapped = True
-            add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping, 'manual mapping',
+            add_to_file( drugbank_id, identifier, csv_mapping, 'manual mapping',
                         dict_property_to_value)
 
         if is_mapped:
@@ -283,7 +284,7 @@ def get_all_chebi_and_map(dict_node_id_to_resource):
                         if len(split_name) == 1 or len(split_name) == len(chemical_name_split):
                             is_mapped = True
                             counter_mapping += 1
-                            add_to_file(dict_node_id_to_resource, db_id, identifier, csv_mapping, 'drugbank_xref',
+                            add_to_file( db_id, identifier, csv_mapping, 'drugbank_xref',
                                         dict_property_to_value)
                         else:
                             if db_id in dict_chemical_to_salts:
@@ -296,7 +297,7 @@ def get_all_chebi_and_map(dict_node_id_to_resource):
                                     if found_equal and len(split_name) == len(salt_name):
                                         is_mapped = True
                                         counter_mapping += 1
-                                        add_to_file(dict_node_id_to_resource, salt_id, identifier, csv_mapping,
+                                        add_to_file( salt_id, identifier, csv_mapping,
                                                     'drugbank_xref_salt',
                                                     dict_property_to_value)
                         if not is_mapped:
@@ -309,7 +310,7 @@ def get_all_chebi_and_map(dict_node_id_to_resource):
             is_mapped = True
             counter_mapping += 1
             for chemical_id in dict_chebi_to_id[only_number_id]:
-                add_to_file(dict_node_id_to_resource, chemical_id, identifier, csv_mapping, 'chebi',
+                add_to_file( chemical_id, identifier, csv_mapping, 'chebi',
                             dict_property_to_value)
 
         if not is_mapped:
@@ -342,21 +343,20 @@ def main():
     print(datetime.datetime.now())
     print('prepare for each label the files')
 
-    dict_node_id_to_resource = {}
 
     print('##########################################################################')
 
     print(datetime.datetime.now())
     print('get all drugs from database')
 
-    integrate_information_into_dict(dict_node_id_to_resource)
+    integrate_information_into_dict()
 
     print('##########################################################################')
 
     print(datetime.datetime.now())
     print('prepare file and write information of mapping in it')
 
-    get_all_chebi_and_map(dict_node_id_to_resource)
+    get_all_chebi_and_map()
 
     print('##########################################################################')
 

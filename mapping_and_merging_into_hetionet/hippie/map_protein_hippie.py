@@ -27,7 +27,7 @@ def generate_cypher_file(file_name):
     """
     cypher_file = open('output/cypher.cypher', 'w')
 
-    query = "MATCH (n:Protein_Hippie{identifier:line.id1}), (c:Protein{identifier:line.id2})  Set c.hippie='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_protein_hippie{how_mapped:line.how_mapped}]->(n)"
+    query = "MATCH (n:Protein_Hippie{identifier:line.id1}), (c:Protein{identifier:line.id2})  Set c.hippie=true, c.resource=split(line.resource,'|'), c.licenses=split(line.licenses,'|') Create (c)-[:equal_to_protein_hippie{how_mapped:line.how_mapped}]->(n)"
 
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/hippie/{file_name}',
@@ -45,7 +45,7 @@ def generate_files():
     file_name = 'output/mapped_proteins.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['id1', 'id2', 'resource', 'how_mapped'])
+    csv_writer.writerow(['id1', 'id2', 'resource', 'how_mapped','licenses'])
 
     generate_cypher_file(file_name)
 
@@ -63,12 +63,12 @@ def load_protein_in():
     Load Protein information and write into the different dictionaries
     :return:
     '''
-    query = '''MATCH (n:Protein) RETURN n.identifier, n.resource, n.entry_name'''
+    query = '''MATCH (n:Protein) RETURN n.identifier, n.resource, n.entry_name, n.licenses'''
     results = g.run(query)
 
     for record in results:
-        [identifier, resource, entry_name] = record.values()
-        dict_protein_id_to_resource[identifier] = set(resource)
+        [identifier, resource, entry_name,licenses] = record.values()
+        dict_protein_id_to_resource[identifier] = [set(resource),set(licenses)]
         if entry_name in dict_protein_entry_to_protein_ids:
             print('ohje double entry')
         dict_protein_entry_to_protein_ids[entry_name] = identifier
@@ -82,6 +82,12 @@ def load_protein_in():
             dict_gene_id_to_protein_id[gene_id] = set()
         dict_gene_id_to_protein_id[gene_id].add(protein_id)
 
+def write_to_tsv_file(identifier,protein_id, mapping_method):
+    dict_protein_id_to_resource[protein_id][1].add(pharmebinetutils.dict_source_to_license['hippie'])
+    csv_writer.writerow([identifier, protein_id,
+                         pharmebinetutils.resource_add_and_prepare(
+                             dict_protein_id_to_resource[protein_id][0], 'HIPPIE'),
+                         mapping_method, '|'.join(dict_protein_id_to_resource[protein_id][1])])
 
 def load_and_map_hippie_protein():
     '''
@@ -103,10 +109,7 @@ def load_and_map_hippie_protein():
             if entrez_id in dict_gene_id_to_protein_id:
                 found_mapping = True
                 for protein_id in dict_gene_id_to_protein_id[entrez_id]:
-                    csv_writer.writerow([identifier, protein_id,
-                                         pharmebinetutils.resource_add_and_prepare(
-                                             dict_protein_id_to_resource[protein_id], 'HIPPIE'),
-                                         'gene_to_protein'])
+                    write_to_tsv_file(identifier, protein_id, 'gene_to_protein')
 
         if found_mapping:
             continue
@@ -118,8 +121,7 @@ def load_and_map_hippie_protein():
                 uniprot_entry = alternative_ids.split(':')[1]
                 if uniprot_entry in dict_protein_entry_to_protein_ids:
                     protein_id = dict_protein_entry_to_protein_ids[uniprot_entry]
-                    csv_writer.writerow([identifier, protein_id, pharmebinetutils.resource_add_and_prepare(
-                        dict_protein_id_to_resource[protein_id], 'HIPPIE'), 'uniprot_entry'])
+                    write_to_tsv_file(identifier, protein_id, 'uniprot_entry')
                     counter_mapped += 1
                     found_mapping = True
 

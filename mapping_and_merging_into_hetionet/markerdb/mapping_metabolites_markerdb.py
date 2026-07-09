@@ -23,12 +23,12 @@ def load_metabolites_from_database_and_add_to_dict():
     """
     Load all Genes from my database and add them into a dictionary
     """
-    query = "MATCH (n:Metabolite) RETURN n.identifier, n.resource, n.name"
+    query = "MATCH (n:Metabolite) RETURN n.identifier, n.resource, n.name, n.licenses"
     results = g.run(query)
 
     for record in results:
-        [identifier, resource, name] = record.values()
-        dict_metabolite_id_to_resource[identifier] = resource
+        [identifier, resource, name, licenses] = record.values()
+        dict_metabolite_id_to_resource[identifier] = [resource, set(licenses)]
         pharmebinetutils.add_entry_to_dict_to_set(dict_metabolite_name_to_chemical_id, name.lower(), identifier)
 
 
@@ -43,7 +43,7 @@ def generate_files(path_of_directory):
 
     file_name = 'MarkerDB_Chemical_to_Metabolite'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['MarkerDB_chemical_id', 'metabolite_id', 'resource', 'mapping_method']
+    header = ['MarkerDB_chemical_id', 'metabolite_id', 'resource', 'mapping_method', 'licenses']
     file = open(file_path, "w", encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
@@ -53,7 +53,7 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/DisGeNet/
-    query = f' Match (n:MarkerDB_Chemical{{id:toInteger(line.MarkerDB_chemical_id)}}), (v:Metabolite{{identifier:line.metabolite_id}}) Set v.markerdb="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_MarkerDB_chemical{{mapped_with:line.mapping_method}}]->(n)'
+    query = f' Match (n:MarkerDB_Chemical{{id:toInteger(line.MarkerDB_chemical_id)}}), (v:Metabolite{{identifier:line.metabolite_id}}) Set v.markerdb=true, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") Create (v)-[:equal_to_MarkerDB_chemical{{mapped_with:line.mapping_method}}]->(n)'
 
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
@@ -61,6 +61,12 @@ def generate_files(path_of_directory):
 
     return csv_mapping
 
+def write_to_tsv_file(csv_mapping, markerdb_id, pharmebinet_id, mapping_method):
+    dict_metabolite_id_to_resource[pharmebinet_id][1].add(pharmebinetutils.dict_source_to_license['markerdb'])
+    csv_mapping.writerow(
+        [markerdb_id, pharmebinet_id,
+         pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[pharmebinet_id][0], "MarkerDB"),
+         mapping_method, '|'.join(dict_metabolite_id_to_resource[pharmebinet_id][1])])
 
 def load_all_MarkerDB_chemicals_and_finish_the_files(csv_mapping):
     """
@@ -80,28 +86,16 @@ def load_all_MarkerDB_chemicals_and_finish_the_files(csv_mapping):
 
         # mapping
         if identifier in dict_metabolite_id_to_resource:
-            csv_mapping.writerow(
-                [unique_id, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[identifier], "MarkerDB"),
-                 'id'])
+            write_to_tsv_file(csv_mapping, unique_id, identifier, 'id')
         # manual mapping
         elif unique_id == 5048:
-            csv_mapping.writerow(
-                [unique_id, 'HMDB0036559',
-                 pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource['HMDB0036559'], "MarkerDB"),
-                 'manual'])
+            write_to_tsv_file(csv_mapping, unique_id, 'HMDB0036559', 'manual')
         # manual mapping
         elif unique_id == 5734:
-            csv_mapping.writerow(
-                [unique_id, 'HMDB0035196',
-                 pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource['HMDB0035196'], "MarkerDB"),
-                 'manual'])
+            write_to_tsv_file(csv_mapping, unique_id, 'HMDB0035196', 'manual')
         elif name_chemical in dict_metabolite_name_to_chemical_id:
             for metabolite_id in dict_metabolite_name_to_chemical_id[name_chemical]:
-                csv_mapping.writerow(
-                    [unique_id, metabolite_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[metabolite_id],
-                                                               "MarkerDB"), 'name'])
+                write_to_tsv_file(csv_mapping, unique_id, metabolite_id, 'name')
         else:
             counter_not_mapped += 1
             print(identifier, name_chemical)

@@ -71,13 +71,13 @@ load in all disease from pharmebinet in a dictionary
 
 
 def load_pharmebinet_drug_in():
-    query = '''MATCH (n:Chemical) RETURN n.identifier, n.name, n.inchi, n.resource, n.xrefs;'''
+    query = '''MATCH (n:Chemical) RETURN n.identifier, n.name, n.inchi, n.resource, n.xrefs, n.licenses;'''
     results = graph_database.run(query)
 
     for record in results:
-        [pharmebinet_identifier, name, inchi_pharmebinet, resource, xrefs] = record.values()
+        [pharmebinet_identifier, name, inchi_pharmebinet, resource, xrefs, licenses] = record.values()
         dict_drug_pharmebinet[pharmebinet_identifier] = name.lower()
-        dict_identifier_to_resource[pharmebinet_identifier] = resource
+        dict_identifier_to_resource[pharmebinet_identifier] = [resource, set(licenses)]
         dict_pharmebinet_inchi_drugbank_identifier[inchi_pharmebinet] = pharmebinet_identifier
 
         if inchi_pharmebinet:
@@ -111,7 +111,7 @@ csv_not_mapped.writerow(['id', 'name'])
 
 file_mapped_drug = open('drug/mapped_drug.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_drug, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_pharmebinet', 'resource', 'how_mapped', 'databaseName'])
+csv_mapped.writerow(['id', 'id_pharmebinet', 'resource','licenses', 'how_mapped', 'databaseName'])
 
 '''
 load all reactome drug and check if they are in pharmebinet or not
@@ -119,6 +119,11 @@ load all reactome drug and check if they are in pharmebinet or not
 
 set_pair = set()
 
+def write_to_tsv_file(dbId, pharmebinet_identifier, mapping_method, drug_name, database_name ):
+    dict_identifier_to_resource[pharmebinet_identifier][1].add(pharmebinetutils.dict_source_to_license['reactome'])
+    csv_mapped.writerow([dbId, pharmebinet_identifier, pharmebinetutils.resource_add_and_prepare(
+        dict_identifier_to_resource[pharmebinet_identifier][0], 'Reactome'), '|'.join(dict_identifier_to_resource[pharmebinet_identifier][1]), mapping_method,
+                         database_name, drug_name])
 
 def load_reactome_drug_in(label):
     global highest_identifier
@@ -131,7 +136,7 @@ def load_reactome_drug_in(label):
     for record in results:
         [reference_node, drug_node] = record.values()
         mapped = False
-        identifier_reactome = reference_node['identifier'] if "identifier" in reference_node else []
+        identifier_reactome = reference_node['identifier'] if "identifier" in reference_node else ''
         drug_name = reference_node['inn'].lower() if "inn" in reference_node else ''
         drug_names = ast.literal_eval(reference_node['name']) if "name" in reference_node else []
         databaseName = reference_node['databaseName'] if "databaseName" in reference_node else []
@@ -154,9 +159,8 @@ def load_reactome_drug_in(label):
                 if (pharmebinet_identifier, dbId) in set_pair:
                     continue
                 counter_map_with_id += 1
-                csv_mapped.writerow([dbId, pharmebinet_identifier, pharmebinetutils.resource_add_and_prepare(
-                    dict_identifier_to_resource[pharmebinet_identifier], 'Reactome'), 'IUPHAR', drug_name,
-                                     databaseName])
+                write_to_tsv_file(dbId, pharmebinet_identifier, 'IUPHAR', drug_name,
+                                     databaseName)
                 mapped = True
                 set_pair.add((pharmebinet_identifier, dbId))
 
@@ -167,9 +171,8 @@ def load_reactome_drug_in(label):
             if (identifier_reactome, dbId) in set_pair:
                 continue
             counter_map_with_id += 1
-            csv_mapped.writerow([dbId, identifier_reactome, pharmebinetutils.resource_add_and_prepare(
-                dict_identifier_to_resource[identifier_reactome], 'Reactome'), 'direct_pubchem', drug_name,
-                                 databaseName])
+            write_to_tsv_file(dbId, identifier_reactome, 'direct_pubchem', drug_name,
+                                     databaseName)
             mapped = True
             set_pair.add((identifier_reactome, dbId))
 
@@ -181,9 +184,8 @@ def load_reactome_drug_in(label):
             if (pharmebinet_identifier, dbId) in set_pair:
                 continue
             counter_map_with_id += 1
-            csv_mapped.writerow([dbId, pharmebinet_identifier, pharmebinetutils.resource_add_and_prepare(
-                dict_identifier_to_resource[pharmebinet_identifier], 'Reactome'), databaseName, drug_name,
-                                 databaseName])
+            write_to_tsv_file(dbId, pharmebinet_identifier, databaseName, drug_name,
+                                     databaseName)
             mapped = True
             set_pair.add((pharmebinet_identifier, dbId))
 
@@ -195,8 +197,8 @@ def load_reactome_drug_in(label):
                 continue
             counter_map_with_name += 1
             drug_names = dict_drug_pharmebinet[dict_drug_pharmebinet_names[drug_name]]
-            csv_mapped.writerow([dbId, pharmebinet_identifier, pharmebinetutils.resource_add_and_prepare(
-                dict_identifier_to_resource[pharmebinet_identifier], 'Reactome'), "NAME", drug_name, drug_names])
+            write_to_tsv_file(dbId, pharmebinet_identifier, "NAME", drug_name,
+                                     drug_names)
             mapped = True
             set_pair.add((pharmebinet_identifier, dbId))
 
@@ -210,9 +212,8 @@ def load_reactome_drug_in(label):
                         continue
                     counter_map_with_name += 1
                     drug_names = dict_drug_pharmebinet[dict_drug_pharmebinet_names[name]]
-                    csv_mapped.writerow([dbId, pharmebinet_identifier, pharmebinetutils.resource_add_and_prepare(
-                        dict_identifier_to_resource[pharmebinet_identifier], 'Reactome'), "NAME_DRUG", name,
-                                         drug_names])
+                    write_to_tsv_file(dbId, pharmebinet_identifier, "NAME_DRUG", drug_name,
+                                      drug_names)
                     mapped = True
                     set_pair.add((pharmebinet_identifier, dbId))
 
@@ -232,9 +233,8 @@ def load_reactome_drug_in(label):
                         continue
                     counter_map_with_name += 1
                     drug_names = dict_drug_pharmebinet[dict_drug_pharmebinet_names[name]]
-                    csv_mapped.writerow([dbId, pharmebinet_identifier, pharmebinetutils.resource_add_and_prepare(
-                        dict_identifier_to_resource[pharmebinet_identifier], 'Reactome'), "NAME_HTML", drug_name,
-                                         drug_names])
+                    write_to_tsv_file(dbId, pharmebinet_identifier, "NAME_HTML", drug_name,
+                                      drug_names)
                     mapped = True
                     set_pair.add((pharmebinet_identifier, dbId))
 
@@ -256,7 +256,7 @@ generate connection between mapping drug of reactome and pharmebinet and generat
 
 def create_cypher_file():
     cypher_file = open('output/cypher_mapping2.cypher', 'w', encoding="utf-8")
-    query = ''' MATCH (d:Chemical{identifier:line.id_pharmebinet}),(c:ReferenceEntity_reactome{dbId:toInteger(line.id)}) CREATE (d)-[:equal_to_reactome_drug{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes"'''
+    query = ''' MATCH (d:Chemical{identifier:line.id_pharmebinet}),(c:ReferenceEntity_reactome{dbId:toInteger(line.id)}) CREATE (d)-[:equal_to_reactome_drug{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'),d.licenses = split(line.licenses, '|'), d.reactome = true'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/drug/mapped_drug.tsv',
                                               query)
@@ -273,6 +273,15 @@ def main():
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
+
+    print(
+        '__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-._')
+
+    print(datetime.datetime.now())
+    print('Integrate new drug and connect them to reactome ')
+
+    create_cypher_file()
+
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
@@ -297,14 +306,6 @@ def main():
 
     for label in ["Drug_reactome", "PhysicalEntity_reactome"]:
         load_reactome_drug_in(label)
-
-    print(
-        '__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-._')
-
-    print(datetime.datetime.now())
-    print('Integrate new drug and connect them to reactome ')
-
-    create_cypher_file()
 
     driver.close()
 

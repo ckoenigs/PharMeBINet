@@ -43,7 +43,7 @@ def load_protein_from_database_and_add_to_dict():
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_identifier_to_resource[identifier] = node['resource']
+        dict_identifier_to_resource[identifier] = [node['resource'], set(node['licenses'])]
         gene_symbols = node['gene_name'] if 'gene_name' in node else []
         alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
         for gene_symbol in gene_symbols:
@@ -64,6 +64,12 @@ def load_protein_from_database_and_add_to_dict():
             pharmebinetutils.add_entry_to_dict_to_set(dict_synonyms_to_id, synonym.lower(),
                                                       identifier)
 
+def write_to_tsv_file(csv_mapping, polymerid, identifier, mapping_method):
+    dict_identifier_to_resource[identifier][1].add(pharmebinetutils.dict_source_to_license['bindingdb'])
+    csv_mapping.writerow(
+        [polymerid, identifier,
+         pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier][0], "BindingDB"),
+         mapping_method, '|'.join(dict_identifier_to_resource[identifier][1])])
 
 def load_all_bindingDB_polymer_and_finish_the_files(csv_mapping):
     """
@@ -93,20 +99,14 @@ def load_all_bindingDB_polymer_and_finish_the_files(csv_mapping):
         # mapping
         found_mapping = False
         if identifier != "" and identifier in dict_identifier_to_resource:
-            csv_mapping.writerow(
-                [polymerid, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "BindingDB"),
-                 'id'])
+            write_to_tsv_file(csv_mapping, polymerid, identifier, 'id')
             found_mapping = True
         if found_mapping:
             continue
 
         if identifier != "" and identifier in dict_alternativeId_to_identifiers:
             for uniprot_id in dict_alternativeId_to_identifiers[identifier]:
-                csv_mapping.writerow([polymerid, uniprot_id,
-                                      pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[uniprot_id],
-                                                                                "BindingDB"),
-                                      'alternative_id'])
+                write_to_tsv_file(csv_mapping, polymerid, uniprot_id, 'alternative_id')
             found_mapping = True
         if found_mapping:
             continue
@@ -114,10 +114,7 @@ def load_all_bindingDB_polymer_and_finish_the_files(csv_mapping):
         if '-' in identifier:
             identifier = identifier.split('-')[0]
             if identifier in dict_identifier_to_resource:
-                csv_mapping.writerow(
-                    [polymerid, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "BindingDB"),
-                     'id-iso'])
+                write_to_tsv_file(csv_mapping, polymerid, identifier, 'id-iso')
                 found_mapping = True
         if found_mapping:
             continue
@@ -128,11 +125,7 @@ def load_all_bindingDB_polymer_and_finish_the_files(csv_mapping):
             if name in dict_name_to_id:
                 found_mapping = True
                 for id in dict_name_to_id[name]:
-                    csv_mapping.writerow(
-                        [polymerid, id,
-                         pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[id],
-                                                                   "BindingDB"),
-                         'name'])
+                    write_to_tsv_file(csv_mapping, polymerid, id, 'name')
         if found_mapping:
             continue
         # if 'sequence' in node:
@@ -141,11 +134,7 @@ def load_all_bindingDB_polymer_and_finish_the_files(csv_mapping):
         #     if sequence in dict_sequence_to_id:
         #         found_mapping = True
         #         for id in dict_sequence_to_id[sequence]:
-        #             csv_mapping.writerow(
-        #                 [polymerid, id,
-        #                 pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[id],
-        #                                                            "BindingDB"),
-        #                 'sequence'])
+        #             write_to_tsv_file(csv_mapping, polymerid, id, 'sequence')
         #         print("found sequence mapping")
         # if found_mapping:
         #     continue
@@ -156,11 +145,7 @@ def load_all_bindingDB_polymer_and_finish_the_files(csv_mapping):
             if synonym in dict_synonyms_to_id:
                 found_mapping = True
                 for id in dict_synonyms_to_id[synonym]:
-                    csv_mapping.writerow(
-                        [polymerid, id,
-                         pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[id],
-                                                                   "BindingDB"),
-                         'synonyms'])
+                    write_to_tsv_file(csv_mapping, polymerid, id, 'synonyms')
 
         if not found_mapping:
             counter_not_mapped += 1

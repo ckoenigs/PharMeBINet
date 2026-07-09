@@ -1,13 +1,14 @@
 #!/bin/bash
 
 echo $#
-number_of_arguments=2
+number_of_arguments=3
 
 if test $# -ne $number_of_arguments 
 then
-    echo need 2 arguments:
+    echo need 3 arguments:
     echo 1 path to neo4j bin
     echo 2 path to project
+    echo 3 neo4j bold
     exit 0
 fi 
 
@@ -17,6 +18,10 @@ path_neo4j=$1
 
 #path to project
 path_project=$2
+
+# neo4j bold
+neo4j_bolt=$3
+echo "bolt= '${neo4j_bolt}'" > bolt.py
 
 # path to import tool
 name_of_import_tool='../Neo4j-GraphML-Importer-v1.3.0'
@@ -36,7 +41,7 @@ echo integration of the database into hetionet
 # ths python scripts executed on windows with python 3.5.3
 cd import_into_Neo4j
 
-./integration_shell.sh $path_neo4j $path_project $name_of_import_tool $password $path_to_other_place_of_data #> output_all_integration.txt
+./integration_shell.sh $path_neo4j $path_project $name_of_import_tool $password $path_to_other_place_of_data $neo4j_bolt #> output_all_integration.txt
 
 cd ..
 
@@ -50,7 +55,6 @@ sleep 120
 
 cp -r $path_neo4j/../data/databases/graph $path_neo4j/../data/databases/inte
 
-#$path_neo4j/neo4j restart
 python restart_neo4j.py $path_neo4j/
 
 sleep 120
@@ -66,7 +70,7 @@ cd mapping_and_merging_into_hetionet
 cd ..
 
 
-# exit 1
+#exit 1
 
 if [ -d $path_neo4j/../data/databases/pharmebinet ]; then
   rm -r $path_neo4j/../data/databases/pharmebinet
@@ -90,7 +94,7 @@ echo "Current time: $now"
 
 cd final_preparation
 
-./new_preparation_script.sh $path_neo4j $name_of_import_tool $password $path_to_other_place_of_data #> output_delete_source.txt
+./new_preparation_script.sh $path_neo4j $name_of_import_tool $password $path_to_other_place_of_data $neo4j_bolt #> output_delete_source.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

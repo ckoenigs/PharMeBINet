@@ -30,12 +30,12 @@ def load_chemical_from_database_and_add_to_dict():
     """
     Load all Chemical from my database  and add them into a dictionary
     """
-    query = "MATCH (n:Chemical) RETURN n.identifier, n.resource, n.inchikey, n.name, n.synonyms "
+    query = "MATCH (n:Chemical) RETURN n.identifier, n.resource, n.inchikey, n.name, n.synonyms, n.licenses "
     results = g.run(query)
 
     for record in results:
-        [identifier, resource, inchikey, name, synonyms] = record.values()
-        dict_chemical_id_to_resource[identifier] = resource
+        [identifier, resource, inchikey, name, synonyms, licenses] = record.values()
+        dict_chemical_id_to_resource[identifier] = [resource, set(licenses)]
 
         if inchikey:
             pharmebinetutils.add_entry_to_dict_to_set(dict_chemical_inchikey_to_ids, inchikey, identifier)
@@ -43,9 +43,6 @@ def load_chemical_from_database_and_add_to_dict():
         name = name.lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_chemical_synonym_to_chemical_ids, name, identifier)
         synonyms = synonyms if synonyms else []
-        for synonym in synonyms:
-            pharmebinetutils.add_entry_to_dict_to_set(dict_chemical_synonym_to_chemical_ids, synonym.lower(),
-                                                      identifier)
 
 
 def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping):
@@ -79,31 +76,21 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping):
             if inchikey in dict_chemical_inchikey_to_ids:
                 found_mapping = True
                 for chemical_id in dict_chemical_inchikey_to_ids[inchikey]:
-                    csv_mapping.writerow(
-                        [identifier, chemical_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[chemical_id],
-                                                                   "BioGRID"),
-                         'inchikey'])
+                    general_function_bioGrid.write_to_tsv_file(dict_chemical_id_to_resource,csv_mapping, identifier, chemical_id,'inchikey')
         if found_mapping:
             continue
 
         if source.lower() == 'drugbank':
             if source_id in dict_chemical_id_to_resource:
                 found_mapping = True
-                csv_mapping.writerow(
-                    [identifier, source_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[source_id], "BioGRID"),
-                     'drugbank_id'])
+                general_function_bioGrid.write_to_tsv_file(dict_chemical_id_to_resource,csv_mapping, identifier, source_id, 'drugbank_id')
         if found_mapping:
             continue
 
         if name in dict_chemical_synonym_to_chemical_ids:
             found_mapping = True
             for chemical_id in dict_chemical_synonym_to_chemical_ids[name]:
-                csv_mapping.writerow(
-                    [identifier, chemical_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[chemical_id], "BioGRID"),
-                     'name'])
+                general_function_bioGrid.write_to_tsv_file(dict_chemical_id_to_resource,csv_mapping, identifier, chemical_id, 'name')
         # if found_mapping:
         #     continue
         #
@@ -113,11 +100,7 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping):
         #     if synonym in dict_chemical_synonym_to_chemical_ids:
         #         found_mapping=True
         #         for chemical_id in dict_chemical_synonym_to_chemical_ids[synonym]:
-        #             csv_mapping.writerow(
-        #                 [identifier, chemical_id,
-        #                  pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[chemical_id],
-        #                                                            "BioGRID"),
-        #                  'synonyms'])
+        #             general_function_bioGrid.write_to_tsv_file(dict_chemical_id_to_resource,csv_mapping, identifier, chemical_id, 'synonyms')
 
         if not found_mapping:
             counter_not_mapped += 1

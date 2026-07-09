@@ -21,6 +21,8 @@ def create_connection_with_neo4j():
 # dictionary rela type to csv_mapped, new
 dict_rela_type_to_csv_files = {}
 
+license = pharmebinetutils.dict_source_to_license['drugcentral']
+
 
 def load_edge_into_dictionary(rela_type):
     """Load existing interaction pairs between chemical-protein nodes with a given relationship type from Pharmebinet
@@ -29,7 +31,7 @@ def load_edge_into_dictionary(rela_type):
 
     rela_full = f'{rela_type}_CH{"".join([x[0].lower() for x in rela_type.split("_")])}P'
 
-    query = f'''MATCH (n:Chemical)-[r:{rela_full}]->(m:Protein) RETURN n.identifier,m.identifier, r.resource, r.pubMed_ids, r.ref_links,r.ref_textbooks, r.actions, r.activities  '''
+    query = f'''MATCH (n:Chemical)-[r:{rela_full}]->(m:Protein) RETURN n.identifier,m.identifier, r.resource, r.pubMed_ids, r.ref_links,r.ref_textbooks, r.actions, r.activities, r.licenses  '''
     results = g.run(query)
 
     csv_writer, csv_writer_new = prepare_tsv_and_cypher(rela_full)
@@ -38,7 +40,7 @@ def load_edge_into_dictionary(rela_type):
     dict_pair_to_resource_pmids_ref_links_books = {}
     for record in results:
         [node_1_id, node_2_id, resource, pubmed_ids, ref_links, ref_textbooks, rela_action_type,
-         rela_activities] = record.values()
+         rela_activities, licenses] = record.values()
 
         pair = (node_1_id, node_2_id)
         pubmed_ids = set(pubmed_ids) if pubmed_ids is not None else set()
@@ -47,7 +49,7 @@ def load_edge_into_dictionary(rela_type):
         rela_action_type = set(rela_action_type) if rela_action_type else set()
         rela_activities = set(rela_activities) if rela_activities else set()
         dict_pair_to_resource_pmids_ref_links_books[pair] = [resource, pubmed_ids, ref_links, ref_textbooks,
-                                                             rela_action_type, rela_activities]
+                                                             rela_action_type, rela_activities, set(licenses)]
     return dict_pair_to_resource_pmids_ref_links_books
 
 
@@ -65,13 +67,13 @@ def prepare_tsv_and_cypher(rela_type):
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(
         ['id1', 'id2', 'resource', 'pmids', 'links', 'books', 'dois', 'act_comment', 'act_source', 'act_source_url',
-         'moa_source', 'moa_source_url',  'act_type', 'actions'])
+         'moa_source', 'moa_source_url',  'act_type', 'actions', 'licenses'])
     file_name_new = f'edge/chemical_protein_{rela_type}_new.tsv'
     file_new = open(file_name_new, 'w', encoding='utf-8')
     csv_writer_new = csv.writer(file_new, delimiter='\t')
     csv_writer_new.writerow(
         ['id1', 'id2', 'pmids', 'links', 'books', 'dois', 'dc_id', 'act_comment', 'act_source', 'act_source_url',
-         'moa_source', 'moa_source_url',  'act_type', 'actions'])
+         'moa_source', 'moa_source_url',  'act_type', 'actions', 'licenses'])
 
     query = pharmebinetutils.get_all_properties_of_on_label % ('DC_Bioactivity')
     results = g.run(query)
@@ -86,12 +88,12 @@ def prepare_tsv_and_cypher(rela_type):
             list_merged_properties.append(f'm.activities=split(line.{prop},"|")')
             list_new_properties.append(f'activities:split(line.{prop},"|")')
 
-    query = f'''Match (n:Chemical{{identifier:line.id1}})-[m:{rela_type}]->(o:Protein{{identifier:line.id2}}) Set m.resource=split(line.resource,"|"), m.drugcentral='yes', m.pubMed_ids=split(line.pmids,"|"), m.ref_links=split(line.links,"|"), m.ref_dois=split(line.dois,"|"), m.ref_textbooks=split(line.books,"|"), {", ".join(list_merged_properties)}'''
+    query = f'''Match (n:Chemical{{identifier:line.id1}})-[m:{rela_type}]->(o:Protein{{identifier:line.id2}}) Set m.resource=split(line.resource,"|"),m.licenses=split(line.licenses,"|"), m.drugcentral=true, m.pubMed_ids=split(line.pmids,"|"), m.ref_links=split(line.links,"|"), m.ref_dois=split(line.dois,"|"), m.ref_textbooks=split(line.books,"|"), {", ".join(list_merged_properties)}'''
     query_create = pharmebinetutils.get_query_import(path_of_directory,
                                                      'mapping_and_merging_into_hetionet/drugcentral/' + file_name,
                                                      query)
     cypher_file.write(query_create)
-    query = f'''Match (n:Chemical{{identifier:line.id1}}), (o:Protein{{identifier:line.id2}}) Create (n)-[m:{rela_type}{{resource:['DrugCentral'], source:'DrugCentral', url:"https://drugcentral.org/drugcard/"+line.dc_id, ref_dois:split(line.dois,"|"),actions:split(line.actions,"|"), license:"Creative Commons Attribution-ShareAlike 4.0 International Public License", drugcentral:'yes', pubMed_ids:split(line.pmids,"|"), ref_links:split(line.links,"|"), ref_textbooks:split(line.books,"|"), {", ".join(list_new_properties)} }}]->(o)'''
+    query = f'''Match (n:Chemical{{identifier:line.id1}}), (o:Protein{{identifier:line.id2}}) Create (n)-[m:{rela_type}{{resource:['DrugCentral'], source:'DrugCentral', url:"https://drugcentral.org/drugcard/"+line.dc_id, ref_dois:split(line.dois,"|"),actions:split(line.actions,"|"), licenses:["{license}"], drugcentral:true, pubMed_ids:split(line.pmids,"|"), ref_links:split(line.links,"|"), ref_textbooks:split(line.books,"|"), {", ".join(list_new_properties)} }}]->(o)'''
     query_create = pharmebinetutils.get_query_import(path_of_directory,
                                                      'mapping_and_merging_into_hetionet/drugcentral/' + file_name_new,
                                                      query)
@@ -299,7 +301,7 @@ def load_and_map_DC_chemical_protein_edges():
 
         # print(node_1_id,node_2_id)
         if (node_1_id, node_2_id) in dict_rela_type_to_existing_rela_pairs_to_information[rela_type]:
-            [resource, pubmed_ids, ref_links, ref_textbooks, rela_action_type, rela_activities] = \
+            [resource, pubmed_ids, ref_links, ref_textbooks, rela_action_type, rela_activities, licenses] = \
                 dict_rela_type_to_existing_rela_pairs_to_information[rela_type][(node_1_id, node_2_id)]
             all_dois = []
             pubmed_ids, ref_links, ref_textbooks, all_dois = prepare_ref_information_tor_the_different_sources(rela_ids,
@@ -315,6 +317,7 @@ def load_and_map_DC_chemical_protein_edges():
                 rela_infos)
 
             rela_activities = rela_activities.union(act_type)
+            licenses.add(license)
 
             # 'act_comment', 'act_source', 'act_source_url',
             #          'moa_source', 'moa_source_url', 'relation', 'act_type','actions'
@@ -322,7 +325,7 @@ def load_and_map_DC_chemical_protein_edges():
                 [node_1_id, node_2_id, pharmebinetutils.resource_add_and_prepare(resource, 'DrugCentral'),
                  '|'.join(pubmed_ids), '|'.join(ref_links), '|'.join(ref_textbooks), '|'.join(all_dois),
                  '|'.join(act_comments), '|'.join(act_source), '|'.join(act_source_url), '|'.join(moa_source),
-                 '|'.join(moa_source_url),  '|'.join(rela_activities), '|'.join(rela_action_type)])
+                 '|'.join(moa_source_url),  '|'.join(rela_activities), '|'.join(rela_action_type), '|'.join(licenses)])
         else:
             pubmed_ids = set()
             ref_links = set()

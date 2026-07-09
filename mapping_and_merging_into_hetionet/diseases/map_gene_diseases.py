@@ -30,11 +30,11 @@ def load_genes_from_database_and_add_to_dict():
     """
     Load all Genes from my database  and add them into a dictionary
     """
-    query = "MATCH (n:Gene) RETURN n.identifier, n.gene_symbol, n.gene_symbols, n.xrefs, n.resource "
+    query = "MATCH (n:Gene) RETURN n.identifier, n.gene_symbol, n.gene_symbols, n.xrefs, n.resource, n.licenses "
     results = g.run(query)
 
-    for identifier, gene_symbol, gene_symbols, xrefs, resource, in results:
-        dict_gene_id_to_resource[identifier] = resource
+    for identifier, gene_symbol, gene_symbols, xrefs, resource, licenses, in results:
+        dict_gene_id_to_resource[identifier] = [resource, set(licenses)]
         pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_ids, gene_symbol, identifier)
         for symbol in gene_symbols:
             pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_alternative_to_ids, symbol, identifier)
@@ -52,7 +52,7 @@ def generate_files(path_of_directory):
 
     file_name = 'DISEASES_gene_to_Gene'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['DISEASE_gene_id', 'gene_id', 'resource', 'mapping_method']
+    header = ['DISEASE_gene_id', 'gene_id', 'resource', 'mapping_method','licenses']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
@@ -60,12 +60,19 @@ def generate_files(path_of_directory):
     csv_mapping.writerow(header)
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
-    query = f' Match (n:DISEASES_Gene{{id:line.DISEASE_gene_id}}), (v:Gene{{identifier:line.gene_id}}) Set v.diseases="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DISEASES_gene{{how_mapped:line.mapping_method}}]->(n)'
+    query = f' Match (n:DISEASES_Gene{{id:line.DISEASE_gene_id}}), (v:Gene{{identifier:line.gene_id}}) Set v.diseases=TRUE, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") Create (v)-[:equal_to_DISEASES_gene{{how_mapped:line.mapping_method}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
     cypher_file.write(query)
 
     return csv_mapping
+
+def write_to_tsv_file(csv_mapping, identifier, pharmebinet_id, how_mapped):
+    dict_gene_id_to_resource[pharmebinet_id][1].add(pharmebinetutils.dict_source_to_license['diseases'])
+    csv_mapping.writerow(
+        [identifier, pharmebinet_id,
+         pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[pharmebinet_id][0], "DISEASES"),
+         how_mapped, '|'.join(dict_gene_id_to_resource[pharmebinet_id][1])])
 
 
 def load_all_diseases_genes_and_finish_the_files(csv_mapping):
@@ -84,10 +91,7 @@ def load_all_diseases_genes_and_finish_the_files(csv_mapping):
         if gene_symbol in dict_gene_symbol_to_ids:
             is_mapped = True
             for gene_id in dict_gene_symbol_to_ids[gene_symbol]:
-                csv_mapping.writerow(
-                    [identifier, gene_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], "DISEASES"),
-                     'gene_symbol'])
+                write_to_tsv_file(csv_mapping, identifier, gene_id, 'gene_symbol')
 
         if is_mapped:
             continue
@@ -95,10 +99,7 @@ def load_all_diseases_genes_and_finish_the_files(csv_mapping):
         if identifier in dict_gene_symbol_to_ids:
             is_mapped = True
             for gene_id in dict_gene_symbol_to_ids[identifier]:
-                csv_mapping.writerow(
-                    [identifier, gene_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], "DISEASES"),
-                     'id_gene_symbol'])
+                write_to_tsv_file(csv_mapping, identifier, gene_id, 'id_gene_symbol')
 
         if is_mapped:
             continue
@@ -106,10 +107,7 @@ def load_all_diseases_genes_and_finish_the_files(csv_mapping):
         if gene_symbol in dict_gene_symbol_alternative_to_ids:
             is_mapped = True
             for gene_id in dict_gene_symbol_alternative_to_ids[gene_symbol]:
-                csv_mapping.writerow(
-                    [identifier, gene_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], "DISEASES"),
-                     'alt_gene_symbol'])
+                write_to_tsv_file(csv_mapping, identifier, gene_id, 'alt_gene_symbol')
 
         if is_mapped:
             continue
@@ -117,10 +115,7 @@ def load_all_diseases_genes_and_finish_the_files(csv_mapping):
         if identifier in dict_gene_symbol_alternative_to_ids:
             is_mapped = True
             for gene_id in dict_gene_symbol_alternative_to_ids[identifier]:
-                csv_mapping.writerow(
-                    [identifier, gene_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], "DISEASES"),
-                     'id_alt_gene_symbol'])
+                write_to_tsv_file(csv_mapping, identifier, gene_id, 'id_alt_gene_symbol')
 
         if is_mapped:
             continue

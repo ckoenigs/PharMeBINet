@@ -56,7 +56,7 @@ while len(a) > 0:
 f.close()
 
 # create Cypher query
-cypher = f' MATCH (n:Chemical), (m:Symptom) WHERE n.identifier = line.chemical AND m.identifier = line.symptom CREATE (n)-[:TREATS_CHtS{{nodes:split(line.nodes,"|"), count:line.count, openfda:"yes", source:"openFDA", resource:["openFDA"]}}]->(m)'
+cypher = f' MATCH (n:Chemical), (m:Symptom) WHERE n.identifier = line.chemical AND m.identifier = line.symptom CREATE (n)-[:TREATS_CHtS{{nodes:split(line.nodes,"|"), count:line.count, openfda=true, source:"openFDA", resource:["openFDA"]}}]->(m)'
 cypher = pharmebinetutils.get_query_import(path_of_directory,
                                            f'mapping_and_merging_into_hetionet/openFDA/FDA_edges/DrugAdverseEvent_indication_Chemical_Symptom_Edge.tsv',
                                            cypher)

@@ -12,6 +12,8 @@ import pharmebinetutils
 dict_has_ptm_identifier_to_resource_pubmeds = {}
 dict_involves_identifier_to_resource_pubmeds = {}
 
+license = pharmebinetutils.dict_source_to_license['iptmnet']
+
 
 def create_connection_with_neo4j():
     '''
@@ -26,16 +28,18 @@ def load_ptms_from_database_and_add_to_dict():
     """
     Load all pairs from pharmebinet and add them into a dictionary
     """
-    query = "MATCH (n:PTM)-[r]-(p:Protein) RETURN type(r) as edge_type, n.identifier, r.resource, p.identifier, r.pubMed_ids"
+    query = "MATCH (n:PTM)-[r]-(p:Protein) RETURN type(r) as edge_type, n.identifier, r.resource, p.identifier, r.pubMed_ids, r.licenses"
     results = g.run(query)
 
-    for edge_type, ptm_identifier, resource, protein_identifer, pubMed_ids in results:
+    for edge_type, ptm_identifier, resource, protein_identifer, pubMed_ids, licenses in results:
         if edge_type == "HAS_PhPTM":
             pubMed_ids = set(pubMed_ids) if pubMed_ids else set()
-            dict_has_ptm_identifier_to_resource_pubmeds[(ptm_identifier, protein_identifer)] = [resource, pubMed_ids]
+            dict_has_ptm_identifier_to_resource_pubmeds[(ptm_identifier, protein_identifer)] = [resource, pubMed_ids,
+                                                                                                set(licenses)]
         elif edge_type == "INVOLVES_PTMiP":
             pubMed_ids = set(pubMed_ids) if pubMed_ids else set()
-            dict_involves_identifier_to_resource_pubmeds[(ptm_identifier, protein_identifer)] = [resource, pubMed_ids]
+            dict_involves_identifier_to_resource_pubmeds[(ptm_identifier, protein_identifer)] = [resource, pubMed_ids,
+                                                                                                 set(licenses)]
 
 
 def generate_files(path_of_directory, edge_type):
@@ -49,7 +53,8 @@ def generate_files(path_of_directory, edge_type):
 
     file_name = f'iPTMnet_edges_to_edges_{edge_type}'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['ptm_identifier', 'protein_identifier', 'resource', 'aggregated_properties', 'pmids', 'isoforms', 'not_normal_form']
+    header = ['ptm_identifier', 'protein_identifier', 'resource', 'aggregated_properties', 'pmids', 'isoforms',
+              'not_normal_form', 'licenses']
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
     csv_mapping_existing = csv.writer(file, delimiter='\t')
@@ -62,7 +67,8 @@ def generate_files(path_of_directory, edge_type):
     new_file_path = os.path.join(path_of_directory, new_file_name) + '.tsv'
     new_file = open(new_file_path, 'w+', encoding='utf-8')
     csv_mapping_new = csv.writer(new_file, delimiter='\t')
-    csv_mapping_new.writerow(['ptm_identifier', 'protein_identifier', 'aggregated_properties', 'pmids', 'isoforms', 'not_normal_form'])
+    csv_mapping_new.writerow(
+        ['ptm_identifier', 'protein_identifier', 'aggregated_properties', 'pmids', 'isoforms', 'not_normal_form'])
 
     if not os.path.exists(source):
         os.mkdir(source)
@@ -71,14 +77,14 @@ def generate_files(path_of_directory, edge_type):
     if edge_type == 'iPTMnet_HAS_PTM':
         query = (
             f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
-            f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.iptmnet = "yes", r.isoform =split(line.isoforms,"|"), '
-            f'r.resource = split(line.resource, "|"), r.properties_iptmnet = split(line.aggregated_properties,"|"), '
+            f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.iptmnet = true, r.isoform =split(line.isoforms,"|"), '
+            f'r.resource = split(line.resource, "|"),r.licenses = split(line.licenses, "|"), r.properties_iptmnet = split(line.aggregated_properties,"|"), '
             f'r.pubMed_ids =split(line.pmids,"|"), r.isoform_specific_iPTMnet = line.not_normal_form ')
     elif edge_type == 'iPTMnet_INVOLVES':
         query = (
             f' MATCH (n:Protein {{identifier: line.protein_identifier}}), (v:PTM {{identifier: line.ptm_identifier}}) '
-            f'MATCH (v)-[r:INVOLVES_PTMiP]->(n) SET r.iptmnet = "yes", '
-            f'r.resource = split(line.resource, "|"), r.pubMed_ids =split(line.pmids,"|"), '
+            f'MATCH (v)-[r:INVOLVES_PTMiP]->(n) SET r.iptmnet = true, '
+            f'r.resource = split(line.resource, "|"),r.licenses = split(line.licenses, "|"), r.pubMed_ids =split(line.pmids,"|"), '
             f'r.isoform =split(line.isoforms,"|"), r.isoform_specific_iPTMnet = line.not_normal_form')
 
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
@@ -87,15 +93,16 @@ def generate_files(path_of_directory, edge_type):
     if edge_type == 'iPTMnet_HAS_PTM':
         query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
                  'CREATE (n)-[:HAS_PhPTM{url:"https://research.bioinformatics.udel.edu/iptmnet/entry/"+line.protein_identifier, '
-                 'license:"CC BY-NC-SA 4.0 Deed", properties_iptmnet : split(line.aggregated_properties,"|"), resource:["iPTMnet"], '
-                 'source:"iPTMnet", iptmnet:"yes", pubMed_ids :split(line.pmids,"|"), '
+                 'licenses:["%s"], properties_iptmnet : split(line.aggregated_properties,"|"), resource:["iPTMnet"], '
+                 'source:"iPTMnet", iptmnet:true, pubMed_ids :split(line.pmids,"|"), '
                  'isoform :split(line.isoforms,"|"), isoform_specific_iPTMnet : line.not_normal_form}]->(v)')
     elif edge_type == 'iPTMnet_INVOLVES':
         query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
                  'CREATE (v)-[:INVOLVES_PTMiP{url:"https://research.bioinformatics.udel.edu/iptmnet/entry/"+line.protein_identifier, '
-                 'license:"CC BY-NC-SA 4.0 Deed", resource:["iPTMnet"], '
-                 'source:"iPTMnet", iptmnet:"yes", pubMed_ids :split(line.pmids,"|"), '
+                 'licenses:["%s"], resource:["iPTMnet"], '
+                 'source:"iPTMnet", iptmnet:true, pubMed_ids :split(line.pmids,"|"), '
                  'isoform :split(line.isoforms,"|"), isoform_specific_iPTMnet : line.not_normal_form}]->(n)')
+    query = query % license
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file.write(query)
 
@@ -162,11 +169,13 @@ def load_all_iptmnet_ptms_and_finish_the_files(batch_size, csv_mapping_existing,
             # Existing edge
             if edge in dict_edge_identifier_to_resource:
                 pubmed_ids = pubmed_ids.union(dict_edge_identifier_to_resource[edge][1])
+                dict_edge_identifier_to_resource[edge][2].add(license)
                 csv_mapping_existing.writerow([
                     ptm_identifier, protein_identifier,
                     pharmebinetutils.resource_add_and_prepare(dict_edge_identifier_to_resource[edge][0], "iPTMnet"),
                     "|".join(aggregated_properties), "|".join(pubmed_ids),
-                    '|'.join(uniprot_accession_isoforms), '' if uniprot_accession_normal else 'yes'
+                    '|'.join(uniprot_accession_isoforms), '' if uniprot_accession_normal else 'yes',
+                    '|'.join(dict_edge_identifier_to_resource[edge][2])
                 ])
                 counter_mapped_edges += 1
             else:

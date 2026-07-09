@@ -101,6 +101,9 @@ def prepare_fingerprints():
         # pyble_mol = None
         # if inchi:
         #     pyble_mol = openbabel.pybel.readstring('inchi', inchi)
+
+        if '[#' in smiles:
+            continue
         pyble_mol = openbabel.pybel.readstring('smi', smiles)
         # print(identifier)
         dict_pybel = {}
@@ -118,7 +121,7 @@ def prepare_fingerprints():
 
 
 # set the threshold
-threshold = 0.75
+threshold = 0.85
 
 
 def generate_cypher(header, file_name):
@@ -129,10 +132,10 @@ def generate_cypher(header, file_name):
     :return:
     """
     cypherfile = open('output/cypher_resemble.cypher', 'w', encoding='utf-8')
-    query = ''' Match (c1:Compound{identifier:line.id1}), (c2:Compound{identifier:line.id2}) Create (c1)-[:RESEMBLES_CrC{source:"Open Babel and rdKit", unbiased:false, url:"https://pharmebi.net/#/compounds/"+line.id1, resource:['OpenBabel','rdKit'], open_babel_and_rdkit:'yes', license:'%s', '''
+    query = ''' Match (c1:Compound{identifier:line.id1}), (c2:Compound{identifier:line.id2}) Create (c1)-[:RESEMBLES_CrC{source:"Open Babel and rdKit by PharMeBINet", unbiased:false, url:"https://pharmebi.net/#/compounds/"+line.id1, resource:['OpenBabel','rdKit', 'PharMeBINet'], open_babel_and_rdkit:true, licenses:['%s'], '''
     for head in header:
         query += head + ':toFloat(line.' + head + '), '
-    query = query % ('CC0 1.0')
+    query = query % (pharmebinetutils.dict_source_to_license['pharmebinet'])
     query = query[:-2] + '''}]->(c2) '''
 
     query = pharmebinetutils.get_query_import(path_of_directory,
@@ -152,7 +155,7 @@ def calculate_similarities_and_write_into_file():
     :return:
     """
     set_of_types = set()
-    header = ['id1', 'id2', 'morgan bit vec_cosine', 'maccs_dice', 'morgan bit vec_tanimoto', 'morgan bit vec_dice',
+    header = ['id1', 'id2', 'morgan bit vec_cosine',  'morgan bit vec_tanimoto', 'morgan bit vec_dice',
               'topologic_tanimoto', 'morgan bit vec_mcconnaughey', 'topologic torsin_tanimoto', 'maccs_rdkit_dice',
               'maccs_rdkit_tanimoto', 'fp3_tanimoto', 'fp4_tanimoto', 'fp2_tanimoto', 'maccs_open_babel_tanimoto',
               'maccs_rdkit_tversky', 'topologic torsin bit vec_dice', 'topologic torsin bit vec_cosine',
@@ -185,9 +188,9 @@ def calculate_similarities_and_write_into_file():
                 fingerprint_formart = fingerprint_formart + '_open_babel'
             set_of_types.add(fingerprint_formart + '_tanimoto')
             dict_fp_to_metrics[fingerprint_formart] = ['tanimoto']
-            # only the one with a higher similarity the 0.5 are written into the file
-            if similarity < threshold:
-                continue
+            # only the one with a higher similarity then threshold are written into the file
+            # if similarity < threshold:
+            #     continue
             found_at_least_one_similarity = True
             dict_pair[fingerprint_formart + '_tanimoto'] = similarity
 
@@ -214,8 +217,8 @@ def calculate_similarities_and_write_into_file():
                     set_of_types.add(fp_formart + '_' + metric)
 
                     similarity = round(similarity, 4)
-                    if similarity < threshold:
-                        continue
+                    # if similarity < threshold:
+                    #     continue
                     found_at_least_one_similarity = True
                     dict_pair[fp_formart + '_' + metric] = similarity
                     if fp_formart not in dict_fp_to_metrics:
@@ -227,7 +230,7 @@ def calculate_similarities_and_write_into_file():
         counter += 1
         # sys.exit()
         if counter % 1000000 == 0:
-            print(counter)
+            print(counter, datetime.datetime.now())
 
     # print(set_of_types)
     # print(dict_fp_to_metrics)

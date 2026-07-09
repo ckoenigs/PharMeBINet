@@ -6,7 +6,7 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-license = 'CC BY 4.0'
+license = pharmebinetutils.dict_source_to_license['foodon']
 
 '''
 create a connection with neo4j
@@ -26,10 +26,10 @@ def create_cypher_file(file_name, node_label, rela_name, to_CT):
     '''
     if to_CT:
         rela = pharmebinetutils.prepare_rela_great(rela_name, node_label, 'Food')
-        query = ''' MATCH (d:Food{identifier:line.node_id}),(c:%s{identifier:line.other_id}) CREATE (d)<-[: %s{resource: ['FoodOn'], foodon: "yes", source:"FoodOn", license:"%s", url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.node_id}]-(c)'''
+        query = ''' MATCH (d:Food{identifier:line.node_id}),(c:%s{identifier:line.other_id}) CREATE (d)<-[: %s{resource: ['FoodOn'], foodon: true, source:"FoodOn", licenses:["%s"], url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.node_id}]-(c)'''
     else:
         rela = pharmebinetutils.prepare_rela_great(rela_name, 'Food', node_label)
-        query = ''' MATCH (d:Food{identifier:line.node_id}),(c:%s{identifier:line.other_id}) CREATE (d)-[: %s{resource: ['FoodOn'], foodon: "yes", source:"FoodOn", license:"%s", url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.node_id}]->(c)'''
+        query = ''' MATCH (d:Food{identifier:line.node_id}),(c:%s{identifier:line.other_id}) CREATE (d)-[: %s{resource: ['FoodOn'], foodon: true, source:"FoodOn", licenses:["%s"], url:"https://www.ebi.ac.uk/ols4/ontologies/foodon/classes?obo_id="+line.node_id}]->(c)'''
     query = query % (node_label, rela, license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/foodon/{file_name}',

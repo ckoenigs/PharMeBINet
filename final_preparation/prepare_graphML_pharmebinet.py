@@ -79,6 +79,9 @@ filename = path_start+ "PharMeBiNet_finished.graphml"
 with open(filename, 'w', encoding='utf-8') as xf:
     xf.write('<?xml version="1.0" encoding="utf-8"?>\n')
     xf.write('<graphml>\n')
+    for tag in ['diseases', 'gencc', 'mirbase']:
+        xf.write(f'<key id="{tag}" for="node" attr.name="{tag}" attr.type="boolean"/>\n')
+    xf.write(f'<key id="class_type" for="node" attr.name="class_type" attr.type="string" attr.list="string"/>\n')
     for event, node in ET.iterparse(file_name_from, encoding='utf-8', events=('end',)):
         if node.tag == ns + 'key':
             counter_key += 1
@@ -88,6 +91,8 @@ with open(filename, 'w', encoding='utf-8') as xf:
         # Stop at first node, as all keys are defined before
         if node.tag == ns + 'node':
             break
+    for tag in ['sex','rela_info']:
+        xf.write(f'<key id="{tag}" for="edge" attr.name="{tag}" attr.type="string" attr.list="string"/>\n')
 
     print(datetime.datetime.now())
     print('graph')

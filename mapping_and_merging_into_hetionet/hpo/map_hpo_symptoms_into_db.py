@@ -85,7 +85,7 @@ def generate_cypher_queries_and_tsv_files():
     :return: csv writer for mapping and new
     """
     set_header_for_files = ['hpo_id', 'pharmebinet_id', 'xrefs', 'mesh_ids', 'resource', 'umls_ids', 'how_mapped',
-                            'level']
+                            'level', 'licenses']
     # tsv file for mapping disease
     file_name_mapped = 'mapping_files/symptom_mapped.tsv'
     file_symptom_mapped = open(file_name_mapped, 'w', encoding='utf-8')
@@ -106,10 +106,10 @@ def generate_cypher_queries_and_tsv_files():
         RETURN allfields as l;'''
     results = g.run(query)
 
-    license = 'This service/product uses the Human Phenotype Ontology (January 2024). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.'
+    license = pharmebinetutils.dict_source_to_license['hpo']
 
-    query_start_match = '''Match (s:Symptom{identifier:line.pharmebinet_id }) , (n:HPO_symptom{id:line.hpo_id}) Set s.hpo='yes', s.umls_cuis=split(line.umls_cuis,"|"), s.highest_level=line.level,  s.resource=split(line.resource,"|") , s.hpo_release='%s', s.url_HPO="https://hpo.jax.org/app/browse/term/"+line.hpo_id, n.mesh_ids=split(line.mesh_ids,'|'), s.xrefs=s.xrefs + line.hpo_id, '''
-    query_start_create = '''Match (n:HPO_symptom{id:line.hpo_id}) Create (s:Symptom :Phenotype{identifier:line.pharmebinet_id, umls_cuis:split(line.umls_cuis,"|"), highest_level:line.level ,source:'HPO', resource:['HPO'], source:'HPO', hpo:'yes', hpo_release:'%s', license:'%s', url:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:split(line.xrefs,"|"), '''
+    query_start_match = '''Match (s:Symptom{identifier:line.pharmebinet_id }) , (n:HPO_symptom{id:line.hpo_id}) Set s.hpo=True, s.umls_cuis=split(line.umls_cuis,"|"), s.highest_level=line.level,  s.licenses=split(line.licenses,"|"),  s.resource=split(line.resource,"|") , s.hpo_release='%s', s.url_HPO="https://hpo.jax.org/app/browse/term/"+line.hpo_id, n.mesh_ids=split(line.mesh_ids,'|'), s.xrefs=s.xrefs + line.hpo_id, '''
+    query_start_create = '''Match (n:HPO_symptom{id:line.hpo_id}) Create (s:Symptom :Phenotype{identifier:line.pharmebinet_id, umls_cuis:split(line.umls_cuis,"|"), highest_level:line.level ,source:'HPO', resource:['HPO'], source:'HPO', hpo:True, hpo_release:'%s', licenses:['%s'], url:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:split(line.xrefs,"|"), '''
 
     for record in results:
         property = record.data()['l']
@@ -146,7 +146,7 @@ def generate_cypher_queries_and_tsv_files():
                                                      query_create)
     cypher_file.write(query_create)
 
-    query = '''Match (s1:Symptom)--(a:HPO_symptom)-[:is_a]->(:HPO_symptom)--(s2:Symptom) Where not ID(s1)=ID(s2) Merge (s1)-[:IS_A_SiaS{license:"%s",hpo_release:'%s', source:"HPO", resource:["HPO"], hpo:"yes", url:"https://hpo.jax.org/app/browse/term/"+a.id}]->(s2);\n'''
+    query = '''Match (s1:Symptom)--(a:HPO_symptom)-[:is_a]->(:HPO_symptom)--(s2:Symptom) Where not ID(s1)=ID(s2) Merge (s1)-[:IS_A_SiaS{licenses:["%s"],hpo_release:'%s', source:"HPO", resource:["HPO"], hpo:true, url:"https://hpo.jax.org/app/browse/term/"+a.id}]->(s2);\n'''
     query = query % (license, ontology_date)
     cypher_file.write(query)
 
@@ -194,11 +194,7 @@ def map_names(name, how_mapped, node_id, xrefs, level):
     if name in dict_name_to_symptom_id:
         found_one = True
         for mesh_id in dict_name_to_symptom_id[name]:
-            resource = dict_of_pharmebinet_symptoms[mesh_id]['resource'] if 'resource' in \
-                                                                            dict_of_pharmebinet_symptoms[
-                                                                                mesh_id] else []
-            resource.append('HPO')
-            resource = list(set(resource))
+            resource = dict_of_pharmebinet_symptoms[mesh_id]['resource']
             xrefs_mesh = dict_of_pharmebinet_symptoms[mesh_id]['xrefs'] if 'xrefs' in dict_of_pharmebinet_symptoms[
                 mesh_id] else []
             xrefs_mesh = set(xrefs_mesh).union(xrefs)
@@ -212,7 +208,8 @@ def map_names(name, how_mapped, node_id, xrefs, level):
                     'hpos_how_mapped': set([(node_id, how_mapped)]),
                     'resource': resource,
                     'xrefs': xrefs_mesh,
-                    'level': level + 1
+                    'level': level + 1,
+                    'licenses': set(dict_of_pharmebinet_symptoms[mesh_id]['licenses'])
                 }
                 dict_mapped_mesh[mesh_id] = dict_node
     return found_one
@@ -339,10 +336,12 @@ def prepare_mapped_nodes_for_file(csv_mapped):
     :return:
     """
     for mesh_id, dict_info in dict_mapped_mesh.items():
+        dict_info['licenses'].add(pharmebinetutils.dict_source_to_license['hpo'])
         dict_node = {
             'pharmebinet_id': mesh_id,
             'xrefs': '|'.join(go_through_xrefs_and_change_if_needed_source_name(dict_info['xrefs'], 'symptom')),
-            'resource': '|'.join(dict_info['resource'])
+            'resource': pharmebinetutils.resource_add_and_prepare(dict_info['resource'],'HPO'),
+            'licenses':'|'.join(dict_info['licenses']),
             # 'how_mapped': '|'.join(set(dict_info['how_mapped']))
         }
         if len(dict_info['hpos_how_mapped']) > 1:

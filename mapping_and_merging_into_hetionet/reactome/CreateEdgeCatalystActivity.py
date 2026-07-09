@@ -28,15 +28,20 @@ def prepare_CA_with_reference_infos():
     Get all CA which have reference information
     :return:
     """
-    query2 = '''MATCH (a:CatalystActivity_reactome)--(f:CatalystActivityReference_reactome) RETURN a.dbId, f.displayName, f.pubMed_ids, f.books'''
+    query2 = '''MATCH (a:CatalystActivity_reactome)--(f:CatalystActivityReference_reactome) RETURN a.dbId, a.displayName, f.displayName, f.pubMed_ids, f.books'''
 
     results2 = graph_database.run(query2)
 
     for record in results2:
-        [catAct_id, displayName, pubMed_ids, books] = record.values()
-        displayName = displayName.split("]")
-        name = displayName[0] + "]"
-        description = displayName[1]
+        [catAct_id, name, displayName, pubMed_ids, books] = record.values()
+
+        displayNameSplit = displayName.split("]")
+        if len(displayNameSplit) > 1:
+            name = displayNameSplit[0] + "]"
+            description = displayNameSplit[1]
+        else:
+            name = name.split(" [")[0]
+            description = displayNameSplit[0]
         pubMed_ids = pubMed_ids if pubMed_ids else []
         books = books if books else []
         if len(pubMed_ids) == 0 and len(books) == 0:
@@ -95,11 +100,11 @@ generate new relationships between complex of pharmebinet and complex of pharmeb
 
 def create_cypher_file(file_path, node_label, rela_name, direction1, direction2, start_label):
     if "Complex" in start_label:
-        query = ''' MATCH (d:MolecularComplex{identifier:line.id_pharmebinet_Complex}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, names:split(line.displayName,"|"), descriptions:split(line.description,"|"), pubMed_ids:split(line.pubMed_ids,"|"), books:split(line.books,"|"), resource: ['Reactome'], reactome: "yes", source:"Reactome", license:"CC BY 4.0", url:"https://reactome.org/content/detail/"+line.id_pharmebinet_Complex}]%s(c)'''
+        query = ''' MATCH (d:MolecularComplex{identifier:line.id_pharmebinet_Complex}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, names:split(line.displayName,"|"), descriptions:split(line.description,"|"), pubMed_ids:split(line.pubMed_ids,"|"), books:split(line.books,"|"), resource: ['Reactome'], reactome: true, source:"Reactome", licenses:["%s"], url:"https://reactome.org/content/detail/"+line.id_pharmebinet_Complex}]%s(c)'''
     else:
-        query = ''' MATCH (d:Protein{identifier:line.id_pharmebinet_Complex}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, names:split(line.displayName,"|"), descriptions:split(line.description,"|"), pubMed_ids:split(line.pubMed_ids,"|"), books:split(line.books,"|"), resource: ['Reactome'], reactome: "yes", source:"Reactome",license:"CC BY 4.0", url:"https://reactome.org/content/detail/"+line.id_pharmebinet_node}]%s(c)'''
+        query = ''' MATCH (d:Protein{identifier:line.id_pharmebinet_Complex}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, names:split(line.displayName,"|"), descriptions:split(line.description,"|"), pubMed_ids:split(line.pubMed_ids,"|"), books:split(line.books,"|"), resource: ['Reactome'], reactome: true, source:"Reactome",licenses:["%s"], url:"https://reactome.org/content/detail/"+line.id_pharmebinet_node}]%s(c)'''
 
-    query = query % (node_label, direction1, rela_name, direction2)
+    query = query % (node_label, direction1, rela_name, pharmebinetutils.dict_source_to_license['reactome'] ,direction2)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/{file_path}',
                                               query)

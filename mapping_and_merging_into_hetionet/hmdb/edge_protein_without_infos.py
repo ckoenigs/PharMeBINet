@@ -35,16 +35,16 @@ def load_existing_pairs(label, other_label, dict_pair_to_resource):
     :return:
     """
     if other_label not in dict_go_to_rela_types:
-        query = 'Match (n:%s)-[r]-(m:%s) Return n.identifier, m.identifier, r.resource' % (
+        query = 'Match (n:%s)-[r]-(m:%s) Return n.identifier, m.identifier, r.resource, r.licenses' % (
             label, other_label)
     else:
-        query = 'Match (n:%s)-[r]-(m:%s) Where type(r) in ["%s"] Return n.identifier, m.identifier, r.resource' % (
+        query = 'Match (n:%s)-[r]-(m:%s) Where type(r) in ["%s"] Return n.identifier, m.identifier, r.resource, r.licenses' % (
             label, other_label, '","'.join(dict_go_to_rela_types[other_label]))
     # query = 'Match (n:%s)-[r:%s]-(m:%s) Return n.identifier, m.identifier, r.resource' % (label, rela_type, other_label)
     results = graph_database.run(query)
     for record in results:
-        [node_id_1, node_id_2, resource] = record.values()
-        dict_pair_to_resource[(node_id_1, node_id_2)] = set(resource)
+        [node_id_1, node_id_2, resource, licenses] = record.values()
+        dict_pair_to_resource[(node_id_1, node_id_2)] = [set(resource), set(licenses)]
 
 
 def prepare_resource(set_of_resource):
@@ -91,7 +91,10 @@ def load_pair_edges(csv_mapped, csv_new, label, own_label_hmdb, other_hmdb_label
         set_of_used_pairs.add((node_id_1, node_id_2))
         if (node_id_1, node_id_2) in dict_pair_to_resource:
             counter_mapped += 1
-            csv_mapped.writerow([node_id_1, node_id_2, prepare_resource(dict_pair_to_resource[(node_id_1, node_id_2)])])
+            dict_pair_to_resource[(node_id_1, node_id_2)][1].add(pharmebinetutils.dict_source_to_license['hmdb'])
+            csv_mapped.writerow(
+                [node_id_1, node_id_2, prepare_resource(dict_pair_to_resource[(node_id_1, node_id_2)][0]),
+                 '|'.join(dict_pair_to_resource[(node_id_1, node_id_2)][1])])
         else:
             counter_new += 1
             csv_new.writerow([node_id_1, node_id_2, hmdb_id])
@@ -121,8 +124,9 @@ def create_cypher_file(file_name, file_name_new, label, node_pharmebinet_label, 
     :return:
     """
     if label == 'Metabolite' or node_pharmebinet_label == 'Pathway':
-        query = ''' MATCH (d:%s{identifier:line.node_id_1}),(c:%s{identifier:line.node_id_2}) CREATE (d)%s[: %s{ resource: ['HMDB'], hmdb: "yes", license:"Creative Commons (CC) Attribution-NonCommercial (NC) 4.0 International Licensing ", url:"https://hmdb.ca/%s/"+line.hmdb_id, source:"HMDB"}]%s(c)'''
+        query = ''' MATCH (d:%s{identifier:line.node_id_1}),(c:%s{identifier:line.node_id_2}) CREATE (d)%s[: %s{ resource: ['HMDB'], hmdb: True, licenses:["%s"], url:"https://hmdb.ca/%s/"+line.hmdb_id, source:"HMDB"}]%s(c)'''
         query = query % (label, node_pharmebinet_label, direction_first, rela_name,
+                         pharmebinetutils.dict_source_to_license['hmdb'],
                          'proteins' if label == 'Protein' else 'metabolites', direction_last)
 
         query = pharmebinetutils.get_query_import(path_of_directory,
@@ -131,11 +135,11 @@ def create_cypher_file(file_name, file_name_new, label, node_pharmebinet_label, 
         cypher_file.write(query)
 
     if node_pharmebinet_label not in dict_go_to_rela_types:
-        query = ''' MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:%s{identifier:line.node_id_2}) Set  r.resource=split(line.resource,'|'), r.hmdb='yes' '''
+        query = ''' MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:%s{identifier:line.node_id_2}) Set  r.resource=split(line.resource,'|'), r.licenses=split(line.licenses,'|'), r.hmdb=True '''
         query = query % (label, node_pharmebinet_label)
     else:
         print('GOs')
-        query = '''MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:%s{identifier:line.node_id_2}) Where type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.hmdb='yes' '''
+        query = '''MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:%s{identifier:line.node_id_2}) Where type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.licenses=split(line.licenses,'|'), r.hmdb=True '''
         query = query % (label, node_pharmebinet_label,
                          '","'.join(dict_go_to_rela_types[node_pharmebinet_label]))
 
@@ -170,7 +174,7 @@ def check_relationships_and_generate_file(label, own_hmdb_label, other_node_hmdb
 
     file_edge_pro_or_meta_to_node = open(file_name, 'w', encoding="utf-8")
     csv_edge = csv.writer(file_edge_pro_or_meta_to_node, delimiter='\t', lineterminator='\n')
-    csv_edge.writerow(['node_id_1', 'node_id_2', 'resource'])
+    csv_edge.writerow(['node_id_1', 'node_id_2', 'resource', 'licenses'])
 
     file_name_new = directory + '/edge_new_' + label + '_to_' + other_node_hmdb_label + '.tsv'
 

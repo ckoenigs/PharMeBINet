@@ -36,7 +36,7 @@ def load_protein_from_database_and_add_to_dict():
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_protein_id_to_resource[identifier] = node['resource']
+        dict_protein_id_to_resource[identifier] = [node['resource'], set(node['licenses'])]
         gene_symbols = node['gene_name'] if 'gene_name' in node else []
         alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
         for gene_symbol in gene_symbols:
@@ -58,12 +58,12 @@ def generate_files(path_of_directory):
     file_name = 'DisGeNet_protein_to_protein'
     file = open(os.path.join(path_of_directory, file_name) + '.tsv', 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
-    header = ['DisGeNet_uniprot_id', 'uniprot_id', 'resource', 'mapping_method']
+    header = ['DisGeNet_uniprot_id', 'uniprot_id', 'resource', 'mapping_method', 'licenses']
     csv_mapping.writerow(header)
     cypher_file = open(os.path.join(source, 'cypher.cypher'), 'w', encoding='utf-8')
 
     # mapping_and_merging_into_hetionet/DisGeNet/
-    query = f' Match (n:protein_DisGeNet{{UniProtKB:line.DisGeNet_uniprot_id}}), (v:Protein{{identifier:line.uniprot_id}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_protein{{mapped_with:line.mapping_method}}]->(n)'
+    query = f' Match (n:protein_DisGeNet{{UniProtKB:line.DisGeNet_uniprot_id}}), (v:Protein{{identifier:line.uniprot_id}}) Set v.disgenet=true, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") Create (v)-[:equal_to_DisGeNet_protein{{mapped_with:line.mapping_method}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name+'.tsv',
                                               query)
@@ -87,16 +87,18 @@ def load_all_DisGeNet_protein_and_finish_the_files(csv_mapping):
         identifier = node['UniProtKB']
         # mapping
         if identifier in dict_protein_id_to_resource:
+            dict_protein_id_to_resource[identifier][1].add(pharmebinetutils.dict_source_to_license['disgenet'])
             csv_mapping.writerow(
                 [identifier, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[identifier], "DisGeNet"),
-                 'id'])
+                 pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[identifier][0], "DisGeNet"),
+                 'id', '|'.join(dict_protein_id_to_resource[identifier][1])])
         elif identifier in dict_alternativeId_to_identifiers:
             for uniprot_id in dict_alternativeId_to_identifiers[identifier]:
+                dict_protein_id_to_resource[uniprot_id][1].add(pharmebinetutils.dict_source_to_license['disgenet'])
                 csv_mapping.writerow([identifier, uniprot_id,
-                                      pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[uniprot_id],
+                                      pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[uniprot_id][0],
                                                                                 "DisGeNet"),
-                                      'alternative_id'])
+                                      'alternative_id', '|'.join(dict_protein_id_to_resource[uniprot_id][1])])
         else:
             counter_not_mapped += 1
             print(identifier)

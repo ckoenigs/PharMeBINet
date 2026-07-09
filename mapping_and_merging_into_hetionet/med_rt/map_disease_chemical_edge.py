@@ -22,6 +22,8 @@ dict_pair_to_rela_type = {}
 # dictionary_rela type to tsv file
 dict_rela_type_to_tsv_file = {}
 
+license = pharmebinetutils.dict_source_to_license['medrt']
+
 # dictionary rela type to rela label
 dict_type_to_label = {
     'may_treat': 'TREATS_%stD',
@@ -70,10 +72,10 @@ def integrate_connection_into_pharmebinet(labels):
             results = g.run(query_check)
             result = results.single()
             if result:
-                query = query_start + 'Merge (a)-[r:%s]->(b) On Create Set r.source=line.source, r.resource=["MED-RT"], r.med_rt="yes", r.url="https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=medrt",  r.license="UMLS license, available at https://uts.nlm.nih.gov/license.html" On Match Set r.resource=r.resource+"MED-RT", r.med_rt="yes" '
+                query = query_start + f'Merge (a)-[r:%s]->(b) On Create Set r.source=line.source, r.resource=["MED-RT"], r.med_rt=true, r.url="https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=medrt",  r.licenses=["%s"] On Match Set r.resource=r.resource+"MED-RT",r.licenses=r.licenses+"{license}", r.med_rt=true '
             else:
-                query = query_start + "Create (a)-[r:%s{source:line.source, resource:['MED-RT'], url:'https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=medrt',  med_rt:'yes', license:'UMLS license, available at https://uts.nlm.nih.gov/license.html'}]->(b)"
-            query = query % (label, dict_type_to_label[rela_type])
+                query = query_start + "Create (a)-[r:%s{source:line.source, resource:['MED-RT'], url:'https://evsexplore.semantics.cancer.gov/evsexplore/welcome?terminology=medrt',  med_rt:true, licenses:['%s']}]->(b)"
+            query = query % (label, dict_type_to_label[rela_type], license)
             query = query % letter
 
             query = pharmebinetutils.get_query_import(path_of_directory,

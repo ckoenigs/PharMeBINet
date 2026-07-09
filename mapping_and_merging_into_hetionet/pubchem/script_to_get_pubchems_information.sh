@@ -30,7 +30,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo "get pubchem information from downloads or api"
 
-python3 get_pubchem_from_api.py $path_to_project  > output/output.txt
+python3 get_pubchem_from_api.py $path_to_project $path_to_data  > output/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

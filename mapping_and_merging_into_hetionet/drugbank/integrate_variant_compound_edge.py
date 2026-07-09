@@ -25,13 +25,14 @@ def generate_files(path_of_directory):
     # file from relationship between gene and variant
     file_name = 'compound_to_variant'
     file = open('compound_variant/' + file_name + '.tsv', 'w', encoding='utf-8')
-    header = ['variant_id', 'compound_id', "type", "description", "pubmed_ids", "license"]
+    header = ['variant_id', 'compound_id', "type", "description", "pubmed_ids", "licenses"]
     csv_mapping = csv.DictWriter(file, delimiter='\t', fieldnames=header)
     csv_mapping.writeheader()
 
     cypher_file = open('output/cypher_rela.cypher', 'a', encoding='utf-8')
 
-    query = '''Match (n:Compound{identifier:line.compound_id}), (v:Variant{identifier:line.variant_id}) MERGE (v)-[r:COMBINATION_CAUSES_ADR_VccaCH]->(n) On Create set r.type=line.type, r.license=line.license, r.description=line.description, r.pubMed_ids=split(line.pubmed_ids,"|"), r.source="DrugBank", r.drugbank="yes", r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.compound_id On Match Set r.drugbank="yes", r.resource=r.resource+"DrugBank" '''
+    query = '''Match (n:Compound{identifier:line.compound_id}), (v:Variant{identifier:line.variant_id}) MERGE (v)-[r:COMBINATION_CAUSES_ADR_VccaCH]->(n) On Create set r.type=line.type, r.licenses=split(line.licenses,"|"), r.description=line.description, r.pubMed_ids=split(line.pubmed_ids,"|"), r.source="DrugBank", r.drugbank=true, r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.compound_id On Match Set r.drugbank=true, r.resource=r.resource+"DrugBank", r.licenses=r.licenses+"%s" '''
+    query = query % (pharmebinetutils.dict_source_to_license['drugbank'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/compound_variant/{file_name}.tsv',
                                               query)
@@ -74,7 +75,7 @@ def load_all_pair_and_prepare_for_dictionary(csv_mapping):
             elif key == 'type':
                 dict_all_infos['type'] = '; '.join(value)
             elif key == 'license':
-                dict_all_infos[key] = license
+                dict_all_infos[key+'s'] = pharmebinetutils.dict_source_to_license['drugbank']
             else:
                 dict_all_infos[key] = ' '.join(value)
         csv_mapping.writerow(dict_all_infos)
@@ -82,12 +83,11 @@ def load_all_pair_and_prepare_for_dictionary(csv_mapping):
 
 def main():
     print(datetime.datetime.now())
-    global path_of_directory, license
-    if len(sys.argv) < 3:
+    global path_of_directory
+    if len(sys.argv) < 2:
         sys.exit('need path to directory compound variant')
 
     path_of_directory = sys.argv[1]
-    license = sys.argv[2]
     print('##########################################################################')
 
     print(datetime.datetime.now())

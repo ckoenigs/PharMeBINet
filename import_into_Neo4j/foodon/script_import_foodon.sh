@@ -9,6 +9,9 @@ path_to_project=$2
 #password
 password=$3
 
+#neo4j_bolt
+neo4j_bolt=$4
+
 # prepare directories
 if [ ! -d output ]; then
   mkdir output

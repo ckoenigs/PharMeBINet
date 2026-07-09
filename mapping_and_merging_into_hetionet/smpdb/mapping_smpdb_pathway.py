@@ -29,6 +29,7 @@ dict_smpdb_id_to_pathway_ids = {}
 # dictionary pathway id to xrefs
 dict_pathway_id_to_xrefs = {}
 
+license = pharmebinetutils.dict_source_to_license['smpdb']
 
 def load_pw_from_database():
     """
@@ -42,7 +43,7 @@ def load_pw_from_database():
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_pathway_id_to_resource[identifier] = set(node['resource'])
+        dict_pathway_id_to_resource[identifier] = [set(node['resource']), set(node['licenses'])]
         # find the highest number
         if int(identifier.split("_", -1)[1]) > highest_identifier:
             highest_identifier = int(identifier.split("_", -1)[1])
@@ -61,6 +62,8 @@ def load_pw_from_database():
             if split_xrefs[0] == 'pathbank':
                 pharmebinetutils.add_entry_to_dict_to_set(dict_smpdb_id_to_pathway_ids, split_xrefs[1], identifier)
         dict_pathway_id_to_xrefs[identifier] = set(xrefs)
+    print('number of existing pathway:', len(dict_pathway_id_to_resource))
+    print('number highest integer:',   highest_identifier )
 
 
 def generate_files(path_of_directory):
@@ -71,7 +74,7 @@ def generate_files(path_of_directory):
     # file from relationship between gene and variant
     file_name = 'pathway/mapping_pathway.tsv'
     file = open(file_name, 'w', encoding='utf-8')
-    header = ['pathway_smpdb_id', 'pathway_id', 'resource', 'how_mapped', 'xrefs']
+    header = ['pathway_smpdb_id', 'pathway_id', 'resource', 'how_mapped', 'xrefs','licenses']
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
 
@@ -84,13 +87,14 @@ def generate_files(path_of_directory):
 
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
-    query = '''Match (n:Pathway{identifier:line.pathway_id}), (v:pathway_smpdb{smpdb_id:line.pathway_smpdb_id}) Create (n)-[r:equal_to_pathway_smpdb{how_mapped:line.how_mapped}]->(v) Set n.smpdb="yes", n.resource=split(line.resource,"|") , n.definition=v.description, n.xrefs= split(line.xrefs,"|"), n.category=v.category, n.source= n.source+', SMPDB', n.license=n.license+'SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication.' '''
+    query = '''Match (n:Pathway{identifier:line.pathway_id}), (v:pathway_smpdb{smpdb_id:line.pathway_smpdb_id}) Create (n)-[r:equal_to_pathway_smpdb{how_mapped:line.how_mapped}]->(v) Set n.smpdb=true, n.licenses=split(line.licenses,"|"), n.resource=split(line.resource,"|") , n.definition=v.description, n.xrefs= split(line.xrefs,"|"), n.category=v.category, n.source= n.source+', SMPDB' '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/smpdb/{file_name}',
                                               query)
     cypher_file.write(query)
 
-    query = '''Match  (v:pathway_smpdb{smpdb_id:line.pathway_smpdb_id}) Merge (n:Pathway{identifier:line.new_id}) On Create Set  n.smpdb="yes", n.resource=["SMPDB"], n.source="SMPDB", n.license="SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication",n.category=v.category, n.definition=v.description, n.name=v.name, n.xrefs=split(line.xrefs,'|'), n.url="https://smpdb.ca/view/"+line.pathway_smpdb_id  Create (n)-[r:equal_to_pathway_smpdb]->(v)'''
+    query = '''Match  (v:pathway_smpdb{smpdb_id:line.pathway_smpdb_id}) Merge (n:Pathway{identifier:line.new_id}) On Create Set  n.smpdb=true, n.resource=["SMPDB"], n.source="SMPDB", n.licenses=["%s"],n.category=v.category, n.definition=v.description, n.name=v.name, n.xrefs=split(line.xrefs,'|'), n.url="https://smpdb.ca/view/"+line.pathway_smpdb_id  Create (n)-[r:equal_to_pathway_smpdb]->(v)'''
+    query = query % (license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/smpdb/{file_name_not}',
                                               query)
@@ -135,11 +139,12 @@ def load_all_smpdb_pw_and_map(csv_mapping):
             for pathway_id in dict_smpdb_id_to_pathway_ids[identifier]:
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'smpdb_id_mapped'
+                    dict_pathway_id_to_resource[pathway_id][1].add(license)
                     csv_mapping.writerow([identifier, pathway_id, pharmebinetutils.resource_add_and_prepare(
-                        dict_pathway_id_to_resource[pathway_id], 'SMPDB'), 'smpdb_id_mapped',
+                        dict_pathway_id_to_resource[pathway_id][0], 'SMPDB'), 'smpdb_id_mapped',
                                           add_sources_to_xrefs_and_prepare_string(
                                               dict_pathway_id_to_xrefs[pathway_id],
-                                              ['smpdb:' + identifier, 'pathwhiz:' + path_whiz_id])])
+                                              ['smpdb:' + identifier, 'pathwhiz:' + path_whiz_id]), '|'.join(dict_pathway_id_to_resource[pathway_id][1])])
                 else:
                     print('multy mapping')
         if found_mapping:
@@ -151,11 +156,12 @@ def load_all_smpdb_pw_and_map(csv_mapping):
             for pathway_id in dict_name_to_pathway_ids[name]:
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'name_mapped'
+                    dict_pathway_id_to_resource[pathway_id][1].add(license)
                     csv_mapping.writerow([identifier, pathway_id, pharmebinetutils.resource_add_and_prepare(
-                        dict_pathway_id_to_resource[pathway_id], 'SMPDB'), 'name_mapped',
+                        dict_pathway_id_to_resource[pathway_id][0], 'SMPDB'), 'name_mapped',
                                           add_sources_to_xrefs_and_prepare_string(
                                               dict_pathway_id_to_xrefs[pathway_id],
-                                              ['smpdb:' + identifier, 'pathwhiz:' + path_whiz_id])])
+                                              ['smpdb:' + identifier, 'pathwhiz:' + path_whiz_id]), '|'.join(dict_pathway_id_to_resource[pathway_id][1])])
                 else:
                     print('multy mapping with name')
         if found_mapping:

@@ -50,15 +50,15 @@ load in all disease from pharmebinet in a dictionary
 
 
 def load_pharmebinet_disease_in():
-    query = '''MATCH (n:Disease) RETURN n.identifier, n.name, n.alternative_ids, n.resource, n.synonyms'''
+    query = '''MATCH (n:Disease) RETURN n.identifier, n.name, n.alternative_ids, n.resource, n.synonyms, n.licenses'''
     results = graph_database.run(query)
 
     # run through results
     for record in results:
-        [identifier, name, alternative_ids, resource, synonyms] = record.values()
+        [identifier, name, alternative_ids, resource, synonyms, licenses] = record.values()
         # if identifier == "MONDO:0005244":
         #     print("Egal was")
-        dict_diseaseId_to_resource[identifier] = resource
+        dict_diseaseId_to_resource[identifier] = [resource, set(licenses)]
         # run through alternative ids and prepare with the doid identifier a dictionary
         if alternative_ids:
             for doid in alternative_ids:
@@ -85,7 +85,7 @@ csv_not_mapped.writerow(['id', 'name'])
 
 file_mapped_disease = open('disease/mapped_disease.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_disease, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_pharmebinet', 'resource', 'how_mapped'])
+csv_mapped.writerow(['id', 'id_pharmebinet', 'resource', 'how_mapped', 'licenses'])
 
 
 def prepare_and_write_information_into_tsv(disease_id, identifier, how_mapped):
@@ -96,9 +96,10 @@ def prepare_and_write_information_into_tsv(disease_id, identifier, how_mapped):
     :param how_mapped: string
     :return:
     """
+    dict_diseaseId_to_resource[identifier][1].add(pharmebinetutils.dict_source_to_license['reactome'])
     csv_mapped.writerow([disease_id, identifier,
-                         pharmebinetutils.resource_add_and_prepare(dict_diseaseId_to_resource[identifier], 'Reactome'),
-                         how_mapped])
+                         pharmebinetutils.resource_add_and_prepare(dict_diseaseId_to_resource[identifier][0], 'Reactome'),
+                         how_mapped, '|'.join(dict_diseaseId_to_resource[identifier][1])])
 
 
 '''
@@ -169,7 +170,7 @@ def create_cypher_file():
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
-    query = '''MATCH (d:Disease{identifier:line.id_pharmebinet}),(c:Disease_reactome{identifier:line.id}) CREATE (d)-[: equal_to_reactome_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes"'''
+    query = '''MATCH (d:Disease{identifier:line.id_pharmebinet}),(c:Disease_reactome{identifier:line.id}) CREATE (d)-[: equal_to_reactome_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.licenses = split(line.licenses, '|'), d.reactome = true'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/disease/mapped_disease.tsv',
                                               query)

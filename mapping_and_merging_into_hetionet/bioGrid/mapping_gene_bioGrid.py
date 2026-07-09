@@ -39,7 +39,7 @@ def load_genes_from_database_and_add_to_dict():
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_gene_id_to_resource[identifier] = node['resource']
+        dict_gene_id_to_resource[identifier] = [node['resource'], set(node['licenses'])]
         gene_symbol = node['gene_symbol']
         pharmebinetutils.add_entry_to_dict_to_set(dict_unique_gene_symbol_to_gene_ids, gene_symbol, identifier)
         gene_symbols = node['gene_symbols']
@@ -74,16 +74,13 @@ def load_all_bioGrid_genes_and_finish_the_files(csv_mapping):
         found_mapping = False
         if gene_id_entrez in dict_gene_id_to_resource:
             found_mapping = True
-            csv_mapping.writerow(
-                [identifier, gene_id_entrez,
-                 pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id_entrez], "BioGRID"), 'id'])
+            general_function_bioGrid.write_to_tsv_file(dict_gene_id_to_resource, csv_mapping, identifier,
+                                                       gene_id_entrez, 'id')
         elif gene_symbol in dict_unique_gene_symbol_to_gene_ids:
             found_mapping = True
             for gene_id in dict_unique_gene_symbol_to_gene_ids[gene_symbol]:
-                csv_mapping.writerow(
-                    [identifier, gene_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], "BioGRID"),
-                     'gene_symbol_unique'])
+                general_function_bioGrid.write_to_tsv_file(dict_gene_id_to_resource, csv_mapping, identifier,
+                                                           gene_id, 'gene_symbol_unique')
 
         if found_mapping:
             continue
@@ -91,20 +88,16 @@ def load_all_bioGrid_genes_and_finish_the_files(csv_mapping):
         if gene_symbol in dict_gene_symbol_to_gene_ids:
             found_mapping = True
             for gene_id in dict_gene_symbol_to_gene_ids[gene_symbol]:
-                csv_mapping.writerow(
-                    [identifier, gene_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], "BioGRID"),
-                     'gene_symbol'])
+                general_function_bioGrid.write_to_tsv_file(dict_gene_id_to_resource, csv_mapping, identifier,
+                                                           gene_id, 'gene_symbol')
 
         if found_mapping:
             continue
 
         if gene_symbol in dict_gene_synonym_to_gene_ids:
             for gene_id in dict_gene_synonym_to_gene_ids[gene_symbol]:
-                csv_mapping.writerow(
-                    [identifier, gene_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], "BioGRID"),
-                     'gene_symbol_synonyms'])
+                general_function_bioGrid.write_to_tsv_file(dict_gene_id_to_resource, csv_mapping, identifier,
+                                                           gene_id, 'gene_symbol_synonyms')
 
 
         else:

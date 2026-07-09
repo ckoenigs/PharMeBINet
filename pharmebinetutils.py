@@ -34,6 +34,67 @@ get_all_properties_of_on_label = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys
 UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
 RETURN allfields order by allfields;'''
 
+request_headers = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) ' +
+                  'Chrome/35.0.1916.47 Safari/537.36'
+}
+
+dict_source_to_license = {
+    'adrecs': 'CC BY-NC-SA 4.0',
+    'aeolus': 'CC0 1.0',
+    'bindingdb':'CC BY 3.0 US Deed',
+    'biogrid':'The MIT License',
+    'chebi':'CC BY 4.0',
+    'cl':'CC BY 4.0',
+    'clinvar':'https://www.ncbi.nlm.nih.gov/home/about/policies/',
+    'ctd':"© 2002–2012 MDI Biological Laboratory. © 2012–2026 NC State University. All rights reserved.",
+    'dbsnp':'https://www.ncbi.nlm.nih.gov/home/about/policies/',
+    'ddinter':'Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International',
+    'diseases': 'CC BY 4.0 Deed',
+    'disgenet': "Attribution-NonCommercial-ShareAlike 4.0 International License",
+    'do': 'CC0 1.0 Universal',
+    'drugbank':'Attribution-NonCommercial 4.0 International',
+    'drugcentral':"Creative Commons Attribution-ShareAlike 4.0 International Public License",
+    'efo':"Apache-2.0",
+    'fideo':"CC-BY 4.0",
+    'foodon':'CC BY 4.0',
+    'gencc':"CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+    'go':'CC BY 4.0',
+    'gwas':"CC BY-NC 4.0 Deed",
+    'hetionet':'CC0',
+    'hgnc':'CC0',
+    'hippie':"free to use for academic purposes",
+    'hmdb':'Creative Commons (CC) Attribution-NonCommercial (NC) 4.0 International Licensing',
+    'hpo':'This service/product uses the Human Phenotype Ontology (v2026-02-16). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.',
+    'iid':"free to use for academic purposes",
+    'iptmnet':"CC BY-NC-SA 4.0 Deed",
+    'kegg': 'Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed.',
+    'markerdb':'Attribution-NonCommercial 4.0 International CC BY-NC 4.0 Deed',
+    'medrt':'UMLS license, available at https://uts.nlm.nih.gov/license.html',
+    'mirbase':'CC0 with attribution',
+    'mondo':"CC-BY-SA 3.0",
+    'ncbi':"https://www.ncbi.nlm.nih.gov/home/about/policies/",
+    'ndfrt':'UMLS license, available at https://uts.nlm.nih.gov/license.html',
+    'omim':'https://www.omim.org/help/agreement',
+    'openfda':'',
+    'pathwaycommons':' All of the data provided by Pathway Commons is free! In particular, Pathway Commons distributes pathway information with the intellectual property restrictions of the source database; Only databases that are freely available for academics are included. All of the software that we provide is open-source.',
+    'pharmgkb':"CC BY-SA 4.0",
+    'pharmebinet':"CC0 1.0",
+    'ptmd':"ONLY freely available for academic research",
+    'pubchem':"https://www.ncbi.nlm.nih.gov/home/about/policies/",
+    'qptm':"ONLY freely available for academic research",
+    'reactome':"CC BY-SA 4.0",
+    'refseq':"https://www.ncbi.nlm.nih.gov/home/about/policies/",
+    'rnadisease':"Provide data for non-commercial use, distribution, or reproduction in any medium, only if you properly cite the original work.",
+    'rnainter':"Provide data for non-commercial use, distribution, or reproduction in any medium, only if you properly cite the original work.",
+    'sider':"CC BY-NC-SA 4.0",
+    'smpdb': "SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication",
+    'ttd':"No license",
+    'uberon':"CC BY 3.0",
+    'uniprot':'CC BY 4.0',
+    'wikipathways': 'CC BY 3.0'
+
+}
 
 def download_file(url: str, out: str = './', file_name: str or None = None, retries: int = 10, silent: bool = False,
                   force_download: bool = True) -> str or False:
@@ -68,7 +129,8 @@ def download_file(url: str, out: str = './', file_name: str or None = None, retr
     counter_tries = 0
     while True:
         try:
-            with urllib.request.urlopen(url) as response, open(output_file_path, 'wb') as f:
+            request = urllib.request.Request(url, headers=request_headers)
+            with urllib.request.urlopen(request) as response, open(output_file_path, 'wb') as f:
                 shutil.copyfileobj(response, f)
             return output_file_path
         except HTTPError as ex:
@@ -176,6 +238,47 @@ def prepare_rela_great(rela, label1, label2):
     letter_1 = dictionary_label_to_abbreviation[label1]
     letter_2 = dictionary_label_to_abbreviation[label2]
     return rela.upper() + '_' + letter_1 + ''.join([x.lower()[0] for x in rela.split('_')]) + letter_2
+
+
+def getOneIDFromUMLSBaseOnAnotherIds(umls_connection, start_ids, start_type, target_type):
+    dict_start_id_to_target_ids = {}
+    cur = umls_connection.cursor()
+    query = ("Select DISTINCT CUI, CODE From MRCONSO Where SAB = '%s' AND CODE in ('%s') ;")
+    cuis = "','".join(start_ids)
+    query = query % (start_type, cuis)
+    rows_counter = cur.execute(query)
+    dict_start_id_to_umls_cuis = {}
+    if rows_counter > 0:
+        for (umls_cui, start_id) in cur:
+            add_entry_to_dict_to_set(dict_start_id_to_umls_cuis, start_id, umls_cui)
+
+    if len(dict_start_id_to_umls_cuis) > 0:
+        for start_id, set_umls_cuis in dict_start_id_to_umls_cuis.items():
+            cur = umls_connection.cursor()
+            query = ("Select DISTINCT CODE From MRCONSO Where SAB = '%s' AND CUI in ('%s') ;")
+            cuis = "','".join(set_umls_cuis)
+            query = query % (target_type, cuis)
+            rows_counter = cur.execute(query)
+            if rows_counter > 0:
+                for (target_id,) in cur:
+                    add_entry_to_dict_to_set(dict_start_id_to_target_ids, start_id, target_id)
+
+    return dict_start_id_to_target_ids
+
+def getMeshFromUMLSWithRxCUI(umls_connection, rxcuis:set):
+    """
+    ge a connection to UMLS database and a list or set of rxcuis. The search in UMLS for UMLS CUIS with this rxcuis.
+    The search in UMLS for mesh ids for the given UMLS cuis and return a dictionary of mappings.
+    """
+    return getOneIDFromUMLSBaseOnAnotherIds(umls_connection, rxcuis, 'RXNORM', 'MSH')
+
+
+def getRxCUIFromUMLSWithMesh(umls_connection, mesh_ids:set):
+    """
+    ge a connection to UMLS database and a list or set of rxcuis. The search in UMLS for UMLS CUIS with this rxcuis.
+    The search in UMLS for mesh ids for the given UMLS cuis and return a dictionary of mappings.
+    """
+    return getOneIDFromUMLSBaseOnAnotherIds(umls_connection, mesh_ids, 'MSH', 'RXNORM')
 
 # def main():
 #     with open('label_to_short.tsv', 'r', encoding='utf-8') as f:

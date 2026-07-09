@@ -40,16 +40,16 @@ load in all gocellcomp from pharmebinet in a dictionary
 
 def load_pharmebinet_gocellcomp_in():
     # query ist ein String
-    query = '''MATCH (n:CellularComponent) RETURN n.identifier, n.alternative_ids, n.resource'''
+    query = '''MATCH (n:CellularComponent) RETURN n.identifier, n.alternative_ids, n.resource, n.licenses'''
     # graph_database.run(query) führt den Befehl aus query aus, Ergebnisse sind in results als Liste gespeichert
     results = graph_database.run(query)
 
     # results werden einzeln durchlaufen
     for record in results:
-        [identifier, alt_ids, resource] = record.values()
+        [identifier, alt_ids, resource, licenses] = record.values()
         # im dictionary werden passend zu den Identifiern die Namen und die idOwns gespeichert
         # dict_gobiolproc_pharmebinet_identifier[identifier] = names
-        dict_gocellcompId_to_resource[identifier] = resource
+        dict_gocellcompId_to_resource[identifier] = [resource, set(licenses)]
         identifier = identifier.replace("GO:", "")
         dict_gocellcomp_pharmebinet_identifier[identifier] = 1
         if alt_ids:
@@ -69,7 +69,7 @@ csv_not_mapped.writerow(['id'])
 
 file_mapped_gocellcomp = open('gocellcomp/mapped_gocellcomp.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_gocellcomp, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_pharmebinet', 'resource'])
+csv_mapped.writerow(['id', 'id_pharmebinet', 'resource', 'licenses'])
 
 '''
 load all reactome gocellcomp and check if they are in pharmebinet or not
@@ -90,22 +90,22 @@ def load_reactome_gocellcomp_in():
         # check if the reactome pathway id is part in the pharmebinet idOwn
         if gocellcomp_id in dict_gocellcomp_pharmebinet_identifier:
             counter_map_with_id += 1
-            # if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:
-            #     print('multiple für identifier')
-            print('id')
+            dict_gocellcompId_to_resource["GO:" + gocellcomp_id][1].add(pharmebinetutils.dict_source_to_license['reactome'])
             csv_mapped.writerow(
                 [gocellcomp_id, "GO:" + gocellcomp_id,
-                 pharmebinetutils.resource_add_and_prepare(dict_gocellcompId_to_resource["GO:" + gocellcomp_id],
-                                                           'Reactome')])  # erster eintrag reactome, zweiter pharmebinet
+                 pharmebinetutils.resource_add_and_prepare(dict_gocellcompId_to_resource["GO:" + gocellcomp_id][0],
+                                                           'Reactome'), '|'.join(dict_gocellcompId_to_resource["GO:" + gocellcomp_id][1])])  # erster eintrag reactome, zweiter pharmebinet
         elif gocellcomp_id in dict_gocellcomp_pharmebinet_alt_ids:
-            resource = set(dict_gocellcompId_to_resource["GO:" + dict_gocellcomp_pharmebinet_alt_ids[gocellcomp_id]])
-            resource.add('Reactome')
-            resource = '|'.join(sorted(resource))
+            dict_gocellcompId_to_resource["GO:" +
+                                          dict_gocellcomp_pharmebinet_alt_ids[
+                                              gocellcomp_id]][1].add(pharmebinetutils.dict_source_to_license['reactome'])
             csv_mapped.writerow([gocellcomp_id, "GO:" + gocellcomp_id,
                                  pharmebinetutils.resource_add_and_prepare(dict_gocellcompId_to_resource["GO:" +
                                                                                                          dict_gocellcomp_pharmebinet_alt_ids[
-                                                                                                             gocellcomp_id]],
-                                                                           'Reactome')])
+                                                                                                             gocellcomp_id]][0],
+                                                                           'Reactome'), '|'.join(dict_gocellcompId_to_resource["GO:" +
+                                          dict_gocellcomp_pharmebinet_alt_ids[
+                                              gocellcomp_id]][1])])
         else:
             csv_not_mapped.writerow([gocellcomp_id])
             # file_not_mapped_pathways.write(pathways_id+ '\t' +pathways_name+ '\t' + pathways_id_type+ '\n' )
@@ -123,7 +123,7 @@ generate connection between mapping gocellcomp of reactome and pharmebinet and g
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
     # mappt die Knoten, die es in pharmebinet und reactome gibt und fügt die properties hinzu
-    query = ''' Match (d: CellularComponent{identifier: line.id_pharmebinet}),(c:GO_CellularComponent_reactome{accession:line.id}) Create (d)-[: equal_to_reactome_gocellcomp]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes"'''
+    query = ''' Match (d: CellularComponent{identifier: line.id_pharmebinet}),(c:GO_CellularComponent_reactome{accession:line.id}) Create (d)-[: equal_to_reactome_gocellcomp]->(c) SET d.resource = split(line.resource, '|'),d.licenses = split(line.licenses, '|'), d.reactome = true'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/gocellcomp/mapped_gocellcomp.tsv',
                                               query)

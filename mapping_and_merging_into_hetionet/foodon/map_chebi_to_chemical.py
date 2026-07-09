@@ -35,11 +35,11 @@ def integrate_information_into_dict(dict_node_id_to_resource):
     get all node ids from the database
     :return:
     """
-    query = '''MATCH (n:Chemical) RETURN n.identifier, n.name, n.synonyms, n.resource, n.xrefs'''
+    query = '''MATCH (n:Chemical) RETURN n.identifier, n.name, n.synonyms, n.resource, n.xrefs, n.licenses'''
     results = g.run(query)
 
-    for identifier, name, synonyms, resource, xrefs, in results:
-        dict_node_id_to_resource[identifier] = resource
+    for identifier, name, synonyms, resource, xrefs, licenses, in results:
+        dict_node_id_to_resource[identifier] = [resource,set(licenses)]
 
         name = name.lower()
         dict_name_to_id[name].add(identifier)
@@ -70,7 +70,7 @@ def prepare_query(file_name):
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = '''MATCH (n:Chemical{identifier:line.db_id}), (g:FoodOn_Food{id:line.node_id}) Set n.resource=split(line.resource,"|"), n.foodon='yes' Create (n)-[:equal_foodon_chemical{how_mapped:line.how_mapped}]->(g)'''
+    query = '''MATCH (n:Chemical{identifier:line.db_id}), (g:FoodOn_Food{id:line.node_id}) Set n.resource=split(line.resource,"|"),n.licenses=split(line.licenses,"|"), n.foodon=true Create (n)-[:equal_foodon_chemical{how_mapped:line.how_mapped}]->(g)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/foodon/{file_name}',
                                               query)
@@ -86,10 +86,11 @@ def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_
     :param csv_mapping: csv writer
     :return:
     """
+    dict_node_id_to_resource[identifier_db][1].add(pharmebinetutils.dict_source_to_license['foodon'])
     csv_mapping.writerow(
         [identifier_db, identifier_act_id,
-         pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier_db], "FoodOn"),
-         how_mapped])
+         pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier_db][0], "FoodOn"),
+         how_mapped, '|'.join(dict_node_id_to_resource[identifier_db][1])])
 
 
 # dictionary manual mapping
@@ -114,7 +115,7 @@ def get_all_foodon_and_map(dict_node_id_to_resource):
     file_name = 'output/mapping_chemical.tsv'
     mapping_file = open(file_name, 'w', encoding='utf-8')
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
-    csv_mapping.writerow(['db_id', 'node_id', 'resource', 'how_mapped'])
+    csv_mapping.writerow(['db_id', 'node_id', 'resource', 'how_mapped', 'licenses'])
 
     prepare_query(file_name)
 

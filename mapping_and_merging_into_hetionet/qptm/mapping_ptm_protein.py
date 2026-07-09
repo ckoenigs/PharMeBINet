@@ -11,6 +11,8 @@ import pharmebinetutils
 # dictionary ptm id to resource
 dict_identifier_to_resource_pubmeds = {}
 
+license = pharmebinetutils.dict_source_to_license['qptm']
+
 
 def create_connection_with_neo4j():
     '''
@@ -25,12 +27,12 @@ def load_ptms_from_database_and_add_to_dict():
     """
     Load all Proteins from pharmebinet and add them into a dictionary
     """
-    query = "MATCH (n:PTM)-[r:HAS_PhPTM]-(p:Protein) RETURN n.identifier, r.resource, p.identifier, r.pubMed_ids "
+    query = "MATCH (n:PTM)-[r:HAS_PhPTM]-(p:Protein) RETURN n.identifier, r.resource, p.identifier, r.pubMed_ids, r.licenses "
     results = g.run(query)
 
-    for ptm_identifier, resource, protein_identifer, pubMed_ids in results:
+    for ptm_identifier, resource, protein_identifier, pubMed_ids, licenses in results:
         pubMed_ids = set(pubMed_ids) if pubMed_ids else set()
-        dict_identifier_to_resource_pubmeds[(ptm_identifier, protein_identifer)] = [resource, pubMed_ids]
+        dict_identifier_to_resource_pubmeds[(ptm_identifier, protein_identifier)] = [resource, pubMed_ids, set(licenses)]
 
 
 def generate_files(path_of_directory):
@@ -44,7 +46,7 @@ def generate_files(path_of_directory):
 
     file_name = 'qPTM_edges_to_edges'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['ptm_identifier', 'protein_identifer', 'resource', 'aggregated_properties', 'pmids']
+    header = ['ptm_identifier', 'protein_identifer', 'resource', 'aggregated_properties', 'pmids', 'licenses']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
@@ -65,17 +67,17 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher_edge.cypher')
     query = (f' MATCH (n:Protein {{identifier: line.protein_identifer}}), (v:PTM {{identifier: line.ptm_identifier}}) '
-             f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.qptm = "yes", '
-             f'r.resource = split(line.resource, "|"), r.properties_qptm = line.aggregated_properties, r.pubMed_ids =split(line.pmids,"|")')
+             f'MATCH (n)-[r:HAS_PhPTM]->(v) SET r.qptm = true, '
+             f'r.resource = split(line.resource, "|"),r.licenses = split(line.licenses, "|"), r.properties_qptm = line.aggregated_properties, r.pubMed_ids =split(line.pmids,"|")')
     mode = 'w' if os.path.exists(file_path) else 'w+'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
 
     query = ('MATCH (n:Protein {identifier: line.protein_identifier}), (v:PTM {identifier: line.ptm_identifier}) '
-             'CREATE (n)-[:HAS_PhPTM {qptm : "yes", url:"https://qptm.omicsbio.info/", license:"ONLY freely available for academic research", '
+             'CREATE (n)-[:HAS_PhPTM {qptm : true, url:"https://qptm.omicsbio.info/", licenses:["%s"], '
              'resource : split(line.resource, "|"), source:"qPTM", properties_qptm : line.aggregated_properties, pubMed_ids :split(line.pmids,"|")}]->(v)')
-
+    query = query % license
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file.write(query)
 
@@ -123,11 +125,12 @@ def load_all_qptm_ptms_and_finish_the_files(batch_size, csv_mapping_existing, cs
             # Existing edge
             if edge in dict_identifier_to_resource_pubmeds:
                 pubmed_ids = pubmed_ids.union(dict_identifier_to_resource_pubmeds[edge][1])
+                dict_identifier_to_resource_pubmeds[edge][2].add(license)
                 csv_mapping_existing.writerow([
                     ptm_identifier, protein_identifier,
                     pharmebinetutils.resource_add_and_prepare(
                         dict_identifier_to_resource_pubmeds[edge][0], "qPTM"
-                    ), "|".join(clean), "|".join(pubmed_ids)
+                    ), "|".join(clean), "|".join(pubmed_ids), '|'.join(dict_identifier_to_resource_pubmeds[edge][2])
                 ])
                 counter_mapped += 1
             else:

@@ -21,6 +21,8 @@ def database_connection():
 # dictionary gene id to gene node
 dict_gene_id_to_gene_node = {}
 
+license = pharmebinetutils.dict_source_to_license['clinvar']
+
 '''
 Load all Genes from my database  and add them into a dictionary
 '''
@@ -56,7 +58,8 @@ def get_all_variation_properties():
             query_middle += property + ':n.' + property + ', '
         elif property == 'xrefs':
             query_middle += property + ':split(line.' + property + ',"|"), '
-    query_middle = query_middle + ' license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", source:"ClinVar", clinvar:"yes",  resource:["ClinVar"], url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.identifier}) Create (m)-[:equal_to_clinvar_variant]->(n)'
+    query_middle = query_middle + ' licenses:["%s"], source:"ClinVar", clinvar:true,  resource:["ClinVar"], url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.identifier}) Create (m)-[:equal_to_clinvar_variant]->(n)'
+    query_middle = query_middle % (license)
 
 
 '''
@@ -126,7 +129,7 @@ dict_tuple_of_labels_to_tsv_files = {}
 # file from relationship between gene and variant
 file_rela = open('output/gene_variant.tsv', 'w', encoding='utf-8')
 csv_rela = csv.writer(file_rela, delimiter='\t')
-header_rela = ['gene_id', 'variant_id', 'resource']
+header_rela = ['gene_id', 'variant_id', 'resource', 'licenses']
 csv_rela.writerow(header_rela)
 
 divider_of_variant = 5000
@@ -144,7 +147,7 @@ def load_all_variants_and_finish_the_files():
     number_of_rounds = math.ceil(number_of_variant / divider_of_variant)
     for round_index in range(number_of_rounds):
 
-        query = "MATCH (n:Variant_ClinVar) Where not n.review_status in ['no assertion provided'] RETURN n.identifier,  n.genes, n.xrefs , labels(n) Skip %s Limit %s"
+        query = "MATCH (n:Variant_ClinVar) Where size(n.review_status)>1 or not 'no assertion criteria provided'  in n.review_status  RETURN n.identifier,  n.genes, n.xrefs , labels(n) Skip %s Limit %s"
         query = query % (round_index * divider_of_variant, divider_of_variant)
 
         results = g.run(query)
@@ -185,8 +188,10 @@ def load_all_variants_and_finish_the_files():
                 for gene_infos in genes_infos:
                     gene_id = gene_infos['gene_id']
                     if gene_id in dict_gene_id_to_gene_node:
+                        licenses = set(dict_gene_id_to_gene_node[gene_id]['licenses'])
+                        licenses.add(pharmebinetutils.dict_source_to_license['clinvar'])
                         csv_rela.writerow([gene_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_gene_node[gene_id]['resource'],
-                                                                           'ClinVar')])
+                                                                           'ClinVar'), '|'.join(licenses)])
 
 
 '''
@@ -199,8 +204,8 @@ def perpare_queries_index_and_relationships():
     cypher_file.write(pharmebinetutils.prepare_index_query_text('Variant', 'name'))
 
     # relationship
-    query = "Match (g:Gene{identifier:line.%s}), (v:Variant{identifier:line.%s}) Set g.resource=split(line.resource,'|'), g.clinvar='yes' Create  (g)-[:HAS_GhGV{source:'ClinVar', url:'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+line.%s, resource:['ClinVar'], clinvar:'yes', license:'https://www.ncbi.nlm.nih.gov/home/about/policies/'}]->(v)"
-    query = query % (header_rela[0], header_rela[1], header_rela[1])
+    query = "Match (g:Gene{identifier:line.%s}), (v:Variant{identifier:line.%s}) Set g.resource=split(line.resource,'|'), g.licenses=split(line.licenses,'|'), g.clinvar=true Create  (g)-[:HAS_GhGV{source:'ClinVar', url:'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+line.%s, resource:['ClinVar'], clinvar:true, licenses:['%s']}]->(v)"
+    query = query % (header_rela[0], header_rela[1], header_rela[1], license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/clinvar/output/gene_variant.tsv',
                                               query)
@@ -223,9 +228,9 @@ def query_for_rela(file_name, label1, label2):
     :param label2: string
     :return:
     """
-    query = '''Match (g:%s{identifier:line.identifier_1}), (c:%s{identifier:line.identifier_2}) Create (g)-[:HAS_%sh%s {source:'ClinVar', resource:['ClinVar'], license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", url:'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+line.identifier_1, clinvar:'yes'}]->(c)'''
+    query = '''Match (g:%s{identifier:line.identifier_1}), (c:%s{identifier:line.identifier_2}) Create (g)-[:HAS_%sh%s {source:'ClinVar', resource:['ClinVar'], licenses:["%s"], url:'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+line.identifier_1, clinvar:true}]->(c)'''
     query = query % (label1, label2, dict_first_letter_to_rela_letter[label1[0]],
-                     dict_first_letter_to_rela_letter[label2[0]])
+                     dict_first_letter_to_rela_letter[label2[0]], license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/clinvar/output/{file_name}.tsv',
                                               query)

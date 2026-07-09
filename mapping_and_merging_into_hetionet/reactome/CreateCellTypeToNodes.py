@@ -73,10 +73,10 @@ generate new relationships between complex of pharmebinet and complex of pharmeb
 
 def create_cypher_file(file_path, node_label, rela_name, direction1, direction2):
     if node_label == "Protein" or node_label == "Chemical":
-        query = ''' MATCH (d:CellType{identifier:line.id_pharmebinet}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, source:'Reactome', url:"https://reactome.org/content/detail/"+line.stId, compartments: split(line.compartment, "|"), resource: ['Reactome'], reactome: "yes", license:"CC BY 4.0"}]%s(c)'''
+        query = ''' MATCH (d:CellType{identifier:line.id_pharmebinet}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, source:'Reactome', url:"https://reactome.org/content/detail/"+line.stId, compartments: split(line.compartment, "|"), resource: ['Reactome'], reactome: true, licenses:["%s"]}]%s(c)'''
     else:
-        query = ''' MATCH (d:CellType{identifier:line.id_pharmebinet}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", source:'Reactome', url:"https://reactome.org/content/detail/"+line.stId, license:"CC BY 4.0"}]%s(c)'''
-    query = query % (node_label, direction1, rela_name, direction2)
+        query = ''' MATCH (d:CellType{identifier:line.id_pharmebinet}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: true, source:'Reactome', url:"https://reactome.org/content/detail/"+line.stId, licenses:["%s"]}]%s(c)'''
+    query = query % (node_label, direction1, rela_name, pharmebinetutils.dict_source_to_license['reactome'], direction2)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/{file_path}',
                                               query)

@@ -6,7 +6,7 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-license = 'CC BY 4.0'
+license = pharmebinetutils.dict_source_to_license['chebi']
 
 '''
 create a connection with neo4j
@@ -25,7 +25,7 @@ def create_cypher_file(file_name,  rela_name):
     generate new relationships between pathways of pharmebinet and pharmebinet nodes that mapped to reactome
     '''
     rela = pharmebinetutils.prepare_rela_great(rela_name, 'Chemical', 'Chemical')
-    query = ''' MATCH (d:Chemical{identifier:line.node_id}),(c:Chemical{identifier:line.other_id}) CREATE (d)-[: %s{resource: ['ChEBI'], chebi: "yes", source:"ChEBI", license:"%s", url:"https://www.ebi.ac.uk/chebi/chebiOntology.do?chebiId="+line.chebi_id}]->(c)'''
+    query = ''' MATCH (d:Chemical{identifier:line.node_id}),(c:Chemical{identifier:line.other_id}) CREATE (d)-[: %s{resource: ['ChEBI'], chebi: True, source:"ChEBI", licenses:["%s"], url:"https://www.ebi.ac.uk/chebi/chebiOntology.do?chebiId="+line.chebi_id}]->(c)'''
     if rela_name!='has_functional_parent':
         query = query % ( rela, license)
     else:

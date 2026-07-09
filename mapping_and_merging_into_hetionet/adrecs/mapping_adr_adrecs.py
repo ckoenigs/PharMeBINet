@@ -35,12 +35,12 @@ def integrate_information_into_dict(dict_node_id_to_resource, dict_node_id_to_xr
     get all node ids from the database
     :return:
     """
-    query = '''MATCH (n:SideEffect) RETURN n.identifier, n.name, n.synonyms, n.resource, n.xrefs'''
+    query = '''MATCH (n:SideEffect) RETURN n.identifier, n.name, n.synonyms, n.resource, n.xrefs, n.licenses'''
     results = g.run(query)
 
     for record in results:
-        [identifier, name, synonyms, resource, xrefs] = record.values()
-        dict_node_id_to_resource[identifier] = resource
+        [identifier, name, synonyms, resource, xrefs, licenses] = record.values()
+        dict_node_id_to_resource[identifier] = [resource, set(licenses)]
         dict_node_id_to_xrefs[identifier] = xrefs if xrefs else []
         name = name.lower() if name else ''
         pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_id,name,identifier)
@@ -71,13 +71,13 @@ def prepare_query(file_name, file_name_new_mapped, file_name_new, db_label, adre
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = ''' MATCH (n:%s{identifier:line.%s}), (g:%s{%s:line.%s, adrecs_id:line.other_adrecs_id}) Set n.resource=split(line.resource,"|"), n.adrecs='yes', n.xrefs=split(line.xrefs,"|") Create (n)-[:equal_to_adrecs_adr{how_mapped:line.how_mapped}]->(g)'''
+    query = ''' MATCH (n:%s{identifier:line.%s}), (g:%s{%s:line.%s, adrecs_id:line.other_adrecs_id}) Set n.resource=split(line.resource,"|"), n.licenses=split(line.licenses,"|"), n.adrecs=True, n.xrefs=split(line.xrefs,"|") Create (n)-[:equal_to_adrecs_adr{how_mapped:line.how_mapped}]->(g)'''
     query = query % (db_label, db_id, adrecs_label, adrecs_id_internal, adrecs_id)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/{director}/{file_name}', query)
     cypher_file.write(query)
 
-    query_start = f' Create (n:SideEffect :Phenotype{{identifier:line.umls_id, name:line.name, synonyms:split(line.synonyms,"|"), adrecs:"yes", source:"UMLS via ADReCS", resource:["ADReCS"], license:"CC BY-NC-SA 4.0", url:"http://bioinf.xmu.edu.cn/ADReCS/adrSummary.jsp?adr_id="+line.id, xrefs:split(line.xrefs,"|")}})'
+    query_start = f''' Create (n:SideEffect :Phenotype{{identifier:line.umls_id, name:line.name, synonyms:split(line.synonyms,"|"), adrecs:True, source:"UMLS via ADReCS", resource:["ADReCS"], licenses:["{pharmebinetutils.dict_source_to_license["adrecs"]}"], url:"http://bioinf.xmu.edu.cn/ADReCS/adrSummary.jsp?adr_id="+line.id, xrefs:split(line.xrefs,"|")}})'''
     query_start = pharmebinetutils.get_query_import(path_of_directory,
                                                     f'mapping_and_merging_into_hetionet/{director}/{file_name_new}',
                                                     query_start)
@@ -103,9 +103,10 @@ def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, othe
     xref_disease.append("ADReCS:" + other_adrecs_id)
     xref_disease = go_through_xrefs_and_change_if_needed_source_name(xref_disease, 'disease')
     xref_string = '|'.join(xref_disease)
+    dict_node_id_to_resource[identifier_db][1].add(pharmebinetutils.dict_source_to_license['adrecs'])
     csv_mapping.writerow([identifier_db, identifier_act_id, other_adrecs_id,
-                          pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier_db], 'ADReCS'),
-                          how_mapped, xref_string])
+                          pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier_db][0], 'ADReCS'),
+                          how_mapped, xref_string, '|'.join(dict_node_id_to_resource[identifier_db][1])])
 
 
 def get_all_adrecs_and_map(db_label, dict_node_id_to_resource, dict_node_id_to_xrefs):
@@ -119,7 +120,7 @@ def get_all_adrecs_and_map(db_label, dict_node_id_to_resource, dict_node_id_to_x
     file_name = db_label.lower() + '/mapping.tsv'
     mapping_file = open(file_name, 'w', encoding='utf-8')
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
-    csv_mapping.writerow(['db_id', 'act_id', 'other_adrecs_id', 'resource', 'how_mapped', 'xrefs'])
+    csv_mapping.writerow(['db_id', 'act_id', 'other_adrecs_id', 'resource', 'how_mapped', 'xrefs', 'licenses'])
 
     # file for new generated SE (without ADReCS node connection)
     file_name_new = db_label.lower() + '/new.tsv'

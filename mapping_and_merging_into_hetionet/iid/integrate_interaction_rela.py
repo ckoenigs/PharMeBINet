@@ -14,6 +14,8 @@ set_of_gos_with_ = set([x.replace(' ', '_') for x in set_of_gos])
 # dictionary cellular component go_name to go id
 dict_go_name_to_id = {}
 
+license = pharmebinetutils.dict_source_to_license['iid']
+
 # iid disease categories
 set_of_disease_categories_with_ = {'cancer', 'thoracic_cancer', 'organ_system_cancer', 'male_reproductive_organ_cancer',
                                    'reproductive_organ_cancer', 'gastrointestinal_system_cancer', 'intestinal_cancer',
@@ -87,15 +89,16 @@ def get_information_from_pharmebinet():
     """
     global maximal_id
 
-    query = '''MATCH (n:Protein)-->(a:Interaction)-->(m:Protein) Where not (a.iso_of_protein_from is not NULL or a.iso_of_protein_to  is not NULL)  RETURN n.identifier, m.identifier, a.resource, a.identifier, a.interaction_ids'''
+    query = '''MATCH (n:Protein)-->(a:Interaction)-->(m:Protein) Where not (a.iso_of_protein_from is not NULL or a.iso_of_protein_to  is not NULL)  RETURN n.identifier, m.identifier, a.resource,a.licenses, a.identifier, a.interaction_ids'''
     results = g.run(query)
 
     for record in results:
-        [interactor1_het_id, interactor2_het_id, resource, interaction_id, interaction_ids_EBI] = record.values()
+        [interactor1_het_id, interactor2_het_id, resource, licenses, interaction_id,
+         interaction_ids_EBI] = record.values()
         dict_protein_pair_to_dictionary[
             (interactor1_het_id, interactor2_het_id)] = {'resource': resource,
                                                          'interaction_ids_EBI': interaction_ids_EBI,
-                                                         'interaction_id': interaction_id}
+                                                         'interaction_id': interaction_id, 'licenses': set(licenses)}
 
     query = 'MATCH (n:Interaction) With toInteger(n.identifier ) as int_id RETURN max(int_id) as v'
 
@@ -118,12 +121,12 @@ def generate_file_and_cypher():
 
     cypher_file = open('interaction/cypher.cypher', 'w', encoding='utf-8')
 
-    query = '''Match (p1:Protein{identifier:line.protein_id_1}), (p2:Protein{identifier:line.protein_id_2}) Create (p1)-[:INTERACTS_PiI{iid:'yes', source:'Integrated Interactions Database', resource:['IID'], url:"http://iid.ophid.utoronto.ca/" ,license:"free to use for academic purposes"}]->(b:Interaction{ identifier:line.id, '''
+    query = '''Match (p1:Protein{identifier:line.protein_id_1}), (p2:Protein{identifier:line.protein_id_2}) Create (p1)-[:INTERACTS_PiI{iid:true, source:'Integrated Interactions Database', resource:['IID'], url:"http://iid.ophid.utoronto.ca/" ,licenses:["%s"]}]->(b:Interaction{ identifier:line.id, '''
 
     query_update = '''Match (p1:Protein{identifier:line.protein_id_1})-[a:INTERACTS_PiI]->(m:Interaction{identifier:line.id})-[b:INTERACTS_IiP]->(p2:Protein{identifier:line.protein_id_2}) Set '''
 
     header = ['protein_id_1', 'protein_id_2', 'id']
-    file_name='../../import_into_Neo4j/IID/output/edge_properties.tsv'
+    file_name = '../../import_into_Neo4j/IID/output/edge_properties.tsv'
     with open(file_name, 'r', encoding='utf-8') as edge_file:
         csv_reader_edge_prop = csv.reader(edge_file, delimiter='\t')
         for line in csv_reader_edge_prop:
@@ -156,18 +159,19 @@ def generate_file_and_cypher():
                 query += head + ':line.' + head + ', '
                 query_update += 'm.' + head + '=line.' + head + ', '
 
-    query += ' license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", resource:["IID"], url:"http://iid.ophid.utoronto.ca/",  node_edge:true})-[:INTERACTS_IiP{iid:"yes", source:"Integrated Interactions Database", url:"http://iid.ophid.utoronto.ca/", resource:["IID"], license:"free to use for academic purposes"}]->(p2)'
-
+    query += ' licenses:["%s"], iid:true, source:"Integrated Interactions Database", resource:["IID"], url:"http://iid.ophid.utoronto.ca/",  node_edge:true})-[:INTERACTS_IiP{iid:true, source:"Integrated Interactions Database", url:"http://iid.ophid.utoronto.ca/", resource:["IID"], licenses:["%s"]}]->(p2)'
+    query = query % (license, license,license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/iid/{file_name}.tsv',
                                               query)
     cypher_file.write(query)
-    query_update += ' a.iid="yes", a.resource=split(line.resource,"|"), m.iid="yes", m.resource=split(line.resource,"|"), b.iid="yes", b.resource=split(line.resource,"|")'
+    query_update += ' a.iid=true, a.resource=split(line.resource,"|"),a.licenses=split(line.licenses,"|"), m.iid=true, m.resource=split(line.resource,"|"),m.licenses=split(line.licenses,"|"), b.iid=true, b.resource=split(line.resource,"|"),b.licenses=split(line.licenses,"|")'
     query_update = pharmebinetutils.get_query_import(path_of_directory,
                                                      f'mapping_and_merging_into_hetionet/iid/{file_name_update}.tsv',
                                                      query_update)
     cypher_file.write(query_update)
-    query = '''Match (i:Interaction{identifier:line.id}), (c:CellularComponent{identifier:line.go_id}) Set i.subcellular_location="GO term enrichment" Create (i)-[:MIGHT_SUBCELLULAR_LOCATES_ImslCC{license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", url:"http://iid.ophid.utoronto.ca/" ,resource:["IID"]}]->(c)'''
+    query = '''Match (i:Interaction{identifier:line.id}), (c:CellularComponent{identifier:line.go_id}) Set i.subcellular_location="GO term enrichment" Create (i)-[:MIGHT_SUBCELLULAR_LOCATES_ImslCC{licenses:["%s"], iid:true, source:"Integrated Interactions Database", url:"http://iid.ophid.utoronto.ca/" ,resource:["IID"]}]->(c)'''
+    query = query %( license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/iid/{file_name_go}.tsv',
                                               query)
@@ -180,6 +184,7 @@ def generate_file_and_cypher():
 
     header_merge = header.copy()
     header_merge.append('resource')
+    header_merge.append('licenses')
     file_merge = open(file_name_update + '.tsv', 'w', encoding='utf-8')
     csv_writer_merge = csv.DictWriter(file_merge, fieldnames=header_merge, delimiter='\t')
     csv_writer_merge.writeheader()
@@ -198,7 +203,7 @@ def prepare_dictionary(dictionary, counter):
     """
     new_dict = {}
     for key, value in dictionary.items():
-        if type(value) == list:
+        if type(value) in [list, set]:
             value = '|'.join(value)
         new_dict[key] = value
     new_dict['id'] = counter
@@ -314,6 +319,8 @@ def prepareMappedEdges(p1, p2, list_of_dict, csv_merge):
         final_dictionary = prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2)
     final_dictionary['resource'] = pharmebinetutils.resource_add_and_prepare(
         dict_protein_pair_to_dictionary[(p1, p2)]['resource'], 'IID')
+    final_dictionary['licenses'] = dict_protein_pair_to_dictionary[(p1, p2)]['licenses']
+    final_dictionary['licenses'].add(license)
     final_dictionary['protein_id_1'] = p1
     final_dictionary['protein_id_2'] = p2
     csv_merge.writerow(prepare_dictionary(final_dictionary, identifier))

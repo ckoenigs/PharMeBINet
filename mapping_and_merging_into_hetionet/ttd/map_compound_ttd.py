@@ -24,9 +24,10 @@ def write_infos_into_file(csv_writer, raw_id, mapped_ids, how_mapped, pubchem_id
     :return:
     """
     for map_id in mapped_ids:
+        dict_chemical_id_to_resource[map_id][1].add(pharmebinetutils.dict_source_to_license['ttd'])
         csv_writer.writerow(
-            [raw_id, map_id, pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[map_id], "TTD"),
-             how_mapped, pubchem_id])
+            [raw_id, map_id, pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[map_id][0], "TTD"),
+             how_mapped, pubchem_id, '|'.join(dict_chemical_id_to_resource[map_id][1])])
 
 
 def load_chemical_information():
@@ -42,13 +43,13 @@ def load_chemical_information():
     dict_smiles_to_chemicals = {}
     dict_pubchem_c_ids_to_identifier = {}
 
-    query = "MATCH (n:Chemical) RETURN n.identifier, n.xrefs, n.resource"
+    query = "MATCH (n:Chemical) RETURN n.identifier, n.xrefs, n.resource, n.licenses"
     result = g.run(query)
 
     for record in result:
-        [identifier, xrefs, resource] = record.values()
+        [identifier, xrefs, resource, licenses] = record.values()
 
-        dict_chemical_id_to_resource[identifier] = resource
+        dict_chemical_id_to_resource[identifier] = [resource, set(licenses)]
 
         if xrefs is not None:
             for x in xrefs:
@@ -67,7 +68,7 @@ def compound_ttd_mapping():
     file_name = 'drug/compound_mapping.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
-        line = ["node_id", "identifier", "resource", "how_mapped", 'pubchem_cid']
+        line = ["node_id", "identifier", "resource", "how_mapped", 'pubchem_cid','licenses']
         writer.writerow(line)
         query = "MATCH (n:TTD_Compound) RETURN n.id, n.pubchem_cid"
         result = g.run(query)
@@ -96,7 +97,7 @@ def compound_ttd_mapping():
     # cypher file
     with open("output/cypher.cypher", "a", encoding="utf-8") as cypher_file:
 
-        query = f'Match (p1:TTD_Compound{{id:line.node_id}}),(p2:Chemical{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.ttd="yes" Create (p1)-[:equal_to_ttd_drug{{how_mapped:line.how_mapped }}]->(p2)'
+        query = f'Match (p1:TTD_Compound{{id:line.node_id}}),(p2:Chemical{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"),p2.licenses = split(line.licenses,"|"), p2.ttd=True Create (p1)-[:equal_to_ttd_drug{{how_mapped:line.how_mapped }}]->(p2)'
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/ttd/{file_name}',
                                                   query)

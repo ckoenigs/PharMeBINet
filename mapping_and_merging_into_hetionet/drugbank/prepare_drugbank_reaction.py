@@ -53,7 +53,7 @@ def prepare_cypher_query_rela(file_name, label, direction):
     :return:
 
     """
-    query_new = f' Match (n:Reaction{{identifier:line.reaction_id}}), (m:%s{{identifier:line.other_id}}) Create (n)%s[:%s{{url:COALESCE("{dict_label_to_url[label]}"+line.drugbank_id,"https://go.drugbank.com/"), license:"%s", source:"DrugBank", drugbank:"yes", resource:["DrugBank"]}}]%s(m)'
+    query_new = f' Match (n:Reaction{{identifier:line.reaction_id}}), (m:%s{{identifier:line.other_id}}) Create (n)%s[:%s{{url:COALESCE("{dict_label_to_url[label]}"+line.drugbank_id,"https://go.drugbank.com/"), license:"%s", source:"DrugBank", drugbank:true, resource:["DrugBank"], licenses:["{pharmebinetutils.dict_source_to_license["drugbank"]}"]}}]%s(m)'
     abbreviation = pharmebinetutils.dictionary_label_to_abbreviation[label] if label != 'Compound' else 'CH'
     if direction == 'right':
         query_new = query_new % (label, '<-',
@@ -87,7 +87,8 @@ def create_files():
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(['identifier'])
 
-    query = ' Match (m:Reaction_DrugBank{identifier:line.identifier})  Create (m)<-[:equal_to_reaction_drugbank]-(n:Reaction :ReactionLikeEvent{identifier:line.identifier, license:m.license, sequence:m.sequence, node_edge:true, url:"https://go.drugbank.com/drugs/"+m.start_drugbank_id, source:"DrugBank", resource:["DrugBank"], drugbank:"yes" })'
+    query = ' Match (m:Reaction_DrugBank{identifier:line.identifier})  Create (m)<-[:equal_to_reaction_drugbank]-(n:Reaction :ReactionLikeEvent{identifier:line.identifier, license:m.license, sequence:m.sequence, node_edge:true, url:"https://go.drugbank.com/drugs/"+m.start_drugbank_id, source:"DrugBank", resource:["DrugBank"], drugbank:true, licenses:["%s"] })'
+    query = query % (license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/{file_name}',
                                               query)
@@ -202,9 +203,9 @@ def main():
 
     if len(sys.argv) < 2:
         sys.exit('need license and path to directory')
-    global license
-    license = sys.argv[1]
-    path_of_directory = sys.argv[2]
+
+    path_of_directory = sys.argv[1]
+    license = pharmebinetutils.dict_source_to_license['drugbank']
 
     print(sys.argv)
     print(path_of_directory)

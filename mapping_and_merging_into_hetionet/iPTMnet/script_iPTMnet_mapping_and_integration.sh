@@ -50,7 +50,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate mappings into neo4j
 
-python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
+python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_ptm.cypher > output/cypher.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

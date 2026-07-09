@@ -21,11 +21,11 @@ def load_existing_pairs(label, rela_type, dictionary, direction_left=''):
     :param dictionary:
     :return:
     """
-    query = f'Match (m:{label}){direction_left}-[r:{rela_type}]-(n:RNA) Return m.identifier, n.identifier, r.resource'
+    query = f'Match (m:{label}){direction_left}-[r:{rela_type}]-(n:RNA) Return m.identifier, n.identifier, r.resource, r.licenses'
     results = g.run(query)
     for result in results:
-        [node_id, rna_id, resource] = result.values()
-        dictionary[(node_id, rna_id)] = resource
+        [node_id, rna_id, resource, licenses] = result.values()
+        dictionary[(node_id, rna_id)] = [resource,set(licenses)]
 
 
 def prepare_edge(label, mirbase_label, dict_pair_to_resource, condition=''):
@@ -36,7 +36,7 @@ def prepare_edge(label, mirbase_label, dict_pair_to_resource, condition=''):
     file_name = f'output/edge_rna_{label.lower()}.tsv'
     with open(file_name, 'w', encoding='utf-8') as file:
         csv_writer = csv.writer(file, delimiter='\t')
-        csv_writer.writerow(['identifier', 'rna_id', 'resource', 'mirbase_id','from','to'])
+        csv_writer.writerow(['identifier', 'rna_id', 'resource', 'mirbase_id','from','to', 'licenses'])
         query = f'''MATCH (n:{label})--(:{mirbase_label})-[rela]-(h:miRBase_pre_miRNA)--(m:RNA) {condition} RETURN  n.identifier,  m.identifier, h.accession , rela '''
         print(query)
         results = g.run(query)
@@ -45,8 +45,10 @@ def prepare_edge(label, mirbase_label, dict_pair_to_resource, condition=''):
         for record in results:
             [identifier, rna_id, pre_id, rela] = record.values()
             if (identifier, rna_id) in dict_pair_to_resource:
+                licenses = dict_pair_to_resource[(identifier, rna_id)][1]
+                licenses.add(pharmebinetutils.dict_source_to_license['mirbase'])
                 csv_writer.writerow([identifier, rna_id, pharmebinetutils.resource_add_and_prepare(
-                    dict_pair_to_resource[(identifier, rna_id)], 'miRBase'), pre_id, rela['from'], rela['to']])
+                    dict_pair_to_resource[(identifier, rna_id)][0], 'miRBase'), pre_id, rela['from'], rela['to'],'|'.join(licenses)])
             else:
                 csv_writer.writerow([identifier, rna_id, '', pre_id, rela['from'], rela['to']])
             counter += 1
@@ -80,13 +82,15 @@ def prepare_cypher_file(gene_file, rna_file):
     :return:
     """
     with open('output/cypher_edge.cypher', 'w', encoding='utf-8') as cypher_file_edge:
-        query = 'MATCH (n:Gene{identifier:line.identifier}),(m:RNA{identifier:line.rna_id}) Merge (n)-[l:TRANSCRIBES_TO_GttR]->(m) On Create Set l.from=line.from, l.to=line.to, l.source="miRBase", l.resource=["miRBase"], l.license="CC0 with attribution", l.url="https://www.mirbase.org/hairpin/"+line.mirbase_id, l.mirbase="yes" On Match Set l.resource=split(line.resource,"|"), l.mirbase="yes" '
+        query = 'MATCH (n:Gene{identifier:line.identifier}),(m:RNA{identifier:line.rna_id}) Merge (n)-[l:TRANSCRIBES_TO_GttR]->(m) On Create Set l.from=line.from, l.to=line.to, l.source="miRBase", l.resource=["miRBase"], l.licenses=["%s"], l.url="https://www.mirbase.org/hairpin/"+line.mirbase_id, l.mirbase=True On Match Set l.resource=split(line.resource,"|"),l.licenses=split(line.licenses,"|"), l.mirbase=True '
+        query = query % (pharmebinetutils.dict_source_to_license['mirbase'])
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/miRBase/{gene_file}',
                                                   query)
         cypher_file_edge.write(query)
 
-        query = 'MATCH (n:RNA{identifier:line.identifier}),(m:RNA{identifier:line.rna_id}) Merge (n)<-[l:CLEAVES_TO_RctR]-(m) On Create Set l.from=line.from, l.to=line.to, l.source="miRBase", l.resource=["miRBase"], l.license="CC0 with attribution", l.url="https://www.mirbase.org/hairpin/"+line.mirbase_id, l.mirbase="yes" On Match Set l.resource=split(line.resource,"|"), l.mirbase="yes" '
+        query = 'MATCH (n:RNA{identifier:line.identifier}),(m:RNA{identifier:line.rna_id}) Merge (n)<-[l:CLEAVES_TO_RctR]-(m) On Create Set l.from=line.from, l.to=line.to, l.source="miRBase", l.resource=["miRBase"], l.licenses=["%s"], l.url="https://www.mirbase.org/hairpin/"+line.mirbase_id, l.mirbase=True On Match Set l.resource=split(line.resource,"|"),l.licenses=split(line.licenses,"|"), l.mirbase=True '
+        query = query % (pharmebinetutils.dict_source_to_license['mirbase'])
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/miRBase/{rna_file}',
                                                   query)

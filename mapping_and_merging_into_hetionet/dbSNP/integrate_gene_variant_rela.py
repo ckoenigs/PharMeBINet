@@ -20,6 +20,7 @@ def create_connection_with_neo4j():
 # set of rela pairs
 set_of_rela_pairs = set()
 
+license = pharmebinetutils.dict_source_to_license['dbsnp']
 
 def load_rela_from_database_and_add_to_dict(csv_writter):
     """
@@ -52,7 +53,8 @@ def generate_files(path_of_directory):
     header = ['gene_id', 'variant_id']
     csv_mapping.writerow(header)
 
-    query = '''Match (n:Gene{identifier:line.gene_id}), (v:Variant{identifier:line.variant_id}) Merge (n)-[r:HAS_GhGV]->(v)  On Match Set  r.dbsnp="yes", r.resource=r.resource+"dbSNP"  On Create Set r.dbsnp="yes", r.resource=["dbSNP"], r.url="https://www.ncbi.nlm.nih.gov/snp/"+line.variant_id , r.source="dbSNP", r.license="https://www.ncbi.nlm.nih.gov/home/about/policies/"'''
+    query = '''Match (n:Gene{identifier:line.gene_id}), (v:Variant{identifier:line.variant_id}) Merge (n)-[r:HAS_GhGV]->(v)  On Match Set  r.dbsnp=true, r.resource=r.resource+"dbSNP", r.licenses=r.licenses+"%s"  On Create Set r.dbsnp=true, r.resource=["dbSNP"], r.url="https://www.ncbi.nlm.nih.gov/snp/"+line.variant_id , r.source="dbSNP", r.licenses=["%s"]'''
+    query = query % (license, license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/dbSNP/{file_name}.tsv',
                                               query)

@@ -29,28 +29,26 @@ def load_chemicals_from_database_and_add_to_dict():
     Load all chemicals from my database  and add them into a dictionary
     :return:
     """
-    query = "MATCH (n:Chemical) RETURN n"
+    query = "MATCH (n:Chemical) RETURN n.identifier, n.name, n.resource, n.synonyms, n.licenses"
     results = g.run(query)
-    for record in results:
-        chemical = record.data()['n']
-        identifier = chemical['identifier']
-        name = chemical['name'].lower()
-        dict_chemical_id_to_resource[identifier] = set(chemical['resource'])
+    for identifier, name, resource, synonyms, licenses in results:
+        name = name.lower()
+        dict_chemical_id_to_resource[identifier] = [set(resource), set(licenses)]
         if not name in dict_chemical_name_to_chemical_id:
             dict_chemical_name_to_chemical_id[name] = set()
         dict_chemical_name_to_chemical_id[name].add(identifier)
-        synonyms = chemical['synonyms'] if 'synonyms' in chemical else []
-        for synonym in synonyms:
-            synonym = synonym.lower()
-            if not synonym in dict_chemical_name_to_chemical_id:
-                dict_chemical_name_to_chemical_id[synonym] = set()
-            dict_chemical_name_to_chemical_id[synonym].add(identifier)
+        if synonyms:
+            for synonym in synonyms:
+                synonym = synonym.lower()
+                if not synonym in dict_chemical_name_to_chemical_id:
+                    dict_chemical_name_to_chemical_id[synonym] = set()
+                dict_chemical_name_to_chemical_id[synonym].add(identifier)
 
 
 # file from mapping between drug response and chemical
 file_rela = open('drug/chemical_drug.tsv', 'w', encoding='utf-8')
 csv_rela = csv.writer(file_rela, delimiter='\t')
-header_rela = ['chemical_id', 'clinvar_id', 'resource']
+header_rela = ['chemical_id', 'clinvar_id', 'resource', 'licenses']
 csv_rela.writerow(header_rela)
 
 # list of splitibale information
@@ -77,7 +75,7 @@ def load_all_drug_response_and_finish_the_files():
     """
     cypher_file = open('drug/cypher_drug.cypher', 'w', encoding='utf-8')
 
-    query_start = '''Match (c:Chemical{identifier:line.chemical_id}), (t:trait_DrugResponse_ClinVar{identifier:line.clinvar_id}) Set c.clinvar='yes', c.resource=split(line.resource,"|") Create (c)-[:equal_to_clinvar_drug]->(t) '''
+    query_start = '''Match (c:Chemical{identifier:line.chemical_id}), (t:trait_DrugResponse_ClinVar{identifier:line.clinvar_id}) Set c.clinvar=True, c.resource=split(line.resource,"|"), c.licenses=split(line.licenses,"|") Create (c)-[:equal_to_clinvar_drug]->(t) '''
     query_start = pharmebinetutils.get_query_import(path_of_directory,
                                                     'mapping_and_merging_into_hetionet/clinvar/drug/chemical_drug.tsv',
                                                     query_start)
@@ -97,10 +95,8 @@ def load_all_drug_response_and_finish_the_files():
         if name_short in dict_chemical_name_to_chemical_id:
             counter += 1
             for chemical_id in dict_chemical_name_to_chemical_id[name_short]:
-                resource = dict_chemical_id_to_resource[chemical_id]
-                resource.add('ClinVar')
-                resource = '|'.join(resource)
-                csv_rela.writerow([chemical_id, identifier, resource])
+                dict_chemical_id_to_resource[chemical_id][1].add(pharmebinetutils.dict_source_to_license['clinvar'])
+                csv_rela.writerow([chemical_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[chemical_id][0],'ClinVar' ), '|'.join(dict_chemical_id_to_resource[chemical_id][1])])
 
     print('number of mapped drug response:', counter)
     print('number of all:', all)

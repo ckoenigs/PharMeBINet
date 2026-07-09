@@ -5,11 +5,6 @@ The first mapping is from SMPDB pathway to pathway:
     Then, the pathways are mapped with SMPDB id to the pathbank SMPDB id. Next, mapped from name to pathway name and synonyms. All mapped nodes are written into a TSV file.
     The not mapped pathways are combined by name and written into the not mapped TSV file to generate additional pathway nodes.
 
-The next mapping is SMPDB protein to protein/compound:
-    First, the protein and compound information is loaded into dictionaries.
-    Next, the mapping files and cypher queries are generated for protein-protein and protein-compound.
-    Then, the SMPDB proteins are mapped to protein with UniProt ids and Compound with DrugBank ids.
-
 The following mapping is SMPDB metabolite to metabolite:
     First, the metabolites are load into dictionaries.
     Next, the mapping TSV file is generated and the fitting cypher query is added to the cypher file.
@@ -19,6 +14,13 @@ The following mapping is SMPDB metabolite to metabolite:
     All mapped pairs are written into the TSV file.
 
 Then the different mappings and the new pathways are integrated into my database with the Neo4j cypher shell.
+
+In the second script:
+
+The next mapping is SMPDB protein to protein/compound:
+    First, the protein and compound information is loaded into dictionaries.
+    Next, the mapping files and cypher queries are generated for protein-protein and protein-compound.
+    Then, the SMPDB proteins are mapped to protein with UniProt ids and Compound with DrugBank ids.
 
 Next, the relationships between pathway-metabolite and pathway-protein are prepared:
     First, a cypher file is generated.

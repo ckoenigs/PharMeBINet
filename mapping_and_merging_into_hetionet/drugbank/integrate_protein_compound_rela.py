@@ -110,13 +110,13 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
     print('number of edges:', counter)
 
 
-def get_compound_protein_pair_of_with_pubmed_for_rela_type(direction):
+def get_compound_protein_pair_of_with_pubmed_for_rela_type(direction, label):
     """
     Get pubmed information of existing edges
     :param direction:
     :return:
     """
-    query = f'Match (m:Protein){direction}(n:Compound) Where r.pubMed_ids is not NULL Return m.identifier, n.identifier, r.pubMed_ids'
+    query = f'Match (m:{label}){direction}(n:Compound) Where r.pubMed_ids is not NULL Return m.identifier, n.identifier, r.pubMed_ids'
     results = g.run(query)
     dict_protein_compound_to_pubmed_ids = {}
     for record in results:
@@ -180,17 +180,17 @@ def create_cypher_query_and_tsv_file(rela_name, rela_direction, label_from):
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(list_of_properties)
 
-    query_update += 'r.drugbank="yes", '
+    query_update += 'r.drugbank=true, '
 
     if not exists:
 
         if rela_direction.startswith('<'):
-            query_create = "<-[:" + rela_name + ' {' + query_create + ' interaction_with_form:split(line.interaction_with_form,"|"),  source:"DrugBank", resource:["DrugBank"], url:"https://go.drugbank.com/drugs/"+line.identifier2, drugbank:"yes", license:"' + license + '"}]-'
+            query_create = "<-[:" + rela_name + ' {' + query_create + ' interaction_with_form:split(line.interaction_with_form,"|"),  source:"DrugBank", resource:["DrugBank"], url:"https://go.drugbank.com/drugs/"+line.identifier2, drugbank:true, licenses:["' + pharmebinetutils.dict_source_to_license["drugbank"] + '"]}]-'
         else:
-            query_create = "-[:" + rela_name + ' {' + query_create + 'interaction_with_form:split(line.interaction_with_form,"|") , source:"DrugBank", resource:["DrugBank"], drugbank:"yes", url:"https://go.drugbank.com/drugs/"+line.identifier2, license:"' + license + '"}]->'
+            query_create = "-[:" + rela_name + ' {' + query_create + 'interaction_with_form:split(line.interaction_with_form,"|") , source:"DrugBank", resource:["DrugBank"], drugbank:true, url:"https://go.drugbank.com/drugs/"+line.identifier2, licenses:["' + pharmebinetutils.dict_source_to_license["drugbank"] + '"]}]->'
         query = query_start + " Create (a)" + query_create + '(c)'
     else:
-        query = query_start + ' Merge (a)' + rela_direction + '(c) On Create Set ' + query_update + ' r.interaction_with_form=split(line.interaction_with_form,"|"), r.source="DrugBank", r.drugbank="yes", r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.identifier2, r.license="' + license + '" On Match Set ' + query_update + ' r.drugbank="yes",  r.resource=r.resource+"DrugBank"'
+        query = query_start + ' Merge (a)' + rela_direction + '(c) On Create Set ' + query_update + ' r.interaction_with_form=split(line.interaction_with_form,"|"), r.source="DrugBank", r.drugbank=true, r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.identifier2, r.licenses=["' + pharmebinetutils.dict_source_to_license["drugbank"] + '"] On Match Set ' + query_update + ' r.drugbank=true,  r.resource=r.resource+"DrugBank", r.licenses=r.licenses+"' + pharmebinetutils.dict_source_to_license["drugbank"] + '" '
 
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/rela_protein/{file_name}.tsv',
@@ -212,7 +212,7 @@ def run_through_dictionary_to_add_to_tsv_and_cypher():
                 rela_direction = '-[r:%s]->'
             rela_direction = rela_direction % (rela_name)
             csv_writer, list_of_properties = create_cypher_query_and_tsv_file(rela_name, rela_direction, label)
-            dict_protein_compound_to_pubmeds = get_compound_protein_pair_of_with_pubmed_for_rela_type(rela_direction)
+            dict_protein_compound_to_pubmeds = get_compound_protein_pair_of_with_pubmed_for_rela_type(rela_direction, label)
             contain_ref = False
             for (identifier1, compound_id), list_rela in dict_pairs.items():
                 tsv_list = [identifier1, compound_id]
@@ -282,10 +282,8 @@ path_of_directory = ''
 def main():
     global path_of_directory
     if len(sys.argv) < 2:
-        sys.exit('need license and path to directory')
-    global license
-    license = sys.argv[1]
-    path_of_directory = sys.argv[2]
+        sys.exit('need path to directory')
+    path_of_directory = sys.argv[1]
     print(sys.argv)
     print(path_of_directory)
     print(datetime.datetime.now())

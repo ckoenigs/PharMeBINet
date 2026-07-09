@@ -33,7 +33,7 @@ def load_nodes_from_database_and_add_to_dict(label):
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_node_id_to_resource[identifier] = node['resource']
+        dict_node_id_to_resource[identifier] = [node['resource'], set(node['licenses'])]
         alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
         for alternative_id in alternative_ids:
             pharmebinetutils.add_entry_to_dict_to_set(dict_alternative_ids_to_go_ids, alternative_id, identifier)
@@ -54,18 +54,13 @@ def load_all_bioGrid_genes_and_finish_the_files(csv_mapping, label):
         identifier = node['id']
 
         # mapping
-        found_mapping = False
         if identifier in dict_node_id_to_resource:
-            found_mapping = True
-            csv_mapping.writerow(
-                [identifier, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier], "BioGRID"), 'id'])
+            general_function_bioGrid.write_to_tsv_file(dict_node_id_to_resource, csv_mapping, identifier, identifier,
+                                                  'id')
         elif identifier in dict_alternative_ids_to_go_ids:
             for go_id in dict_alternative_ids_to_go_ids[identifier]:
-                csv_mapping.writerow(
-                    [identifier, go_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[go_id], "BioGRID"),
-                     'alternative_ids'])
+                general_function_bioGrid.write_to_tsv_file(dict_node_id_to_resource, csv_mapping, identifier,
+                                                           go_id,'alternative_ids')
 
 
         else:

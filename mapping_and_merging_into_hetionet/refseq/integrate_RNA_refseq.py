@@ -45,7 +45,8 @@ def get_node_properties_and_prepare_query(label, additional_label, id_property_n
             else:
                 list_of_properties.append('name:m.' + property)
 
-    query = f'Match (m:{label}{{id:line.id}}) Create (n:RNA :{additional_label} {{ {", ".join(list_of_properties)}, resource:["RefSeq"], source:"RefSeq", license:"CC0 with attribution", refseq:"yes", url:COALESCE("https://identifiers.org/refseq:"+line.url, "https://www.ncbi.nlm.nih.gov/refseq/")}}) Create (n)-[:equals_rna_refseq]->(m)'
+    query = f'Match (m:{label}{{id:line.id}}) Create (n:RNA :{additional_label} {{ {", ".join(list_of_properties)}, resource:["RefSeq"], source:"RefSeq", licenses:["%s"], refseq:true, url:COALESCE("https://identifiers.org/refseq:"+line.url, "https://www.ncbi.nlm.nih.gov/refseq/")}}) Create (n)-[:equals_rna_refseq]->(m)'
+    query = query % (pharmebinetutils.dict_source_to_license['refseq'])
     return query
 
 
@@ -137,7 +138,8 @@ def prepare_edge():
     print('number of edges', counter)
 
     with open('output/cypher_edge.cypher', 'w', encoding='utf-8') as cypher_file_edge:
-        query = 'MATCH (n:RNA{identifier:line.mirna_id}),(m:RNA{identifier:line.pre_id}) Set n.url="https://identifiers.org/refseq:"+line.url Create (m)-[:CLEAVES_TO_RctR{start:line.start, end:line.end, strand:line.strand, source:"RefSeq via "+line.source, resource:["RefSeq"], license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", url:"https://identifiers.org/refseq:"+line.url, refseq:"yes"}]->(n)'
+        query = 'MATCH (n:RNA{identifier:line.mirna_id}),(m:RNA{identifier:line.pre_id}) Set n.url="https://identifiers.org/refseq:"+line.url Create (m)-[:CLEAVES_TO_RctR{start:line.start, end:line.end, strand:line.strand, source:"RefSeq via "+line.source, resource:["RefSeq"], licenses:["%s"], url:"https://identifiers.org/refseq:"+line.url, refseq:true}]->(n)'
+        query = query % (pharmebinetutils.dict_source_to_license['refseq'])
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/refseq/{file_name}',
                                                   query)

@@ -22,7 +22,7 @@ def generate_cypher_queries_and_tsv_files():
     generate cypher queries and tsv files
     :return: csv writer for mapping and new
     """
-    set_header_for_files = ['node_id_1', 'node_id_2', 'resource']
+    set_header_for_files = ['node_id_1', 'node_id_2', 'resource', 'licenses']
     # tsv file for mapping disease
     file_name_mapped = 'output/disease_is_a_mapped.tsv'
     file_disease_mapped = open(file_name_mapped, 'w', encoding='utf-8')
@@ -37,13 +37,14 @@ def generate_cypher_queries_and_tsv_files():
     # cypher file for mapping and integration
     cypher_file = open('output/cypher_edge.cypher', 'w', encoding='utf-8')
 
-    query_match = '''Match (s:Disease{identifier:line.node_id_1 })-[r:IS_A_DiaD]->(m:Disease{identifier:line.node_id_2}) Set r.efo='yes',  r.resource=split(line.resource,"|") '''
+    query_match = '''Match (s:Disease{identifier:line.node_id_1 })-[r:IS_A_DiaD]->(m:Disease{identifier:line.node_id_2}) Set r.efo=True,  r.resource=split(line.resource,"|"),  r.licenses=split(line.licenses,"|") '''
     query_match = pharmebinetutils.get_query_import(path_of_directory,
                                                     f'mapping_and_merging_into_hetionet/efo/{file_name_mapped}',
                                                     query_match)
     cypher_file.write(query_match)
 
-    query_match = '''Match (s:Disease{identifier:line.node_id_1 }),(m:Disease{identifier:line.node_id_2}) Create (s)-[r:IS_A_DiaD{efo:'yes',  resource:["EFO"], source:"EFO", url:"http://www.ebi.ac.uk/efo/"+split(line.efo_id,":")[0]+"_"+split(line.efo_id,":")[1], license:"Apache-2.0"}]->(m) '''
+    query_match = '''Match (s:Disease{identifier:line.node_id_1 }),(m:Disease{identifier:line.node_id_2}) Create (s)-[r:IS_A_DiaD{efo:true,  resource:["EFO"], source:"EFO", url:"http://www.ebi.ac.uk/efo/"+split(line.efo_id,":")[0]+"_"+split(line.efo_id,":")[1], licenses:["%s"]}]->(m) '''
+    query_match = query_match % (pharmebinetutils.dict_source_to_license['efo'])
     query_match = pharmebinetutils.get_query_import(path_of_directory,
                                                     f'mapping_and_merging_into_hetionet/efo/{file_name_not_mapped}',
                                                     query_match)
@@ -61,14 +62,14 @@ def get_all_disease_is_a_pairs():
     Get al disease from pharmebinet and put this information into a dictionary
     :return:
     """
-    query = '''MATCH (n:Disease)-[r:IS_A_DiaD]->(m:Disease) RETURN n.identifier, m.identifier, r.resource  '''
+    query = '''MATCH (n:Disease)-[r:IS_A_DiaD]->(m:Disease) RETURN n.identifier, m.identifier, r.resource, r.licenses  '''
     results = g.run(query)
 
     # add all diseases to dictioanry
     for record in results:
-        [node_1, node_2, resource] = record.values()
+        [node_1, node_2, resource, licenses] = record.values()
 
-        dict_of_pair_to_resource[(node_1, node_2)] = resource
+        dict_of_pair_to_resource[(node_1, node_2)] = [resource, set(licenses)]
 
 
 def map_efo_is_a_rela_to_pharmebinet(csv_mapped, csv_not_mapped):
@@ -87,8 +88,10 @@ def map_efo_is_a_rela_to_pharmebinet(csv_mapped, csv_not_mapped):
         [node_id1, node_id2, efo_id] = record.values()
         if (node_id1, node_id2) in dict_of_pair_to_resource:
             count_mapped += 1
+            licenses = dict_of_pair_to_resource[(node_id1, node_id2)][1]
+            licenses.add(pharmebinetutils.dict_source_to_license['efo'])
             csv_mapped.writerow([node_id1, node_id2, pharmebinetutils.resource_add_and_prepare(
-                dict_of_pair_to_resource[(node_id1, node_id2)], 'EFO')])
+                dict_of_pair_to_resource[(node_id1, node_id2)][0], 'EFO'), "|".join(licenses)])
         else:
             csv_not_mapped.writerow([node_id1, node_id2, efo_id])
 

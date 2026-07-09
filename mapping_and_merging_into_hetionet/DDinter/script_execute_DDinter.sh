@@ -28,9 +28,10 @@ echo integrate mappings into neo4j
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
 
-sleep 30
+python ../../check_indices.py
+
 python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
-sleep 30
+python ../../check_indices.py
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -45,6 +46,7 @@ echo integrate mappings into neo4j
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
 
-sleep 30
+python ../../check_indices.py
+
 python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
-sleep 40
+python ../../check_indices.py

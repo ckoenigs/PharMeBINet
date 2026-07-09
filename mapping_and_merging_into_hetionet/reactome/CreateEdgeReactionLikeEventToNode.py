@@ -65,7 +65,7 @@ def create_cypher_file(directory, file_path, node_label, rela_name):
     :param rela_name:
     :return:
     """
-    query = ''' MATCH (d:ReactionLikeEvent{identifier:line.id_pharmebinet_reactionLikeEvent}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.id_pharmebinet_reactionLikeEvent, source:"Reactome"}]->(c)'''
+    query = ''' MATCH (d:ReactionLikeEvent{identifier:line.id_pharmebinet_reactionLikeEvent}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: true, licenses:["%s"], url:"https://reactome.org/content/detail/"+line.id_pharmebinet_reactionLikeEvent, source:"Reactome"}]->(c)'''
     query = query % (node_label, rela_name, license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/{file_path}',
@@ -105,12 +105,11 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
 
 def main():
     global path_of_directory, license
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        license = sys.argv[2]
     else:
-        sys.exit('need a path and license reactome edge')
-
+        sys.exit('need a path reactome edge')
+    license = pharmebinetutils.dict_source_to_license['reactome']
     global cypher_file
     print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
@@ -120,7 +119,7 @@ def main():
     # 0: old relationship;           1: name of node in Reactome;
     # 2: name of node in pharmebinet;   3: name of new relationship
     list_of_combinations = [
-        ['disease', 'Disease_reactome', 'Disease', 'LEADS_TO_RLEltdD'],
+        ['disease', 'Disease_reactome', 'Disease', 'LEADS_TO_RLEltD'],
         ['compartment', 'GO_CellularComponent_reactome', 'CellularComponent', 'IN_COMPARTMENT_RLEicCC'],
         ['precedingEvent', 'Pathway_reactome', 'Pathway', 'PRECEDING_REACTION_RLEprPW'],
         ['normalReaction', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'IS_NORMAL_REACTION_RLEinrRLE'],

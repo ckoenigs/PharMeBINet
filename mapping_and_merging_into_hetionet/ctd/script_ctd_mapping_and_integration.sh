@@ -15,11 +15,8 @@ if [ ! -d output ]; then
   mkdir chemical
   mkdir change_gene_rela_to_protein
   mkdir chemical_disease
-  mkdir chemical_go
-  mkdir chemical_pathway
   mkdir chemical_phenotype
   mkdir disease_Disease
-  mkdir disease_go
   mkdir disease_pathway
   mkdir gene
   mkdir gene_disease
@@ -73,9 +70,10 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-sleep 30
-python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
-sleep 60
+python ../../check_indices.py
+
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+python ../../check_indices.py
 
 
 
@@ -127,99 +125,8 @@ python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cy
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-sleep 30
-python ../../restart_neo4j.py $path_neo4j > output/neo4j2.txt
-sleep 60
+python ../../check_indices.py
 
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+python ../../check_indices.py
 
-# I decide against it because the connection comes from different species and this can not be checked.
-# now=$(date +"%F %T")
-# echo "Current time: $now"
-# echo integrate gene-particitates-go
-
-# python3 integrate_gene_participates_GO.py $path_to_project > gene_go/output.txt
-
-
-# I decide to not include only association which comes from linked information, but maybe they can be used to compare somtimes??
-
-#now=$(date +"%F %T")
-#echo "Current time: $now"
-#echo integrate go-associate-disease
-
-#python3 integrate_disease_go.py $path_to_project > disease_go/output.txt
-
-
-#now=$(date +"%F %T")
-#echo "Current time: $now"
-
-#$path_neo4j/cypher-shell -u neo4j -p $password -f disease_go/cypher.cypher > disease_go/output_cypher.txt
-
-#now=$(date +"%F %T")
-#echo "Current time: $now"
-
-#sleep 180
-#python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
-#sleep 120
-
-
-#now=$(date +"%F %T")
-#echo "Current time: $now"
-#echo integrate disease-associates-pathway
-
-#python3 integrate_disease_associates_pathway.py $path_to_project > disease_pathway/output.txt
-
-#now=$(date +"%F %T")
-#echo "Current time: $now"
-
-#$path_neo4j/cypher-shell -u neo4j -p $password -f disease_pathway/cypher.cypher > disease_pathway/output_cypher.txt
-
-#now=$(date +"%F %T")
-#echo "Current time: $now"
-
-
-#sleep 180
-#python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
-#sleep 120
-
-
-#now=$(date +"%F %T")
-#echo "Current time: $now"
-#echo integrate chemical-associates-pathway
-
-#python3 integrate_chemical_pathway.py $path_to_project > chemical_pathway/output.txt
-
-#now=$(date +"%F %T")
-#echo "Current time: $now"
-
-#$path_neo4j/cypher-shell -u neo4j -p $password -f chemical_pathway/cypher.cypher > chemical_pathway/output_cypher.txt
-
-#now=$(date +"%F %T")
-#echo "Current time: $now"
-
-
-#sleep 180
-#python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
-#sleep 120
-
-
-
-#now=$(date +"%F %T")
-#echo "Current time: $now"
-#echo integrate chemical-associates-go
-
-#python3 integration_chemical_go.py $path_to_project > chemical_pathway/output.txt
-
-#now=$(date +"%F %T")
-#echo "Current time: $now"
-
-#$path_neo4j/cypher-shell -u neo4j -p $password -f chemical_go/cypher.cypher > chemical_go/output_cypher.txt
-
-#now=$(date +"%F %T")
-#echo "Current time: $now"
-
-
-#sleep 180
-#python ../../restart_neo4j.py $path_neo4j > output/neo4.txt
-#sleep 120
-
-# sudo shutdown -h 60 # fährt das system in 60 min

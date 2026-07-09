@@ -24,6 +24,8 @@ dict_productId_to_resource = {}
 dict_ndc_pc = defaultdict(set)
 dict_product_mapping = defaultdict(dict)
 
+license = pharmebinetutils.dict_source_to_license['drugcentral']
+
 
 def load_product_in():
     """
@@ -41,7 +43,7 @@ def load_product_in():
         ndc_pc = node["ndc_product_code"] if "ndc_product_code" in node else ""
         name = node["name"]
 
-        dict_productId_to_resource[identifier] = resource
+        dict_productId_to_resource[identifier] = [resource, set(node['licenses'])]
 
         if ndc_pc != "":
             dict_ndc_pc[ndc_pc].add(identifier)
@@ -81,9 +83,11 @@ def load_DC_product_in():
         for product_id in dict_product_mapping[node_id]:
             methodes = list(dict_product_mapping[node_id][product_id])
             methodes = '|'.join(methodes)
-            resource = set(dict_productId_to_resource[product_id])
+            resource = set(dict_productId_to_resource[product_id][0])
+            dict_productId_to_resource[product_id][1].add(license)
             csv_mapped.writerow(
-                [node_id, product_id, pharmebinetutils.resource_add_and_prepare(resource, 'DrugCentral'), methodes])
+                [node_id, product_id, pharmebinetutils.resource_add_and_prepare(resource, 'DrugCentral'), methodes,
+                 '|'.join(dict_productId_to_resource[product_id][1])])
 
 
 def generate_tsv_files():
@@ -102,7 +106,7 @@ def generate_tsv_files():
     file_name = 'product/mapped_product.tsv'
     file_mapped_protein = open(file_name, 'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_protein, delimiter='\t', lineterminator='\n')
-    csv_mapped.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
+    csv_mapped.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped', 'licenses'])
     generate_cypher_file(file_name)
 
 
@@ -114,7 +118,7 @@ def generate_cypher_file(file_name):
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'w')
-    query = ''' MATCH (n:DC_Product), (c:Product{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_Product_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query = ''' MATCH (n:DC_Product), (c:Product{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral=true, c.resource=split(line.resource,'|'), c.licenses=split(line.licenses,'|') Create (c)-[:equal_to_Product_drugcentral{how_mapped:line.how_mapped}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               "mapping_and_merging_into_hetionet/drugcentral/product/" + file_name,
                                               query)

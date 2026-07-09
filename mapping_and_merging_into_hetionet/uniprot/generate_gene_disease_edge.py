@@ -5,6 +5,7 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
+license = pharmebinetutils.dict_source_to_license['uniprot']
 
 def create_connection_with_neo4j():
     """
@@ -81,7 +82,8 @@ def get_pairs_information():
                                               query)
     file_cypher.write(query)
 
-    query = '''MATCH (g:Gene{identifier:line.gene_ids}),(b:Disease{identifier:line.disease_id}) Merge (b)<-[r:ASSOCIATES_GaD]-(g) On Create Set r.source="UniProt", r.resource=["UniProt"], r.uniprot='yes', r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|'), r.pubMed_ids=split(line.pubmeds,'|'), r.sources=split(line.source,"|"), r.url="https://www.uniprot.org/uniprot/"+line.uniprot_id, r.license='CC BY 4.0' On Match Set r.uniprot="yes", r.resource=r.resource+"UniProt",  r.pubMed_ids=r.pubMed_ids+split(line.pubmeds,'|'), r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|') '''
+    query = '''MATCH (g:Gene{identifier:line.gene_ids}),(b:Disease{identifier:line.disease_id}) Merge (b)<-[r:ASSOCIATES_GaD]-(g) On Create Set r.source="UniProt", r.resource=["UniProt"], r.licenses=["%s"], r.uniprot=True, r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|'), r.pubMed_ids=split(line.pubmeds,'|'), r.sources=split(line.source,"|"), r.url="https://www.uniprot.org/uniprot/"+line.uniprot_id, r.license='CC BY 4.0' On Match Set r.uniprot=true, r.resource=r.resource+"UniProt", r.licenses=r.licenses+"%s",  r.pubMed_ids=r.pubMed_ids+split(line.pubmeds,'|'), r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|') '''
+    query = query %(license, license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/uniprot/{file_name}',
                                               query)

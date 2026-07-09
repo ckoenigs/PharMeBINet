@@ -41,17 +41,17 @@ get information and put the into a dictionary one norma identifier and one alter
 
 
 def get_information_and_add_to_dict(label, dict_pharmebinet, dict_alternative_ids_pharmebinet):
-    query = '''MATCH (n:%s) RETURN n.identifier,n.name, n.alternative_ids, n.resource'''
+    query = '''MATCH (n:%s) RETURN n.identifier,n.name, n.alternative_ids, n.resource, n.licenses'''
     query = query % (label)
     results = g.run(query)
 
     for record in results:
-        [identifier, name, alternative_ids, resource] = record.values()
+        [identifier, name, alternative_ids, resource, licenses] = record.values()
         dict_pharmebinet[identifier] = name
         if alternative_ids:
             for alternative_id in alternative_ids:
                 dict_alternative_ids_pharmebinet[alternative_id] = identifier
-        dict_go_id_to_resource[identifier] = set(resource)
+        dict_go_id_to_resource[identifier] = [set(resource), set(licenses)]
 
 
 '''
@@ -224,18 +224,6 @@ query = pharmebinetutils.get_query_import(path_of_directory,
                                           query)
 cypher_file.write(query)
 
-
-def add_resource(go_id):
-    """
-    add to a give id the ctd resource and return it as string
-    :param go_id: string
-    :return: string
-    """
-    resource = dict_go_id_to_resource[go_id]
-    resource.add('CTD')
-    return '|'.join(sorted(resource))
-
-
 '''
 Generate cypher and tsv for generating the new nodes and the relationships
 '''
@@ -245,16 +233,22 @@ def generate_files(file_name_addition, ontology, dict_ctd_in_pharmebinet, dict_c
     # generate mapped csv
     with open('GO/mapping_' + file_name_addition + '.tsv', 'w') as csvfile:
         writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(['GOIDCTD', 'GOIDpharmebinet', 'highestGOLevel', 'resource'])
+        writer.writerow(['GOIDCTD', 'GOIDpharmebinet', 'highestGOLevel', 'resource', 'licenses'])
         # add the go nodes to cypher file
-
+        license = pharmebinetutils.dict_source_to_license['ctd']
         for go_id, name in dict_ctd_in_pharmebinet.items():
-            writer.writerow([go_id, go_id, '', add_resource(go_id)])
+            dict_go_id_to_resource[go_id][1].add(license)
+            writer.writerow(
+                [go_id, go_id, '', pharmebinetutils.resource_add_and_prepare(dict_go_id_to_resource[go_id][0], 'CTD'),
+                 '|'.join(dict_go_id_to_resource[go_id][1])])
 
         for ctd_id, pharmebinet_id in dict_ctd_in_pharmebinet_alternative.items():
-            writer.writerow([ctd_id, pharmebinet_id, '', add_resource(pharmebinet_id)])
+            dict_go_id_to_resource[pharmebinet_id][1].add(license)
+            writer.writerow([ctd_id, pharmebinet_id, '',
+                             pharmebinetutils.resource_add_and_prepare(dict_go_id_to_resource[pharmebinet_id][0], 'CTD'),
+                             '|'.join(dict_go_id_to_resource[pharmebinet_id][1])])
 
-    query = ''' Match (c:%s{ identifier:line.GOIDpharmebinet}), (n:CTD_GO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.ctd="yes", c.resource=split(line.resource,"|") Create (c)-[:equal_to_CTD_go]->(n)'''
+    query = ''' Match (c:%s{ identifier:line.GOIDpharmebinet}), (n:CTD_GO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.ctd=True, c.resource=split(line.resource,"|"), c.licenses=split(line.licenses,"|") Create (c)-[:equal_to_CTD_go]->(n)'''
     query = query % (ontology)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ctd/GO/mapping_{file_name_addition}.tsv',

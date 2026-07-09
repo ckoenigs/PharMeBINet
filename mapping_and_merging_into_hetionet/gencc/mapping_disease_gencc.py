@@ -24,6 +24,8 @@ dict_disease_id_to_resource = {}
 # dictionary disease name to disease ids
 dict_disease_name_to_disease_ids = {}
 
+license = pharmebinetutils.dict_source_to_license['gencc']
+
 
 def add_to_dictionary_with_set(dictionary, key, value):
     """
@@ -56,13 +58,13 @@ def load_pharmebinet_labels_in(label, dict_label_id_to_resource, dict_name_to_id
     :param dict_name_to_ids:
     :return:
     """
-    query = '''MATCH (n:%s) RETURN n.identifier, n.name, n.xrefs, n.synonyms, n.resource''' % label
+    query = '''MATCH (n:%s) RETURN n.identifier, n.name, n.xrefs, n.synonyms, n.resource, n.licenses''' % label
     results = graph_database.run(query)
 
     #  run through results
     for record in results:
-        [identifier, name, xrefs, synonyms, resource] = record.values()
-        dict_label_id_to_resource[identifier] = set(resource)
+        [identifier, name, xrefs, synonyms, resource, licenses] = record.values()
+        dict_label_id_to_resource[identifier] = [set(resource), set(licenses)]
         if xrefs:
             for xref in xrefs:
                 if xref.startswith('OMIM:'):
@@ -106,7 +108,7 @@ def create_cypher_file(label, file_name):
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
-    query = ''' MATCH (d:%s{identifier:line.id_own_db}),(c:GenCC_Disease{id:line.id}) CREATE (d)-[: equal_to_gencc_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.gencc = "yes"'''
+    query = ''' MATCH (d:%s{identifier:line.id_own_db}),(c:GenCC_Disease{id:line.id}) CREATE (d)-[: equal_to_gencc_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'),d.licenses = split(line.licenses, '|'), d.gencc = True'''
     query = query % (label)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/gencc/{file_name}',
@@ -123,7 +125,7 @@ def create_files(label):
     file_name = 'disease/mapped_' + label + '.tsv'
     file_mapped_disease = open(file_name, 'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_disease, delimiter='\t', lineterminator='\n')
-    csv_mapped.writerow(['id', 'id_own_db', 'resource', 'how_mapped'])
+    csv_mapped.writerow(['id', 'id_own_db', 'resource', 'how_mapped', 'licenses'])
 
     create_cypher_file(label, file_name)
     return csv_mapped
@@ -153,6 +155,12 @@ def load_extensions_information_from_gencc_edges():
             dict_node_id_to_resource_to_ids[node_id][source_id[0]] = set()
         dict_node_id_to_resource_to_ids[node_id][source_id[0]].add(source_id[1])
 
+def write_to_tsv_file(csv_writer, node_id, pharmebinet_id, mapping_method):
+    dict_disease_id_to_resource[pharmebinet_id][1].add(license)
+    csv_writer.writerow([node_id, pharmebinet_id,
+                                 pharmebinetutils.resource_add_and_prepare(
+                                     dict_disease_id_to_resource[pharmebinet_id][0], 'GenCC'), mapping_method,
+                         '|'.join(dict_disease_id_to_resource[pharmebinet_id][1])])
 
 def load_gencc_disease_and_map():
     """
@@ -180,9 +188,7 @@ def load_gencc_disease_and_map():
         if disease_id in dict_disease_id_to_resource:
             is_mapped = True
             counter_map_with_id += 1
-            csv_writer_disease.writerow([disease_id, disease_id,
-                                         pharmebinetutils.resource_add_and_prepare(
-                                             dict_disease_id_to_resource[disease_id], 'GenCC'), 'id'])
+            write_to_tsv_file(csv_writer_disease, disease_id, disease_id, 'id')
         if is_mapped:
             continue
 
@@ -191,9 +197,7 @@ def load_gencc_disease_and_map():
             if replaced_id in dict_disease_id_to_resource:
                 is_mapped = True
                 counter_map_with_id += 1
-                csv_writer_disease.writerow([disease_id, replaced_id,
-                                             pharmebinetutils.resource_add_and_prepare(
-                                                 dict_disease_id_to_resource[replaced_id], 'GenCC'), 'obsolete'])
+                write_to_tsv_file(csv_writer_disease, disease_id, replaced_id, 'obsolete')
         if is_mapped:
             continue
 
@@ -205,10 +209,7 @@ def load_gencc_disease_and_map():
                 is_mapped = True
 
                 for database_identifier in dict_disease_name_to_disease_ids[disease_name]:
-                    csv_writer_disease.writerow([disease_id, database_identifier,
-                                                 pharmebinetutils.resource_add_and_prepare(
-                                                     dict_disease_id_to_resource[database_identifier], 'GenCC'),
-                                                 'name'])
+                    write_to_tsv_file(csv_writer_disease, disease_id, database_identifier, 'name')
 
         if is_mapped:
             continue

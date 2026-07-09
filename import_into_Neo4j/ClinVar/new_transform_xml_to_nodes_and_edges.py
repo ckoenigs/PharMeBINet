@@ -42,9 +42,11 @@ dict_trait_typ_to_tsv = {}
 # dictionary relationship counter for each pair
 dict_rela_type_pair_to_count = {}
 
-edge_information = ['variant_id', 'trait_set_id', 'title', 'assertion', 'clinical_significance', 'observations',
+edge_information = ['variant_id', 'trait_set_id', 'title', 'assertion', 'review_status', 'observations',
                     'citations', 'attributes', 'study_description', 'comments', 'study_name', 'variation_attributes',
-                    'variation_rela', 'accession_clinvar', 'xrefs', 'citations_info']
+                    'variation_rela', 'accession_clinvar', 'xrefs', 'citations_info', 'clinical_significance',
+                    'germline_classification', 'somatic_clinicalImpact', 'noClassification',
+                    'oncogenicity_classification', 'accession_clinvar', 'general_type', 'trait_set_type']
 
 # dictionary of measure set properties which are list
 dict_measure_set_properties_which_are_sets = set()
@@ -132,7 +134,7 @@ def for_multiple_tags_at_one(node, tag):
     """
     list_of_this_tags_outputs = []
     for comment in node.iterfind(tag):
-        list_of_this_tags_outputs.append(comment.text)
+        list_of_this_tags_outputs.append(comment.text.replace('"', '\''))
     return list_of_this_tags_outputs
 
 
@@ -143,8 +145,6 @@ def get_xrefs_wih_other_tag_system(node):
     result = node.find('ExternalID')
     list_xrefs = []
     if result is not None:
-        # print(result.get('DB'))
-        # print(result.get('ID'))
         if 'Type' in result:
             external_id = result.get('DB') + ':' + result.get('ID') + '(' + result.get('Type') + ')'
         else:
@@ -155,9 +155,9 @@ def get_xrefs_wih_other_tag_system(node):
 
 def prepare_clinical_significance(node):
     """
-    clinical significance
+    In new version clinical significance is called classification
     """
-    clinical_significance = node.find('ClinicalSignificance')
+    clinical_significance = node.find('Classification')
     if clinical_significance is not None:
         date = clinical_significance.get('DateLastEvaluated')
         dict_significance = {'date': date} if date is not None else {}
@@ -179,8 +179,6 @@ def prepare_clinical_significance(node):
 
         comment_dict = for_multiple_tags_at_one(clinical_significance, 'Comment')
         build_low_dict_into_higher_dict(dict_significance, comment_dict, 'comments')
-
-        # print(dict_significance)
 
         # todo external id, but if have to check what it stands for !
         xrefs = get_xrefs_wih_other_tag_system(clinical_significance)
@@ -220,6 +218,8 @@ def check_for_information_and_add_to_dictionary_with_extra_name(tag, node, dicti
     result = node.find(tag)
     if result is not None:
         value = result.text
+        if value is not None:
+            value = value.replace('"', '\'')
 
         if name is None and gets is not None:
             dictionary[result.get(gets)] = value
@@ -228,6 +228,47 @@ def check_for_information_and_add_to_dictionary_with_extra_name(tag, node, dicti
         else:
             sys.exit('I have to think about this case')
     # return list_to_add
+
+
+def prepare_specific_classification_information(node, review_status_list, node_property_name, dictionary):
+    """
+    extract from the different classes of classification (germline_classification, oncogenicity_classification, NoClassification, somatic_clinicalImpact)
+    the review status and additional information
+    """
+    if node is not None:
+        # TODO extract more information?
+        review_status = node.find('ReviewStatus').text
+        review_status_list.add(review_status)
+        description = node.find('Description')
+        if description is not None:
+            description = description.text
+        else:
+            description = ''
+        dictionary[node_property_name] = review_status + ':' + description
+
+
+def prepareClassificationInformation(node, dictionary):
+    """
+    get information from node and put in dictionary
+    """
+    classification = node.find('Classifications')
+    review_status_list = set()
+    germline_classification = classification.find('GermlineClassification')
+    prepare_specific_classification_information(germline_classification, review_status_list, 'germline_classification',
+                                                dictionary)
+
+    oncogenicity_classification = classification.find('OncogenicityClassification')
+    prepare_specific_classification_information(oncogenicity_classification, review_status_list,
+                                                'oncogenicity_classification', dictionary)
+
+    no_classification = classification.find('NoClassification')
+    prepare_specific_classification_information(no_classification, review_status_list, 'noClassification', dictionary)
+
+    # TODO multiple possible
+    somatic_clinical_impact = classification.find('SomaticClinicalImpact')
+    prepare_specific_classification_information(somatic_clinical_impact, review_status_list, 'somatic_clinicalImpact',
+                                                dictionary)
+    dictionary['review_status'] = review_status_list
 
 
 def check_for_information_and_add_to_list_with_extra_name(tag, node, list_of_infos, name=None, gets=None):
@@ -460,7 +501,7 @@ go through dictionary and prepare the values into strings and add all list value
 '''
 
 
-def perpare_dictionary_values_add_to_set(dictionary, set_properties_which_are_set_or_list):
+def perpare_dictionary_values_add_to_set(dictionary, set_properties_which_are_set_or_list, variant_id):
     for type_part, value in dictionary.items():
         if type(value) in [list, set]:
             list_string = ''
@@ -472,6 +513,11 @@ def perpare_dictionary_values_add_to_set(dictionary, set_properties_which_are_se
                     list_string += part + '|'
             dictionary[type_part] = list_string[:-1]
             set_properties_which_are_set_or_list.add(type_part)
+        elif type(value) == dict:
+            if 'date' in value and value['date'] == '2015-01-07' and 'citations_info' in value:
+                print('problem?', variant_id, type_part, value)
+                print(json.dumps(value))
+            dictionary[type_part] = json.dumps(value)
 
 
 '''
@@ -718,6 +764,14 @@ def observation_information_preparation(node, dict_used):
         check_for_information_and_add_to_dictionary_with_extra_name('Origin', sample, sample_information,
                                                                     name='origin')
 
+        check_for_information_and_add_to_dictionary_with_extra_name('SomaticVariantInNormalTissue', sample,
+                                                                    sample_information,
+                                                                    name='somatic_variant_in_normal_tissue')
+
+        check_for_information_and_add_to_dictionary_with_extra_name('SomaticVariantAlleleFraction', sample,
+                                                                    sample_information,
+                                                                    name='somatic_variant_allele_fraction')
+
         for age in sample.iterfind('Age'):
             sample_information['Age ' + age.get('Type')] = age.text + ' ' + age.get('age_unit')
 
@@ -809,6 +863,252 @@ def observation_information_preparation(node, dict_used):
     return found_human
 
 
+def prepareMeasureOrGenotypeInfo(assertion, dict_to_add):
+    # measureSet or genotype
+    measure_set = assertion.find('MeasureSet')
+    genotype = assertion.find('GenotypeSet')
+    general_type = ""
+    variant_id = ""
+    if measure_set is not None:
+        type_measure_set = measure_set.get('Type')
+        identifier = measure_set.get('ID')
+        variant_id = identifier
+        accession = measure_set.get('Acc')
+        list_attributes_variations = []
+
+        if type_measure_set == 'Variant':
+            variation_rela = []
+
+            general_type = type_measure_set
+            # if variant_id not in dict_variation_to_node_ids[type_measure_set][measure_set.find('Measure').get('Type')]:
+            #     print('variant id not in list')
+            #     print(variant_id)
+            for measure in measure_set.iterfind('Measure'):
+
+                preparation_attributes_with_get_and_value(measure, list_attributes_variations)
+
+                for measure_rela in measure.iterfind('MeasureRelationship'):
+                    dict_rela = {}
+                    add_name_and_synonyms_to_dict(measure_rela, dict_rela)
+                    prepare_symbol(measure_rela, dict_rela, 'symbols')
+                    preparation_of_xrefs(measure_rela, dict_rela)
+                    dict_rela_optimised = {}
+                    for key, value in dict_rela.items():
+                        if type(value) == str:
+                            dict_rela_optimised[key] = value
+                        elif type(value) == list:
+                            dict_rela_optimised[key] = [t for t in value]
+                        elif value is None:
+                            print("problem NONE!!!!!!!!!!!!!!!", key, value)
+                        else:
+                            print(type(value), value)
+                            value = {key_v: value_v for key_v, value_v in value.items()}
+                            dict_rela_optimised[key] = value
+                    variation_rela.append(dict_rela_optimised)
+                if len(list_attributes_variations) > 0:
+                    dict_to_add['variation_attributes'] = "|".join(list_attributes_variations)
+                if len(variation_rela) > 0:
+                    dict_to_add['variation_rela'] = to_json_and_replace(variation_rela)
+
+
+
+        else:
+            general_type = dict_specific_to_general_type[
+                type_measure_set] if type_measure_set in dict_specific_to_general_type else ''
+            if variant_id not in dict_variation_to_node_ids[general_type][type_measure_set]:
+
+                dict_haplotype = {}
+                dict_haplotype['accession'] = measure_set.get('Acc')
+                number_of_chr = measure_set.get('NumberOfChromosomes')
+                if number_of_chr is not None:
+                    dict_haplotype['number_of_chromosomes'] = number_of_chr
+                add_name_and_synonyms_to_dict(measure_set, dict_haplotype)
+                prepare_symbol(measure_set, dict_haplotype, 'symbols')
+
+                for_citation_extraction_to_list(measure_set, dict_haplotype)
+                preparation_of_xrefs(measure_set, dict_haplotype)
+
+                comment_dict = for_multiple_tags_at_one(measure_set, 'Comment')
+                build_low_dict_into_higher_dict(dict_haplotype, comment_dict, 'comments')
+
+                dict_attributes_set = []
+
+                if len(dict_attributes_set) > 0:
+                    dict_haplotype['attributes'] = dict_attributes_set
+
+                perpare_dictionary_values(dict_haplotype, type_measure_set, dict_type_to_list_property_list)
+
+                dict_tsv_file_variation[general_type][type_measure_set].writerow(dict_haplotype)
+                dict_variation_to_node_ids[general_type][type_measure_set].add(variant_id)
+
+                for measure in measure_set.iterfind('Measure'):
+                    preparation_attributes_with_get_and_value(measure, list_attributes_variations)
+                    measure_type = measure.get('Type')
+                    allele_id = measure.get('ID')
+                    if allele_id in dict_allele_id_to_variant_id:
+                        for measure_id in dict_allele_id_to_variant_id[allele_id]:
+                            if not (type_measure_set, measure_type) in edge_between_variations:
+                                dict_rela_type_pair_to_count[(type_measure_set, measure_type)] = 0
+                                edge_between_variations[(type_measure_set, measure_type)] = set()
+                                file_name = path_of_clinvar_data + 'data/edge_' + prepare_for_file_name_and_label(
+                                    type_measure_set) + '_' + prepare_for_file_name_and_label(
+                                    measure_type) + '.tsv'
+                                file_edge = open(file_name, 'w', encoding='utf-8')
+                                csv_writer = csv.writer(file_edge, delimiter='\t')
+                                csv_writer.writerow(['haplo', 'other_id'])
+                                dict_tsv_edge_variations[(type_measure_set, measure_type)] = csv_writer
+
+                                query = query_edge_variation % (
+                                    prepare_for_file_name_and_label(type_measure_set), 'haplo',
+                                    prepare_for_file_name_and_label(measure_type), 'other_id')
+                                query = pharmebinetutils.get_query_import('',
+                                                                          file_name,
+                                                                          query)
+                                cypher_file_edges.write(query)
+                            if (variant_id, measure_id) not in edge_between_variations[
+                                (type_measure_set, measure_type)]:
+                                dict_rela_type_pair_to_count[(type_measure_set, measure_type)] += 1
+                                edge_between_variations[(type_measure_set, measure_type)].add(
+                                    (type_measure_set, measure_type))
+                                dict_tsv_edge_variations[(type_measure_set, measure_type)].writerow(
+                                    [variant_id, measure_id])
+                    else:
+                        print(variant_id)
+                        print(allele_id)
+                        print(type_measure_set)
+                        print(measure_type)
+                        print('allele id which do not exist in clinvar variationa?')
+                        # sys.exit('allele id which do not exist in clinvar variationa?')
+
+    elif genotype is not None:
+        identifier = genotype.get('ID')
+        type_genotype = genotype.get('Type')
+        accession = genotype.get('Acc')
+
+        general_type = dict_specific_to_general_type[
+            type_genotype] if type_genotype in dict_specific_to_general_type else ''
+
+        variant_id = identifier
+    dict_to_add["variant_id"] = variant_id if variant_id else ""
+    dict_to_add['general_type'] = general_type
+
+
+def prepareTraitSets(assertion, dict_info):
+    trait_set = assertion.find('TraitSet')
+    trait_set_id = trait_set.get('ID')
+    trait_set_type = trait_set.get('Type')
+    if trait_set_id is None:
+        return
+
+    if not trait_set_type in dict_trait_set_type_dictionary:
+        dict_trait_set_type_dictionary[trait_set_type] = set()
+        file_name = path_of_clinvar_data + 'data/trait_set_' + trait_set_type + '.tsv'
+        writer = open(file_name, 'w', encoding='utf-8')
+        # csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, escapechar="\\",
+        #                             doublequote=False)
+        csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, quotechar='"')
+        csv_writer.writeheader()
+        dict_trait_set_typ_to_tsv[trait_set_type] = csv_writer
+
+    if not trait_set_id in dict_trait_set_type_dictionary[trait_set_type]:
+        dict_trait_set = {}
+
+        for trait in trait_set.iterfind('Trait'):
+            dict_trait = {}
+
+            trait_type = trait.get('Type')
+            trait_identifier = trait.get('ID')
+
+            dict_trait['type'] = trait_type
+            dict_trait['identifier'] = trait_identifier
+
+            if (trait_set_type, trait_type) not in dict_edge_traits:
+                dict_rela_type_pair_to_count[(trait_set_type, trait_type)] = 0
+                dict_edge_traits[(trait_set_type, trait_type)] = set()
+                file_name = path_of_clinvar_data + 'data/edge_' + prepare_for_file_name_and_label(
+                    trait_set_type) + '_' + prepare_for_file_name_and_label(trait_type) + '.tsv'
+                file_edge = open(file_name, 'w', encoding='utf-8')
+                csv_writer = csv.writer(file_edge, delimiter='\t')
+                csv_writer.writerow(['trait_set_id', 'trait_id'])
+                dict_tsv_edge_variations[(trait_set_type, trait_type)] = csv_writer
+
+                query = query_edge_variation % (
+                    'trait_set_' + prepare_for_file_name_and_label(trait_set_type),
+                    'trait_set_id', 'trait_' + prepare_for_file_name_and_label(trait_type), 'trait_id')
+                query = pharmebinetutils.get_query_import('', file_name, query)
+                cypher_file_edges.write(query)
+            if (trait_set_id, trait_identifier) not in dict_edge_traits[(trait_set_type, trait_type)]:
+                dict_rela_type_pair_to_count[(trait_set_type, trait_type)] += 1
+                dict_edge_traits[(trait_set_type, trait_type)].add(
+                    (trait_set_id, trait_identifier))
+                dict_tsv_edge_variations[(trait_set_type, trait_type)].writerow(
+                    [trait_set_id, trait_identifier])
+
+            if not trait_type in dict_trait_type_dictionary:
+                dict_trait_type_dictionary[trait_type] = set()
+                file_name = path_of_clinvar_data + 'data/trait_' + trait_type + '.tsv'
+                writer = open(file_name, 'w', encoding='utf-8')
+                # csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, escapechar="\\",
+                #                             doublequote=False)
+                csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, quotechar='"')
+                csv_writer.writeheader()
+                dict_trait_typ_to_tsv[trait_type] = csv_writer
+
+            if trait_identifier not in dict_trait_type_dictionary[trait_type]:
+
+                add_name_and_synonyms_to_dict(trait, dict_trait)
+                prepare_symbol(trait, dict_trait, 'symbols')
+
+                list_attributes = []
+                preparation_attributes_with_get_and_value(trait, list_attributes)
+                if len(list_attributes) > 0:
+                    build_low_dict_into_higher_dict_with_list(dict_trait, list_attributes, 'attribute',
+                                                              'attributes')
+
+                list_trait_rela = []
+                for trait_rela in trait.iterfind('TraitRelationship'):
+                    combine_text = trait_rela.get('Type') + ':' + trait_rela.get('ID') if trait_rela.get(
+                        'ID') else trait_rela.get('Type')
+                    list_trait_rela.append(combine_text)
+                if len(list_trait_rela) > 0:
+                    dict_trait['trait_rela'] = list_trait_rela
+
+                for_citation_extraction_to_list(trait, dict_trait)
+                preparation_of_xrefs(trait, dict_trait)
+                comment_dict = for_multiple_tags_at_one(trait, 'Comment')
+                build_low_dict_into_higher_dict(dict_trait, comment_dict, 'comments')
+
+                perpare_dictionary_values(dict_trait, trait_type, dict_type_to_list_property_list)
+
+                dict_trait_typ_to_tsv[trait_type].writerow(dict_trait)
+                dict_trait_type_dictionary[trait_type].add(trait_identifier)
+            # build_low_dict_into_higher_dict_with_list(dict_trait_set, dict_trait, 'trait', 'traits')
+
+        dict_trait_set['type'] = trait_set_type
+        dict_trait_set['identifier'] = trait_set_id
+
+        add_name_and_synonyms_to_dict(trait_set, dict_trait_set)
+        prepare_symbol(trait_set, dict_trait_set, 'symbols')
+
+        list_attributes = preparation_attributions(trait_set)
+        build_low_dict_into_higher_dict_with_list(dict_trait_set, list_attributes, 'attribute', 'attributes')
+
+        add_name_and_synonyms_to_dict(trait_set, dict_trait_set)
+        prepare_symbol(trait_set, dict_trait_set, 'symbols')
+        for_citation_extraction_to_list(trait_set, dict_trait_set)
+        preparation_of_xrefs(trait_set, dict_trait_set)
+        comment_dict = for_multiple_tags_at_one(trait_set, 'Comment')
+        build_low_dict_into_higher_dict(dict_trait_set, comment_dict, 'comments')
+
+        perpare_dictionary_values(dict_trait_set, trait_set_type, dict_type_to_list_property_list)
+
+        dict_trait_set_type_dictionary[trait_set_type].add(trait_set_id)
+        dict_trait_set_typ_to_tsv[trait_set_type].writerow(dict_trait_set)
+
+    dict_info["trait_set_id"] = trait_set_id
+    dict_info["trait_set_type"] = trait_set_type
+
+
 # dictionary from specific typ to general type
 dict_specific_to_general_type = {}
 
@@ -844,24 +1144,23 @@ extract relationships information from full release
 '''
 
 
-def get_information_from_full_relase():
+def get_information_from_full_release():
     print(datetime.datetime.now(), 'start download')
 
-    filename = path_of_clinvar_data + 'ClinVarFullRelease_00-latest.xml.gz'
+    filename = path_of_clinvar_data + 'ClinVarRCVRelease_00-latest.xml.gz'
     if not os.path.exists(filename):
         # url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarFullRelease_00-latest.xml.gz'
-        url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/RCV_xml_old_format/ClinVarFullRelease_00-latest.xml.gz'
-        filename = pharmebinetutils.download_file(url, out=path_of_clinvar_data )
+        url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/RCV_release/ClinVarRCVRelease_00-latest.xml.gz'
+        filename = pharmebinetutils.download_file(url, out=path_of_clinvar_data)
     file = gzip.open(filename, 'rb')
     print(datetime.datetime.now(), 'end download')
     # file = open('ClinVarFullRelease_00-latest.xml', 'rb')
-    # file = open('big_head.xml', 'rb')
+    # file = open(path_of_clinvar_data + 'ClinVarRCVRelease_00-latest.xml/part.xml', 'rb')
 
     # counter not human
     counter_not_human = 0
 
     for event, node in etree.iterparse(file, events=('end',), tag='ClinVarSet'):
-        # print(etree.tostring(node))
         # all edge information
         dict_edge_info = {}
 
@@ -870,387 +1169,178 @@ def get_information_from_full_relase():
         dict_edge_info['title'] = node.find('Title').text if node.find('Title') is not None else ''
         reference_assertion = node.find('ReferenceClinVarAssertion')
 
-        final_assertion = ''
         # everything from reference
         if reference_assertion is not None:
+            dict_reference_info = {}
             assertion = reference_assertion.find('Assertion').get('Type')
-            final_assertion = assertion
+            dict_reference_info['assertion'] = assertion
             if assertion not in assertions_set:
                 assertions_set.add(assertion)
-                print(assertion)
-                print(datetime.datetime.now())
-            dict_edge_info['assertion'] = assertion
-            found_clinical, dict_significance = prepare_clinical_significance(reference_assertion)
-            if found_clinical:
-                dict_edge_info['clinical_significance'] = dict_significance
+            prepareClassificationInformation(reference_assertion, dict_reference_info)
 
-            preparation_of_xrefs(reference_assertion, dict_edge_info)
-            dict_edge_info['accession_clinvar'] = reference_assertion.find('ClinVarAccession').get('Acc')
+            preparation_of_xrefs(reference_assertion, dict_reference_info)
+            dict_reference_info['accession_clinvar'] = reference_assertion.find('ClinVarAccession').get('Acc')
 
             list_attributes = preparation_attributions(reference_assertion)
-            build_low_dict_into_higher_dict_with_list(dict_edge_info, list_attributes, 'attribute', 'attributes')
+            build_low_dict_into_higher_dict_with_list(dict_reference_info, list_attributes, 'attribute', 'attributes')
 
             xrefs = get_xrefs_wih_other_tag_system(reference_assertion)
             if len(xrefs) > 0:
-                dict_edge_info['xrefs'] = xrefs
+                dict_reference_info['xrefs'] = xrefs
 
             # check if this relationship appears at least in human
-            found_human = observation_information_preparation(reference_assertion, dict_edge_info)
+            found_human = observation_information_preparation(reference_assertion, dict_reference_info)
             if not found_human:
                 counter_not_human += 1
                 node.clear()
                 continue
 
             # measureSet or genotype
-            measure_set = reference_assertion.find('MeasureSet')
-            genotype = reference_assertion.find('GenotypeSet')
-            if measure_set is not None:
-                type_measure_set = measure_set.get('Type')
-                identifier = measure_set.get('ID')
-                variant_id = identifier
-                accession = measure_set.get('Acc')
-
-                if type_measure_set == 'Variant':
-                    list_attributes_variations = []
-                    variation_rela = []
-
-                    general_type = type_measure_set
-                    # if variant_id not in dict_variation_to_node_ids[type_measure_set][measure_set.find('Measure').get('Type')]:
-                    #     print('variant id not in list')
-                    #     print(variant_id)
-                    for measure in measure_set.iterfind('Measure'):
-
-                        preparation_attributes_with_get_and_value(measure, list_attributes_variations)
-
-                        for measure_rela in measure.iterfind('MeasureRelationship'):
-                            dict_rela = {}
-                            add_name_and_synonyms_to_dict(measure_rela, dict_rela)
-                            prepare_symbol(measure_rela, dict_rela, 'symbols')
-                            preparation_of_xrefs(measure_rela, dict_rela)
-                            dict_rela_optimised = {}
-                            for key, value in dict_rela.items():
-                                if type(value) == str:
-                                    dict_rela_optimised[key] = value
-                                elif type(value) == list:
-                                    dict_rela_optimised[key] = [t for t in value]
-                                else:
-                                    value = {key_v: value_v for key_v, value_v in value.items()}
-                                    dict_rela_optimised[key] = value
-                            variation_rela.append(dict_rela_optimised)
-                        if len(list_attributes_variations) > 0:
-                            dict_edge_info['variation_attributes'] = "|".join(list_attributes_variations)
-                        if len(variation_rela) > 0:
-                            dict_edge_info['variation_rela'] = to_json_and_replace(variation_rela)
-
-
-
-                else:
-                    general_type = dict_specific_to_general_type[
-                        type_measure_set] if type_measure_set in dict_specific_to_general_type else ''
-                    if variant_id not in dict_variation_to_node_ids[general_type][type_measure_set]:
-
-                        dict_haplotype = {}
-                        dict_haplotype['accession'] = measure_set.get('Acc')
-                        number_of_chr = measure_set.get('NumberOfChromosomes')
-                        if number_of_chr is not None:
-                            dict_haplotype['number_of_chromosomes'] = number_of_chr
-                        add_name_and_synonyms_to_dict(measure_set, dict_haplotype)
-                        prepare_symbol(measure_set, dict_haplotype, 'symbols')
-
-                        for_citation_extraction_to_list(measure_set, dict_haplotype)
-                        preparation_of_xrefs(measure_set, dict_haplotype)
-
-                        comment_dict = for_multiple_tags_at_one(measure_set, 'Comment')
-                        build_low_dict_into_higher_dict(dict_haplotype, comment_dict, 'comments')
-
-                        dict_attributes_set = []
-                        preparation_attributes_with_get_and_value(measure, list_attributes_variations)
-
-                        if len(dict_attributes_set) > 0:
-                            dict_haplotype['attributes'] = dict_attributes_set
-
-                        perpare_dictionary_values(dict_haplotype, type_measure_set, dict_type_to_list_property_list)
-
-                        dict_tsv_file_variation[general_type][type_measure_set].writerow(dict_haplotype)
-                        dict_variation_to_node_ids[general_type][type_measure_set].add(variant_id)
-
-                        for measure in measure_set.iterfind('Measure'):
-                            measure_type = measure.get('Type')
-                            allele_id = measure.get('ID')
-                            if allele_id in dict_allele_id_to_variant_id:
-                                for measure_id in dict_allele_id_to_variant_id[allele_id]:
-                                    if not (type_measure_set, measure_type) in edge_between_variations:
-                                        dict_rela_type_pair_to_count[(type_measure_set, measure_type)] = 0
-                                        edge_between_variations[(type_measure_set, measure_type)] = set()
-                                        file_name = path_of_clinvar_data + 'data/edge_' + prepare_for_file_name_and_label(
-                                            type_measure_set) + '_' + prepare_for_file_name_and_label(
-                                            measure_type) + '.tsv'
-                                        file_edge = open(file_name, 'w', encoding='utf-8')
-                                        csv_writer = csv.writer(file_edge, delimiter='\t')
-                                        csv_writer.writerow(['haplo', 'other_id'])
-                                        dict_tsv_edge_variations[(type_measure_set, measure_type)] = csv_writer
-
-                                        query = query_edge_variation % (
-                                            prepare_for_file_name_and_label(type_measure_set), 'haplo',
-                                            prepare_for_file_name_and_label(measure_type), 'other_id')
-                                        query = pharmebinetutils.get_query_import('',
-                                                                                  file_name,
-                                                                                  query)
-                                        cypher_file_edges.write(query)
-                                    if (variant_id, measure_id) not in edge_between_variations[
-                                        (type_measure_set, measure_type)]:
-                                        dict_rela_type_pair_to_count[(type_measure_set, measure_type)] += 1
-                                        edge_between_variations[(type_measure_set, measure_type)].add(
-                                            (type_measure_set, measure_type))
-                                        dict_tsv_edge_variations[(type_measure_set, measure_type)].writerow(
-                                            [variant_id, measure_id])
-                            else:
-                                print(variant_id)
-                                print(allele_id)
-                                print(type_measure_set)
-                                print(measure_type)
-                                print('allele id which do not exist in clinvar variationa?')
-                                # sys.exit('allele id which do not exist in clinvar variationa?')
-
-                    # if variant_id not in dict_variation_to_node_ids[general_type][type_measure_set]:
-                    #     print('Haplotype not in id not in list')
-                    #     print(variant_id)
-
-
-
-
-            elif genotype is not None:
-                identifier = genotype.get('ID')
-                type_genotype = genotype.get('Type')
-                accession = genotype.get('Acc')
-
-                general_type = dict_specific_to_general_type[
-                    type_genotype] if type_genotype in dict_specific_to_general_type else ''
-
-                variant_id = identifier
-                # if variant_id not in dict_variation_to_node_ids[general_type][type_genotype]:
-                #     print('Genotype not in id not in list')
-                #     print(variant_id)
+            prepareMeasureOrGenotypeInfo(reference_assertion, dict_reference_info)
 
             # trait Set
-            trait_set = reference_assertion.find('TraitSet')
-            trait_set_id = trait_set.get('ID')
-            trait_set_type = trait_set.get('Type')
+            prepareTraitSets(reference_assertion, dict_reference_info)
 
-            if not trait_set_type in dict_trait_set_type_dictionary:
-                dict_trait_set_type_dictionary[trait_set_type] = set()
-                file_name = path_of_clinvar_data + 'data/trait_set_' + trait_set_type + '.tsv'
-                writer = open(file_name, 'w', encoding='utf-8')
-                # csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, escapechar="\\",
-                #                             doublequote=False)
-                csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, quotechar='"')
-                csv_writer.writeheader()
-                dict_trait_set_typ_to_tsv[trait_set_type] = csv_writer
-
-            if not trait_set_id in dict_trait_set_type_dictionary[trait_set_type]:
-                dict_trait_set = {}
-
-                for trait in trait_set.iterfind('Trait'):
-                    dict_trait = {}
-
-                    trait_type = trait.get('Type')
-                    trait_identifier = trait.get('ID')
-
-                    dict_trait['type'] = trait_type
-                    dict_trait['identifier'] = trait_identifier
-
-                    if (trait_set_type, trait_type) not in dict_edge_traits:
-                        dict_rela_type_pair_to_count[(trait_set_type, trait_type)] = 0
-                        dict_edge_traits[(trait_set_type, trait_type)] = set()
-                        file_name = path_of_clinvar_data + 'data/edge_' + prepare_for_file_name_and_label(
-                            trait_set_type) + '_' + prepare_for_file_name_and_label(trait_type) + '.tsv'
-                        file_edge = open(file_name, 'w', encoding='utf-8')
-                        csv_writer = csv.writer(file_edge, delimiter='\t')
-                        csv_writer.writerow(['trait_set_id', 'trait_id'])
-                        dict_tsv_edge_variations[(trait_set_type, trait_type)] = csv_writer
-
-                        query = query_edge_variation % (
-                            'trait_set_' + prepare_for_file_name_and_label(trait_set_type),
-                            'trait_set_id', 'trait_' + prepare_for_file_name_and_label(trait_type), 'trait_id')
-                        query = pharmebinetutils.get_query_import('', file_name, query)
-                        cypher_file_edges.write(query)
-                    if (trait_set_id, trait_identifier) not in dict_edge_traits[(trait_set_type, trait_type)]:
-                        dict_rela_type_pair_to_count[(trait_set_type, trait_type)] += 1
-                        dict_edge_traits[(trait_set_type, trait_type)].add(
-                            (trait_set_id, trait_identifier))
-                        dict_tsv_edge_variations[(trait_set_type, trait_type)].writerow(
-                            [trait_set_id, trait_identifier])
-
-                    if not trait_type in dict_trait_type_dictionary:
-                        dict_trait_type_dictionary[trait_type] = set()
-                        file_name = path_of_clinvar_data + 'data/trait_' + trait_type + '.tsv'
-                        writer = open(file_name, 'w', encoding='utf-8')
-                        # csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, escapechar="\\",
-                        #                             doublequote=False)
-                        csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, quotechar='"')
-                        csv_writer.writeheader()
-                        dict_trait_typ_to_tsv[trait_type] = csv_writer
-
-                    if trait_identifier not in dict_trait_type_dictionary[trait_type]:
-
-                        add_name_and_synonyms_to_dict(trait, dict_trait)
-                        prepare_symbol(trait, dict_trait, 'symbols')
-
-                        list_attributes = []
-                        preparation_attributes_with_get_and_value(trait, list_attributes)
-                        if len(list_attributes) > 0:
-                            build_low_dict_into_higher_dict_with_list(dict_trait, list_attributes, 'attribute',
-                                                                      'attributes')
-
-                        list_trait_rela = []
-                        for trait_rela in trait.iterfind('TraitRelationship'):
-                            list_trait_rela.append(trait_rela.get('Type') + ':' + trait_rela.get('ID'))
-                        if len(list_trait_rela) > 0:
-                            dict_trait['trait_rela'] = list_trait_rela
-
-                        for_citation_extraction_to_list(trait, dict_trait)
-                        preparation_of_xrefs(trait, dict_trait)
-                        comment_dict = for_multiple_tags_at_one(trait, 'Comment')
-                        build_low_dict_into_higher_dict(dict_trait, comment_dict, 'comments')
-
-                        perpare_dictionary_values(dict_trait, trait_type, dict_type_to_list_property_list)
-
-                        dict_trait_typ_to_tsv[trait_type].writerow(dict_trait)
-                        dict_trait_type_dictionary[trait_type].add(trait_identifier)
-                    # build_low_dict_into_higher_dict_with_list(dict_trait_set, dict_trait, 'trait', 'traits')
-
-                dict_trait_set['type'] = trait_set_type
-                dict_trait_set['identifier'] = trait_set_id
-
-                add_name_and_synonyms_to_dict(trait_set, dict_trait_set)
-                prepare_symbol(trait_set, dict_trait_set, 'symbols')
-
-                list_attributes = preparation_attributions(trait_set)
-                build_low_dict_into_higher_dict_with_list(dict_trait_set, list_attributes, 'attribute', 'attributes')
-
-                add_name_and_synonyms_to_dict(trait_set, dict_trait_set)
-                prepare_symbol(trait_set, dict_trait_set, 'symbols')
-                for_citation_extraction_to_list(trait_set, dict_trait_set)
-                preparation_of_xrefs(trait_set, dict_trait_set)
-                comment_dict = for_multiple_tags_at_one(trait_set, 'Comment')
-                build_low_dict_into_higher_dict(dict_trait_set, comment_dict, 'comments')
-
-                perpare_dictionary_values(dict_trait_set, trait_set_type, dict_type_to_list_property_list)
-
-                dict_trait_set_type_dictionary[trait_set_type].add(trait_set_id)
-                dict_trait_set_typ_to_tsv[trait_set_type].writerow(dict_trait_set)
-
-            for_citation_extraction_to_list(reference_assertion, dict_edge_info)
+            for_citation_extraction_to_list(reference_assertion, dict_reference_info)
             comment_dict = for_multiple_tags_at_one(reference_assertion, 'Comment')
-            build_low_dict_into_higher_dict(dict_edge_info, comment_dict, 'comments')
+            build_low_dict_into_higher_dict(dict_reference_info, comment_dict, 'comments')
+            dict_edge_info["assertion"] = {assertion: dict_reference_info}
 
-        clinvar_assertion = node.find('ClinVarAssertion')
-        dict_clinvar_assertion = {}
-        if clinvar_assertion is not None:
-            assertion = clinvar_assertion.find('Assertion').get('Type')
-            if assertion != final_assertion:
-                final_split = final_assertion.split(' ')
-                assertion_split = assertion.split(' ')
-                if not (final_split[0] == assertion_split[0] and final_split[-1] == assertion_split[-1]):
-                    print('different assertion')
-                    print(final_assertion)
-                    print(assertion)
-                    print(variant_id)
-                    print(trait_set_id)
+        clinvar_assertions = node.findall('ClinVarAssertion')
+        dict_clinvar_assertion_to_assertion_info = {}
+        if clinvar_assertions is not None:
+            for clinvar_assertion in clinvar_assertions:
+                assertion = clinvar_assertion.find('Assertion').get('Type')
+                # if assertion != final_assertion:
+                #     final_split = final_assertion.split(' ')
+                #     assertion_split = assertion.split(' ')
+                #     if not (final_split[0] == assertion_split[0] and final_split[-1] == assertion_split[-1]):
+                #         print('different assertion')
+                #         print(final_assertion)
+                #         print(assertion)
+                #         print(variant_id)
+                #         print(trait_set_id)
 
-            if assertion not in assertions_set:
-                assertions_set.add(assertion)
-                print(assertion)
-                print(datetime.datetime.now())
-            dict_clinvar_assertion['assertion'] = assertion
-            dict_clinvar_assertion['accession_clinvar'] = clinvar_assertion.find('ClinVarAccession').get('Acc')
-            xrefs = get_xrefs_wih_other_tag_system(clinvar_assertion)
-            if len(xrefs) > 0:
-                dict_clinvar_assertion['xrefs'] = xrefs
-            found_clinical, dict_significance = prepare_clinical_significance(clinvar_assertion)
-            if found_clinical:
-                dict_clinvar_assertion['clinical_significance'] = dict_significance
+                if assertion not in assertions_set:
+                    assertions_set.add(assertion)
 
-            # check if this relationship appears at least in human
-            observation_information_preparation(clinvar_assertion, dict_clinvar_assertion)
+                if assertion not in dict_clinvar_assertion_to_assertion_info:
+                    dict_clinvar_assertion_to_assertion_info[assertion] = []
+                dict_clinvar_assertion = {}
+                dict_clinvar_assertion['assertion'] = assertion
+                dict_clinvar_assertion['accession_clinvar'] = clinvar_assertion.find('ClinVarAccession').get('Acc')
+                xrefs = get_xrefs_wih_other_tag_system(clinvar_assertion)
+                if len(xrefs) > 0:
+                    dict_clinvar_assertion['xrefs'] = xrefs
+                found_clinical, dict_significance = prepare_clinical_significance(clinvar_assertion)
+                if found_clinical:
+                    dict_clinvar_assertion['clinical_significance'] = dict_significance
 
-            # todo maybe measure set and trait set like up
+                # check if this relationship appears at least in human
+                observation_information_preparation(clinvar_assertion, dict_clinvar_assertion)
 
-            study_name = clinvar_assertion.find('StudyName')
-            if study_name is not None:
-                dict_clinvar_assertion['study_name'] = study_name.text
+                # todo maybe measure set and trait set like up
+                prepareMeasureOrGenotypeInfo(clinvar_assertion, dict_clinvar_assertion)
 
-            study_description = clinvar_assertion.find('StudyDescription')
-            if study_description is not None:
-                dict_clinvar_assertion['study_description'] = study_description.text
+                # trait Set
+                prepareTraitSets(clinvar_assertion, dict_clinvar_assertion)
 
-            for_citation_extraction_to_list(clinvar_assertion, dict_clinvar_assertion)
+                study_name = clinvar_assertion.find('StudyName')
+                if study_name is not None:
+                    dict_clinvar_assertion['study_name'] = study_name.text
 
-            preparation_of_xrefs(clinvar_assertion, dict_clinvar_assertion)
+                study_description = clinvar_assertion.find('StudyDescription')
+                if not study_description is None:
+                    dict_clinvar_assertion['study_description'] = study_description.text
 
-            list_attributes = preparation_attributions(clinvar_assertion)
-            build_low_dict_into_higher_dict_with_list(dict_clinvar_assertion, list_attributes, 'attribute',
-                                                      'attributes')
+                for_citation_extraction_to_list(clinvar_assertion, dict_clinvar_assertion)
 
-            comment_dict = for_multiple_tags_at_one(clinvar_assertion, 'Comment')
-            build_low_dict_into_higher_dict(dict_clinvar_assertion, comment_dict, 'comments')
+                preparation_of_xrefs(clinvar_assertion, dict_clinvar_assertion)
 
-        for key, value in dict_clinvar_assertion.items():
-            if key in dict_edge_info:
-                # if key == 'observations':
-                #     if type(value) == list:
-                #         for observation in value:
-                #             dict_edge_info[key].append(observation)
-                #     dict_edge_info[key] = json.dumps(dict_edge_info[key])
-                #     continue
+                list_attributes = preparation_attributions(clinvar_assertion)
+                build_low_dict_into_higher_dict_with_list(dict_clinvar_assertion, list_attributes, 'attribute',
+                                                          'attributes')
 
-                if dict_edge_info[key] != value:
-                    if type(value) == str:
-                        new_value = json.dumps({'reference_ClinVar_assertion': dict_edge_info[key],
-                                                'ClinVar_assertion': value})
+                comment_dict = for_multiple_tags_at_one(clinvar_assertion, 'Comment')
+                build_low_dict_into_higher_dict(dict_clinvar_assertion, comment_dict, 'comments')
+                dict_clinvar_assertion_to_assertion_info[assertion].append(dict_clinvar_assertion)
 
-                        dict_edge_info[key] = new_value.replace('\\"', '"')
-                    else:
-                        dict_edge_info[key] = to_json_and_replace({'reference_ClinVar_assertion': dict_edge_info[key],
-                                                                   'ClinVar_assertion': value})
-                    # if key!='clinical_significance':
-                    #     #todo check this
-                    #     print(dict_edge_info[key])
-                    #     print(value)
-                    #     print(key)
-                    #     print('same key but different value')
+        for assertion, list_of_dict_assertion_info in dict_clinvar_assertion_to_assertion_info.items():
+            dict_pair_combined_assertion_info = {}
+            for dict_clinvar_assertion in list_of_dict_assertion_info:
+                variant_id = dict_clinvar_assertion['variant_id'] if 'variant_id' in dict_clinvar_assertion else None
+                trait_set_id = dict_clinvar_assertion[
+                    'trait_set_id'] if 'trait_set_id' in dict_clinvar_assertion else None
+                if not variant_id or not trait_set_id:
+                    continue
+                if not (variant_id, trait_set_id) in dict_pair_combined_assertion_info:
+                    dict_pair_combined_assertion_info[(variant_id, trait_set_id)] = {}
+                dict_combined_assertion_info = dict_pair_combined_assertion_info[(variant_id, trait_set_id)]
+                for key, value in dict_clinvar_assertion.items():
+                    if not key in dict_combined_assertion_info:
+                        dict_combined_assertion_info[key] = value
+                    elif dict_combined_assertion_info[key] != value:
+                        if key in ['accession_clinvar', 'clinical_significance', 'variation_attributes',
+                                   'variation_rela', 'general_type', 'study_name']:
+                            if type(dict_combined_assertion_info[key]) in [str, dict]:
+                                dict_combined_assertion_info[key] = [dict_combined_assertion_info[key]]
+                            dict_combined_assertion_info[key].append(value)
+                        elif key in ['observations', 'xrefs', 'attributes', 'citations_info', 'citations', 'comments']:
+                            dict_combined_assertion_info[key].extend(value)
+                        else:
+                            print(dict_combined_assertion_info[key])
+                            print(value)
+                            print(list_of_dict_assertion_info)
+                            sys.exit('different assertion information ' + key)
+            if assertion in dict_edge_info["assertion"]:
+                variant_id = dict_edge_info["assertion"][assertion]["variant_id"]
+                trait_set_id = dict_edge_info["assertion"][assertion]["trait_set_id"]
+                if (variant_id, trait_set_id) in dict_pair_combined_assertion_info:
+                    dict_combined_assertion_info = dict_pair_combined_assertion_info[(variant_id, trait_set_id)]
+                    for key, value in dict_combined_assertion_info.items():
+                        if key in dict_edge_info["assertion"][assertion]:
 
-            else:
-                dict_edge_info[key] = value
+                            if dict_edge_info["assertion"][assertion][key] != value:
+                                dict_edge_info["assertion"][assertion][key] = to_json_and_replace(
+                                    {'reference_ClinVar_assertion': dict_edge_info["assertion"][assertion][key],
+                                     'ClinVar_assertion': value})
+
+                        else:
+                            dict_edge_info["assertion"][assertion][key] = value
 
         if node[0].text == 'current':
-            final_assertion = '_'.join(final_assertion.split(' '))
-            if (general_type, trait_set_type, final_assertion) not in dict_edges:
-                dict_rela_type_pair_to_count[(general_type, trait_set_type, final_assertion)] = 0
-                dict_edges[(general_type, trait_set_type, final_assertion)] = set()
-                file_name = path_of_clinvar_data + 'data/edges/edges_' + general_type + '_' + trait_set_type + '_' + final_assertion + '.tsv'
-                file = open(file_name, 'w', encoding='utf-8')
-                # csv_writer = csv.DictWriter(file, fieldnames=edge_information, delimiter='\t', escapechar="\\",
-                #                             doublequote=False)
-                csv_writer = csv.DictWriter(file, fieldnames=edge_information, delimiter='\t', quotechar='"')
-                csv_writer.writeheader()
-                dict_edge_types_to_tsv[(general_type, trait_set_type, final_assertion)] = csv_writer
-            # if (variant_id, trait_set_id) not in dict_edges[(general_type, trait_set_type)]:
-            dict_rela_type_pair_to_count[(general_type, trait_set_type, final_assertion)] += 1
-            perpare_dictionary_values_add_to_set(dict_edge_info,
-                                                 set_edge_trait_set_variation_pair_to_list_of_list_properties)
-            dict_edge_info['variant_id'] = variant_id
-            dict_edge_info['trait_set_id'] = trait_set_id
-            dict_edges[((general_type, trait_set_type, final_assertion))].add((variant_id, trait_set_id))
-            dict_edge_types_to_tsv[(general_type, trait_set_type, final_assertion)].writerow(dict_edge_info)
-            # else:
-            #     print(trait_set_id)
-            #     print(trait_set_type)
-            #     print(variant_id)
-            #     print(general_type)
-            #     print(dict_edge_info)
-            #     sys.exit('same pair, but do they have different information?')
-        # break
+            for assertion in dict_edge_info["assertion"]:
+                final_assertion = '_'.join(assertion.split(' '))
+                general_type = dict_edge_info["assertion"][assertion]['general_type']
+                trait_set_type = dict_edge_info["assertion"][assertion]['trait_set_type']
+                trait_set_id = dict_edge_info["assertion"][assertion]['trait_set_id']
+                variant_id = dict_edge_info["assertion"][assertion]['variant_id']
+                if (general_type, trait_set_type, final_assertion) not in dict_edges:
+                    dict_rela_type_pair_to_count[(general_type, trait_set_type, final_assertion)] = 0
+                    dict_edges[(general_type, trait_set_type, final_assertion)] = set()
+                    file_name = path_of_clinvar_data + 'data/edges/edges_' + general_type + '_' + trait_set_type + '_' + final_assertion + '.tsv'
+                    file = open(file_name, 'w', encoding='utf-8')
+                    # csv_writer = csv.DictWriter(file, fieldnames=edge_information, delimiter='\t', escapechar="\\",
+                    #                             doublequote=False)
+                    csv_writer = csv.DictWriter(file, fieldnames=edge_information, delimiter='\t', quotechar='"')
+                    csv_writer.writeheader()
+                    dict_edge_types_to_tsv[(general_type, trait_set_type, final_assertion)] = csv_writer
+                new_dict_edge_info = dict_edge_info.copy()
+                for key, value in dict_edge_info["assertion"][assertion].items():
+                    if key in new_dict_edge_info and key != "assertion":
+                        print('ohno', key, new_dict_edge_info[key])
+                        print(value)
+                        sys.exit(");")
+                    new_dict_edge_info[key] = value
+                # if (variant_id, trait_set_id) not in dict_edges[(general_type, trait_set_type)]:
+                dict_rela_type_pair_to_count[(general_type, trait_set_type, final_assertion)] += 1
+                perpare_dictionary_values_add_to_set(new_dict_edge_info,
+                                                     set_edge_trait_set_variation_pair_to_list_of_list_properties,
+                                                     variant_id)
+                dict_edges[((general_type, trait_set_type, final_assertion))].add((variant_id, trait_set_id))
+                dict_edge_info['variant_id'] = variant_id
+                dict_edge_info['trait_set_id'] = trait_set_id
+                dict_edge_types_to_tsv[(general_type, trait_set_type, final_assertion)].writerow(new_dict_edge_info)
         node.clear()
     print('number of not human edges:', counter_not_human)
 
@@ -1270,7 +1360,7 @@ def perpare_query_for_edges():
         for head in edge_information:
             if head in set_edge_trait_set_variation_pair_to_list_of_list_properties or head == 'attributes':
                 query += head + ':split(line.' + head + ',"|"), '
-            elif head in ['variant_id', 'trait_set_id']:
+            elif head in ['variant_id', 'trait_set_id', 'general_type', 'trait_set_type']:
                 continue
             elif head.startswith('variation'):
                 label = head.split('_')[1]
@@ -1305,8 +1395,7 @@ def preparation_on_variation_haplo_or_genotype(interpreted_record, variant_id, d
     if len(list_single) == 1:
         fusion_of_them(dict_node, list_single)
 
-        property_list_which_are_list = perpare_dictionary_values(dict_node, specific_type,
-                                                                 dict_type_to_list_property_list)
+        perpare_dictionary_values(dict_node, specific_type, dict_type_to_list_property_list)
 
         dict_tsv_file_variation['Variant'][specific_type].writerow(dict_node)
         dict_variation_to_node_ids['Variant'][specific_type].add(variant_id)
@@ -1364,7 +1453,7 @@ def preparation_on_variation_haplo_or_genotype(interpreted_record, variant_id, d
         if variation_type not in dict_variation_to_node_ids['Haplotype']:
             dict_specific_to_general_type[variation_type] = 'Haplotype'
             dict_variation_to_node_ids['Haplotype'][variation_type] = set()
-            file_name= path_of_clinvar_data+ 'data/' + prepare_for_file_name_and_label(variation_type) + '.tsv'
+            file_name = path_of_clinvar_data + 'data/' + prepare_for_file_name_and_label(variation_type) + '.tsv'
             file_type = open(file_name, 'w', encoding='utf-8')
             # csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=header_variation, escapechar="\\",
             #                                  doublequote=False)
@@ -1420,7 +1509,9 @@ header_variation = ['identifier', 'accession', 'name', 'allele_id', 'frequencies
                     'xrefs', 'attributes', 'comments', 'genes', 'specific_type', 'synonyms', 'cytogenetic_location',
                     'hgvs_json_list',
                     'sequence_location', 'functional_consequences', 'number_of_chromosomes', 'review_status',
-                    'citations', 'rela', 'global_minor_allel_frequency', 'genes', 'citations_info']
+                    'citations', 'rela', 'global_minor_allel_frequency', 'genes', 'citations_info',
+                    'germline_classification', 'somatic_clinicalImpact', 'noClassification',
+                    'oncogenicity_classification']
 list_header_measures = ['identifier', 'accession', 'name', 'synonyms', 'symbols', 'comments', 'measures',
                         'citations', 'xrefs', 'number_of_chromosomes', 'specific_type', 'allele_id',
                         'attributes',
@@ -1445,7 +1536,6 @@ def extract_node_info_for_variations():
     if not os.path.exists(filename):
         url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarVCVRelease_00-latest.xml.gz'
         path_combi = path_of_clinvar_data
-        print(path_combi)
         filename = pharmebinetutils.download_file(url, out=path_combi)
 
     file = gzip.open(filename, 'rb')
@@ -1471,8 +1561,7 @@ def extract_node_info_for_variations():
         # for interpretation
         interpreted_record = node.find('ClassifiedRecord')
         if interpreted_record is not None:
-            # check_for_information_and_add_to_dictionary_with_extra_name('ReviewStatus', interpreted_record, dict_node,
-            #                                                             name='review_status')
+            prepareClassificationInformation(interpreted_record, dict_node)
             general_citation = interpreted_record.find('GeneralCitations')
             if general_citation is not None:
                 for_citation_extraction_to_list(general_citation, dict_node)
@@ -1484,8 +1573,7 @@ def extract_node_info_for_variations():
                 continue
         else:
             interpreted_record = node.find('IncludedRecord')
-            check_for_information_and_add_to_dictionary_with_extra_name('ReviewStatus', interpreted_record, dict_node,
-                                                                        name='review_status')
+            prepareClassificationInformation(interpreted_record, dict_node)
             general_citation = interpreted_record.find('GeneralCitations')
             if general_citation is not None:
                 for_citation_extraction_to_list(general_citation, dict_node)
@@ -1562,7 +1650,7 @@ def main():
     global path_of_clinvar_data
     if len(sys.argv) > 1:
 
-        path_of_clinvar_data = sys.argv[1]+ 'clinvar/'
+        path_of_clinvar_data = sys.argv[1] + 'clinvar/'
     else:
         sys.exit('need a path to clinvar data')
 
@@ -1571,7 +1659,7 @@ def main():
     print(datetime.datetime.now())
     print(dict_specific_to_general_type)
     print('extract information from Full release')
-    get_information_from_full_relase()
+    get_information_from_full_release()
 
     # measure set nodes queries
     generate_node_cypher(dict_variation_to_node_ids, header_variation, is_Varient=True)

@@ -217,9 +217,10 @@ def path_to_rela_and_add_to_dict(rela, first, second):
     result = results.single()
     # if this relationship exists currently only merge is used maybe I will change this to match and create
     # however, for the relationships which already exists in the general file new queries are added to say which are not in ctd
+    license = pharmebinetutils.dict_source_to_license['ctd']
     if result:
 
-        query_last_part = ''' On Create Set  r.ctd='yes', r.source="CTD", r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2025 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=["CTD","Hetionet"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2025 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.interactions_actions=split(line.interactions_actions,'|') '''
+        query_last_part = f''' On Create Set  r.ctd=True, r.source="CTD", r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.licenses=["{license}"], r.unbiased=toBoolean(line.unbiased), r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd=true, r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+"CTD", r.licenses=r.licenses+"{license}", r.unbiased=toBoolean(line.unbiased), r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.interactions_actions=split(line.interactions_actions,'|') '''
         query = query_first_part + query_middle_1 + query_middle_2 + query_last_part
 
         dict_tuples_to_pubmeds = dict_rela_name_to_tuples_to_pubmeds[rela_full]
@@ -235,7 +236,7 @@ def path_to_rela_and_add_to_dict(rela, first, second):
 
         query_middle_2_parts = query_middle_2.split(']')
 
-        query_last_part = '''{ ctd:'yes', url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , url_ctd:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID ,source:"CTD", resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2025 NC State University. All rights reserved.", unbiased:toBoolean(line.unbiased), interaction_texts:split(line.interaction_text,'|'), gene_forms:split(line.gene_forms,'|'), pubMed_ids:split(line.pubMed_ids,'|'), interactions_actions:split(line.interactions_actions,'|')}]'''
+        query_last_part = f'''{{ ctd:True, url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , url_ctd:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID ,source:"CTD", resource:["CTD"], licenses:["{license}"], unbiased:toBoolean(line.unbiased), interaction_texts:split(line.interaction_text,'|'), gene_forms:split(line.gene_forms,'|'), pubMed_ids:split(line.pubMed_ids,'|'), interactions_actions:split(line.interactions_actions,'|')}}]'''
         query = query_first_part + query_middle_1 + query_middle_2_parts[0].replace('Merge',
                                                                                     'Create') + query_last_part + \
                 query_middle_2_parts[1] + ''

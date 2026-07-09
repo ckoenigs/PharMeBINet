@@ -10,7 +10,7 @@ sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
 # disease ontology license
-license = 'CC BY 4.0'
+license = pharmebinetutils.dict_source_to_license['go']
 
 '''
 create a connection with neo4j
@@ -80,7 +80,7 @@ def get_go_properties():
     global query_new
 
     # combine the important parts of node creation
-    query_new = query_nodes_start + query_middle_new + 'resource:["GO"], go:"yes", source:"Gene Ontology", url:"http://purl.obolibrary.org/obo/"+line.identifier, license:"' + license + '"})' + query_end
+    query_new = query_nodes_start + query_middle_new + 'resource:["GO"], go:True, source:"Gene Ontology", url:"http://purl.obolibrary.org/obo/"+line.identifier, licenses:["' + license + '"]})' + query_end
 
 
 
@@ -154,7 +154,7 @@ def get_is_a_relationships_and_add_to_tsv(namespace):
     tsv_file = csv.writer(file, delimiter='\t')
     tsv_file.writerow(['identifier_1', 'identifier_2'])
 
-    query = '''Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{license:"%s", source:"Gene Ontology", unbiased:false, resource:["GO"], go:'yes', url:"http://purl.obolibrary.org/obo/"+line.identifier_1}]->(a2)'''
+    query = '''Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{licenses:["%s"], source:"Gene Ontology", unbiased:false, resource:["GO"], go:True, url:"http://purl.obolibrary.org/obo/"+line.identifier_1}]->(a2)'''
     query = query % ( dict_go_to_pharmebinet_label[namespace], dict_go_to_pharmebinet_label[namespace],
                      dict_relationship_ends[namespace], license)
     query = pharmebinetutils.get_query_import(path_of_directory,

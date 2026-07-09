@@ -12,6 +12,8 @@ import pharmebinetutils
 # dictionary disease name to resource
 dict_phenotype_id_to_resource = {}
 
+license = pharmebinetutils.dict_source_to_license['gwas']
+
 
 def create_connection_with_neo4j():
     """
@@ -31,14 +33,14 @@ def load_disease_from_database_and_add_to_dict(label, condition=''):
     """
     Load all Genes from my database and add them into a dictionary
     """
-    query = f"MATCH (n:{label}) {condition} RETURN n.identifier, n.name, n.synonyms, n.xrefs, n.resource"
+    query = f"MATCH (n:{label}) {condition} RETURN n.identifier, n.name, n.synonyms, n.xrefs, n.resource, n.licenses"
     results = g.run(query)
 
     dict_different_mappings_for_a_label = {'name': {}, 'synonyms': {}, 'umls': {}, 'omim': {}, 'ncit': {}, 'efo': {},
                                            'hp': {}, 'orphanet': {}}
 
-    for identifier, name, synonyms, xrefs, resource, in results:
-        dict_phenotype_id_to_resource[identifier] = resource
+    for identifier, name, synonyms, xrefs, resource, licenses in results:
+        dict_phenotype_id_to_resource[identifier] = [resource, set(licenses)]
         # name = node['name'].lower()
         name = name.lower()
         # dict_disease_id_to_name[identifier] = name
@@ -113,7 +115,7 @@ def generate_files(path_of_directory):
 
     file_name = 'GWAS_trail'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['trail_id', 'identifier', 'resource', 'mapping_method']
+    header = ['trail_id', 'identifier', 'resource', 'mapping_method', 'licenses']
     file = open(file_path, 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
@@ -122,7 +124,7 @@ def generate_files(path_of_directory):
         os.mkdir(source)
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
-    query = f' MATCH (n:GWASCatalog_Trait{{id: line.trail_id}}),  (v:Phenotype{{identifier: line.identifier}})  SET v.gwas = "yes", v.resource = split(line.resource, "|") CREATE (v)-[:equal_to_GWAS_trails {{mapped_with: line.mapping_method}}]->(n)'
+    query = f' MATCH (n:GWASCatalog_Trait{{id: line.trail_id}}),  (v:Phenotype{{identifier: line.identifier}})  SET v.gwas = True, v.resource = split(line.resource, "|"), v.licenses = split(line.licenses, "|") CREATE (v)-[:equal_to_GWAS_trails {{mapped_with: line.mapping_method}}]->(n)'
 
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, "w", encoding='utf-8')
@@ -134,7 +136,7 @@ def generate_files(path_of_directory):
     csv_mapping_go = csv.writer(file_go, delimiter='\t')
     csv_mapping_go.writerow(header)
 
-    query = f' MATCH (n:GWASCatalog_Trait{{id: line.trail_id}}),  (v:BiologicalProcess{{identifier: line.identifier}})  SET v.gwas = "yes", v.resource = split(line.resource, "|") CREATE (v)-[:equal_to_GWAS_trails {{mapped_with: line.mapping_method}}]->(n)'
+    query = f' MATCH (n:GWASCatalog_Trait{{id: line.trail_id}}),  (v:BiologicalProcess{{identifier: line.identifier}})  SET v.gwas = True, v.resource = split(line.resource, "|"), v.licenses = split(line.licenses, "|") CREATE (v)-[:equal_to_GWAS_trails {{mapped_with: line.mapping_method}}]->(n)'
 
     query = pharmebinetutils.get_query_import(path_of_directory, file_name_go + '.tsv', query)
     cypher_file.write(query)
@@ -142,6 +144,12 @@ def generate_files(path_of_directory):
 
     return csv_mapping, csv_mapping_go
 
+def write_to_tsv_file(csv_mapping, node_id, pharmebinet_id, mapping_method):
+    dict_phenotype_id_to_resource[pharmebinet_id][1].add(license)
+    csv_mapping.writerow([node_id, pharmebinet_id,
+                             pharmebinetutils.resource_add_and_prepare(
+                                 dict_phenotype_id_to_resource[pharmebinet_id][0], "GWAS Catalog"),
+                             mapping_method, '|'.join(dict_phenotype_id_to_resource[pharmebinet_id][1])])
 
 def load_all_GWAS_conditions_and_finish_the_files(csv_mapping, csv_go_mapping, dict_disease, dict_symptom,
                                                   dict_phenotype):
@@ -165,44 +173,29 @@ def load_all_GWAS_conditions_and_finish_the_files(csv_mapping, csv_go_mapping, d
         if ref_id in dict_phenotype_id_to_resource:
             mapped = True
             if ref_id.startswith('GO:'):
-                csv_go_mapping.writerow([trail_id, ref_id,
-                                         pharmebinetutils.resource_add_and_prepare(
-                                             dict_phenotype_id_to_resource[ref_id], "GWAS Catalog"),
-                                         'identifier'])
+                write_to_tsv_file(csv_go_mapping, trail_id, ref_id, 'identifier')
             else:
-                csv_mapping.writerow(
-                    [trail_id, ref_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[ref_id], "GWAS Catalog"),
-                     'identifier'])
+                write_to_tsv_file(csv_mapping, trail_id, ref_id, 'identifier')
 
         if mapped:
             continue
         if ref_id in dict_disease['efo']:
             mapped = True
             for identifier in dict_disease['efo'][ref_id]:
-                csv_mapping.writerow(
-                    [trail_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "GWAS Catalog"),
-                     'efo'])
+                write_to_tsv_file(csv_mapping, trail_id, identifier, 'efo')
 
         if mapped:
             continue
         if ref_id in dict_symptom['efo']:
             mapped = True
             for identifier in dict_symptom['efo'][ref_id]:
-                csv_mapping.writerow(
-                    [trail_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "GWAS Catalog"),
-                     'efo'])
+                write_to_tsv_file(csv_mapping, trail_id, identifier, 'efo')
         if mapped:
             continue
         if ref_id in dict_symptom['hp']:
             mapped = True
             for identifier in dict_symptom['hp'][ref_id]:
-                csv_mapping.writerow(
-                    [trail_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "GWAS Catalog"),
-                     'hp'])
+                write_to_tsv_file(csv_mapping, trail_id, identifier, 'hp')
 
         if mapped:
             continue
@@ -210,10 +203,7 @@ def load_all_GWAS_conditions_and_finish_the_files(csv_mapping, csv_go_mapping, d
         if name in dict_disease['name']:
             mapped = True
             for identifier in dict_disease['name'][name]:
-                csv_mapping.writerow(
-                    [trail_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "GWAS Catalog"),
-                     'name'])
+                write_to_tsv_file(csv_mapping, trail_id, identifier, 'name')
 
         if mapped:
             continue
@@ -221,10 +211,7 @@ def load_all_GWAS_conditions_and_finish_the_files(csv_mapping, csv_go_mapping, d
         if name in dict_symptom['name']:
             mapped = True
             for identifier in dict_symptom['name'][name]:
-                csv_mapping.writerow(
-                    [trail_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "GWAS Catalog"),
-                     'name'])
+                write_to_tsv_file(csv_mapping, trail_id, identifier, 'name')
 
         if mapped:
             continue
@@ -232,10 +219,7 @@ def load_all_GWAS_conditions_and_finish_the_files(csv_mapping, csv_go_mapping, d
         if name in dict_phenotype['name']:
             mapped = True
             for identifier in dict_phenotype['name'][name]:
-                csv_mapping.writerow(
-                    [trail_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "GWAS Catalog"),
-                     'name'])
+                write_to_tsv_file(csv_mapping, trail_id, identifier, 'name')
 
         if mapped:
             continue
@@ -243,11 +227,7 @@ def load_all_GWAS_conditions_and_finish_the_files(csv_mapping, csv_go_mapping, d
         if name in dict_manual_mapping:
             print('manual')
             mapped = True
-            csv_mapping.writerow(
-                [trail_id, dict_manual_mapping[name],
-                 pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[dict_manual_mapping[name]],
-                                                           "GWAS Catalog"),
-                 'manual'])
+            write_to_tsv_file(csv_mapping, trail_id, dict_manual_mapping[name], 'manual')
 
         if mapped:
             continue
@@ -255,10 +235,7 @@ def load_all_GWAS_conditions_and_finish_the_files(csv_mapping, csv_go_mapping, d
         if ref_id in dict_disease['orphanet']:
             mapped = True
             for identifier in dict_disease['orphanet'][ref_id]:
-                csv_mapping.writerow(
-                    [trail_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "GWAS Catalog"),
-                     'orphanet'])
+                write_to_tsv_file(csv_mapping, trail_id, identifier, 'orphanet')
 
         if mapped:
             continue
@@ -266,10 +243,7 @@ def load_all_GWAS_conditions_and_finish_the_files(csv_mapping, csv_go_mapping, d
         if name in dict_disease['synonyms']:
             mapped = True
             for identifier in dict_disease['synonyms'][name]:
-                csv_mapping.writerow(
-                    [trail_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "GWAS Catalog"),
-                     'synonym'])
+                write_to_tsv_file(csv_mapping, trail_id, identifier, 'synonym')
 
         if mapped:
             continue
@@ -279,11 +253,7 @@ def load_all_GWAS_conditions_and_finish_the_files(csv_mapping, csv_go_mapping, d
             if umls_cui in dict_disease['umls']:
                 mapped = True
                 for identifier in dict_disease['umls'][umls_cui]:
-                    csv_mapping.writerow(
-                        [trail_id, identifier,
-                         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                   "GWAS Catalog"),
-                         'umls'])
+                    write_to_tsv_file(csv_mapping, trail_id, identifier, 'umls')
 
         if mapped:
             continue
@@ -291,10 +261,7 @@ def load_all_GWAS_conditions_and_finish_the_files(csv_mapping, csv_go_mapping, d
         if name in dict_symptom['synonyms']:
             mapped = True
             for identifier in dict_symptom['synonyms'][name]:
-                csv_mapping.writerow(
-                    [trail_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "GWAS Catalog"),
-                     'synonym'])
+                write_to_tsv_file(csv_mapping, trail_id, identifier, 'synonym')
 
         if mapped:
             continue
@@ -303,11 +270,7 @@ def load_all_GWAS_conditions_and_finish_the_files(csv_mapping, csv_go_mapping, d
             if umls_cui in dict_symptom['umls']:
                 mapped = True
                 for identifier in dict_symptom['umls'][umls_cui]:
-                    csv_mapping.writerow(
-                        [trail_id, identifier,
-                         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                   "GWAS Catalog"),
-                         'umls'])
+                    write_to_tsv_file(csv_mapping, trail_id, identifier, 'umls')
 
         if mapped:
             continue
@@ -316,11 +279,7 @@ def load_all_GWAS_conditions_and_finish_the_files(csv_mapping, csv_go_mapping, d
             if umls_cui in dict_phenotype['umls']:
                 mapped = True
                 for identifier in dict_phenotype['umls'][umls_cui]:
-                    csv_mapping.writerow(
-                        [trail_id, identifier,
-                         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                   "GWAS Catalog"),
-                         'umls'])
+                    write_to_tsv_file(csv_mapping, trail_id, identifier, 'umls')
 
         if mapped:
             continue
@@ -328,10 +287,7 @@ def load_all_GWAS_conditions_and_finish_the_files(csv_mapping, csv_go_mapping, d
         if name in dict_phenotype['synonyms']:
             mapped = True
             for identifier in dict_phenotype['synonyms'][name]:
-                csv_mapping.writerow(
-                    [trail_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "GWAS Catalog"),
-                     'synonym'])
+                write_to_tsv_file(csv_mapping, trail_id, identifier, 'synonym')
 
         if mapped:
             continue
@@ -348,11 +304,7 @@ def load_all_GWAS_conditions_and_finish_the_files(csv_mapping, csv_go_mapping, d
                     if nci_id in dict_disease['ncit']:
                         mapped = True
                         for identifier in dict_disease['ncit'][nci_id]:
-                            csv_mapping.writerow(
-                                [trail_id, identifier,
-                                 pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                           "GWAS Catalog"),
-                                 'umls_nci'])
+                            write_to_tsv_file(csv_mapping, trail_id, identifier, 'umls_nci')
 
         if mapped:
             continue

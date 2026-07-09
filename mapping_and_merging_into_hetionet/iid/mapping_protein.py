@@ -37,7 +37,7 @@ def load_protein_from_database_and_add_to_dict():
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_protein_id_to_resource[identifier] = node['resource']
+        dict_protein_id_to_resource[identifier] = [node['resource'], set(node['licenses'])]
         alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
         for alternative_id in alternative_ids:
             if alternative_id not in dict_alt_id_to_id:
@@ -59,11 +59,11 @@ def generate_files(path_of_directory):
     file_name = 'protein/iid_protein_to_protein'
     file = open(file_name + '.tsv', 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
-    header = ['iid_uniprot_id', 'uniprot_id', 'resource', 'mapped_with']
+    header = ['iid_uniprot_id', 'uniprot_id', 'resource', 'mapped_with','licenses']
     csv_mapping.writerow(header)
     cypher_file = open('protein/cypher.cypher', 'w', encoding='utf-8')
 
-    query = ''' Match (n:protein_IID{identifier:line.iid_uniprot_id}), (v:Protein{identifier:line.uniprot_id}) Set v.iid='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_iid_protein{mapped_with:line.mapped_with}]->(n)'''
+    query = ''' Match (n:protein_IID{identifier:line.iid_uniprot_id}), (v:Protein{identifier:line.uniprot_id}) Set v.iid=True, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") Create (v)-[:equal_to_iid_protein{mapped_with:line.mapped_with}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/iid/{file_name}.tsv',
                                               query)
@@ -71,6 +71,12 @@ def generate_files(path_of_directory):
 
     return csv_mapping
 
+def write_to_tsv_file(csv_mapping,identifier, protein_id, mapping_method):
+    dict_protein_id_to_resource[protein_id][1].add(pharmebinetutils.dict_source_to_license['iid'])
+    csv_mapping.writerow(
+        [identifier, protein_id,
+         pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[protein_id][0], 'IID'),
+         mapping_method, '|'.join(dict_protein_id_to_resource[protein_id][1])])
 
 '''
 Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
@@ -88,15 +94,10 @@ def load_all_iid_protein_and_finish_the_files(csv_mapping):
         identifier = node['identifier']
 
         if identifier in dict_protein_id_to_resource:
-            csv_mapping.writerow(
-                [identifier, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[identifier], 'IID'), 'id'])
+            write_to_tsv_file(csv_mapping,identifier,identifier, 'id')
         elif identifier in dict_alt_id_to_id:
             for protein_id in dict_alt_id_to_id[identifier]:
-                csv_mapping.writerow(
-                    [identifier, protein_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[protein_id], 'IID'),
-                     'alternative id'])
+                write_to_tsv_file(csv_mapping, identifier, protein_id, 'alternative id')
         else:
             # gene_symbols= node['symbols'] if 'symbols' in node else []
             # set_of_mapped_uniprot_ids=set()
@@ -105,8 +106,7 @@ def load_all_iid_protein_and_finish_the_files(csv_mapping):
             #     if gene_symbol in dict_gene_symbol_to_id:
             #         for protein_id in dict_gene_symbol_to_id[gene_symbol]:
             #             if protein_id not in set_of_mapped_uniprot_ids:
-            #                 csv_mapping.writerow([identifier, protein_id, resource(protein_id),
-            #                                       'gene symbol'])
+            #                 write_to_tsv_file(csv_mapping, identifier, protein_id, 'gene symbol')
             #                 set_of_mapped_uniprot_ids.add(protein_id)
             # #                 found_a_map=True
             # if not found_a_map:

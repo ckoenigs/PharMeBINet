@@ -1,6 +1,7 @@
 import time
 import neo4j
 import pymysql
+from bolt import bolt
 
 mysql_host = 'totoro.local'
 mysql_user='ckoenigs'
@@ -8,7 +9,8 @@ mysql_pw='Za8p7Tf$'
 
 # connect with the neo4j database
 def database_connection_neo4j_driver() -> neo4j.Driver:
-    neo4j_address = 'bolt://localhost:7687'
+
+    neo4j_address = f'bolt://localhost:{bolt}'
     username = 'neo4j'
     password = 'test1234'
     retries = 0

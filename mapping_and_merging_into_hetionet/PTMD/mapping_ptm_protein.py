@@ -68,15 +68,17 @@ def get_PTMD_information(edge_type):
     # cypher queries
     cypher_path = os.path.join(source, 'cypher_edge.cypher')
     file_cypher = open(cypher_path, 'a', encoding='utf-8')
+    
+    license = pharmebinetutils.dict_source_to_license['ptmd']
 
     # Create new edges, write cypher queries
     query = ''
     if edge_type == 'PTMD_HAS_PTM':
         query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Protein{{identifier:line.protein_id}}) '
-                 f'Create (d)-[:HAS_PhPTM{{resource:["PTMD"],ptmd:"yes", url:"https://ptmd.biocuckoo.cn/index.php",  source:"PTMD", license:"ONLY freely available for academic research"}}]->(p)')
+                 f'Create (d)-[:HAS_PhPTM{{resource:["PTMD"],ptmd:True, url:"https://ptmd.biocuckoo.cn/index.php",  source:"PTMD", licenses:["{license}"]}}]->(p)')
     elif edge_type == 'PTMD_INVOLVES':
         query = (f' Match (p:PTM{{identifier:line.ptm_id}}), (d:Protein{{identifier:line.protein_id}}) '
-             f'Create (p)-[:INVOLVES_PTMiP{{resource:["PTMD"],ptmd:"yes", url:"https://ptmd.biocuckoo.cn/index.php",  source:"PTMD", license:"ONLY freely available for academic research"}}]->(d)')
+             f'Create (p)-[:INVOLVES_PTMiP{{resource:["PTMD"],ptmd:True, url:"https://ptmd.biocuckoo.cn/index.php",  source:"PTMD", licenses:["{license}"]}}]->(d)')
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_not_mapped_protein,
                                               query)

@@ -29,7 +29,7 @@ create the tsv files
 def create_tsv_files():
     # prepare file and queries for new nodes
     file_name = 'output/map_ct.tsv'
-    query = f'Match (d: {label} {{identifier: line.id_pharmebinet}}),(c:{reactome_label} {{dbId:toInteger(line.id)}}) Create (d)-[: equal_to_reactome_ct]->(c) SET d.resource = split(line.resource, "|"), d.reactome = "yes"'
+    query = f'Match (d: {label} {{identifier: line.id_pharmebinet}}),(c:{reactome_label} {{dbId:toInteger(line.id)}}) Create (d)-[: equal_to_reactome_ct]->(c) SET d.resource = split(line.resource, "|"), d.licenses = split(line.licenses, "|"), d.reactome = true'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/{file_name}',
                                               query)
@@ -39,7 +39,7 @@ def create_tsv_files():
         cypher_file.write(query)
     file = open(file_name, 'w')
     tsv_file = csv.writer(file, delimiter='\t')
-    tsv_file.writerow(['id_pharmebinet', 'id', 'resource'])
+    tsv_file.writerow(['id_pharmebinet', 'id', 'resource', 'licenses'])
     return tsv_file
 
 # dictionary cell type to resource
@@ -50,10 +50,10 @@ def go_through_co():
     Go throug all cell type nodes and write information into dictionary
     :return:
     """
-    query = '''Match (n:%s) Return n.identifier, n.resource''' % (label)
+    query = '''Match (n:%s) Return n.identifier, n.resource, n.licenses''' % (label)
     results = g.run(query)
-    for identifier, resource, in results:
-        dict_ct_to_resource[identifier] = resource
+    for identifier, resource, licenses, in results:
+        dict_ct_to_resource[identifier] = [resource, set(licenses)]
 
 def load_and_map_reactome_cell_type():
     """
@@ -65,7 +65,8 @@ def load_and_map_reactome_cell_type():
     for identifier, dbId, in g.run(query):
         with_string_identifier='CL:'+identifier
         if with_string_identifier in dict_ct_to_resource:
-            tsv_mapping_file.writerow([with_string_identifier, dbId, pharmebinetutils.resource_add_and_prepare(dict_ct_to_resource[with_string_identifier],'Reactome')])
+            dict_ct_to_resource[with_string_identifier][1].add(pharmebinetutils.dict_source_to_license['reactome'])
+            tsv_mapping_file.writerow([with_string_identifier, dbId, pharmebinetutils.resource_add_and_prepare(dict_ct_to_resource[with_string_identifier][0],'Reactome'), '|'.join(dict_ct_to_resource[with_string_identifier][1])])
 
 
 # path to directory

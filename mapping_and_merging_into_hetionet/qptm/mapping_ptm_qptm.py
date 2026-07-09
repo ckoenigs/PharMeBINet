@@ -13,6 +13,8 @@ dict_identifier_to_resource = {}
 # dictionary ptm name to identifier
 dict_protein_name_to_identifier = {}
 
+license = pharmebinetutils.dict_source_to_license['qptm']
+
 def create_connection_with_neo4j():
     '''
     create a connection with neo4j
@@ -25,11 +27,11 @@ def load_ptms_from_database_and_add_to_dict():
     """
     Load all Proteins from pharmebinet and add them into a dictionary
     """
-    query = "MATCH (n:PTM) RETURN n.identifier, n.resource"
+    query = "MATCH (n:PTM) RETURN n.identifier, n.resource, n.licenses"
     results = g.run(query)
 
-    for identifier, resource in results:
-        dict_identifier_to_resource[identifier] = resource
+    for identifier, resource, licenses in results:
+        dict_identifier_to_resource[identifier] = [resource, set(licenses)]
         #name = name.lower()
         #pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_to_identifier, name, identifier)
     #print(identifier)
@@ -45,7 +47,7 @@ def generate_files(path_of_directory):
 
     file_name = 'qPTM_ptms_to_PTM'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['nodeId', 'ptm_identifier', 'resource', 'mapping_method', 'sequence_window']
+    header = ['nodeId', 'ptm_identifier', 'resource', 'mapping_method', 'sequence_window', 'licenses']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
@@ -67,16 +69,17 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     query = (f' Match (n:qPTM_PTM), (v:PTM{{identifier:line.ptm_identifier}}) WHERE id(n) = toInteger(line.nodeId) '
-             f'Set v.qptm="yes", v.resource=split(line.resource,"|"), v.sequence_window=line.sequence_window '
+             f'Set v.qptm=true, v.resource=split(line.resource,"|"),v.licenses=split(line.licenses,"|"), v.sequence_window=line.sequence_window '
              f'MERGE (v)-[:equal_to_qPTM_ptm{{mapped_with:line.mapping_method}}]->(n)')
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
     cypher_file.write(query)
 
     query = (f' Match (n:qPTM_PTM) WHERE id(n) = toInteger(line.nodeId) MERGE (v:PTM{{identifier:line.identifier}}) '
-             f'On Create Set v.qptm="yes", v.url="https://qptm.omicsbio.info/", v.license="ONLY freely available for academic research",'
+             f'On Create Set v.qptm=true, v.url="https://qptm.omicsbio.info/", v.licenses=["%s"],'
              f' v.resource=split(line.resource,"|"), v.residue=line.residue, v.position=line.position,  v.source="qPTM", '
              f'v.type=line.type, v.sequence_window=line.sequence_window MERGE (v)-[:equal_to_qPTM_ptm]->(n)')
+    query = query % license
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
@@ -102,12 +105,13 @@ def load_all_qptm_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping_ne
         counter_all += 1
         identifier = f"{identifier}_{position}_{residue}_{ptm_type}"
         # mapping
-        # Check if the identifier exists in dict_identifier_to_resource
+
         if identifier in dict_identifier_to_resource:
+            dict_identifier_to_resource[identifier][1].add(license)
             csv_mapping_existing.writerow([
                 nodeId, identifier,
-                pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "qPTM"),
-                'ptm_identifier', sequence_window
+                pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier][0], "qPTM"),
+                'ptm_identifier', sequence_window, '|'.join(dict_identifier_to_resource[identifier][1])
             ])
             counter_mapped += 1
             continue  # Skip to the next entry as it is already mapped

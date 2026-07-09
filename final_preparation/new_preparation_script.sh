@@ -12,6 +12,9 @@ password=$3
 # define path to databases directory
 path_to_databases=$4
 
+# define path to databases directory
+neo4j_bolt=$5
+
 # path to pharMeBiNet graphml
 path_to_pharMeBiNet=$path_to_databases"PharMeBiNet/"
 
@@ -56,7 +59,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'prepare graphML import with index'
 
-python prepare_shell_for_graphml_import.py > output/output_preparation_graphml_import.txt
+python prepare_shell_for_graphml_import.py $neo4j_bolt > output/output_preparation_graphml_import.txt
 
 
 now=$(date +"%F %T")

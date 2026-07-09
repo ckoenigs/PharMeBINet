@@ -21,20 +21,22 @@ def create_connection_with_neo4j():
 def load_edge_into_dictionary(label1, labels2, edge_type):
     """Load existing pairs between ATC nodes from Pharmebinet"""
 
-    query = f'''MATCH (n:{label1})-[r:{edge_type}]->(m:{labels2}) RETURN n.identifier,m.identifier, r.resource'''
+    query = f'''MATCH (n:{label1})-[r:{edge_type}]->(m:{labels2}) RETURN n.identifier,m.identifier, r.resource, r.licenses'''
     results = graph_database.run(query)
 
     dict_pair_to_resource = {}
     for record in results:
-        [node_1_id, node_2_id, resource] = record.values()
+        [node_1_id, node_2_id, resource, licenses] = record.values()
 
         pair = (node_1_id, node_2_id)
-        dict_pair_to_resource[pair] = resource
+        dict_pair_to_resource[pair] = [resource, set(licenses)]
     return dict_pair_to_resource
 
 
 # generate cypher file
 cypher_file = open('output/cypher_edge.cypher', 'w')
+
+license = pharmebinetutils.dict_source_to_license['drugcentral']
 
 
 def prepare_tsv_and_cypher(label1, label2, dc_label_1, dc_label_2, edge_type):
@@ -48,14 +50,17 @@ def prepare_tsv_and_cypher(label1, label2, dc_label_1, dc_label_2, edge_type):
     file_name = f'edge/{label1}_{label2}_{edge_type}_{dc_label_1}_{dc_label_2}.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['id1', 'id2', 'resource', 'id'])
+    csv_writer.writerow(['id1', 'id2', 'resource', 'licenses', 'id'])
 
     if dc_label_1 == 'DC_Structure' or dc_label_2 == 'DC_Structure':
-        url = '"https://drugcentral.org/drugcard/"+line.id'
+        if dc_label_1 == 'DC_Structure':
+            url = '"https://drugcentral.org/drugcard/"+line.id1'
+        else:
+            url = '"https://drugcentral.org/drugcard/"+line.id2'
     else:
         url = '"https://drugcentral.org/"'
 
-    query = f'''Match (n:{label1}{{identifier:line.id1}}),(o:{label2}{{identifier:line.id2}}) Merge (n)-[m:{edge_type}]->(o) On Match Set m.resource=split(line.resource,"|"), m.drugcentral='yes' On Create Set m.resource=['DrugCentral'], m.source='DrugCentral', m.url={url}, m.license="Creative Commons Attribution-ShareAlike 4.0 International Public License", m.drugcentral='yes' '''
+    query = f'''Match (n:{label1}{{identifier:line.id1}}),(o:{label2}{{identifier:line.id2}}) Merge (n)-[m:{edge_type}]->(o) On Match Set m.resource=split(line.resource,"|"),m.licenses=split(line.licenses,"|"), m.drugcentral=true On Create Set m.resource=['DrugCentral'], m.source='DrugCentral', m.url={url}, m.licenses=["{license}"], m.drugcentral=true '''
     query_create = pharmebinetutils.get_query_import(path_of_directory,
                                                      'mapping_and_merging_into_hetionet/drugcentral/' + file_name,
                                                      query)
@@ -88,8 +93,10 @@ def load_and_map_DC_edges(label1, label2, dc_label_1, dc_label_2, edge_type_dc, 
 
         set_of_pairs.add((node_1_id, node_2_id))
         if (node_1_id, node_2_id) in dict_pair_to_resource:
+            dict_pair_to_resource[(node_1_id, node_2_id)][1].add(license)
             tsv_writer.writerow([node_1_id, node_2_id, pharmebinetutils.resource_add_and_prepare(
-                dict_pair_to_resource[(node_1_id, node_2_id)], 'DrugCentral'), id_dc])
+                dict_pair_to_resource[(node_1_id, node_2_id)][0], 'DrugCentral'),
+                                 '|'.join(dict_pair_to_resource[(node_1_id, node_2_id)][1]), id_dc])
         else:
             tsv_writer.writerow([node_1_id, node_2_id, '', id_dc])
 
@@ -136,7 +143,7 @@ def main():
 
     for edge_info in list_of_list_with_edge_information:
         load_and_map_DC_edges(edge_info[0], edge_info[1], edge_info[2], edge_info[3], edge_info[4], edge_info[5],
-                                  load_edge_into_dictionary(edge_info[0], edge_info[1], edge_info[5]))
+                              load_edge_into_dictionary(edge_info[0], edge_info[1], edge_info[5]))
 
     print(
         '###########################################################################################################################')

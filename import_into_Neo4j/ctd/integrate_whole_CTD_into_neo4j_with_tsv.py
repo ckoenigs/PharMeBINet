@@ -18,17 +18,21 @@ def load_chemicals_and_add_to_cypher_file():
     """
     load ctd chemical file and generate cypher file for the nodes with properties:
         0: ChemicalName
-        1: ChemicalID
-        2: CasRN
-        3: Definition
-        4: ParentIDs
-        5: TreeNumbers
-        6: ParentTreeNumbers
-        7: Synonyms
-        # 8: DrugBankID is excluded
+        1: ChemicalID (MeSH identifier)
+        2: CasRN (CAS Registry Number, if available)
+        3: PubChemCID (PubChem Compound, if available)
+        4: PubChemSID (PubChem Substance, if available)
+        5: DTXSID (CompTox Chemicals Dashboard, if available)
+        6: InChIKey (InChIKey, if available)
+        7: Definition
+        8: ParentIDs (identifiers of the parent terms; '|'-delimited list)
+        9: TreeNumbers (identifiers of the chemical's nodes; '|'-delimited list)
+        10: ParentTreeNumbers (identifiers of the parent nodes; '|'-delimited list)
+        11: MESHSynonyms ('|'-delimited list)
+        12: CTDCuratedSynonyms ('|'-delimited list)
     """
     cypher_file_nodes.write(pharmebinetutils.prepare_index_query('CTD_chemical', 'chemical_id'))
-    query = ''' Create (c:CTD_chemical{ chemical_id:split(line.ChemicalID,':')[1] , casRN:line.CasRN, synonyms:split(line.Synonyms,'|'),  parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.ChemicalName, url:"http://ctdbase.org/detail.go?type=chem&acc="+ split(line.ChemicalID,':')[1]}) '''
+    query = ''' Create (c:CTD_chemical{ chemical_id:split(line.ChemicalID,':')[1] , pubChemCID:line.PubChemCID,inchikey:line.InChIKey, dtxsid:line.DTXSID,pubChemSID:line.PubChemSID, casRN:line.CasRN, synonyms:split(line.CTDCuratedSynonyms,'|'), synonyms_mesh:split(line.MESHSynonyms,'|'),  parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.ChemicalName, url:"http://ctdbase.org/detail.go?type=chem&acc="+ split(line.ChemicalID,':')[1]}) '''
     query = pharmebinetutils.get_query_import(path_of_ctd_data, 'ctd_data/CTD_chemicals.tsv', query)
     cypher_file_nodes.write(query)
 
@@ -420,6 +424,14 @@ def load_chemical_pathway_enriched(reduced: bool):
 
 def load_chemical_disease(reduced: bool):
     """
+    load ctd CTD_curated_chemicals_diseases file:
+        0: ChemicalName
+        1: ChemicalID (MeSH identifier)
+        2: CasRN (CAS Registry Number, if available)
+        3: DiseaseName
+        4: DiseaseID (MeSH or OMIM identifier)
+        5: DirectEvidence ('|'-delimited list)
+        6: PubMedIDs ('|'-delimited list)
     load ctd chemical-disease file:
         0: ChemicalName
         1: ChemicalID
@@ -433,37 +445,29 @@ def load_chemical_disease(reduced: bool):
         9: PubMedIDs
     and gather the information
     """
-    file_name = '/ctd_data/CTD_chemicals_diseases.tsv'
-    if reduced:
-        file = open(path_of_ctd_data + file_name, 'r', encoding='utf-8')
-        csv_reader = csv.DictReader(file, delimiter='\t')
 
-        generated_header = False
-        file_name = '/ctd_data/CTD_chemicals_diseases_reduced.tsv'
-        write_file = open(path_of_ctd_data + file_name, 'w', encoding='utf-8')
-        counter = 0
-        counter_evidence_line = 0
-        for line_dict in csv_reader:
-            if not generated_header:
-                csv_writer = csv.DictWriter(write_file, fieldnames=list(line_dict.keys()), delimiter='\t')
-                csv_writer.writeheader()
-                generated_header = True
-            if line_dict['DirectEvidence'] != '':
-                csv_writer.writerow(line_dict)
-                counter_evidence_line += 1
-            counter += 1
-            if counter % 5000000 == 0:
-                print(counter, datetime.datetime.now(), counter_evidence_line)
-        file.close()
-        write_file.close()
-
-    query = ''' Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_CD{ url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID ,directEvidence:line.DirectEvidence, inferenceGeneSymbol:line.InferenceGeneSymbol, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMed_ids:split(line.PubMedIDs,'|') }]->(g)'''
+    file_name = '/ctd_data/CTD_curated_chemicals_diseases.tsv'
+    query = ''' Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_CD{ url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID ,directEvidence:line.DirectEvidence, omimIDs:split(line.OmimIDs,'|'), pubMed_ids:split(line.PubMedIDs,'|'), curated:True }]->(g)'''
     query = pharmebinetutils.get_query_import(path_of_ctd_data, file_name[1:], query)
     cypher_file_edges.write(query)
+
+    if not reduced:
+        file_name = '/ctd_data/CTD_chemicals_diseases.tsv'
+        query = ''' Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_CD{ url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID ,directEvidence:line.DirectEvidence, inferenceGeneSymbol:line.InferenceGeneSymbol, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMed_ids:split(line.PubMedIDs,'|') }]->(g)'''
+        query = pharmebinetutils.get_query_import(path_of_ctd_data, file_name[1:], query)
+        cypher_file_edges.write(query)
 
 
 def load_gene_disease(reduced: bool):
     """
+    load ctd CTD_curated_genes_diseases file:
+        0:GeneSymbol
+        1:GeneID (NCBI Gene identifier)
+        2:DiseaseName
+        3:DiseaseID (MeSH or OMIM identifier)
+        4:DirectEvidence ('|'-delimited list)
+        5:OmimIDs ('|'-delimited list)
+        6:PubMedIDs ('|'-delimited list)
     load ctd gene-disease file:
         0: GeneSymbol
         1: GeneID
@@ -476,32 +480,15 @@ def load_gene_disease(reduced: bool):
         8: PubMedIDs
     and gather the information
     """
-    file_name = '/ctd_data/CTD_genes_diseases.tsv'
-    if reduced:
-        file = open(path_of_ctd_data + file_name, 'r', encoding='utf-8')
-        csv_reader = csv.DictReader(file, delimiter='\t')
-
-        generated_header = False
-        file_name = '/ctd_data/CTD_genes_diseases_reduced.tsv'
-        write_file = open(path_of_ctd_data + file_name, 'w', encoding='utf-8')
-        counter = 0
-        counter_evidence_line = 0
-        for line_dict in csv_reader:
-            if not generated_header:
-                csv_writer = csv.DictWriter(write_file, fieldnames=list(line_dict.keys()), delimiter='\t')
-                csv_writer.writeheader()
-                generated_header = True
-            if line_dict['DirectEvidence'] != '':
-                csv_writer.writerow(line_dict)
-                counter_evidence_line += 1
-            counter += 1
-            if counter % 5000000 == 0:
-                print(counter, datetime.datetime.now(), counter_evidence_line)
-        file.close()
-        write_file.close()
-    query = '''Match (c:CTD_gene{ gene_id:line.GeneID }), (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_GD{ url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , directEvidence:line.DirectEvidence, inferenceChemicalName:line.InferenceChemicalName, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMed_ids:split(line.PubMedIDs,'|') }]->(g)'''
+    file_name = '/ctd_data/CTD_curated_genes_diseases.tsv'
+    query = '''Match (c:CTD_gene{ gene_id:line.GeneID }), (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_GD{ url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , directEvidence:line.DirectEvidence,  omimIDs:split(line.OmimIDs,'|'), pubMed_ids:split(line.PubMedIDs,'|'), curated:True }]->(g)'''
     query = pharmebinetutils.get_query_import(path_of_ctd_data, file_name[1:], query)
     cypher_file_edges.write(query)
+    if not reduced:
+        file_name = '/ctd_data/CTD_genes_diseases.tsv'
+        query = '''Match (c:CTD_gene{ gene_id:line.GeneID }), (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_GD{ url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , directEvidence:line.DirectEvidence, inferenceChemicalName:line.InferenceChemicalName, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMed_ids:split(line.PubMedIDs,'|') }]->(g)'''
+        query = pharmebinetutils.get_query_import(path_of_ctd_data, file_name[1:], query)
+        cypher_file_edges.write(query)
 
 
 def generate_rela_file(file_name, dict_rela_to_file, rela, label, label_id, rela_properties, rela_name='associates'):

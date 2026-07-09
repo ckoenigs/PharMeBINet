@@ -22,6 +22,10 @@ def create_connection_with_neo4j_mysql():
     global conRxNorm
     conRxNorm = create_connection_to_databases.database_connection_RxNorm()
 
+    # generate connection to mysql to RxNorm database
+    global con_umls
+    con_umls = create_connection_to_databases.database_connection_umls()
+
 
 # dictionary rxcui to drugbank ids
 dict_rxcui_to_Drugbank_with_xref = {}
@@ -29,6 +33,8 @@ dict_rxcui_to_Drugbank_with_xref = {}
 dict_name_to_chemical_ids = {}
 # dictionary with all compounds with id as key and [resource, xrefs]
 dict_chemical_id_to_resource_xrefs = {}
+
+license = pharmebinetutils.dict_source_to_license['aeolus']
 
 
 def load_compounds_from_pharmebinet():
@@ -44,11 +50,11 @@ def load_compounds_from_pharmebinet():
         url
     :return:
     """
-    query = 'MATCH (n:Chemical) RETURN n.identifier, n.inchikey, n.inchi, n.name, n.resource, n.xrefs, n.synonyms '
+    query = 'MATCH (n:Chemical) RETURN n.identifier, n.inchikey, n.inchi, n.name, n.resource, n.xrefs, n.synonyms , n.licenses '
     results = g.run(query)
 
     for record in results:
-        [identifier, inchikey, inchi, name, resource, xrefs, synonyms] = record.values()
+        [identifier, inchikey, inchi, name, resource, xrefs, synonyms, licenses] = record.values()
         inchikey = inchikey if inchikey else ''
         inchi = inchi if inchi else ''
         pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_chemical_ids, name.lower(), identifier)
@@ -57,7 +63,7 @@ def load_compounds_from_pharmebinet():
             if xref.startswith('RxNorm_CUI'):
                 rxcui = xref.split(':')[1]
                 pharmebinetutils.add_entry_to_dict_to_set(dict_rxcui_to_Drugbank_with_xref, rxcui, identifier)
-        dict_chemical_id_to_resource_xrefs[identifier] = [resource, set(xrefs)]
+        dict_chemical_id_to_resource_xrefs[identifier] = [resource, set(xrefs), set(licenses)]
 
         if synonyms:
             for synonym in synonyms:
@@ -66,18 +72,17 @@ def load_compounds_from_pharmebinet():
     print('In pharmebinet:' + str(len(dict_chemical_id_to_resource_xrefs)) + ' drugs')
 
 
-def search_for_mapping_in_rxnorm(sab, rxnorm_id, drug_concept_id, name, mapping_string):
+def search_for_mapping_to_drugbank_in_rxnorm( rxnorm_id, drug_concept_id, name):
     """
-    Search in RxNorm for mapping
-    :param sab:
+    Search in RxNorm for mapping to drugbank
     :param rxnorm_id:
-    :param mapping_string
     :param drug_concept_id:
+    :param name:
     :return:
     """
     cur = conRxNorm.cursor()
-    query = ("Select RXCUI,LAT,CODE,SAB,STR From RXNCONSO Where SAB = '%s' and RXCUI= '%s' ;")
-    query = query % (sab, rxnorm_id)
+    query = ("Select RXCUI,LAT,CODE,SAB,STR From RXNCONSO Where SAB = 'DRUGBANK' and RXCUI= '%s' ;")
+    query = query % ( rxnorm_id)
     rows_counter = cur.execute(query)
     found_a_mapping = False
     if rows_counter > 0:
@@ -87,23 +92,52 @@ def search_for_mapping_in_rxnorm(sab, rxnorm_id, drug_concept_id, name, mapping_
             if code in dict_chemical_id_to_resource_xrefs:
                 xrefs = dict_chemical_id_to_resource_xrefs[code][1]
                 xrefs.add('RxNorm_CUI:' + rxcui)
+                dict_chemical_id_to_resource_xrefs[code][2].add(license)
                 found_a_mapping = True
                 if label == name:
                     if not (drug_concept_id, code) in set_of_mapping_pairs:
                         set_of_mapping_pairs.add((drug_concept_id, code))
-                        csv_writer.writerow([drug_concept_id, code, mapping_string + '_and_same_name',
+                        csv_writer.writerow([drug_concept_id, code, 'rxcui_map_to_drugbank_and_same_name',
                                              pharmebinetutils.resource_add_and_prepare(
                                                  dict_chemical_id_to_resource_xrefs[code][0], "AEOLUS"),
                                              '|'.join(
-                                                 go_through_xrefs_and_change_if_needed_source_name(xrefs, 'chemical'))])
+                                                 go_through_xrefs_and_change_if_needed_source_name(xrefs, 'chemical')), '|'.join(dict_chemical_id_to_resource_xrefs[code][2])])
                 else:
                     if not (drug_concept_id, code) in set_of_mapping_pairs:
                         set_of_mapping_pairs.add((drug_concept_id, code))
-                        csv_writer.writerow([drug_concept_id, code, mapping_string,
+                        csv_writer.writerow([drug_concept_id, code, 'rxcui_map_to_drugbank',
                                              pharmebinetutils.resource_add_and_prepare(
                                                  dict_chemical_id_to_resource_xrefs[code][0], "AEOLUS"),
                                              '|'.join(
-                                                 go_through_xrefs_and_change_if_needed_source_name(xrefs, 'chemical'))])
+                                                 go_through_xrefs_and_change_if_needed_source_name(xrefs, 'chemical')), '|'.join(dict_chemical_id_to_resource_xrefs[code][2])])
+
+    return found_a_mapping
+
+
+def search_for_mapping_in_umls( rxnorm_id, drug_concept_id):
+    """
+    Search in UMLS mapping from rxcui to mesh ids over umls cui.
+    :param rxnorm_id:
+    :param drug_concept_id:
+    :return:
+    """
+    dict_rxcui_to_mesh_ids = pharmebinetutils.getMeshFromUMLSWithRxCUI(con_umls, {rxnorm_id})
+    found_a_mapping = False
+    if len(dict_rxcui_to_mesh_ids) > 0:
+        # check if they are drugbank ids where the name is the same as in aeolus
+        for mesh_id in dict_rxcui_to_mesh_ids[rxnorm_id]:
+            if mesh_id in dict_chemical_id_to_resource_xrefs:
+                xrefs = dict_chemical_id_to_resource_xrefs[mesh_id][1]
+                xrefs.add('RxNorm_CUI:' + rxnorm_id)
+                found_a_mapping = True
+                dict_chemical_id_to_resource_xrefs[mesh_id][2].add(license)
+                if not (drug_concept_id, mesh_id) in set_of_mapping_pairs:
+                    set_of_mapping_pairs.add((drug_concept_id, mesh_id))
+                    csv_writer.writerow([drug_concept_id, mesh_id, "rxcui_map_to_MESH_over_umls",
+                                         pharmebinetutils.resource_add_and_prepare(
+                                             dict_chemical_id_to_resource_xrefs[mesh_id][0], "AEOLUS"),
+                                         '|'.join(
+                                             go_through_xrefs_and_change_if_needed_source_name(xrefs, 'chemical')), '|'.join(dict_chemical_id_to_resource_xrefs[mesh_id][2])])
 
     return found_a_mapping
 
@@ -138,7 +172,7 @@ def load_mapping_information_from_tsv_to_dictionary(file_name, dictionary):
 # tsv for mapped aeolus pairs
 file = open('drug/mapped.tsv', 'w', encoding='utf-8')
 csv_writer = csv.writer(file, delimiter='\t')
-header = ['aeolus_id', 'chemical_id', 'how_mapped', 'resource', 'xrefs']
+header = ['aeolus_id', 'chemical_id', 'how_mapped', 'resource', 'xrefs', 'licenses']
 csv_writer.writerow(header)
 
 # set of mapping pairs
@@ -150,10 +184,16 @@ dict_manual_mapped_nodes={
     '19097468':'DBSALT002762'
 }
 
+def write_to_tsv_file(drug_concept_id, chemical_id, xrefs, mapping_method):
+    dict_chemical_id_to_resource_xrefs[chemical_id][2].add(license)
+    csv_writer.writerow([drug_concept_id, chemical_id, mapping_method,
+                         pharmebinetutils.resource_add_and_prepare(
+                             dict_chemical_id_to_resource_xrefs[chemical_id][0], "AEOLUS"),
+                         '|'.join(xrefs), '|'.join(dict_chemical_id_to_resource_xrefs[chemical_id][2])])
 
 def load_drug_aeolus_in_dictionary():
     """
-    load a part of aeolus drugs, which are not integrated, in a dictionary and set the property integrated='yes'
+    load a part of aeolus drugs, which are not integrated, in a dictionary and set the property integrated=true
 has properties:
     vocabulary_id: defined the type of the concept_code
     name
@@ -181,11 +221,8 @@ has properties:
             for chemical_id in dict_rxcui_to_Drugbank_with_xref[rxcui]:
                 if not (drug_concept_id,chemical_id) in set_of_mapping_pairs:
                     set_of_mapping_pairs.add((drug_concept_id,chemical_id))
-                    csv_writer.writerow([drug_concept_id, chemical_id, 'map_rxcui_with_xref',
-                                         pharmebinetutils.resource_add_and_prepare(
-                                             dict_chemical_id_to_resource_xrefs[chemical_id][0], "AEOLUS"),
-                                         '|'.join(go_through_xrefs_and_change_if_needed_source_name(
-                                             dict_chemical_id_to_resource_xrefs[chemical_id][1], 'chemical'))])
+                    write_to_tsv_file(drug_concept_id, chemical_id, go_through_xrefs_and_change_if_needed_source_name(
+                                             dict_chemical_id_to_resource_xrefs[chemical_id][1], 'chemical'), 'map_rxcui_with_xref')
 
         if found_mapping:
             continue
@@ -195,32 +232,28 @@ has properties:
             chemical_id=dict_manual_mapped_nodes[drug_concept_id]
             if not (drug_concept_id,chemical_id) in set_of_mapping_pairs:
                 set_of_mapping_pairs.add((drug_concept_id,chemical_id))
-                csv_writer.writerow([drug_concept_id, chemical_id, 'manual_mapped',
-                                     pharmebinetutils.resource_add_and_prepare(
-                                         dict_chemical_id_to_resource_xrefs[chemical_id][0], "AEOLUS"),
-                                     '|'.join(go_through_xrefs_and_change_if_needed_source_name(
-                                         dict_chemical_id_to_resource_xrefs[chemical_id][1], 'chemical'))])
+                write_to_tsv_file(drug_concept_id, chemical_id, go_through_xrefs_and_change_if_needed_source_name(
+                    dict_chemical_id_to_resource_xrefs[chemical_id][1], 'chemical'), 'manual_mapped')
 
         if found_mapping:
             continue
 
-        found_mapping = search_for_mapping_in_rxnorm('DRUGBANK', rxcui, drug_concept_id, name, 'rxcui_map_to_drugbank')
+        found_mapping = search_for_mapping_to_drugbank_in_rxnorm( rxcui, drug_concept_id, name)
 
         if found_mapping:
             continue
 
         if rxcui in dict_rxcuis_to_drugbank_id_generate_with_external_source:
-            found_mapping = True
             for chemical_id in dict_rxcuis_to_drugbank_id_generate_with_external_source[rxcui]:
+                if chemical_id=='DB16550' and rxcui=='6204':
+                    continue
+                found_mapping = True
                 if not (drug_concept_id,chemical_id) in set_of_mapping_pairs:
                     set_of_mapping_pairs.add((drug_concept_id,chemical_id))
                     xrefs = dict_chemical_id_to_resource_xrefs[chemical_id][1]
                     xrefs.add('RxNorm_CUI:' + rxcui)
-                    csv_writer.writerow(
-                        [drug_concept_id, chemical_id, 'map_rxnorm_to_drugbank_with_use_of_dhimmel_inchikey_and_unii',
-                         pharmebinetutils.resource_add_and_prepare(
-                             dict_chemical_id_to_resource_xrefs[chemical_id][0], "AEOLUS"),
-                         '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs, 'chemical'))])
+                    write_to_tsv_file(drug_concept_id, chemical_id, go_through_xrefs_and_change_if_needed_source_name(
+                        xrefs, 'chemical'), 'map_rxnorm_to_drugbank_with_use_of_dhimmel_inchikey_and_unii')
 
         if found_mapping:
             continue
@@ -232,16 +265,13 @@ has properties:
                     set_of_mapping_pairs.add((drug_concept_id,chemical_id))
                     xrefs = dict_chemical_id_to_resource_xrefs[chemical_id][1]
                     xrefs.add('RxNorm_CUI:' + rxcui)
-                    csv_writer.writerow(
-                        [drug_concept_id, chemical_id, 'map_rxnorm_to_drugbank_with_use_of_name_mapping',
-                         pharmebinetutils.resource_add_and_prepare(
-                             dict_chemical_id_to_resource_xrefs[chemical_id][0], "AEOLUS"),
-                         '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs, 'chemical'))])
+                    write_to_tsv_file(drug_concept_id, chemical_id, go_through_xrefs_and_change_if_needed_source_name(
+                        xrefs, 'chemical'), 'map_rxnorm_to_drugbank_with_use_of_name_mapping')
 
         if found_mapping:
             continue
 
-        found_mapping = search_for_mapping_in_rxnorm('MSH', rxcui, drug_concept_id, name, 'rxcui_map_to_MESH')
+        found_mapping = search_for_mapping_in_umls( rxcui, drug_concept_id)
 
         if found_mapping:
             continue
@@ -253,11 +283,8 @@ has properties:
                     set_of_mapping_pairs.add((drug_concept_id,chemical_id))
                     xrefs = dict_chemical_id_to_resource_xrefs[chemical_id][1]
                     xrefs.add('RxNorm_CUI:' + rxcui)
-                    csv_writer.writerow(
-                        [drug_concept_id, chemical_id, 'name_mapping',
-                         pharmebinetutils.resource_add_and_prepare(
-                             dict_chemical_id_to_resource_xrefs[chemical_id][0], "AEOLUS"),
-                         '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs, 'chemical'))])
+                    write_to_tsv_file(drug_concept_id, chemical_id, go_through_xrefs_and_change_if_needed_source_name(
+                        xrefs, 'chemical'), 'name_mapping')
 
         if found_mapping:
             continue
@@ -275,7 +302,7 @@ def generate_cypher_file():
     """
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = ''' Match (a:Aeolus_Drug{drug_concept_id:line.aeolus_id}),(n:Chemical{identifier:line.chemical_id}) Set   n.aeolus="yes",n.resource= split(line.resource,'|') , n.xrefs=split(line.xrefs,'|') Create (n)-[:equal_to_Aeolus_drug{how_mapped:line.how_mapped}]->(a)'''
+    query = ''' Match (a:Aeolus_Drug{drug_concept_id:line.aeolus_id}),(n:Chemical{identifier:line.chemical_id}) Set   n.aeolus=True,n.resource= split(line.resource,'|') ,n.licenses= split(line.licenses,'|') , n.xrefs=split(line.xrefs,'|') Create (n)-[:equal_to_Aeolus_drug{how_mapped:line.how_mapped}]->(a)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/aeolus/drug/mapped.tsv', query)
     cypher_file.write(query)
@@ -299,7 +326,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in all drugs from pharmebinet (+Sider) in a dictionary')
+    print('Load in all drugs from pharmebinet in a dictionary')
 
     load_compounds_from_pharmebinet()
 

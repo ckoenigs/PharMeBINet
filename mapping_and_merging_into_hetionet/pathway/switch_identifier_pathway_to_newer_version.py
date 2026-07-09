@@ -67,6 +67,7 @@ def get_pathway_properties():
     header.append('name')
     header.append(extra_property)
     header.append('resource')
+    header.append('licenses')
 
 
 # cypher file
@@ -87,7 +88,7 @@ csv_node = csv.writer(file_node, delimiter='\t')
 
 file_rela = open('output/rela.tsv', 'w', encoding='utf-8')
 csv_rela = csv.writer(file_rela, delimiter='\t')
-rela_header = ['gene_id', 'pathway_id']
+rela_header = ['gene_id', 'pathway_id', 'licenses']
 csv_rela.writerow(rela_header)
 
 # dictionary rela
@@ -125,7 +126,10 @@ def load_in_all_pathways():
         for gene_id in node['genes']:
             gene_id = gene_id
             if gene_id in dict_genes_pharmebinet:
-                dict_rela[(str(gene_id), identifier)] = 1
+                if not (str(gene_id), identifier) in dict_rela:
+                    dict_rela[(str(gene_id), identifier)] = [True if 'pathway_commons' in node else False,True if 'wikipathways' in node else False,{node['license']}]
+                else:
+                    print('ohno!!!!!!!!!!!!!!!!!!!!!')
                 # csv_rela.writerow([str(gene_id),identifier])
 
     print('number of different pathway names:' + str(len(dict_name_to_pc_or_wp_identifier)))
@@ -141,9 +145,9 @@ def combine_information_from_different_sources(list_of_nodes):
     for node in list_of_nodes:
         source = node['source']
         for key, value in node.items():
-            if key == 'license':
-                value = source + ':' + value
-            if type(value) != list:
+            if key in  ['wikipathways','pathway_commons']:
+                dict_combined_information[key] = value
+            elif type(value) != list:
                 dict_combined_information[key].add(value)
             else:
                 dict_combined_information[key] = dict_combined_information[key].union(value)
@@ -199,16 +203,18 @@ def fill_the_list_of_properties(head, value, identifiers, resource, name, list_i
     elif head == 'license':
         if type(value) != str:
             value = ','.join(value)
+
     elif head == extra_property:
         value = identifiers
     elif head == 'source':
         if type(value) in [list, set]:
             list_value = list(sorted([x.capitalize() for x in value]))
+            resource.extend(list_value)
             value = ",".join(list_value)
-            resource = list_value
+
         else:
             value = value.capitalize()
-            resource = [value]
+            resource.append(value)
     elif head == 'synonyms':
         name = value.pop()
         name = name if name != 'untitled' else ''
@@ -232,6 +238,11 @@ def fill_the_list_of_properties(head, value, identifiers, resource, name, list_i
         value = name
     elif head == 'resource':
         value = resource
+    elif head == 'licenses':
+        if 'Pathway Commons' in resource:
+            if type(value) == str:
+                value = set([value])
+            value.add(pharmebinetutils.dict_source_to_license['pathwaycommons'])
 
     # prepare the value for tsv
     value = prepare_value(value, head, combine_node)
@@ -255,9 +266,14 @@ def generate_node_tsv():
         if len(list_of_nodes) == 1:
             list_info = []
             node = list_of_nodes[0]
+            if 'pathway_commons' in node:
+                resource.append('Pathway Commons')
 
             for head in header:
-                value = node[head] if head in node else ''
+                if head == 'licenses':
+                    value = node['license']
+                else:
+                    value = node[head] if head in node else ''
                 identifiers, name, resource = fill_the_list_of_properties(head, value, identifiers, resource, name,
                                                                           list_info)
             csv_node.writerow(list_info)
@@ -270,12 +286,20 @@ def generate_node_tsv():
             dict_combined = combine_information_from_different_sources(list_of_nodes)
 
             licenses = dict_combined['license']
+            if 'pathway_commons' in dict_combined:
+                resource.append('Pathway Commons')
+                licenses.add(pharmebinetutils.dict_source_to_license['pathwaycommons'])
 
             list_info = []
             for head in header:
-                value = dict_combined[head] if head in dict_combined else ''
+                if head != 'licenses':
+                    value = dict_combined[head] if head in dict_combined else ''
+                else:
+                    value = licenses
+                print(resource, head)
                 identifiers, name, resource = fill_the_list_of_properties(head, value, identifiers, resource, name,
                                                                           list_info)
+                print(identifiers)
             csv_node.writerow(list_info)
 
     print('number of duplicated once:' + str(counter_double_names))
@@ -294,11 +318,27 @@ def generate_rela_tsv_and_cypher_queries():
     for (gene_id, identifier) in dict_rela.keys():
         # depending if the identifier is removed or not the correct identifier is written into the tsv file
         if not identifier in dict_old_pc_to_new and not (gene_id, identifier) in all_existing_pairs:
-            csv_rela.writerow([gene_id, identifier])
+
+            licenses = dict_rela[(gene_id, identifier)][2]
+            if dict_rela[(gene_id, identifier)][0]:
+                licenses.add(pharmebinetutils.dict_source_to_license['pathwaycommons'])
+            if dict_rela[(gene_id, identifier)][1]:
+                licenses.add(pharmebinetutils.dict_source_to_license['wikipathways'])
+            csv_rela.writerow([gene_id, identifier, '|'.join(licenses)])
             all_existing_pairs.add((gene_id, identifier))
         elif identifier in dict_old_pc_to_new and not (gene_id, dict_old_pc_to_new[identifier]) in all_existing_pairs:
-            csv_rela.writerow([gene_id, dict_old_pc_to_new[identifier]])
-            all_existing_pairs.add((gene_id, dict_old_pc_to_new[identifier]))
+
+
+            licenses = dict_rela[(gene_id, identifier)][2]
+            if dict_rela[(gene_id, identifier)][0]:
+                licenses.add(pharmebinetutils.dict_source_to_license['pathwaycommons'])
+            if dict_rela[(gene_id, identifier)][1]:
+                licenses.add(pharmebinetutils.dict_source_to_license['wikipathways'])
+            identifier = dict_old_pc_to_new[identifier]
+            csv_rela.writerow([gene_id, identifier, '|'.join(licenses)])
+            all_existing_pairs.add((gene_id, identifier))
+
+
 
     # general start of queries
     # generate cypher for node creation
@@ -307,8 +347,11 @@ def generate_rela_tsv_and_cypher_queries():
         if head in list_list_properties and head != 'source':
             query_node_middle += head + ':split(line.' + head + ',"|"), '
         else:
-            query_node_middle += head + ':line.' + head + ', '
-    query_node = query_node_middle[:-2] + ', combined_wikipathway_and_pathway_common:"yes"})'
+            if head not in ['wikipathways','pathway_commons']:
+                query_node_middle += head + ':line.' + head + ', '
+            else:
+                query_node_middle += head + ':toBoolean(line.' + head + '), '
+    query_node = query_node_middle[:-2] + ', combined_wikipathway_and_pathway_common:true})'
     query_node = pharmebinetutils.get_query_import(path_of_directory,
                                                    f'mapping_and_merging_into_hetionet/pathway/output/node.tsv',
                                                    query_node)
@@ -332,7 +375,7 @@ def generate_rela_tsv_and_cypher_queries():
         else:
             query_rela_middle += '(p:Pathway{identifier:line.' + head + '}) ,'
     query_rela = query_rela_middle[
-                 :-2] + ' Create (g)-[:PARTICIPATES_IN_GpiPW{license:p.license, source:p.source, unbiased:false, url:p.url, resource:p.resource, combined_wikipathway_and_pathway_common:"yes"}]->(p)'
+                 :-2] + ' Create (g)-[:PARTICIPATES_IN_GpiPW{licenses:split(line.licenses, "|"), source:p.source, unbiased:false, url:p.url, resource:p.resource, combined_wikipathway_and_pathway_common:true, pathway_commons:p.pathway_commons, wikipathways: p.wikipathways}]->(p)'
     query_rela = pharmebinetutils.get_query_import(path_of_directory,
                                                    f'mapping_and_merging_into_hetionet/pathway/output/rela.tsv',
                                                    query_rela)

@@ -1,6 +1,6 @@
 https://www.ncbi.nlm.nih.gov/snp/
 
-Version: 2022-11-16
+Version: 2025-01-15
 
 The script of dbSNP is different from the others. It is because dbSNP is too big. 
 

@@ -1,5 +1,3 @@
-
-
 import datetime
 import csv
 import sys
@@ -30,7 +28,7 @@ dict_pathway_pharmebinet_names = {}
 dict_own_id_to_identifier = {}
 
 # dictionary pathway id to resource
-dict_pathway_id_to_resource={}
+dict_pathway_id_to_resource = {}
 
 '''
 load in all pathways from pharmebinet in a dictionary
@@ -38,12 +36,12 @@ load in all pathways from pharmebinet in a dictionary
 
 
 def load_pharmebinet_pathways_in():
-    query = '''MATCH (n:Pathway) RETURN n.identifier,n.name, n.synonyms, n.source, n.xrefs, n.resource'''
+    query = '''MATCH (n:Pathway) RETURN n.identifier,n.name, n.synonyms, n.source, n.xrefs, n.resource, n.licenses'''
     results = g.run(query)
 
     for record in results:
-        [identifier, name, synonyms, source, xrefs, resource]=record.values()
-        dict_pathway_id_to_resource[identifier]=resource
+        [identifier, name, synonyms, source, xrefs, resource, licenses] = record.values()
+        dict_pathway_id_to_resource[identifier] = [resource, set(licenses)]
         # print(identifier)
         # print(name)
         # print(synonyms)
@@ -80,7 +78,7 @@ csv_not_mapped.writerow(['id', 'name', 'source'])
 
 file_mapped_pathways = open('pathway/mapped_pathways.tsv', 'w')
 csv_mapped = csv.writer(file_mapped_pathways, delimiter='\t')
-csv_mapped.writerow(['id', 'id_pharmebinet', 'mapped', 'resource'])
+csv_mapped.writerow(['id', 'id_pharmebinet', 'mapped', 'resource', 'licenses'])
 
 file_multiple_mapped_pathways = open('pathway/multiple_mapped_pathways.tsv', 'w')
 csv_mapped_multi = csv.writer(file_multiple_mapped_pathways, delimiter='\t')
@@ -88,18 +86,6 @@ csv_mapped_multi.writerow(['id_s', 'name', 'source_sources', 'id_pharmebinet', '
 
 # dictionary where a ctd pathway mapped to multiple pc or wp ids
 dict_ctd_to_multiple_pc_or_wp_ids = {}
-
-def prepare_resource(mapped_id):
-    """
-    Prepare the resource information
-    :param mapped_id: string
-    :return: string of resource
-    """
-    resource=set(dict_pathway_id_to_resource[mapped_id])
-    resource.add('CTD')
-    return '|'.join(sorted(resource))
-
-
 
 '''
 load all ctd pathways and check if they are in pharmebinet or not
@@ -114,7 +100,7 @@ def load_ctd_pathways_in():
     counter_map_with_name = 0
     counter_not_mapped = 0
     for record in results:
-        pathways_node=record.data()['n']
+        pathways_node = record.data()['n']
         pathways_id = pathways_node['pathway_id']
         pathways_name = pathways_node['name'].lower()
         pathways_id_type = pathways_node['id_type']
@@ -124,11 +110,16 @@ def load_ctd_pathways_in():
             continue
 
         # check if the ctd pathway id is part in the xref
-        if 'reactome:'+pathways_id in dict_own_id_to_identifier:
+        if 'reactome:' + pathways_id in dict_own_id_to_identifier:
             counter_map_with_id += 1
             # if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:
             #     print('multiple für identifier')
-            csv_mapped.writerow([pathways_id, dict_own_id_to_identifier['reactome:'+pathways_id], 'id', prepare_resource(dict_own_id_to_identifier['reactome:'+pathways_id])])
+            licenses = dict_pathway_id_to_resource[dict_own_id_to_identifier['reactome:' + pathways_id]][1]
+            licenses.add(pharmebinetutils.dict_source_to_license['ctd'])
+            resource = pharmebinetutils.resource_add_and_prepare(
+                dict_pathway_id_to_resource[dict_own_id_to_identifier['reactome:' + pathways_id]][0], 'CTD')
+            csv_mapped.writerow(
+                [pathways_id, dict_own_id_to_identifier['reactome:' + pathways_id], 'id', resource, '|'.join(licenses)])
 
 
         elif pathways_name in dict_pathway_pharmebinet_names:
@@ -137,7 +128,10 @@ def load_ctd_pathways_in():
             print(dict_pathway_pharmebinet_names[pathways_name])
             print('mapped with name')
             for pathway_id in dict_pathway_pharmebinet_names[pathways_name]:
-                csv_mapped.writerow([pathways_id, pathway_id, 'name', prepare_resource(pathway_id)])
+                licenses = dict_pathway_id_to_resource[pathway_id][1]
+                licenses.add(pharmebinetutils.dict_source_to_license['ctd'])
+                csv_mapped.writerow([pathways_id, pathway_id, 'name', pharmebinetutils.resource_add_and_prepare(
+                    dict_pathway_id_to_resource[pathway_id][0], 'CTD'), '|'.join(licenses)])
 
 
         else:
@@ -157,13 +151,12 @@ generate connection between mapping pathways of ctd and pharmebinet and generate
 
 
 def create_cypher_file():
-    cypher_file = open('output/cypher.cypher', 'a',encoding='utf-8')
-    query = ''' Match (d:Pathway{identifier:line.id_pharmebinet}),(c:CTD_pathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway{how_mapped:line.mapped}]->(c) Set d.resource= split(line.resource, "|") , d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.pharmebinet_id=line.id_pharmebinet'''
+    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
+    query = ''' Match (d:Pathway{identifier:line.id_pharmebinet}),(c:CTD_pathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway{how_mapped:line.mapped}]->(c) Set d.resource= split(line.resource, "|") ,d.licenses= split(line.licenses, "|") , d.ctd=True, d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.pharmebinet_id=line.id_pharmebinet'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv',
                                               query)
     cypher_file.write(query)
-
 
 
 # path to directory

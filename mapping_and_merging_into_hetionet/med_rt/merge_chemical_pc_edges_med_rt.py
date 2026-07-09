@@ -39,8 +39,8 @@ def write_files(label, direction_1, direction_2, rela_name):
     header_rela = ['chemical_id', 'pharmacological_class_id', 'source']
     csv_rela.writerow(header_rela)
 
-    query = '''Match (c:Chemical{identifier:line.chemical_id}), (p:PharmacologicClass{identifier:line.pharmacological_class_id}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['MED-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.pharmacological_class_id , r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html', r.unbiased=false, r.med_rt='yes' '''
-    query = query % ( direction_1, rela_name, direction_2)
+    query = '''Match (c:Chemical{identifier:line.chemical_id}), (p:PharmacologicClass{identifier:line.pharmacological_class_id}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['MED-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.pharmacological_class_id , r.licenses=['%s'], r.unbiased=false, r.med_rt=true '''
+    query = query % ( direction_1, rela_name, direction_2, pharmebinetutils.dict_source_to_license['medrt'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/med_rt/{file_name}',
                                               query)

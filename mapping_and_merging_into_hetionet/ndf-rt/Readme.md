@@ -12,7 +12,8 @@ Then, the NDF-RT drugs are mapped to the chemical.
     First, all important information for the mapping is extracted from chemicals. The UMLS Cuis are load from UMLS by their identifier.
     Then all important information for the mapping of the NDF-RT drugs is extracted. If a drug has no RxNorm Cui then they get the RxCui from RxNorm with the name.
     The first mapping is based on the external reference RxCui of chemical with the RxCui of external reference or RxNorm RxCui of NDF-RT drug.
-    Next, with RxNorm the RxCui is mapped to DrugBank or MESH id of the chemical.
+    Next, with RxNorm the RxCui is mapped to DrugBank of the chemical.
+    In the following, the RxCui is mapped to UMLS CUI and than to MESH ID using UMLS and mapped to chemical identifier.
     Then they are mapped based on the UNII that are external references of NDF-RT drug and the UNII of Chemical.
     Next, the mapping table of RxCui to DrugBank from RxNorm to FDA UNII to DrugBank based on InChIKey and UNII is used.
     Then the mapping of NDF-RT drug name to chemical name, synonyms, and brands.

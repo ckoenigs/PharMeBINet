@@ -12,6 +12,9 @@ password=$3
 #path other data source space
 path_data_source=$4
 
+#neo4j_bolt
+neo4j_bolt=$5
+
 
 # path to reactome graphml
 path_to_reactome=$path_data_source/reactome/
@@ -70,7 +73,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'import with tool'
 
-java -jar ../$import_tool.jar -i $path_to_reactome"pathwaydata.graphml"  -e bolt://localhost:7687 --username neo4j --password $password --label-suffix $suffix --modify-edge-labels false --indices "DatabaseObject_reactome.dbId;EntitySet_reactome.dbId;DatabaseObject_reactome.stId;PhysicalEntity_reactome.stId;Species_reactome.taxId;DatabaseObject_reactome.oldStId;Taxon_reactome.taxId;Reaction_reactome.stId;ReactionLikeEvent_reactome.stId;EntitySet_reactome.stId;PhysicalEntity_reactome.dbId;ReactionLikeEvent_reactome.dbId;ReferenceEntity_reactome.stId;Complex_reactome.stId;Pathway_reactome.dbId;Event_reactome.dbId;ReferenceEntity_reactome.dbId;Pathway_reactome.stId;Event_reactome.stId;GenomeEncodedEntity_reactome.stId;Reaction_reactome.dbId;GenomeEncodedEntity_reactome.dbId;Complex_reactome.dbId;LiteratureReference_reactome.pubMedIdentifier;Person_reactome.orcidId;ReferenceEntity_reactome.variantIdentifier;ReferenceIsoform_reactome.variantIdentifier;ReferenceEntity_reactome.identifier;ReferenceIsoform_reactome.identifier" > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i $path_to_reactome"pathwaydata.graphml"  -e bolt://localhost:$neo4j_bolt --username neo4j --password $password --label-suffix $suffix --modify-edge-labels false --indices "DatabaseObject_reactome.dbId;EntitySet_reactome.dbId;DatabaseObject_reactome.stId;PhysicalEntity_reactome.stId;Species_reactome.taxId;DatabaseObject_reactome.oldStId;Taxon_reactome.taxId;Reaction_reactome.stId;ReactionLikeEvent_reactome.stId;EntitySet_reactome.stId;PhysicalEntity_reactome.dbId;ReactionLikeEvent_reactome.dbId;ReferenceEntity_reactome.stId;Complex_reactome.stId;Pathway_reactome.dbId;Event_reactome.dbId;ReferenceEntity_reactome.dbId;Pathway_reactome.stId;Event_reactome.stId;GenomeEncodedEntity_reactome.stId;Reaction_reactome.dbId;GenomeEncodedEntity_reactome.dbId;Complex_reactome.dbId;LiteratureReference_reactome.pubMedIdentifier;Person_reactome.orcidId;ReferenceEntity_reactome.variantIdentifier;ReferenceIsoform_reactome.variantIdentifier;ReferenceEntity_reactome.identifier;ReferenceIsoform_reactome.identifier" > output/import_tool_output.txt
 
 sleep 30
 

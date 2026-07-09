@@ -43,7 +43,9 @@ def prepare_query(rela_type, file_name):
     :param file_name: string
     :return:
     """
-    query = f'Match (m:Protein{{identifier:line.protein_id}}),(n:Chemical{{identifier:line.drug_id}}) Merge (m)<-[r:{rela_type}]-(n) On Create Set r.moas=split(line.moa,"|"), r.activities=split(line.activity,"|"), r.highest_clinical_statuses=split(line.highest_clinical_status,"|"), r.source="TTD", r.resource=["TTD"], r.url="https://db.idrblab.net/ttd/data/drug/details/"+line.ttd_id, r.license="No license", r.ttd="yes" On Match Set r.ttd="yes", r.resource=r.resource+"TTD"'
+    license = pharmebinetutils.dict_source_to_license['ttd']
+    query = f'Match (m:Protein{{identifier:line.protein_id}}),(n:Chemical{{identifier:line.drug_id}}) Merge (m)<-[r:{rela_type}]-(n) On Create Set r.moas=split(line.moa,"|"), r.activities=split(line.activity,"|"), r.highest_clinical_statuses=split(line.highest_clinical_status,"|"), r.source="TTD", r.resource=["TTD"], r.url="https://db.idrblab.net/ttd/data/drug/details/"+line.ttd_id, r.licenses=["%s"], r.ttd=True On Match Set r.ttd=True, r.resource=r.resource+"TTD", r.licenses=r.licenses+"%s"'
+    query = query % (license, license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ttd/{file_name}',
                                               query)

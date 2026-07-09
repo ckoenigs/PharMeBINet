@@ -40,7 +40,7 @@ def load_pharmebinet_chemical_in():
 
     for record in results:
         [identifier, node] = record.values()
-        dict_chemical_pharmebinet_to_resource[identifier] = dict(node)['resource']
+        dict_chemical_pharmebinet_to_resource[identifier] = [dict(node)['resource'], set(node['licenses'])]
         name = node['name'].lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_synonyms_to_chemicals_ids, name, identifier)
 
@@ -66,15 +66,22 @@ def prepare_csv_file_and_cypher_file(label):
     file_name = f'chemical/map_{label}.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['med_id', 'id', 'resource', 'how_mapped'])
+    csv_writer.writerow(['med_id', 'id', 'resource', 'how_mapped', 'licenses'])
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = f'Match (n:{label}{{id:line.med_id}}), (r:Chemical{{identifier:line.id}}) Set r.resource=split(line.resource,"|"), r.med_rt="yes" Create (r)-[:equal_chemical_med_rt{{how_mapped:line.how_mapped}}]->(n)'
+    query = f'Match (n:{label}{{id:line.med_id}}), (r:Chemical{{identifier:line.id}}) Set r.resource=split(line.resource,"|"),r.licenses=split(line.licenses,"|"), r.med_rt=true Create (r)-[:equal_chemical_med_rt{{how_mapped:line.how_mapped}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               'mapping_and_merging_into_hetionet/med_rt/' + file_name, query)
     cypher_file.write(query)
 
     return csv_writer
+
+
+def write_to_tsv_file(csv_writer, identifier, chemical_id, mapping_method):
+    dict_chemical_pharmebinet_to_resource[chemical_id][1].add(pharmebinetutils.dict_source_to_license['medrt'])
+    csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
+        dict_chemical_pharmebinet_to_resource[chemical_id][0], 'MED-RT'), mapping_method,
+                         '|'.join(dict_chemical_pharmebinet_to_resource[chemical_id][1])])
 
 
 def load_med_rt_drug_in(label):
@@ -103,21 +110,19 @@ def load_med_rt_drug_in(label):
                 if (identifier, chemical_id) in set_of_mapping_pairs:
                     continue
                 set_of_mapping_pairs.add((identifier, chemical_id))
-                csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
-                    dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'name'])
+                write_to_tsv_file(csv_writer, identifier, chemical_id, 'name')
 
         if mapped:
             continue
 
-        if namespace =='MeSH':
+        if namespace == 'MeSH':
             if identifier in dict_chemical_pharmebinet_to_resource:
                 mapped = True
                 counter_mapped += 1
                 if (identifier, identifier) in set_of_mapping_pairs:
                     continue
                 set_of_mapping_pairs.add((identifier, identifier))
-                csv_writer.writerow([identifier, identifier, pharmebinetutils.resource_add_and_prepare(
-                    dict_chemical_pharmebinet_to_resource[identifier], 'MED-RT'), 'mesh'])
+                write_to_tsv_file(csv_writer, identifier, identifier, 'mesh')
 
         if mapped:
             continue
@@ -138,8 +143,7 @@ def load_med_rt_drug_in(label):
         #                     if (identifier, chemical_id) in set_of_mapping_pairs:
         #                         continue
         #                     set_of_mapping_pairs.add((identifier, chemical_id))
-        #                     csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
-        #                         dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'name_umls_mesh'])
+        #                     write_to_tsv_file(csv_writer, identifier, chemical_id, 'name_umls_mesh')
         #
         # if mapped:
         #     counter_mapped += 1

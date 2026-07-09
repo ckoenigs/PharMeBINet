@@ -160,6 +160,7 @@ def prepare_go_annotation_file(go_annotation_file_name):
 
     filename = f'data/{go_annotation_file_name}.gaf.gz'
     if not os.path.exists(filename):
+        # http://current.geneontology.org/annotations/goa_human.gaf.gz
         url = f'http://geneontology.org/gene-associations/{go_annotation_file_name}.gaf.gz'
         filename = pharmebinetutils.download_file(url, out='data')
     file = gzip.open(filename, 'rt')

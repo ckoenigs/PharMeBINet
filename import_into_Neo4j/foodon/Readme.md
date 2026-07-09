@@ -1,6 +1,6 @@
 FoodOn Food Ontology (FO) https://foodon.org/.
 
-version: 2025-08-01
+version: 2025-12-30
 
 First, the script downloads the latest version of FO (https://www.ebi.ac.uk/ols4/ontologies/foodon) as OWL file.
 The parse the OWL to OBO with robot¹.

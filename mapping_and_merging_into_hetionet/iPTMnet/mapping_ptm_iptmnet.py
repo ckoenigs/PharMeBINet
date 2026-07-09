@@ -13,6 +13,8 @@ dict_identifier_to_resource = {}
 # dictionary ptm name to identifier
 dict_protein_name_to_identifier = {}
 
+license = pharmebinetutils.dict_source_to_license['iptmnet']
+
 def create_connection_with_neo4j():
     '''
     create a connection with neo4j
@@ -25,11 +27,11 @@ def load_ptms_from_database_and_add_to_dict():
     """
     Load all Proteins from pharmebinet and add them into a dictionary
     """
-    query = "MATCH (n:PTM) RETURN n.identifier, n.resource"
+    query = "MATCH (n:PTM) RETURN n.identifier, n.resource, n.licenses"
     results = g.run(query)
 
-    for identifier, resource in results:
-        dict_identifier_to_resource[identifier] = resource
+    for identifier, resource, licenses in results:
+        dict_identifier_to_resource[identifier] = [resource, set(licenses)]
 
 def generate_files(path_of_directory):
     """
@@ -42,7 +44,7 @@ def generate_files(path_of_directory):
 
     file_name = 'iPTMnet_ptms_to_PTM'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['nodeId', 'ptm_identifier', 'resource', 'mapping_method', 'score']
+    header = ['nodeId', 'ptm_identifier', 'resource', 'mapping_method', 'score', 'licenses']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
@@ -62,17 +64,16 @@ def generate_files(path_of_directory):
         os.mkdir(source)
 
 
-    cypher_file_path = os.path.join(source, 'cypher.cypher')
+    cypher_file_path = os.path.join(source, 'cypher_ptm.cypher')
     # mapping_and_merging_into_hetionet/iPTMnet/
-    query = f' Match (n:iPTMnet_PTM), (v:PTM{{identifier:line.ptm_identifier}}) WHERE id(n) = toInteger(line.nodeId) Set v.iptmnet="yes", v.resource=split(line.resource,"|"), v.score=line.score MERGE (v)-[:equal_to_iPTMnet_ptm{{mapped_with:line.mapping_method}}]->(n)'
-    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
+    query = f' Match (n:iPTMnet_PTM), (v:PTM{{identifier:line.ptm_identifier}}) WHERE id(n) = toInteger(line.nodeId) Set v.iptmnet=true, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|"), v.score=line.score MERGE (v)-[:equal_to_iPTMnet_ptm{{mapped_with:line.mapping_method}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     # overwrite exiting queries
     cypher_file = open(cypher_file_path, 'w', encoding='utf-8')
     cypher_file.write(query)
 
-    query = f' Match (n:iPTMnet_PTM) WHERE id(n) = toInteger(line.nodeId) MERGE (v:PTM{{identifier:line.identifier}}) On Create Set v.iptmnet="yes", v.url="https://research.bioinformatics.udel.edu/iptmnet/entry/"+ line.protein_id, v.license="CC BY-NC-SA 4.0 Deed", v.source="iPTMnet", v.resource=split(line.resource,"|"), v.residue=line.residue, v.position=line.position, v.type=line.type, v.score=line.score MERGE (v)-[:equal_to_iPTMnet_ptm]->(n)'
-    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
+    query = f' Match (n:iPTMnet_PTM) WHERE id(n) = toInteger(line.nodeId) MERGE (v:PTM{{identifier:line.identifier}}) On Create Set v.iptmnet=true, v.url="https://research.bioinformatics.udel.edu/iptmnet/entry/"+ line.protein_id, v.licenses=["%s"], v.source="iPTMnet", v.resource=split(line.resource,"|"), v.residue=line.residue, v.position=line.position, v.type=line.type, v.score=line.score MERGE (v)-[:equal_to_iPTMnet_ptm]->(n)'
+    query = query % license
     query = pharmebinetutils.get_query_import(path_of_directory, new_file_name + '.tsv', query)
     # append second query
     cypher_file.write(query)
@@ -105,10 +106,11 @@ def load_all_iptmnet_ptms_and_finish_the_files(csv_mapping_existing, csv_mapping
             continue
         # mapping
         if identifier in dict_identifier_to_resource:
+            dict_identifier_to_resource[identifier][1].add(license)
             csv_mapping_existing.writerow(
                 [nodeId, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "iPTMnet"),
-                 'ptm_identifier', score])
+                 pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier][0], "iPTMnet"),
+                 'ptm_identifier', score, '|'.join(dict_identifier_to_resource[identifier][1])])
             counter_mapped += 1
             continue
         # new ptm node

@@ -36,6 +36,10 @@ def create_connection_with_neo4j_mysql():
     global conRxNorm
     conRxNorm = create_connection_to_databases.database_connection_RxNorm()
 
+    # generate connection to mysql to RxNorm database
+    global conUmls
+    conUmls = create_connection_to_databases.database_connection_umls()
+
 
 def check_for_rxcui(name, rxcui):
     """
@@ -72,12 +76,12 @@ def load_pharmebinet_chemical_in():
     Load the chemical information and add information to dictionaries
     :return:
     """
-    query = '''MATCH (n:Chemical) RETURN n.identifier,n.resource, n.name, n.synonyms, n.xrefs'''
+    query = '''MATCH (n:Chemical) RETURN n.identifier,n.resource, n.name, n.synonyms, n.xrefs, n.licenses'''
     results = g.run(query)
 
     for record in results:
-        [identifier, resource, name, synonyms, xrefs] = record.values()
-        dict_chemical_pharmebinet_to_resource[identifier] = resource
+        [identifier, resource, name, synonyms, xrefs, licenses] = record.values()
+        dict_chemical_pharmebinet_to_resource[identifier] = [resource, set(licenses)]
         name = name.lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_synonyms_to_chemicals_ids, name, identifier)
 
@@ -107,10 +111,10 @@ def prepare_csv_file_and_cypher_file():
     file_name = 'chemical/map_chemical.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['med_id', 'id', 'resource', 'how_mapped'])
+    csv_writer.writerow(['med_id', 'id', 'resource', 'how_mapped', 'licenses'])
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = 'Match (n:Chemical_Ingredient_MEDRT{id:line.med_id}), (r:Chemical{identifier:line.id}) Set r.resource=split(line.resource,"|"), r.med_rt="yes" Create (r)-[:equal_chemical_med_rt{how_mapped:line.how_mapped}]->(n)'
+    query = 'Match (n:Chemical_Ingredient_MEDRT{id:line.med_id}), (r:Chemical{identifier:line.id}) Set r.resource=split(line.resource,"|"),r.licenses=split(line.licenses,"|"), r.med_rt=True Create (r)-[:equal_chemical_med_rt{how_mapped:line.how_mapped}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               'mapping_and_merging_into_hetionet/med_rt/' + file_name, query)
     cypher_file.write(query)
@@ -150,6 +154,13 @@ dict_manual_mapping_identifier = {
 }
 
 
+def write_to_tsv(csv_writer, identifier, chemical_id, mapping_method):
+    dict_chemical_pharmebinet_to_resource[chemical_id][1].add(pharmebinetutils.dict_source_to_license['medrt'])
+    csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
+        dict_chemical_pharmebinet_to_resource[chemical_id][0], 'MED-RT'), mapping_method,
+                         '|'.join(dict_chemical_pharmebinet_to_resource[chemical_id][1])])
+
+
 def load_med_rt_drug_in():
     """
     Load med-rt chemical and map with the different mapping methods and wrote into the tsv file
@@ -185,8 +196,7 @@ def load_med_rt_drug_in():
                     if (identifier, chemical_id) in set_mapped_pairs:
                         continue
                     set_mapped_pairs.add((identifier, chemical_id))
-                    csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
-                        dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'mesh'])
+                    write_to_tsv(csv_writer, identifier, chemical_id, 'mesh')
         # mapping with rxnorm cui
         elif xref.startswith('RxCUI'):
             rx_id = xref.split(':')[1]
@@ -199,8 +209,7 @@ def load_med_rt_drug_in():
                         if (identifier, chemical_id) in set_mapped_pairs:
                             continue
                         set_mapped_pairs.add((identifier, chemical_id))
-                        csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
-                            dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'rxcui'])
+                        write_to_tsv(csv_writer, identifier, chemical_id, 'rxcui')
 
         if mapped:
             continue
@@ -208,8 +217,7 @@ def load_med_rt_drug_in():
         if identifier in dict_manual_mapping_identifier:
             chemical_id = dict_manual_mapping_identifier[identifier]
             mapped = True
-            csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
-                dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'manual'])
+            write_to_tsv(csv_writer, identifier, chemical_id, 'manual')
 
         if mapped:
             continue
@@ -224,8 +232,7 @@ def load_med_rt_drug_in():
                         if (identifier, chemical_id) in set_mapped_pairs:
                             continue
                         set_mapped_pairs.add((identifier, chemical_id))
-                        csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
-                            dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'rxcui_id'])
+                        write_to_tsv(csv_writer, identifier, chemical_id, 'rxcui_id')
 
         if mapped:
             continue
@@ -237,56 +244,25 @@ def load_med_rt_drug_in():
                 if (identifier, chemical_id) in set_mapped_pairs:
                     continue
                 set_mapped_pairs.add((identifier, chemical_id))
-                csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
-                    dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'name'])
+                write_to_tsv(csv_writer, identifier, chemical_id, 'name')
 
         if mapped:
             continue
-        # map with mesh from rxnorm for mesh scui
+        # map with rxnorm cui from umls based on mesh ids
         if xref.startswith('MeSH'):
-            query = ('Select Distinct RXCUI, CODE   From RXNCONSO Where SCUI ="%s" and SAB="MSH" ;')
-            query = query % (xref.split(':')[1])
-
-            cur = conRxNorm.cursor()
-            rows_counter = cur.execute(query)
+            mesh_id = xref.split(':')[1]
+            dict_mesh_id_to_rxnorm_cuis = pharmebinetutils.getRxCUIFromUMLSWithMesh(conUmls, {mesh_id})
             rxcuis = set()
-            set_real_mesh_xref = set()
-            if rows_counter > 0:
-                for (rxnorm_cui, real_mesh_id) in cur:
+            if dict_mesh_id_to_rxnorm_cuis:
+                for rxnorm_cui in dict_mesh_id_to_rxnorm_cuis[mesh_id]:
                     rxcuis.add(rxnorm_cui)
-                    set_real_mesh_xref.add(real_mesh_id)
-                    if real_mesh_id in dict_chemical_pharmebinet_to_resource:
+                    if rxnorm_cui in dict_rnxnorm_to_chemical_id:
                         mapped = True
-                        if (identifier, real_mesh_id) in set_mapped_pairs:
-                            continue
-                        set_mapped_pairs.add((identifier, real_mesh_id))
-                        csv_writer.writerow([identifier, real_mesh_id, pharmebinetutils.resource_add_and_prepare(
-                            dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'rxnorm_to_mesh_id'])
-                    # elif real_mesh_id in dict_mesh_id_to_chemicals_ids:
-                    #     for chemical_id in dict_mesh_id_to_chemicals_ids[real_mesh_id]:
-                    #         if (identifier, chemical_id) in set_mapped_pairs:
-                    #             continue
-                    #         set_mapped_pairs.add((identifier, chemical_id))
-                    #         mapped = True
-                    #         csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
-                    #             dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'rxnorm_to_mesh_id'])
-
-        if mapped:
-            counter_mapped += 1
-            continue
-
-        # map with rxcui from rxnorm
-        if xref.startswith('MeSH') and len(rxcuis) > 0:
-            for rxnorm_cui in rxcuis:
-
-                if rxnorm_cui in dict_rnxnorm_to_chemical_id:
-                    mapped = True
-                    for chemical_id in dict_rnxnorm_to_chemical_id[rxnorm_cui]:
-                        if (identifier, chemical_id) in set_mapped_pairs:
-                            continue
-                        set_mapped_pairs.add((identifier, chemical_id))
-                        csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
-                            dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'rxcui_from_rxnorm'])
+                        for chemical_id in dict_rnxnorm_to_chemical_id[rxnorm_cui]:
+                            if (identifier, chemical_id) in set_mapped_pairs:
+                                continue
+                            set_mapped_pairs.add((identifier, chemical_id))
+                            write_to_tsv(csv_writer, identifier, chemical_id, 'rxcui_from_umls')
 
         if mapped:
             counter_mapped += 1
@@ -308,8 +284,7 @@ def load_med_rt_drug_in():
                         if (identifier, drugbank_id) in set_mapped_pairs:
                             continue
                         set_mapped_pairs.add((identifier, drugbank_id))
-                        csv_writer.writerow([identifier, drugbank_id, pharmebinetutils.resource_add_and_prepare(
-                            dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'mesh_drugbank_from_rxnorm'])
+                        write_to_tsv(csv_writer, identifier, drugbank_id, 'mesh_umls_rxnorm_drugbank_from_rxnorm')
 
         if mapped:
             counter_mapped += 1
@@ -334,8 +309,7 @@ def load_med_rt_drug_in():
                             if (identifier, chemical_id) in set_mapped_pairs:
                                 continue
                             set_mapped_pairs.add((identifier, chemical_id))
-                            csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
-                                dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'name_rxnorm'])
+                            write_to_tsv(csv_writer, identifier, chemical_id, 'name_rxnorm')
 
         if mapped:
             counter_mapped += 1
@@ -351,8 +325,7 @@ def load_med_rt_drug_in():
                         if (identifier, chemical_id) in set_mapped_pairs:
                             continue
                         set_mapped_pairs.add((identifier, chemical_id))
-                        csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
-                            dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'synonyms'])
+                        write_to_tsv(csv_writer, identifier, chemical_id, 'synonyms')
 
         if mapped:
             continue
@@ -373,8 +346,7 @@ def load_med_rt_drug_in():
                             if (identifier, chemical_id) in set_mapped_pairs:
                                 continue
                             set_mapped_pairs.add((identifier, chemical_id))
-                            csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
-                                dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'mesh_name_rxnorm'])
+                            write_to_tsv(csv_writer, identifier, chemical_id, 'mesh_name_rxnorm')
 
         if mapped:
             counter_mapped += 1
@@ -394,8 +366,7 @@ def load_med_rt_drug_in():
                             if (identifier, chemical_id) in set_mapped_pairs:
                                 continue
                             set_mapped_pairs.add((identifier, chemical_id))
-                            csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
-                                dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'name_rxnorm_chemical'])
+                            write_to_tsv(csv_writer, identifier, chemical_id, 'name_rxnorm_chemical')
 
         if mapped:
             counter_mapped += 1

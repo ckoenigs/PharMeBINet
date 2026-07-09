@@ -36,6 +36,9 @@ dict_pathwayId_to_resource = {}
 # highest id for new pathway ids (PC_13_...)
 highest_identifier = 0
 
+# license
+license = pharmebinetutils.dict_source_to_license['reactome']
+
 '''
 load in all pathways from pharmebinet in a dictionary
 '''
@@ -43,16 +46,16 @@ load in all pathways from pharmebinet in a dictionary
 
 def load_pharmebinet_pathways_in():
     global highest_identifier
-    query = '''MATCH (n:Pathway) RETURN n.identifier, n.name, n.source, n.xrefs, n.resource'''
+    query = '''MATCH (n:Pathway) RETURN n.identifier, n.name, n.source, n.xrefs, n.resource, n.licenses'''
     results = graph_database.run(query)
     # run through results
     for record in results:
-        [identifier, name, source, xrefs, resource] = record.values()
+        [identifier, name, source, xrefs, resource, licenses] = record.values()
         # try to get the highest existing pathway id
         if int(identifier.split("_", -1)[1]) > highest_identifier:
             highest_identifier = int(identifier.split("_", -1)[1])
         dict_pathway_pharmebinet_xrefs[identifier] = set(xrefs)
-        dict_pathwayId_to_resource[identifier] = resource
+        dict_pathwayId_to_resource[identifier] = [resource, set(licenses)]
         if xrefs:
             # go through all xrefs and prepare dictionary with reactome ids
             for xref in xrefs:
@@ -75,7 +78,14 @@ csv_not_mapped.writerow(['newId', 'id', 'name'])
 
 file_mapped_pathways = open('pathway/mapped_pathways.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_pathways, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_pharmebinet', 'ownId', 'resource', 'Pathway_name', 'Pathway_names'])
+csv_mapped.writerow(['id', 'id_pharmebinet', 'ownId', 'resource', 'licenses', 'Pathway_name', 'Pathway_names'])
+
+def write_to_tsv_file(pathways_id,pharmebinet_identifier,string_xrefs, pathways_name):
+    dict_pathwayId_to_resource[pharmebinet_identifier][1].add(license)
+    csv_mapped.writerow([pathways_id, pharmebinet_identifier, string_xrefs,
+                         pharmebinetutils.resource_add_and_prepare(
+                             dict_pathwayId_to_resource[pharmebinet_identifier][0], 'Reactome'), '|'.join(dict_pathwayId_to_resource[pharmebinet_identifier][1]), pathways_name])
+
 
 '''
 load all reactome pathways and check if they are in pharmebinet or not
@@ -105,10 +115,7 @@ def load_reactome_pathways_in():
             xrefs = dict_pathway_pharmebinet_xrefs[pharmebinet_identifier]
             xrefs.add('reactome:' + pathways_id)
             string_xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs, 'pathway'))
-
-            csv_mapped.writerow([pathways_id, pharmebinet_identifier, string_xrefs,
-                                 pharmebinetutils.resource_add_and_prepare(
-                                     dict_pathwayId_to_resource[pharmebinet_identifier], 'Reactome'), pathways_name])
+            write_to_tsv_file(pathways_id, pharmebinet_identifier, string_xrefs, pathways_name)
 
         # mapping with Namen
         elif pathways_name in dict_pathway_pharmebinet_names:
@@ -118,10 +125,7 @@ def load_reactome_pathways_in():
             xrefs = dict_pathway_pharmebinet_xrefs[pharmebinet_identifier]
             xrefs.add('reactome:' + pathways_id)
             string_xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs, 'pathway'))
-            csv_mapped.writerow(
-                [pathways_id, pharmebinet_identifier, string_xrefs,
-                 pharmebinetutils.resource_add_and_prepare(dict_pathwayId_to_resource[pharmebinet_identifier],
-                                                           'Reactome'), pathways_name])
+            write_to_tsv_file(pathways_id, pharmebinet_identifier, string_xrefs, pathways_name)
 
         if found_mapping:
             continue
@@ -135,10 +139,7 @@ def load_reactome_pathways_in():
                 xrefs = dict_pathway_pharmebinet_xrefs[pharmebinet_identifier]
                 xrefs.add('reactome:' + pathways_id)
                 string_xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs, 'pathway'))
-                csv_mapped.writerow(
-                    [pathways_id, pharmebinet_identifier, string_xrefs,
-                     pharmebinetutils.resource_add_and_prepare(dict_pathwayId_to_resource[pharmebinet_identifier],
-                                                               'Reactome'), pathways_name])
+                write_to_tsv_file(pathways_id, pharmebinet_identifier, string_xrefs, pathways_name)
 
         if found_mapping:
             counter_map_with_name += 1
@@ -163,14 +164,15 @@ generate connection between mapping pathways of reactome and pharmebinet and gen
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'w', encoding="utf-8")
     # mappt die Knoten, die es in pharmebinet und reactome gibt und fügt die properties hinzu
-    query = ''' MATCH (d:Pathway{identifier:line.id_pharmebinet}),(c:Pathway_reactome{stId:line.id}) CREATE (d)-[: equal_to_reactome_pathway]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes", d.name = c.displayName, d.synonyms = apoc.convert.fromJsonList(c.name), d.alternative_id = c.oldStId, d.books = c.books, d.pubMed_ids = c.pubMed_ids, d.figure_urls = c.figure_urls, d.publication_urls = c.publication_urls, d.doi = c.doi, d.definition = c.definition, d.xrefs = split(line.ownId,"|")'''
+    query = ''' MATCH (d:Pathway{identifier:line.id_pharmebinet}),(c:Pathway_reactome{stId:line.id}) CREATE (d)-[: equal_to_reactome_pathway]->(c) SET d.resource = split(line.resource, '|'), d.licenses = split(line.licenses, '|'), d.reactome = true, d.name = c.displayName, d.synonyms = apoc.convert.fromJsonList(c.name), d.alternative_id = c.oldStId, d.books = c.books, d.pubMed_ids = c.pubMed_ids, d.figure_urls = c.figure_urls, d.publication_urls = c.publication_urls, d.doi = c.doi, d.definition = c.definition, d.xrefs = split(line.ownId,"|")'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/pathway/mapped_pathways.tsv',
                                               query)
     cypher_file.write(query)
 
     # Neue Knoten werden erzeugt, von denen die nicht mappen
-    query = ''' MATCH (c:Pathway_reactome{stId:line.id}) CREATE (d:Pathway{identifier:line.newId, resource:['Reactome'], reactome:"yes", name:c.displayName, synonyms:apoc.convert.fromJsonList(c.name), xrefs:["reactome:"+c.stId],  alternative_id:c.oldStId, books:c.books, pubMed_ids:c.pubMed_ids, figure_urls:c.figure_urls, publication_urls:c.publication_urls, doi:c.doi, definition:c.definition, source:"Reactome", url:"https://reactome.org/content/detail/"+line.id, license:"%s"}) CREATE (d)-[: equal_to_reactome_pathway]->(c) '''
+    query = ''' MATCH (c:Pathway_reactome{stId:line.id}) CREATE (d:Pathway{identifier:line.newId, resource:['Reactome'], reactome:true, name:c.displayName, synonyms:apoc.convert.fromJsonList(c.name), xrefs:["reactome:"+c.stId],  alternative_id:c.oldStId, books:c.books, pubMed_ids:c.pubMed_ids, figure_urls:c.figure_urls, publication_urls:c.publication_urls, doi:c.doi, definition:c.definition, source:"Reactome", url:"https://reactome.org/content/detail/"+line.id, licenses:["%s"]}) CREATE (d)-[: equal_to_reactome_pathway]->(c) '''
+    query = query %(license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/reactome/pathway/not_mapped_pathways.tsv',
                                               query)
@@ -178,10 +180,9 @@ def create_cypher_file():
 
 
 def main():
-    global path_of_directory, license
-    if len(sys.argv) > 2:
+    global path_of_directory
+    if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        license = sys.argv[2]
     else:
         sys.exit('need a path  and license reactome protein')
 

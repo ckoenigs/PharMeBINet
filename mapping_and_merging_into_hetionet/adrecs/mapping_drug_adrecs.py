@@ -45,12 +45,12 @@ def integrate_information_into_dict(dict_node_id_to_resource):
     get all node ids from the database
     :return:
     """
-    query = '''MATCH (n:Chemical) RETURN n.identifier, n.name, n.synonyms, n.resource, n.xrefs'''
+    query = '''MATCH (n:Chemical) RETURN n.identifier, n.name, n.synonyms, n.resource, n.xrefs, n.licenses'''
     results = g.run(query)
 
     for record in results:
-        [identifier, name, synonyms, resource, xrefs] = record.values()
-        dict_node_id_to_resource[identifier] = resource
+        [identifier, name, synonyms, resource, xrefs, licenses] = record.values()
+        dict_node_id_to_resource[identifier] = [resource, set(licenses)]
 
         name = name.lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_ids,name,identifier)
@@ -94,7 +94,7 @@ def prepare_query(file_name, db_label, adrecs_label, db_id, adrecs_id_internal, 
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query = ''' MATCH (n:%s{identifier:line.%s}), (g:%s{%s:line.%s}) Set n.resource=split(line.resource,"|"), n.adrecs='yes' Create (n)-[:equal_adrecs_%s{how_mapped:line.how_mapped}]->(g)'''
+    query = ''' MATCH (n:%s{identifier:line.%s}), (g:%s{%s:line.%s}) Set n.resource=split(line.resource,"|"), n.licenses=split(line.licenses,"|"), n.adrecs=True Create (n)-[:equal_adrecs_%s{how_mapped:line.how_mapped}]->(g)'''
     query = query % (db_label, db_id, adrecs_label, adrecs_id_internal, adrecs_id, db_label.lower())
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/{director}/{file_name}', query)
@@ -110,9 +110,10 @@ def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_
     :param csv_mapping: csv writer
     :return:
     """
+    dict_node_id_to_resource[identifier_db][1].add(pharmebinetutils.dict_source_to_license["adrecs"])
     csv_mapping.writerow([identifier_db, identifier_act_id,
-                          pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier_db], 'ADReCS'),
-                          how_mapped])
+                          pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier_db][0], 'ADReCS'),
+                          how_mapped, '|'.join(dict_node_id_to_resource[identifier_db][1])])
 
 
 def check_for_mapping_in_source_dictionary(source, source_id, dict_node_id_to_resource, identifier, csv_mapping,
@@ -157,7 +158,7 @@ def get_all_adrecs_target_and_map(db_label, dict_node_id_to_resource):
     file_name = db_label.lower() + '/mapping.tsv'
     mapping_file = open(file_name, 'w', encoding='utf-8')
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
-    csv_mapping.writerow(['db_id', 'act_id', 'resource', 'how_mapped'])
+    csv_mapping.writerow(['db_id', 'act_id', 'resource', 'how_mapped', 'licenses'])
 
     prepare_query(file_name, db_label, 'ADReCS_Drug', 'db_id', 'id', 'act_id')
 

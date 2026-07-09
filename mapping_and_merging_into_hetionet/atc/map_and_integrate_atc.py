@@ -35,7 +35,7 @@ def load_pharmacologic_class_from_database_and_add_to_dict():
         if name not in dict_name_to_pharmacologic_class_id:
             dict_name_to_pharmacologic_class_id[name] = set()
         dict_name_to_pharmacologic_class_id[name].add(identifier)
-        dict_pharmacologic_class_id_to_resource[identifier] = set(resource)
+        dict_pharmacologic_class_id_to_resource[identifier] = [set(resource), set(node['licenses'])]
 
 
 # dictionary atc codes to compound ids
@@ -58,6 +58,8 @@ def load_compounds_from_database_and_add_to_dict():
 # open cypher file
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
+license = pharmebinetutils.dict_source_to_license['kegg']
+
 
 def write_files(path_of_directory):
     """
@@ -76,7 +78,7 @@ def write_files(path_of_directory):
     file_name_mapped_pc = 'output/mapping_pc.tsv'
     file_mapped_pc = open(file_name_mapped_pc, 'w', encoding='utf-8')
     csv_mapped_pc = csv.writer(file_mapped_pc, delimiter='\t')
-    header_mapped = ['pc_id', 'id', 'resource']
+    header_mapped = ['pc_id', 'id', 'resource', 'licenses']
     csv_mapped_pc.writerow(header_mapped)
 
     file_name_new = 'output/new_pc.tsv'
@@ -85,13 +87,14 @@ def write_files(path_of_directory):
     header_new = ['id']
     csv_new.writerow(header_new)
 
-    query = '''Match (n:atc_kegg{identifier:line.id}), (v:PharmacologicClass{identifier:line.pc_id}) Set v.atc_codes=[line.id], v.resource=split(line.resource,"|"), v.kegg="yes" Create (v)-[:equal_to_atc]->(n)'''
+    query = '''Match (n:atc_kegg{identifier:line.id}), (v:PharmacologicClass{identifier:line.pc_id}) Set v.atc_codes=[line.id], v.resource=split(line.resource,"|"),v.licenses=split(line.licenses,"|"), v.kegg=True Create (v)-[:equal_to_atc]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/atc/{file_name_mapped_pc}',
                                               query)
     cypher_file.write(query)
 
-    query = '''Match (n:atc_kegg{identifier:line.id}) Create (v:PharmacologicClass{identifier:line.id, kegg:'yes', resource:['KEGG'], source:'ATC from KEGG', url:'http://identifiers.org/atc:'+line.id, name:n.name, license:"Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed.", class_type:["ATC code"], atc_codes:[line.id]}) Create (v)-[:equal_to_atc]->(n)'''
+    query = '''Match (n:atc_kegg{identifier:line.id}) Create (v:PharmacologicClass{identifier:line.id, kegg:True, resource:['KEGG'],  source:'ATC from KEGG', url:'http://identifiers.org/atc:'+line.id, name:n.name, licenses:["%s"], class_type:["ATC code"], atc_codes:[line.id]}) Create (v)-[:equal_to_atc]->(n)'''
+    query = query % license
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/atc/{file_name_new}',
                                               query)
@@ -100,13 +103,13 @@ def write_files(path_of_directory):
     list_of_labels = ['PharmacologicClass']
 
     for [label_1, label_2] in [[x, y] for x in list_of_labels for y in list_of_labels]:
-        query = '''MATCH p=(n:%s)-[:equal_to_atc]-()-[]->(a)-[:equal_to_atc]-(b:%s) Merge (n)-[r:BELONGS_TO_%sbt%s]->(b) On Create Set r.source='ATC from KEGG', r.url="http://identifiers.org/atc:"+a.identifier , r.resource=['KEGG'], r.kegg='yes', r.license="Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed."  On Match Set r.resource=r.resource+['KEGG'], r.kegg='yes';\n '''
+        query = '''MATCH p=(n:%s)-[:equal_to_atc]-()-[]->(a)-[:equal_to_atc]-(b:%s) Merge (n)-[r:BELONGS_TO_%sbt%s]->(b) On Create Set r.source='ATC from KEGG', r.url="http://identifiers.org/atc:"+a.identifier , r.resource=['KEGG'], r.kegg=True, r.licenses=["%s"]  On Match Set r.resource=r.resource+['KEGG'],r.licenses=r.licenses+'%s', r.kegg=True;\n '''
         query = query % (
             label_1, label_2, pharmebinetutils.dictionary_label_to_abbreviation[label_1],
-            pharmebinetutils.dictionary_label_to_abbreviation[label_2])
+            pharmebinetutils.dictionary_label_to_abbreviation[label_2], license, license)
         cypher_file.write(query)
 
-    query = f'''Match (n:PharmacologicClass{{identifier:line.id}}), (v:Compound{{identifier:line.compound_id}}) Create (v)-[:BELONGS_TO_{pharmebinetutils.dictionary_label_to_abbreviation['Chemical']}bt{pharmebinetutils.dictionary_label_to_abbreviation['PharmacologicClass']}{{source:'ATC from KEGG', url:"http://identifiers.org/atc:"+line.id , resource:['KEGG'], kegg:'yes', license:"Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed."}}]->(n)'''
+    query = f'''Match (n:PharmacologicClass{{identifier:line.id}}), (v:Compound{{identifier:line.compound_id}}) Create (v)-[:BELONGS_TO_{pharmebinetutils.dictionary_label_to_abbreviation['Chemical']}bt{pharmebinetutils.dictionary_label_to_abbreviation['PharmacologicClass']}{{source:'ATC from KEGG', url:"http://identifiers.org/atc:"+line.id , resource:['KEGG'], kegg:True, licenses:["{license}"]}}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/atc/{file_name_mapped}',
                                               query)
@@ -174,14 +177,15 @@ def to_avoid_multiple_mapping(csv_mapped_pc, csv_new, csv_map_drug):
     :return:
     """
     for pc_id, set_of_atcs in dict_pc_id_to_atc_codes.items():
-        resource = pharmebinetutils.resource_add_and_prepare(dict_pharmacologic_class_id_to_resource[pc_id], 'KEGG')
+        resource = pharmebinetutils.resource_add_and_prepare(dict_pharmacologic_class_id_to_resource[pc_id][0], 'KEGG')
+        dict_pharmacologic_class_id_to_resource[pc_id][1].add(license)
         if len(set_of_atcs) == 1:
             atc_id = set_of_atcs.pop()
-            csv_mapped_pc.writerow([pc_id, atc_id, resource])
+            csv_mapped_pc.writerow([pc_id, atc_id, resource, '|'.join(dict_pharmacologic_class_id_to_resource[pc_id][1])])
             check_if_id_mapped_to_compound(atc_id, csv_map_drug, pc_id)
         else:
             longest_one = max(set_of_atcs, key=len)
-            csv_mapped_pc.writerow([pc_id, longest_one, resource])
+            csv_mapped_pc.writerow([pc_id, longest_one, resource, '|'.join(dict_pharmacologic_class_id_to_resource[pc_id][1])])
             check_if_id_mapped_to_compound(longest_one, csv_map_drug, pc_id)
             for atc in set_of_atcs:
                 if atc != longest_one:

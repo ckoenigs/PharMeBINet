@@ -4,6 +4,7 @@ import sys, csv
 sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
+import utils_hetionet
 
 
 def create_connection_with_neo4j():
@@ -29,9 +30,9 @@ def generate_tsv_files_and_cypher_file():
     file_name_mapped = 'output/update_nodes.tsv'
     update_nodes = open(file_name_mapped, 'w', encoding='utf-8')
     csv_update = csv.writer(update_nodes, delimiter='\t')
-    csv_update.writerow(['id', 'resource'])
+    csv_update.writerow(['id','id2','how_mapped', 'resource','licenses'])
 
-    query_match = ' Match (a:Anatomy_hetionet{identifier:line.id}) , (l:Anatomy{identifier:line.id}) Set l.hetionet="yes", l.resource=split(line.resource,"|") Create (l)-[:equal_anatomy_hetionet]->(a)'
+    query_match = ' Match (a:Anatomy_hetionet{identifier:line.id}) , (l:Anatomy{identifier:line.id}) Set l.hetionet=true, l.resource=split(line.resource,"|"), l.licenses=split(line.licenses,"|") Create (l)-[:equal_anatomy_hetionet]->(a)'
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
@@ -44,7 +45,7 @@ def generate_tsv_files_and_cypher_file():
 
 
 # dictionary anatomy id to resource
-dict_anatomy_id_to_resource = {}
+dict_anatomy_id_to_resource_and_licenses = {}
 
 
 def load_all_pharmebinet_anatomy_in_dictionary():
@@ -57,9 +58,9 @@ def load_all_pharmebinet_anatomy_in_dictionary():
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_anatomy_id_to_resource[identifier] = set(node['resource'])
+        dict_anatomy_id_to_resource_and_licenses[identifier] = [set(node['resource']), set(node['licenses'])]
 
-    print('size of anatomies in pharmebinet before the rest of DrugBank is added: ', len(dict_anatomy_id_to_resource))
+    print('size of anatomies in pharmebinet before the rest of DrugBank is added: ', len(dict_anatomy_id_to_resource_and_licenses))
 
 
 def map_hetionet_anatomy():
@@ -76,12 +77,10 @@ def map_hetionet_anatomy():
         [node_id] = record.values()
         counter += 1
 
-        if node_id in dict_anatomy_id_to_resource:
+        if node_id in dict_anatomy_id_to_resource_and_licenses:
             counter_mapped += 1
-            resource = dict_anatomy_id_to_resource[node_id]
-            csv_update.writerow(
-                [node_id,
-                 pharmebinetutils.resource_add_and_prepare(resource, 'Hetionet')])
+            utils_hetionet.write_to_file(node_id, node_id, 'id', dict_anatomy_id_to_resource_and_licenses,
+                                         csv_update)
 
     print('number of nodes in uberon: ', counter)
     print('number of mapped nodes in uberon: ', counter_mapped)

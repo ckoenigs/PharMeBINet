@@ -6,11 +6,10 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-# import create_connection_to_database_metabolite
-
-
 # dictionary disease name to resource
 dict_phenotype_id_to_resource = {}
+
+license = pharmebinetutils.dict_source_to_license['markerdb']
 
 
 def create_connection_with_neo4j():
@@ -31,13 +30,13 @@ def load_disease_from_database_and_add_to_dict(label, condition=''):
     """
     Load all Genes from my database and add them into a dictionary
     """
-    query = f"MATCH (n:{label}) {condition} RETURN n.identifier, n.name, n.synonyms, n.xrefs, n.resource"
+    query = f"MATCH (n:{label}) {condition} RETURN n.identifier, n.name, n.synonyms, n.xrefs, n.resource, n.licenses"
     results = g.run(query)
 
     dict_different_mappings_for_a_label = {'name': {}, 'synonyms': {}, 'umls': {}, 'omim': {}, 'ncit': {}}
 
-    for identifier, name, synonyms, xrefs, resource, in results:
-        dict_phenotype_id_to_resource[identifier] = resource
+    for identifier, name, synonyms, xrefs, resource, licenses, in results:
+        dict_phenotype_id_to_resource[identifier] = [resource, set(licenses)]
         # name = node['name'].lower()
         name = name.lower()
         # dict_disease_id_to_name[identifier] = name
@@ -99,7 +98,7 @@ def generate_files(path_of_directory):
     file_name = 'MarkerDB_condition_to_disease'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
     # namen von der condition (markerdb), identifier von disease, resource, mapping_method
-    header = ['MarkerDB_condition_name', 'identifier', 'resource', 'mapping_method']
+    header = ['MarkerDB_condition_name', 'identifier', 'resource', 'mapping_method', 'licenses']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'a'
     file = open(file_path, mode, encoding='utf-8')
@@ -111,7 +110,7 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/MarkerDB/
-    query = f' MATCH (n:MarkerDB_Condition),  (v:Phenotype{{identifier: line.identifier}}) WHERE ID(n) = toInteger(line.MarkerDB_condition_name)  SET v.markerdb = "yes", v.resource = split(line.resource, "|") CREATE (v)-[:equal_to_MarkerDB_condition {{mapped_with: line.mapping_method}}]->(n)'
+    query = f' MATCH (n:MarkerDB_Condition),  (v:Phenotype{{identifier: line.identifier}}) WHERE ID(n) = toInteger(line.MarkerDB_condition_name)  SET v.markerdb = true, v.resource = split(line.resource, "|"), v.licenses = split(line.licenses, "|") CREATE (v)-[:equal_to_MarkerDB_condition {{mapped_with: line.mapping_method}}]->(n)'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
@@ -119,6 +118,12 @@ def generate_files(path_of_directory):
 
     return csv_mapping
 
+def write_to_tsv_file(csv_mapping, markerdb_id, pharmebinet_id, mapping_method):
+    dict_phenotype_id_to_resource[pharmebinet_id][1].add(license)
+    csv_mapping.writerow(
+        [markerdb_id, pharmebinet_id,
+         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[pharmebinet_id][0], "MarkerDB"),
+         mapping_method, '|'.join(dict_phenotype_id_to_resource[pharmebinet_id][1])])
 
 def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease, dict_symptom, dict_phenotype):
     """
@@ -133,7 +138,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
     dict_manual_mapping = {'usher syndrome type i': 'MONDO:0010168',
                            'antenatal bartter syndrome type 1': "MONDO:0100344",
                            'ebola virus disease': 'MONDO:0005737',
-                           'coronavirus disease': 'MONDO:0005719',
+                           'coronavirus disease': 'MONDO:0005718',
                            'g.r.a.c.i.l.e. syndrome': 'MONDO:0011308',
                            '3 hydroxy 3 methylglutaryl co a synthase 2 deficiency': 'MONDO:0011614',
                            'chronic hepatitis c infection': 'MONDO:0005354',
@@ -159,10 +164,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
         if name in dict_disease['name']:
             mapped = True
             for identifier in dict_disease['name'][name]:
-                csv_mapping.writerow(
-                    [neo4j_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "MarkerDB"),
-                     'name'])
+                write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'name')
 
         if mapped:
             continue
@@ -170,10 +172,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
         if name in dict_symptom['name']:
             mapped = True
             for identifier in dict_symptom['name'][name]:
-                csv_mapping.writerow(
-                    [neo4j_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "MarkerDB"),
-                     'name'])
+                write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'name')
 
         if mapped:
             continue
@@ -181,10 +180,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
         if name in dict_phenotype['name']:
             mapped = True
             for identifier in dict_phenotype['name'][name]:
-                csv_mapping.writerow(
-                    [neo4j_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "MarkerDB"),
-                     'name'])
+                write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'name')
 
         if mapped:
             continue
@@ -192,10 +188,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
         if name in dict_manual_mapping:
             print('manual')
             mapped = True
-            csv_mapping.writerow(
-                [neo4j_id, dict_manual_mapping[name],
-                 pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[dict_manual_mapping[name]], "MarkerDB"),
-                 'manual'])
+            write_to_tsv_file(csv_mapping, neo4j_id, dict_manual_mapping[name], 'manual')
 
         if mapped:
             continue
@@ -203,10 +196,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
         if name in dict_disease['synonyms']:
             mapped = True
             for identifier in dict_disease['synonyms'][name]:
-                csv_mapping.writerow(
-                    [neo4j_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "MarkerDB"),
-                     'synonym'])
+                write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'synonym')
 
         if mapped:
             continue
@@ -216,10 +206,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
             if umls_cui in dict_disease['umls']:
                 mapped = True
                 for identifier in dict_disease['umls'][umls_cui]:
-                    csv_mapping.writerow(
-                        [neo4j_id, identifier,
-                         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "MarkerDB"),
-                         'umls'])
+                    write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls')
 
         if mapped:
             continue
@@ -227,10 +214,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
         if name in dict_symptom['synonyms']:
             mapped = True
             for identifier in dict_symptom['synonyms'][name]:
-                csv_mapping.writerow(
-                    [neo4j_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "MarkerDB"),
-                     'synonym'])
+                write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'synonym')
 
         if mapped:
             continue
@@ -239,10 +223,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
             if umls_cui in dict_symptom['umls']:
                 mapped = True
                 for identifier in dict_symptom['umls'][umls_cui]:
-                    csv_mapping.writerow(
-                        [neo4j_id, identifier,
-                         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "MarkerDB"),
-                         'umls'])
+                    write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls')
 
         if mapped:
             continue
@@ -251,10 +232,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
             if umls_cui in dict_phenotype['umls']:
                 mapped = True
                 for identifier in dict_phenotype['umls'][umls_cui]:
-                    csv_mapping.writerow(
-                        [neo4j_id, identifier,
-                         pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "MarkerDB"),
-                         'umls'])
+                    write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls')
 
         if mapped:
             continue
@@ -262,10 +240,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
         if name in dict_phenotype['synonyms']:
             mapped = True
             for identifier in dict_phenotype['synonyms'][name]:
-                csv_mapping.writerow(
-                    [neo4j_id, identifier,
-                     pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier], "MarkerDB"),
-                     'synonym'])
+                write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'synonym')
 
         if mapped:
             continue
@@ -282,11 +257,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
                     if nci_id in dict_disease['ncit']:
                         mapped = True
                         for identifier in dict_disease['ncit'][nci_id]:
-                            csv_mapping.writerow(
-                                [neo4j_id, identifier,
-                                 pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                           "MarkerDB"),
-                                 'umls_nci'])
+                            write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls_nci')
 
         if mapped:
             continue
@@ -305,10 +276,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
         # #             if omim_id in dict_disease['omim']:
         # #                 mapped = True
         # #                 for identifier in dict_disease['omim'][omim_id]:
-        # #                     csv_mapping.writerow(
-        # #                         [neo4j_id, identifier,
-        # #                          pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-        # #                                                                    "MarkerDB"), 'umls_omim'])
+        # #                     write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls_omim')
         # #
         # # if mapped:
         # #     continue
@@ -318,10 +286,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
         # #         if omim_id in dict_symptom['omim']:
         # #             for identifier in dict_symptom['omim'][omim_id]:
         # #                 mapped = True
-        # #                 csv_mapping.writerow(
-        # #                     [neo4j_id, identifier,
-        # #                      pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[omim_id],
-        # #                                                                "MarkerDB"), 'umls_omim'])
+        # #                 write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls_omim')
         # #
         # # if mapped:
         # #     continue
@@ -330,11 +295,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
         # #     for omim_id in omim_ids:
         # #         if omim_id in dict_phenotype_id_to_resource:
         # #             mapped = True
-        # #             csv_mapping.writerow(
-        # #                 [neo4j_id, omim_id,
-        # #                  pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[omim_id],
-        # #                                                            "MarkerDB"),
-        # #                  'umls_omim_to_identifier'])
+        # #             write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls_omim_to_identifier')
         #
         # if mapped:
         #     continue
@@ -354,11 +315,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
                     if name_umls in dict_disease['name']:
                         mapped = True
                         for identifier in dict_disease['name'][name_umls]:
-                            csv_mapping.writerow(
-                                [neo4j_id, identifier,
-                                 pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                           "MarkerDB"),
-                                 'umls_name'])
+                            write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls_name')
 
         if mapped:
             continue
@@ -368,11 +325,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
                 if name_umls in dict_symptom['name']:
                     mapped = True
                     for identifier in dict_symptom['name'][name_umls]:
-                        csv_mapping.writerow(
-                            [neo4j_id, identifier,
-                             pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                       "MarkerDB"),
-                             'umls_name'])
+                        write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls_name')
 
         if mapped:
             continue
@@ -382,11 +335,7 @@ def load_all_MarkerDB_conditions_and_finish_the_files(csv_mapping, dict_disease,
                 if name_umls in dict_phenotype['name']:
                     mapped = True
                     for identifier in dict_phenotype['name'][name_umls]:
-                        csv_mapping.writerow(
-                            [neo4j_id, identifier,
-                             pharmebinetutils.resource_add_and_prepare(dict_phenotype_id_to_resource[identifier],
-                                                                       "MarkerDB"),
-                             'umls_name'])
+                        write_to_tsv_file(csv_mapping, neo4j_id, identifier, 'umls_name')
 
         if not mapped:
             counter_not_mapped += 1

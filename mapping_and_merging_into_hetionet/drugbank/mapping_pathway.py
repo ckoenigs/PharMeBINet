@@ -37,7 +37,7 @@ def load_pathway_from_database():
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_pathway_id_to_resource[identifier] = set(node['resource'])
+        dict_pathway_id_to_resource[identifier] = [set(node['resource']),set(node['licenses'])]
         name = node['name'] if 'name' in node else ''
         if name is not None:
             pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_pathway_ids, name.lower(), identifier)
@@ -60,7 +60,7 @@ def generate_files(path_of_directory):
     # file from relationship between gene and variant
     file_name = 'pathway/mapping_pathway.tsv'
     file = open(file_name, 'w', encoding='utf-8')
-    header = ['pathway_db_id', 'pathway_id', 'resource', 'how_mapped']
+    header = ['pathway_db_id', 'pathway_id', 'resource', 'how_mapped', 'licenses']
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
 
@@ -73,7 +73,7 @@ def generate_files(path_of_directory):
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Match (n:Pathway{identifier:line.pathway_id}), (v:Pathway_DrugBank{identifier:line.pathway_db_id}) Create (n)-[r:equal_to_pathway_drugbank{how_mapped:line.how_mapped}]->(v) Set n.drugbank="yes", n.resource=split(line.resource,"|") '''
+    query = '''Match (n:Pathway{identifier:line.pathway_id}), (v:Pathway_DrugBank{identifier:line.pathway_db_id}) Create (n)-[r:equal_to_pathway_drugbank{how_mapped:line.how_mapped}]->(v) Set n.drugbank=true, n.resource=split(line.resource,"|"), n.licenses=split(line.licenses,"|") '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/{file_name}',
                                               query)
@@ -109,10 +109,11 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
             for pathway_id in dict_smpdb_id_to_pathway_ids[identifier]:
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'smpdb_id'
+                    dict_pathway_id_to_resource[pathway_id][1].add(pharmebinetutils.dict_source_to_license['drugbank'])
                     csv_mapping.writerow(
                         [identifier, pathway_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_pathway_id_to_resource[pathway_id], 'DrugBank'),
-                         'smpdb'])
+                         pharmebinetutils.resource_add_and_prepare(dict_pathway_id_to_resource[pathway_id][0], 'DrugBank'),
+                         'smpdb', '|'.join(dict_pathway_id_to_resource[pathway_id][1])])
                 else:
                     print('multy mapping with smpdb id')
 
@@ -126,10 +127,11 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
             for pathway_id in dict_name_to_pathway_ids[name]:
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'name_mapped'
+                    dict_pathway_id_to_resource[pathway_id][1].add(pharmebinetutils.dict_source_to_license['drugbank'])
                     csv_mapping.writerow(
                         [identifier, pathway_id,
-                         pharmebinetutils.resource_add_and_prepare(dict_pathway_id_to_resource[pathway_id], 'DrugBank'),
-                         'name'])
+                         pharmebinetutils.resource_add_and_prepare(dict_pathway_id_to_resource[pathway_id][0], 'DrugBank'),
+                         'name', '|'.join(dict_pathway_id_to_resource[pathway_id][1])])
                 else:
                     print('multy mapping with name')
         if found_mapping:
@@ -154,8 +156,8 @@ def generate_edge_files():
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Match (n:Pathway{identifier:line.pathway_id}), (v:Compound{identifier:line.compound_id}) Create (v)-[r:ASSOCIATES_CaPW{license:"%s", source:"DrugBank", drugbank:"yes", resource:["DrugBank"], url:"https://go.drugbank.com/drugs/"+line.compound_id}]->(n) '''
-    query = query % (license)
+    query = '''Match (n:Pathway{identifier:line.pathway_id}), (v:Compound{identifier:line.compound_id}) Create (v)-[r:ASSOCIATES_CaPW{licenses:["%s"], source:"DrugBank", drugbank:true, resource:["DrugBank"], url:"https://go.drugbank.com/drugs/"+line.compound_id}]->(n) '''
+    query = query % (pharmebinetutils.dict_source_to_license['drugbank'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/{file_name}',
                                               query)
@@ -183,12 +185,11 @@ def prepare_edges_to_compound():
 
 def main():
     print(datetime.datetime.now())
-    global path_of_directory, license
-    if len(sys.argv) < 3:
-        sys.exit('need path anf license pathway drugbank')
+    global path_of_directory
+    if len(sys.argv) < 2:
+        sys.exit('need path pathway drugbank')
 
-    path_of_directory = sys.argv[2]
-    license = sys.argv[1]
+    path_of_directory = sys.argv[1]
     print('##########################################################################')
 
     print(datetime.datetime.now())

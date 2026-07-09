@@ -28,10 +28,10 @@ Then CTD disease to disease and symptom:
 
 The last label is CTD chemical to compound and all not mapped chemicals generate new nodes with label chemical:
     There are different mapping methods used:
-        1.	map CTD chemical cas-number with compound cas-number
-        2.	Map the MESH ID to UMLS Cui with UMLS, which contains MESH ID. Further UMLS contains DrugBank IDs, so the UMLS Cui is mapped to DrugBank ID.
-        3.	Map the Mesh ID to RxNorm CUI with RxNorm, which contains a MESH identifier. In RxNorm the RxNorm Cui is mapped to DrugBank IDs, which are also in RxNorm.
-        4.	Use the RxNorm-DrugBank table, which is constructed with unii and InChIKey, to map.
+        1. map CTD-chemical with InChIKey to compound InChIKey
+        2.	map CTD chemical cas-number with compound cas-number
+        3.	Map the MESH ID to UMLS Cui with UMLS, which contains MESH ID. Further UMLS contains DrugBank IDs, so the UMLS Cui is mapped to DrugBank ID.
+        4.	Map the Mesh ID-UMLS CUI to RxNorm CUI with UMLS, which contains a MESH identifier. Use the RxNorm-DrugBank table, which is constructed with unii and InChIKey, to map.
         5.	Map with name and synonyms of CTD to name and synonyms of DrugBank.
     The mapped pairs are written into TSV files. Additionally, all not mapped are written also in a TSV file. For both is a cypher query generated and add to the cypher file.
 

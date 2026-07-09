@@ -22,7 +22,7 @@ def generate_cypher_queries_and_tsv_files():
     generate cypher queries and tsv files
     :return: csv writer for mapping and new
     """
-    set_header_for_files = ['efo_id', 'pharmebinet_id', 'resource', 'how_mapped']
+    set_header_for_files = ['efo_id', 'pharmebinet_id', 'resource', 'how_mapped','licenses']
     # tsv file for mapping disease
     file_name_mapped = 'output/disease_mapped.tsv'
     file_disease_mapped = open(file_name_mapped, 'w', encoding='utf-8')
@@ -32,7 +32,7 @@ def generate_cypher_queries_and_tsv_files():
     # cypher file for mapping and integration
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
-    query_match = '''Match (s:Disease{identifier:line.pharmebinet_id }) , (n:efo{id:line.efo_id}) Set s.efo='yes',  s.resource=split(line.resource,"|")  Create (s)-[:equal_to_efo_diseases{how_mapped:line.how_mapped}]->(n)'''
+    query_match = '''Match (s:Disease{identifier:line.pharmebinet_id }) , (n:efo{id:line.efo_id}) Set s.efo=True,  s.resource=split(line.resource,"|"),  s.licenses=split(line.licenses,"|")  Create (s)-[:equal_to_efo_diseases{how_mapped:line.how_mapped}]->(n)'''
     query_match = pharmebinetutils.get_query_import(path_of_directory,
                                                     f'mapping_and_merging_into_hetionet/efo/{file_name_mapped}',
                                                     query_match)
@@ -67,7 +67,7 @@ def get_all_diseases_and_add_to_dict():
         result = record.data()['n']
         identifier = result['identifier']
 
-        dict_of_pharmebinet_to_resource[identifier] = result['resource']
+        dict_of_pharmebinet_to_resource[identifier] = [result['resource'],set(result['licenses'])]
 
         name = result['name'].lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_disease_ids, name, identifier)
@@ -79,7 +79,11 @@ def get_all_diseases_and_add_to_dict():
             elif xref.startswith('Orphanet'):
                 pharmebinetutils.add_entry_to_dict_to_set(dict_orphanet_id_to_disease_ids, xref, identifier)
 
-
+def write_to_file(csv_mapped, node_id, other_id, mapping_method):
+    licenses = dict_of_pharmebinet_to_resource[other_id][1]
+    licenses.add(pharmebinetutils.dict_source_to_license['efo'])
+    csv_mapped.writerow([node_id, other_id, pharmebinetutils.resource_add_and_prepare(
+        dict_of_pharmebinet_to_resource[other_id][0], 'EFO'), mapping_method, "|".join(licenses)])
 
 def map_efo_disease_and_to_pharmebinet(csv_mapped):
     """
@@ -95,7 +99,7 @@ def map_efo_disease_and_to_pharmebinet(csv_mapped):
     csv_not_mapped.writerow(['id'])
 
     # efo EFO:0000408 id disease
-    query = 'Match (m:efo{id:"efo:EFO_0000408"} )  RETURN m.id, m.names, m.xrefs'
+    query = 'Match (m:efo{id:"MONDO:0000001"} )  RETURN m.id, m.names, m.xrefs'
     results = g.run(query)
     for record in results:
         counter += 1
@@ -105,15 +109,14 @@ def map_efo_disease_and_to_pharmebinet(csv_mapped):
                 if xref.startswith('MONDO:'):
                     if xref in dict_of_pharmebinet_to_resource:
                         count_mapped += 1
-                        csv_mapped.writerow([node_id, xref, pharmebinetutils.resource_add_and_prepare(
-                            dict_of_pharmebinet_to_resource[xref], 'EFO'), 'xref'])
+                        write_to_file(csv_mapped,node_id, xref, 'xref')
 
     query_nodes = 'MATCH (n:efo)-[:is_a]->(m:efo ) Where n.is_obsolete is NULL and m.id in ["%s"] RETURN n.id, n.names, n.xrefs, n.synonyms'
 
     dict_nodes = {}
 
     level = 1
-    dict_level_to_ids = {level: set(['efo:EFO_0000408'])}
+    dict_level_to_ids = {level: set(["MONDO:0000001"])}
 
     while level in dict_level_to_ids:
         new_query = query_nodes
@@ -136,8 +139,8 @@ def map_efo_disease_and_to_pharmebinet(csv_mapped):
                 if node_id in dict_of_pharmebinet_to_resource:
                     count_mapped += 1
                     found_one = True
-                    csv_mapped.writerow([node_id, node_id, pharmebinetutils.resource_add_and_prepare(
-                        dict_of_pharmebinet_to_resource[node_id], 'EFO'), 'id'])
+
+                    write_to_file(csv_mapped, node_id, node_id, 'id')
 
             if found_one:
                 continue
@@ -147,8 +150,7 @@ def map_efo_disease_and_to_pharmebinet(csv_mapped):
                     if xref.startswith('MONDO:'):
                         if xref in dict_of_pharmebinet_to_resource:
                             found_one = True
-                            csv_mapped.writerow([node_id, xref, pharmebinetutils.resource_add_and_prepare(
-                                dict_of_pharmebinet_to_resource[xref], 'EFO'), 'xref'])
+                            write_to_file(csv_mapped, node_id, xref, 'xref')
 
             if found_one:
                 count_mapped += 1
@@ -158,8 +160,7 @@ def map_efo_disease_and_to_pharmebinet(csv_mapped):
                 if node_id in dict_orphanet_id_to_disease_ids:
                     for disease_id in dict_orphanet_id_to_disease_ids[node_id]:
                         found_one = True
-                        csv_mapped.writerow([node_id, disease_id, pharmebinetutils.resource_add_and_prepare(
-                            dict_of_pharmebinet_to_resource[disease_id], 'EFO'), 'Orphanet'])
+                        write_to_file(csv_mapped, node_id, disease_id, 'Orphanet')
 
             if found_one:
                 count_mapped += 1
@@ -170,8 +171,7 @@ def map_efo_disease_and_to_pharmebinet(csv_mapped):
                 if name in dict_name_to_disease_ids:
                     found_one = True
                     for mondo_id in dict_name_to_disease_ids[name]:
-                        csv_mapped.writerow([node_id, mondo_id, pharmebinetutils.resource_add_and_prepare(
-                            dict_of_pharmebinet_to_resource[mondo_id], 'EFO'), 'name'])
+                        write_to_file(csv_mapped, node_id, mondo_id, 'name')
 
             if found_one:
                 count_mapped += 1

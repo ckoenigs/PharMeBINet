@@ -23,13 +23,13 @@ get information and put the into a dictionary one norma identifier and one alter
 
 
 def get_information_and_add_to_dict(label, dict_pharmebinet, dict_alternative_ids_pharmebinet):
-    query = '''MATCH (n:%s) RETURN n.identifier,n.name, n.alternative_ids, n.resource '''
+    query = '''MATCH (n:%s) RETURN n.identifier,n.name, n.alternative_ids, n.resource, n.licenses '''
     query = query % (label)
     results = g.run(query)
 
     for record in results:
-        [identifier, name, alternative_ids, resource] = record.values()
-        dict_pharmebinet[identifier] = resource
+        [identifier, name, alternative_ids, resource, licenses] = record.values()
+        dict_pharmebinet[identifier] = [resource, set(licenses)]
         if alternative_ids:
             for alternative_id in alternative_ids:
                 if alternative_id not in dict_alternative_ids_pharmebinet:
@@ -64,14 +64,18 @@ def load_hmdb_data_in_an_map_to_database(label, dict_pharmebinet, dict_alternati
         go_name = go_node['description']
 
         if go_id in dict_pharmebinet:
+            dict_pharmebinet[go_id][1].add(pharmebinetutils.dict_source_to_license['hmdb'])
             csv_writer.writerow([go_id, go_id, 'identifier',
-                                 pharmebinetutils.resource_add_and_prepare(dict_pharmebinet[go_id], 'HMDB')])
+                                 pharmebinetutils.resource_add_and_prepare(dict_pharmebinet[go_id][0], 'HMDB'),
+                                 '|'.join(dict_pharmebinet[go_id][1])])
             counter_mapped += 1
         elif go_id in dict_alternative_ids_pharmebinet:
             counter_mapped += 1
             for real_go_id in dict_alternative_ids_pharmebinet[go_id]:
+                dict_pharmebinet[real_go_id][1].add(pharmebinetutils.dict_source_to_license['hmdb'])
                 csv_writer.writerow([go_id, real_go_id, 'alternative_id',
-                                     pharmebinetutils.resource_add_and_prepare(dict_pharmebinet[real_go_id], 'HMDB')])
+                                     pharmebinetutils.resource_add_and_prepare(dict_pharmebinet[real_go_id][0], 'HMDB'),
+                                     '|'.join(dict_pharmebinet[real_go_id][1])])
         else:
             counter_not_mapped += 1
             csv_without_ontology.writerow([go_id, label, go_name])
@@ -95,9 +99,9 @@ def generate_files(label, label_hmdb):
     file_name = 'go/mapping_' + label_hmdb + '.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     writer = csv.writer(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(['GOIDHMDB', 'GOIDpharmebinet', 'how_mapped', 'resource'])
+    writer.writerow(['GOIDHMDB', 'GOIDpharmebinet', 'how_mapped', 'resource', 'licenses'])
 
-    query = ''' Match (c:%s{ identifier:line.GOIDpharmebinet}), (n:%s{identifier:line.GOIDHMDB}) SET  c.hmdb="yes", c.resource=split(line.resource,"|") Create (c)-[:equal_to_hmdb_go{how_mapped:line.how_mapped}]->(n)'''
+    query = ''' Match (c:%s{ identifier:line.GOIDpharmebinet}), (n:%s{identifier:line.GOIDHMDB}) SET  c.hmdb=true, c.resource=split(line.resource,"|"), c.licenses=split(line.licenses,"|") Create (c)-[:equal_to_hmdb_go{how_mapped:line.how_mapped}]->(n)'''
     query = query % (label, label_hmdb)
 
     query = pharmebinetutils.get_query_import(path_of_directory,

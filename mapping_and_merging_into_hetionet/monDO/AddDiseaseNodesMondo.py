@@ -172,7 +172,7 @@ def generate_cypher_queries():
                 continue
             query_new += property + ':split(line.' + property + ', "|"), '
 
-    query_new = query_start + 'Create (n:Disease :Phenotype{' + query_new + 'mondo:"yes", resource:["MonDO"], url:"https://monarchinitiative.org/disease/"+ line.id , license:"CC-BY-SA 3.0", source:"MonDO"}) ' + query_end
+    query_new = query_start + 'Create (n:Disease :Phenotype{' + query_new + 'mondo:true, resource:["MonDO"], url:"https://monarchinitiative.org/disease/"+ line.id , licenses:["'+pharmebinetutils.dict_source_to_license["mondo"]+'"], source:"MonDO"}) ' + query_end
     query_new = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/monDO/output/new_nodes.tsv',
                                                   query_new)
@@ -183,7 +183,7 @@ def generate_cypher_queries():
     cypher_file.write(query_new)
 
     cypher_file.close()
-    query_rela = ''' Match (a:Disease{identifier:line.id_1}),(b:Disease{identifier:line.id_2}) Create (a)-[r:IS_A_DiaD{ unbiased:false, url:"https://monarchinitiative.org/disease/"+ line.id_1,  source:"Monarch Disease Ontology", resource:['MonDO'] , mondo:'yes', license:"CC-BY-SA 3.0"}]->(b) '''
+    query_rela = f''' Match (a:Disease{{identifier:line.id_1}}),(b:Disease{{identifier:line.id_2}}) Create (a)-[r:IS_A_DiaD{{ unbiased:false, url:"https://monarchinitiative.org/disease/"+ line.id_1,  source:"Monarch Disease Ontology", resource:['MonDO'] , mondo:true, licenses:["{pharmebinetutils.dict_source_to_license["mondo"]}"]}}]->(b) '''
     query_rela = pharmebinetutils.get_query_import(path_of_directory,
                                                    f'mapping_and_merging_into_hetionet/monDO/output/rela.tsv',
                                                    query_rela)

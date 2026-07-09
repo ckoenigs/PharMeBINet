@@ -56,7 +56,7 @@ def load_genes_from_database_and_add_to_dict():
         identifier = disease['identifier']
         dict_disease_id_to_disease_node[identifier] = dict(disease)
         xrefs = disease['xrefs'] if 'xrefs' in disease else []
-        dict_disease_id_to_resource[identifier] = set(disease['resource'])
+        dict_disease_id_to_resource[identifier] = [set(disease['resource']), set(disease['licenses'])]
         for xref in xrefs:
             split_xref = xref.split(':')
             xref_source = split_xref[0].lower()
@@ -83,7 +83,7 @@ def add_query_to_cypher_file(file_name):
     '''
     add query for a specific tsv to cypher file
     '''
-    this_start_query = "Match (n:disease_dbSNP {identifier:line.identifier}), (m:Disease{identifier:line.disease_id}) Set m.dbSNP='yes', m.resource=split(line.resource,'|') Create (m)-[:equal_to_dbsnp_disease{how_mapped:split(line.how_mapped,'|')}]->(n)"
+    this_start_query = "Match (n:disease_dbSNP {identifier:line.identifier}), (m:Disease{identifier:line.disease_id}) Set m.dbSNP=true, m.resource=split(line.resource,'|'), m.licenses=split(line.licenses,'|') Create (m)-[:equal_to_dbsnp_disease{how_mapped:split(line.how_mapped,'|')}]->(n)"
 
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/dbSNP/{file_name}',
@@ -99,20 +99,10 @@ def generate_files():
     file_name = 'disease/mapping.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['identifier', 'disease_id', 'resource', 'how_mapped'])
+    csv_writer.writerow(['identifier', 'disease_id', 'resource', 'how_mapped', 'licenses'])
 
     add_query_to_cypher_file(file_name)
     return csv_writer
-
-
-def add_resource(set_resource):
-    """
-    Add source to resource and prepare to string
-    :param set_resource:
-    :return:
-    """
-    set_resource.add('dbSNP')
-    return '|'.join(set_resource)
 
 
 # dictionary_clinvar_disease_id_to_node
@@ -127,6 +117,11 @@ set_not_mapped_ids = set()
 # set of all xref type used for mapping
 set_of_all_xref_types_to_map = set()
 
+def write_to_tsv_file(csv_mapped, identifier, pharmebinet_id, mapping_method):
+    dict_disease_id_to_resource[pharmebinet_id][1].add(pharmebinetutils.dict_source_to_license['dbsnp'])
+    csv_mapped.writerow(
+        [identifier, pharmebinet_id, pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[pharmebinet_id][0], 'dbSNP'),
+         mapping_method, '|'.join(dict_disease_id_to_resource[pharmebinet_id][1])])
 
 def load_all_dbsnp_disease_and_map():
     """
@@ -159,9 +154,7 @@ def load_all_dbsnp_disease_and_map():
                 if source_id in dict_xref_to_xref_id_to_disease_ids[source_maybe]:
                     set_of_all_xref_types_to_map.add(source_maybe)
                     for disease_id in dict_xref_to_xref_id_to_disease_ids[source_maybe][source_id]:
-                        csv_mapped.writerow(
-                            [identifier, disease_id, add_resource(dict_disease_id_to_resource[disease_id]),
-                             'identifier'])
+                        write_to_tsv_file(csv_mapped, identifier, disease_id, 'identifier')
                     counter_mapped += 1
                     found_at_least_one_mapping = True
 
@@ -176,9 +169,7 @@ def load_all_dbsnp_disease_and_map():
                 if source_id in dict_xref_to_xref_id_to_disease_ids[source]:
                     set_of_all_xref_types_to_map.add(source)
                     for disease_id in dict_xref_to_xref_id_to_disease_ids[source][source_id]:
-                        csv_mapped.writerow(
-                            [identifier, disease_id, add_resource(dict_disease_id_to_resource[disease_id]),
-                             'identifier'])
+                        write_to_tsv_file(csv_mapped, identifier, disease_id, 'identifier')
                     counter_mapped += 1
                     found_at_least_one_mapping = True
 
@@ -190,8 +181,7 @@ def load_all_dbsnp_disease_and_map():
                 counter_mapped += 1
                 found_at_least_one_mapping = True
                 for disease_id in dict_disease_name_to_ids[name]:
-                    csv_mapped.writerow(
-                        [identifier, disease_id, add_resource(dict_disease_id_to_resource[disease_id]), 'name_name'])
+                    write_to_tsv_file(csv_mapped, identifier, disease_id, 'name_name')
 
         if found_at_least_one_mapping:
             continue
@@ -201,9 +191,7 @@ def load_all_dbsnp_disease_and_map():
                 counter_mapped += 1
                 found_at_least_one_mapping = True
                 for disease_id in dict_disease_synonyms_to_ids[name]:
-                    csv_mapped.writerow(
-                        [identifier, disease_id, add_resource(dict_disease_id_to_resource[disease_id]),
-                         'name_synonyms'])
+                    write_to_tsv_file(csv_mapped, identifier, disease_id, 'name_synonyms')
 
         if not found_at_least_one_mapping:
             set_not_mapped_ids.add(identifier)

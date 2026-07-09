@@ -60,7 +60,7 @@ def create_cypher_file(file_path, rela):
     :param rela:
     :return:
     """
-    query = ''' MATCH (d:Chemical{identifier:line.chemical_id}),(c:SideEffect{identifier:line.se_id}) Merge (d)-[l: %s]->(c) On Create Set l.resource= ['ADReCS'], l.fears_frequencies=split(line.fears_frequencies,"|"), l.fears_severity_grades=split(line.fears_severity_grades, "|"), l.adrecs= "yes", l.license="CC BY-NC-SA 4.0", l.url="http://bioinf.xmu.edu.cn/ADReCS/drugSummary.jsp?drug_id="+line.adr_id, l.source="ADReCS" On Match Set l.adrecs="yes", l.resource="ADReCS"+l.resource, l.fears_frequencies=split(line.fears_frequencies,"|"), l.fears_severity_grades=split(line.fears_severity_grades, "|")'''
+    query = f''' MATCH (d:Chemical{{identifier:line.chemical_id}}),(c:SideEffect{{identifier:line.se_id}}) Merge (d)-[l: %s]->(c) On Create Set l.resource= ['ADReCS'], l.licenses = ["{pharmebinetutils.dict_source_to_license["adrecs"]}"], l.fears_frequencies=split(line.fears_frequencies,"|"), l.fears_severity_grades=split(line.fears_severity_grades, "|"), l.adrecs= True, l.url="http://bioinf.xmu.edu.cn/ADReCS/drugSummary.jsp?drug_id="+line.adr_id, l.source="ADReCS" On Match Set l.adrecs=true, l.resource="ADReCS"+l.resource, l.licenses = l.licenses + "{pharmebinetutils.dict_source_to_license["adrecs"]}", l.fears_frequencies=split(line.fears_frequencies,"|"), l.fears_severity_grades=split(line.fears_severity_grades, "|")'''
     query = query % (rela)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/adrecs/{file_path}', query)

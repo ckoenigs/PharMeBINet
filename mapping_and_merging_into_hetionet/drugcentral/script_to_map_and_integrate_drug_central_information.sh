@@ -39,12 +39,6 @@ echo 'integrate Durgcentral protein'
 python3 mapping_protein_drugcentral.py $path_to_project > protein/output.txt
 
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'integrate Drugcentral go'
-
-# python3 mapping_GOterm_drugcentral.py $path_to_project > goTerm/output.txt
-
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -80,9 +74,10 @@ echo "Current time: $now"
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
 
-sleep 30
+python ../../check_indices.py
+
 python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
-sleep 60
+python ../../check_indices.py
 
 now=$(date +"%F %T")
 echo 'integrate Drugcentral different edges'
@@ -114,7 +109,7 @@ echo "Current time: $now"
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_edge.cypher > output/cypher2.txt
 
-sleep 60
-python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
-sleep 90
+python ../../check_indices.py
 
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+python ../../check_indices.py

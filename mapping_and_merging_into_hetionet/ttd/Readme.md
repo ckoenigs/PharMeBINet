@@ -69,4 +69,4 @@ In the last program, chemical-target connections are merged into PharMeBINet:
 
 In the last step, the cypher queries are executed with the Neo4j cypher-shell.
 
-To get the latest information of CHEMBL you need to remove the data/api_infos.tsv.
+To get the latest information of PubChem you need to remove the data/api_infos.tsv.

@@ -23,7 +23,7 @@ fi
 if [ ! -d data ]; then
   mkdir data
   cd data
-  wget https://www.bindingdb.org/rwd/bind/downloads/BindingDB_All_202510_tsv.zip
+  wget https://www.bindingdb.org/rwd/bind/downloads/BindingDB_All_202604_tsv.zip
   cd ..
 fi
 

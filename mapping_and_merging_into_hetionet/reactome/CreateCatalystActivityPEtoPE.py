@@ -47,7 +47,7 @@ generate new relationships between complex of pharmebinet and complex of pharmeb
 
 def create_cypher_file(file_name, node_label_pharmebinet1, node_label_pharmebinet2, rela_name, direction1, direction2,
                        rela_note_exists):
-    query = ''' MATCH (d:%s{identifier:line.id_1}),(c:%s{identifier:line.id_2}) Where not (d)-[:%s]-(c) CREATE (d)%s[:%s{resource: ['Reactome'], url:"https://reactome.org/content/detail/"+line.id_2, reactome: "yes", source:"Reactome", type:"has_component", license:"%s"}]%s(c)'''
+    query = ''' MATCH (d:%s{identifier:line.id_1}),(c:%s{identifier:line.id_2}) Where not (d)-[:%s]-(c) CREATE (d)%s[:%s{resource: ['Reactome'], url:"https://reactome.org/content/detail/"+line.id_2, reactome: true, source:"Reactome", type:"has_component", licenses:["%s"]}]%s(c)'''
 
     query = query % (node_label_pharmebinet1, node_label_pharmebinet2, rela_note_exists, direction1,
                      rela_name, license, direction2)
@@ -89,12 +89,11 @@ def check_relationships_and_generate_file(start_label, end_label, node_label_pha
 
 def main():
     global path_of_directory, license
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        license = sys.argv[2]
     else:
-        sys.exit('need a path reactome reaction and license')
-
+        sys.exit('need a path reactome reaction')
+    license = pharmebinetutils.dict_source_to_license['reactome']
     global cypher_file
     print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')

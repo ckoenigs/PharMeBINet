@@ -45,8 +45,8 @@ def prepare_cypher_query(file_name):
         product_property = record.data()['l']
         query_start += product_property + ':n.' + product_property + ', '
 
-    query_start += ' url:line.url, resource:["DrugBank"], drugbank:"yes", license:"%s"})-[:equal_drugbank_product]->(n)'
-    query = query_start % (license)
+    query_start += ' url:line.url, resource:["DrugBank"], drugbank:true, licenses:["%s"]})-[:equal_drugbank_product]->(n)'
+    query = query_start % (pharmebinetutils.dict_source_to_license['drugbank'])
 
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/{file_name}',
@@ -56,8 +56,8 @@ def prepare_cypher_query(file_name):
     cypher_file.write(query)
     cypher_file.close()
     cypher_rela = open('output/cypher_rela.cypher', 'a', encoding='utf-8')
-    query_rela = 'Match (n:Compound)--(:Compound_DrugBank)--(:Product_DrugBank)--(m:Product) With Distinct n, m Create (n)-[:HAS_CHhPR{source:"DrugBank", resource:["DrugBank"], url:"https://go.drugbank.com/drugs/"+n.identifier, license:"%s", drugbank:"yes"}]->(m);\n'
-    query_rela = query_rela % (license)
+    query_rela = 'Match (n:Compound)--(:Compound_DrugBank)--(:Product_DrugBank)--(m:Product) With Distinct n, m Create (n)-[:HAS_CHhPR{source:"DrugBank", resource:["DrugBank"], url:"https://go.drugbank.com/drugs/"+n.identifier, licenses:["%s"], drugbank:true}]->(m);\n'
+    query_rela = query_rela % (pharmebinetutils.dict_source_to_license['drugbank'])
     cypher_rela.write(query_rela)
 
 
@@ -106,10 +106,8 @@ def main():
 
     global path_of_directory
     if len(sys.argv) < 2:
-        sys.exit('need a license')
-    global license
-    license = sys.argv[1]
-    path_of_directory = sys.argv[2]
+        sys.exit('need a path')
+    path_of_directory = sys.argv[1]
 
     print('##########################################################################')
 

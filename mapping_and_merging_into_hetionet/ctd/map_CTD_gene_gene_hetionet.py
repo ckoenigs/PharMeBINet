@@ -114,7 +114,8 @@ Generate cypher and tsv for generating the new nodes and the relationships
 def generate_files():
     # generate cyoher file
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query = ''' Match (c:Gene{ identifier:line.GeneIDpharmebinet}), (n:CTD_gene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID'''
+    query = ''' Match (c:Gene{ identifier:line.GeneIDpharmebinet}), (n:CTD_gene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd=True, c.resource=c.resource+"CTD",c.licenses=c.licenses+"%s", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID'''
+    query = query % (pharmebinetutils.dict_source_to_license['ctd'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ctd/gene/mapping.tsv',
                                               query)

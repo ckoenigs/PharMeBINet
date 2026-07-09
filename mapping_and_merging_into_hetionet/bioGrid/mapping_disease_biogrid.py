@@ -36,7 +36,7 @@ def load_diseases_from_database_and_add_to_dict():
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_disease_id_to_resource[identifier] = node['resource']
+        dict_disease_id_to_resource[identifier] = [node['resource'], set(node['licenses'])]
         name = node['name'].lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_synonym_to_ids, name, identifier)
         synonyms = node['synonyms'] if 'synonyms' in node else []
@@ -67,17 +67,12 @@ def load_all_bioGrid_diseases_and_finish_the_files(csv_mapping):
         # mapping
         if identifier in dict_doid_to_disease_ids:
             for node_id in dict_doid_to_disease_ids[identifier]:
-                csv_mapping.writerow(
-                    [identifier, node_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[node_id], "BioGRID"),
-                     'doid'])
+                general_function_bioGrid.write_to_tsv_file(dict_disease_id_to_resource, csv_mapping, identifier,
+                                                           node_id, 'doid')
         elif name in dict_synonym_to_ids:
             for node_id in dict_synonym_to_ids[name]:
-                csv_mapping.writerow(
-                    [identifier, node_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[node_id], "BioGRID"),
-                     'name'])
-
+                general_function_bioGrid.write_to_tsv_file(dict_disease_id_to_resource, csv_mapping, identifier,
+                                                           node_id, 'name')
 
         else:
             counter_not_mapped += 1

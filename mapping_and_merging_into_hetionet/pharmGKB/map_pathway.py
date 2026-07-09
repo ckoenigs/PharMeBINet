@@ -35,12 +35,12 @@ load in all compound from pharmebinet in a dictionary
 
 
 def load_db_pathways_in():
-    query = '''MATCH (n:Pathway) RETURN n.identifier, n.name ,n.synonyms, n.resource'''
+    query = '''MATCH (n:Pathway) RETURN n.identifier, n.name ,n.synonyms, n.resource, n.licenses'''
     results = g.run(query)
 
     for record in results:
-        [identifier, name, synonyms, resource] = record.values()
-        dict_pathway_to_resource[identifier] = set(resource) if resource else set()
+        [identifier, name, synonyms, resource, licenses] = record.values()
+        dict_pathway_to_resource[identifier] = [set(resource), set(licenses)]
 
         name = name.lower() if name is not None else ''
         add_entry_to_dictionary(dict_pathway_name_to_pathway_id, name, identifier)
@@ -69,10 +69,9 @@ def check_for_mapping(dict_source_to_ids, source, dict_source_to_pathway_ids, cs
         if cui in dict_source_to_pathway_ids:
             found_mapping = True
             for pathway_id in dict_source_to_pathway_ids[cui]:
-                resource = dict_pathway_to_resource[pathway_id]
-                resource.add("PharmGKB")
-                resource = "|".join(sorted(resource))
-                csv_writer.writerow([pathway_id, identifier, resource, source.lower()])
+                resource = pharmebinetutils.resource_add_and_prepare( dict_pathway_to_resource[pathway_id][0], 'PharmGKB')
+                dict_pathway_to_resource[pathway_id][1].add(pharmebinetutils.dict_source_to_license['pharmgkb'])
+                csv_writer.writerow([pathway_id, identifier, resource, source.lower(), '|'.join(dict_pathway_to_resource[pathway_id][1])])
     return found_mapping
 
 
@@ -86,7 +85,7 @@ def load_pharmgkb_phathways_in():
     file_name = 'pathway/mapping.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['pathway_id', 'pharmgkb_id', 'resource', 'how_mapped'])
+    csv_writer.writerow(['pathway_id', 'pharmgkb_id', 'resource', 'how_mapped', 'licenses'])
 
     # pathwayrate cypher file
     pathwayrate_cypher_file(file_name)
@@ -121,7 +120,7 @@ def load_pharmgkb_phathways_in():
 
 def pathwayrate_cypher_file(file_name):
     cypher_file = open('output/cypher.cypher', 'a')
-    query = '''  MATCH (n:PharmGKB_pathway{id:line.pharmgkb_id}), (c:pathway{identifier:line.pathway_id})  Set c.pharmgkb='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_pathway_pharmgkb{how_mapped:line.how_mapped}]->(n)'''
+    query = '''  MATCH (n:PharmGKB_pathway{id:line.pharmgkb_id}), (c:pathway{identifier:line.pathway_id})  Set c.pharmgkb=true, c.resource=split(line.resource,'|'), c.licenses=split(line.licenses,'|') Create (c)-[:equal_to_pathway_pharmgkb{how_mapped:line.how_mapped}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
                                               query)

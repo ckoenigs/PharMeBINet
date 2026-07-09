@@ -3,15 +3,16 @@ import subprocess
 import sys
 import time
 import os, glob
+from bolt import bolt
 
 if len(sys.argv) != 4:
     print('something is missing neo4j path, password, cypher file')
 neo4j_path = sys.argv[1]
 password = sys.argv[2]
 cypher_file = sys.argv[3]
-
+address = f'neo4j://localhost:{bolt}'
 try:
-    subprocess.run([neo4j_path + '/cypher-shell', '-u', 'neo4j', '-p', password, '-f', cypher_file], check=True)
+    subprocess.run([neo4j_path + '/cypher-shell', '-a', address, '-u', 'neo4j', '-p', password, '-f', cypher_file], check=True)
 except subprocess.CalledProcessError as e:
 
     # Getting All Files List

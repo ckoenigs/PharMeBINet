@@ -1,3 +1,5 @@
+First, PubChemi is downloaded if not already exists and than all InChIKey-PubChem ID mappings are written into a file.
+
 The first program maps bindingDB polymer to protein:
     First, it generates an empty cypher file.
     In the following, it loads all proteins and writes them into dictionaries.
@@ -11,7 +13,7 @@ The first program maps bindingDB polymer to protein:
     All mapping pairs are written into the TSV file.
 
 The next program maps bindingDB monomer to chemical:
-    First, load all manually executed InChiKey to PubChem id (https://pubchem.ncbi.nlm.nih.gov/idexchange/idexchange.cgi) information into a dictionary.
+    First, load all PubChem ID-InChIKey mapping from the generated file.
     Next, load existing chemical information into dictionaries.
     Then, generate mapping TSV file and additional cypher query and add to cypher file.
     In the following, the new TSV file is generated and the additional cypher query is added to the cypher file.
@@ -22,9 +24,9 @@ The next program maps bindingDB monomer to chemical:
         Then, the monomer synonym chembl id is mapped to chemical xref chembl id (some have also the first part of the inchikey equal).
         In the following, monomer synonym is mapped to chemical name/synonym (some have also the first part of the inchikey equal).
         Next, the monomer bindingDB id is mapped to the chemical xref bindingDB id.
+        Last, the monomer binding InChIKey is mapped to PubChem ID using PubChem
     All mappings are written into the mapping TSV file.
     The not-mapped nodes with an InChiKey which is in the dictionary to PubChem ID are added to the new TSV file.
-    The not-generated new nodes that include an InChiKey are written into a tsv file which can be executed in https://pubchem.ncbi.nlm.nih.gov/idexchange/idexchange.cgi
 
 The mapping is integrated into PharMeBINet with Neo4j cypher-shell and the cypher file.
 

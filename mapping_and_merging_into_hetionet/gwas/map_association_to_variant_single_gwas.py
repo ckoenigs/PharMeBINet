@@ -21,15 +21,17 @@ dbsnp_identifier_map = {}
 
 dict_id_to_name = {}
 
+license = pharmebinetutils.dict_source_to_license['gwas']
+
 
 def load_variants_from_database_and_add_to_dict():
     # Define the Cypher query to fetch dbSNP IDs and identifiers
     cypher_query = (
-        "MATCH (n:Variant) Where n.identifier Starts with 'rs'  RETURN n.identifier AS identifier, n.xrefs as xrefs, n.resource AS resource, n.name as name, n.cytogenetic_location")
+        "MATCH (n:Variant) Where n.identifier Starts with 'rs'  RETURN n.identifier AS identifier, n.xrefs as xrefs, n.resource AS resource, n.name as name, n.cytogenetic_location, n.licenses")
     results = g.run(cypher_query)
     for record in results:
-        [identifier, xrefs, resource, name, location] = record.values()
-        dict_variant_id_to_resource[identifier] = resource
+        [identifier, xrefs, resource, name, location, licenses] = record.values()
+        dict_variant_id_to_resource[identifier] = [resource, set(licenses)]
         if xrefs:
             for xref in xrefs:
                 if xref.startswith('dbSNP'):
@@ -55,7 +57,7 @@ def generate_files(path_of_directory):
 
     file_name = 'variant_to_Variant'
     file_path = os.path.join(path_of_directory, file_name) + '.tsv'
-    header = ['variant_id', 'identifier', 'resource', 'mapping_method']
+    header = ['variant_id', 'identifier', 'resource', 'mapping_method','licenses']
     file = open(file_path, 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
@@ -71,13 +73,13 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     query = (f' Match (n:GWASCatalog_Association), (v:Variant{{'
-             f'identifier:line.identifier}}) Where ID(n) =  toInteger(line.variant_id) Set v.gwas="yes", v.chromosome=n.chr_id, v.position=n.chr_position, v.resource=split(line.resource,"|") Create (v)-['
+             f'identifier:line.identifier}}) Where ID(n) =  toInteger(line.variant_id) Set v.gwas=True, v.chromosome=n.chr_id, v.position=n.chr_position, v.resource=split(line.resource,"|"), v.licenses=split(line.licenses,"|") Create (v)-['
              f':equal_to_GWAS_variant{{mapped_with:line.mapping_method}}]->(n)')
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, 'a', encoding='utf-8')
     cypher_file.write(query)
 
-    query = f' Match (n:GWASCatalog_Association) Where ID(n)=toInteger(line.variant_id) Merge (p:Variant :GeneVariant{{identifier:line.identifier}}) On Create Set p.chromosome=n.chr_id, p.position=n.chr_position , p.resource=["GWAS Catalog"], p.xrefs=["dbSNP:"+line.identifier], p.gwas="yes", p.source="dbSNP from GWAS", p.license="CC BY-NC 4.0 Deed"  Create (p)-[:equal_to_GWAS_variant{{mapped_with:"new"}}]->(n)'
+    query = f' Match (n:GWASCatalog_Association) Where ID(n)=toInteger(line.variant_id) Merge (p:Variant :GeneVariant{{identifier:line.identifier}}) On Create Set p.chromosome=n.chr_id, p.position=n.chr_position , p.resource=["GWAS Catalog"], p.xrefs=["dbSNP:"+line.identifier], p.gwas=true, p.source="dbSNP from GWAS", p.licenses=["{license}"]  Create (p)-[:equal_to_GWAS_variant{{mapped_with:"new"}}]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name_new,
                                               query)
@@ -106,10 +108,11 @@ def load_all_GWAS_variants_and_finish_the_files(csv_mapping, csv_new):
 
         if rs_id in dbsnp_identifier_map:
             for variant_id in dbsnp_identifier_map[rs_id]:
+                dict_variant_id_to_resource[variant_id][1].add(license)
                 csv_mapping.writerow(
                     [unique_id, variant_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[variant_id], "GWAS Catalog"),
-                     'dbSNP'])
+                     pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[variant_id][0], "GWAS Catalog"),
+                     'dbSNP', '|'.join(dict_variant_id_to_resource[variant_id][1])])
 
         else:
             if rs_id:

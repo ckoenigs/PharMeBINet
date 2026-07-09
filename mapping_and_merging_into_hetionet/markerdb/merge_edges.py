@@ -17,6 +17,7 @@ def create_connection_with_neo4j():
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session(database='graph')
 
+license = pharmebinetutils.dict_source_to_license['markerdb']
 
 def get_MarkerDB_information(label_pharmebinet, label_markerdb, file_cypher, has_reference):
     '''
@@ -61,7 +62,7 @@ def get_MarkerDB_information(label_pharmebinet, label_markerdb, file_cypher, has
             condition='p.reference is not null'
 
         dict_label_to_type={'Variant':'sequence_variants','Gene':'sequence_variants','Metabolite':'chemicals','Protein':'proteins'}
-        query = f' Match (v:{label_pharmebinet}{{identifier:line.variant_id}}), (d:{other_label}{{identifier:line.phenotype_id}}) Merge (v)-[r:IS_BIOMARKER_{pharmebinetutils.dictionary_label_to_abbreviation[label_pharmebinet]}ib{pharmebinetutils.dictionary_label_to_abbreviation[other_label]}]->(d) On Create Set r.rela_info=split(line.rela_info,"|"), r.resource=["MarkerDB"], r.markerdb="yes",r.citations=split(line.citations,"|"), r.types=split(line.type,"|"), r.source="MarkerDB", {part}, r.license="CC BY-NC 4.0", r.url="https://markerdb.ca/{dict_label_to_type[label_pharmebinet]}/"+line.markerID On Match Set r.rela_info=split(line.rela_info,"|"), r.markerdb="yes",r.citations=split(line.citations,"|"), r.types=split(line.type,"|")'
+        query = f' Match (v:{label_pharmebinet}{{identifier:line.variant_id}}), (d:{other_label}{{identifier:line.phenotype_id}}) Merge (v)-[r:IS_BIOMARKER_{pharmebinetutils.dictionary_label_to_abbreviation[label_pharmebinet]}ib{pharmebinetutils.dictionary_label_to_abbreviation[other_label]}]->(d) On Create Set r.rela_info=split(line.rela_info,"|"), r.resource=["MarkerDB"], r.markerdb=true,r.citations=split(line.citations,"|"), r.types=split(line.type,"|"), r.source="MarkerDB", {part}, r.licenses=["{license}"], r.url="https://markerdb.ca/{dict_label_to_type[label_pharmebinet]}/"+line.markerID On Match Set r.rela_info=split(line.rela_info,"|"), r.markerdb=true,r.citations=split(line.citations,"|"), r.types=split(line.type,"|")'
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   file_name_not_mapped,
                                                   query)
