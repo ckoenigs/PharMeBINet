@@ -28,8 +28,19 @@ All the mapping pairs are written into a TSV file and for each label pair, a cyp
 In the end, the information is integrated into the database with the cypher shell.
 
 
-
 Next, connections between compound and metabolite are generated:
     First, load all compound information.
     Then the metabolite information is asked and used for mapping. One is the InChIKey and the other a combination of the DrugBank identifier and name mapping.
     All pairs are written into a TSV file and a cypher query is generated and added to the cypher file.
+
+In the following, a programm is executed that calculates between all compounds the similarity:
+    First, prepare the structure file into the format of RDKIT and pybel.
+    Next, prepare the different fingerprints of the different toolkits.
+    Then, generate a TSV file for all pairs with all values of the different similarities.
+
+The last program it runs through the similarity calculation and check for above a filter and generate a subset of all pairs:
+    For each, fingerprint-metric pari an own threshold is defined which is based on 1% rule of all data.
+    All pairs whee at least on is above a threshold is added to the subset.
+    Additionally, a cypher file is generated.    
+
+In the last step, the similarity relationships are integrated into the database with the cypher-shell.

@@ -31,6 +31,7 @@ python connection_metabolite_chemical.py $path_to_project > output/output_chemic
 
 echo generate equal edes between chemicals
 #python similarity.py $path_to_project $path_to_databases > output/output_similarity.txt
+#python filter_similarities.py $path_to_project > output/output_filter_similarity,txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -38,10 +39,10 @@ echo integration of equal relationship between disease, side effect and symptom
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher.cypher > output/cypher.txt
 
-sleep 30
-python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
-sleep 30
+python ../../check_indices.py
 
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+python ../../check_indices.py
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -49,6 +50,7 @@ echo integration of resemble edges
 
 python ../../execute_cypher_shell.py $path_neo4j $password output/cypher_resemble.cypher > output/cypher_integration.txt
 
-sleep 30
-python ../../restart_neo4j.py $path_neo4j > output/neo4j.txt
-sleep 30
+python ../../check_indices.py
+
+python ../../restart_neo4j.py $path_neo4j > output/neo4j1.txt
+python ../../check_indices.py
