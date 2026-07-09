@@ -103,7 +103,7 @@ for chunk in synonym_chunks:
         for drugbank_id in synonym_to_drugbank_ids[synonym]:
             if (rxcui, drugbank_id) in set_of_rxcui_drug_bank_pairs:
                 continue
-            csv_writer.writerow([drugbank_id, rxcui])
+            csv_writer.writerow([rxcui,drugbank_id ])
             set_of_rxcui_drug_bank_pairs.add((rxcui, drugbank_id))
 
 print('number of drugbank ids:', count_drugbank_ids)
