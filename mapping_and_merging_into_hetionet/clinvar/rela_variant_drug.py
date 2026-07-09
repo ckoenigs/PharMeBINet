@@ -46,20 +46,15 @@ def go_through_a_dictionary_add_info_into_another(from_dict, to_dictionary, addi
             to_dictionary[additional_name + key] = value
 
 
-def transform_json_string_to_dict(json_string):
+def transform_json_string_to_dict(json_string, print_bool=False):
     """
-    replace unneeded sights from string and transform to string
+    replace unneeded sights from string and transform to string because of a change in the integration the replacements
+    are not needed anymore
     :param json_string: string
     :return: dictionary
     """
-    # print(json_string)
-    if '\\"' in json_string:
-        json_string = json_string.replace('\\"', '"')
-    else:
-        json_string = re.sub("([{\\[])'", '\\1"', json_string)
-        json_string = re.sub("([:,]) '", '\\1 "', json_string)
-        json_string = re.sub("'([:,\\]}])", '"\\1', json_string)
-    # print(json_string)
+    if print_bool:
+        print(json_string)
     return json.loads(json_string)
 
 
@@ -115,7 +110,7 @@ def dict_go_down_dict(dictionary):
                     for content_key, content_value in content.items():
                         this_value.add(content_key + ':' + content_value)
                 else:
-                    sys.exit('other content in list')
+                    sys.exit('other content in list', type(content))
                 return key, ';'.join(sorted(this_value))
         else:
             sys.exit('other type by dict down')
@@ -140,9 +135,8 @@ def load_all_rela_drug_response_and_finish_the_files():
     global set_of_rela_properties
 
     # {identifier:'DB00860'} {identifier:'225969'} {identifier:'226021'} {identifier:'DB00864'}
-    query = "MATCH (v:Variant)-[:equal_to_clinvar_variant]-()-[r]-(:trait_set_DrugResponse_ClinVar)-[:has]-(n)-[:equal_to_clinvar_drug]-(a:Chemical) RETURN v.identifier, r, type(r), n.name, a.identifier"
+    query = "MATCH (v:Variant)-[:equal_to_clinvar_variant]-()-[r]-(:trait_set_DrugResponse_ClinVar)-[:has]-(n)-[:equal_to_clinvar_drug]-(a:Chemical) Where not ('no assertion criteria provided' in r.review_status or 'no classification provided' in r.review_status) RETURN v.identifier, r, type(r), n.name, a.identifier"
     results = g.run(query)
-    print(query)
     counter_rela = 0
     for record in results:
         [variant_id, rela_info, rela_type, respose_name, chemical_id] = record.values()
@@ -157,12 +151,8 @@ def load_all_rela_drug_response_and_finish_the_files():
             additiona_infos = dict_rela_combinde['additional_rela_infos'].strip()
         elif not 'response' in respose_name and rela_type == 'variation_to_disease' and ' ' in respose_name:
             rela_type = respose_name.rsplit(' ', 1)[1]
-        # print(dict(rela_info))
         for key, value in rela_info.items():
-            if 'citations' == key:
-                # value is a list
-                dict_rela_combinde[key] = value
-            elif 'citations_info' == key:
+            if 'citations_info' == key:
                 dict_rela_combinde[key] = list_of_dictionary_to_list_of_string(value)
             elif key == 'clinical_significance':
                 value = transform_json_string_to_dict(value)
@@ -195,15 +185,14 @@ def load_all_rela_drug_response_and_finish_the_files():
                 else:
                     set_assertion.add(value)
                 dict_rela_combinde[key] = set_assertion
-            elif key == 'accession_clinvar':
-                value = transform_json_string_to_dict(value)
-                go_through_a_dictionary_add_info_into_another(value, dict_rela_combinde, additional_name='accession_',
-                                                              asString=True)
+            # elif key == 'accession_clinvar':
+            #     value = transform_json_string_to_dict(value)
+            #     go_through_a_dictionary_add_info_into_another(value, dict_rela_combinde, additional_name='accession_',
+            #                                                   asString=True)
             elif key == 'observations':
                 if type(value) == list:
-                    for obervations in value:
-                        # print(obervations)
-                        dict_or_list_observations = transform_json_string_to_dict(obervations)
+                    for observations in value:
+                        dict_or_list_observations = transform_json_string_to_dict(observations)
                         if type(dict_or_list_observations) == dict:
                             if 'observation' in dict_or_list_observations:
                                 observation = dict_or_list_observations['observation']
@@ -271,13 +260,13 @@ def load_all_rela_drug_response_and_finish_the_files():
                 dict_rela_combinde[key] = value
             elif type(value) == str:
                 dict_rela_combinde[key] = value
+            elif type(value) == list:
+                dict_rela_combinde[key] = value
             else:
                 print(key)
                 print(value)
                 sys.exit('info not included')
         # check for none values!
-        # print(dict_rela_combinde)
-        # sys.exit()
         set_of_rela_properties = set_of_rela_properties.union(dict_rela_combinde.keys())
         if (variant_id, chemical_id, rela_type, additiona_infos) not in dict_pair_to_rela_info:
             dict_pair_to_rela_info[(variant_id, chemical_id, rela_type, additiona_infos)] = []
@@ -331,7 +320,7 @@ def generate_cypher_file_and_tsv(rela_type):
                           'clinical_significance_comments', 'comments', 'xrefs', 'ClinVar_assertion_observations',
                           'clinical_significance_citations', 'citations', 'assertion',
                           'clinical_significance_review_status', 'additional_rela_infos', 'citations_info',
-                          'observation', 'clinical_significance_citations_info']:
+                          'observation', 'clinical_significance_citations_info', 'review_status']:
             if property not in ['assertion', 'observation']:
                 query_start += property + ':split(line.' + property + ',"|"), '
             else:
@@ -339,8 +328,8 @@ def generate_cypher_file_and_tsv(rela_type):
         else:
             query_start += property + ':line.' + property + ', '
 
-    query = query_start + '''resource:['ClinVar'], source:'ClinVar', clinvar:'yes', license:'https://www.ncbi.nlm.nih.gov/home/about/policies/', url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.variant_id}]-(t) '''
-    query = query % (rela_type)
+    query = query_start + '''resource:['ClinVar'], source:'ClinVar', clinvar:True, licenses:['%s'], url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.variant_id}]-(t) '''
+    query = query % (rela_type, pharmebinetutils.dict_source_to_license['clinvar'])
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/clinvar/{file_name}',
                                               query)
@@ -368,11 +357,27 @@ dict_rela_name_to_rela_end = {
 }
 
 
+def check_for_quality_info_and_write_into_file(dict_info, tsv_writer):
+    """
+    check if some assertion critical are provided and than written int tsv file
+    :param dict_info: dictionary of rela information
+    :param tsv_writer: csv writer
+
+    """
+    global counter_not_used_edges
+    if "no assertion criteria provided" not in dict_info['review_status'] or len(
+            dict_info['review_status']) > 1:
+        tsv_writer.writerow(prepare_dictionary_with_strings_values(dict_info))
+    else:
+        counter_not_used_edges += 1
+
+
 def prepare_tsv_file():
     """
     prepare the different rela files and generate cypher queries
     :return:
     """
+    global counter_not_used_edges
     counter_not_used_edges = 0
     for (variant_id, chemical_id, rela_type, additional_information), list_of_dict in dict_pair_to_rela_info.items():
         if rela_type in dict_rela_type_to_new_name:
@@ -395,10 +400,8 @@ def prepare_tsv_file():
             dict_info = list_of_dict[0]
             dict_info['variant_id'] = variant_id
             dict_info['chemical_id'] = chemical_id
-            if "no assertion criteria provided" not in dict_info['clinical_significance_review_status']:
-                dict_rela_type_to_tsv[rela_type].writerow(prepare_dictionary_with_strings_values(dict_info))
-            else:
-                counter_not_used_edges += 1
+
+            check_for_quality_info_and_write_into_file(dict_info, dict_rela_type_to_tsv[rela_type])
 
         else:
             combinde_dictionary = {}
@@ -431,11 +434,7 @@ def prepare_tsv_file():
                                 print(type(value))
                                 print(combinde_dictionary[key])
                                 # sys.exit()
-
-            if "no assertion criteria provided" not in combinde_dictionary['clinical_significance_review_status']:
-                dict_rela_type_to_tsv[rela_type].writerow(prepare_dictionary_with_strings_values(combinde_dictionary))
-            else:
-                counter_not_used_edges += 1
+            check_for_quality_info_and_write_into_file(combinde_dictionary, dict_rela_type_to_tsv[rela_type])
     print(set_of_list_properties)
     print('number of edges which are not used:', counter_not_used_edges)
 
