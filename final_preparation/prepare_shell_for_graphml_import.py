@@ -29,7 +29,7 @@ import_tool=$1
 # define path to pharmebinet
 path_to_pharmebinet=$2\n\n''')
 
-    import_tool = 'java -jar $import_tool.jar -i $path_to_pharmebinet"PharMeBiNet_finished.graphml"  -e bolt://localhost:7687 --username neo4j --password test1234  --modify-edge-labels false --indices "%s"'
+    import_tool = f'java -jar $import_tool.jar -i $path_to_pharmebinet"PharMeBiNet_finished.graphml"  -e bolt://localhost:{neo4j_bold} --username neo4j --password test1234  --modify-edge-labels false --indices "%s"'
 
     query = 'SHOW INDEXES'
     results = g.run(query)
@@ -57,6 +57,10 @@ path_to_pharmebinet=$2\n\n''')
 
 
 def main():
+    global neo4j_bold
+    if len(sys.argv) > 1:
+        neo4j_bold = sys.argv[1]
+
     print(datetime.datetime.now())
 
     print('##########################################################################')
