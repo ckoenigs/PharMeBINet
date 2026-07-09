@@ -28,6 +28,8 @@ dict_pharma_name = {}
 # dictionary node id to dictionary pc id to set of mapping methods
 dict_pharma_mapping = defaultdict(dict)
 
+license = pharmebinetutils.dict_source_to_license['drugcentral']
+
 
 def load_pharmacological_class_in():
     """
@@ -50,7 +52,7 @@ def load_pharmacological_class_in():
         else:
             names.append(pharma_name)
 
-        dict_PharmaClassId_to_resource[identifier] = resource
+        dict_PharmaClassId_to_resource[identifier] = [resource, set(node['licenses'])]
 
         for ref in xrefs:
             # Mesh
@@ -121,9 +123,10 @@ def load_pharmaClass_in():
     for node_id, dict_pc_to_methods in dict_pharma_mapping.items():
         for pharma_id, methods in dict_pc_to_methods.items():
             methods = '|'.join(methods)
+            dict_PharmaClassId_to_resource[pharma_id][1].add(license)
             csv_mapped.writerow([node_id, pharma_id,
-                                 pharmebinetutils.resource_add_and_prepare(dict_PharmaClassId_to_resource[pharma_id],
-                                                                           'DrugCentral'), methods])
+                                 pharmebinetutils.resource_add_and_prepare(dict_PharmaClassId_to_resource[pharma_id][0],
+                                                                           'DrugCentral'), methods, '|'.join(dict_PharmaClassId_to_resource[pharma_id][1])])
 
 
 # file for mapped or not mapped identifier
@@ -136,11 +139,11 @@ csv_not_mapped.writerow(['id', 'code', 'source', 'name'])
 
 file_mapped_pharmaClass = open('pharmaClass/mapped_pharmaClass.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_pharmaClass, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
+csv_mapped.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped', 'licenses'])
 
 file_mapped_chemical = open('pharmaClass/mapped_chemical.tsv', 'w', encoding="utf-8")
 csv_mapped_chem = csv.writer(file_mapped_chemical, delimiter='\t', lineterminator='\n')
-csv_mapped_chem.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
+csv_mapped_chem.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped', 'licenses'])
 
 
 def generate_cypher_file(file_name):
@@ -152,7 +155,7 @@ def generate_cypher_file(file_name):
     """
     cypher_file = open('output/cypher.cypher', 'a')
     # es gibt keine mappings zu Chemical, daher ist der cypher file nur für Pharmacological class erstellt
-    query = '''MATCH (n:DC_PharmaClass), (c:PharmacologicClass{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_PharmaClass_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query = '''MATCH (n:DC_PharmaClass), (c:PharmacologicClass{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral=true, c.resource=split(line.resource,'|'), c.licenses=split(line.licenses,'|') Create (c)-[:equal_to_PharmaClass_drugcentral{how_mapped:line.how_mapped}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               "mapping_and_merging_into_hetionet/drugcentral/pharmaClass/" + file_name,
                                               query)
