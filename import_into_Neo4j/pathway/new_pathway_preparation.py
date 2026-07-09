@@ -104,7 +104,7 @@ def pathway_commons():
     global i
     i = 0
     rows = list()
-    PC_Row = collections.namedtuple('PC_Row', ['identifier', 'synonyms', 'source', 'genes', 'url', 'xrefs'])
+    PC_Row = collections.namedtuple('PC_Row', ['identifier', 'synonyms', 'source', 'genes', 'url', 'xrefs','pathway_commons']) # ,'wikipathways'
 
     for url, description, genes in read_gmt(filename_without_gz):
 
@@ -164,7 +164,8 @@ def pathway_commons():
             source=description['datasource'],
             genes=genes,
             url=url,
-            xrefs=description['datasource'] + ':' + url.rsplit(':', 1)[1]
+            xrefs=description['datasource'] + ':' + url.rsplit(':', 1)[1],
+            pathway_commons = 'true'
         )
         rows.append(row)
 
@@ -268,7 +269,7 @@ def wikipathways():
 
     # download WikiPathways
     #url = 'https://zenodo.org/records/15221202/files/wikipathways-20250810-gmt-Homo_sapiens.gmt?download=1'
-    url = 'https://data.wikipathways.org/20251010/gmt/wikipathways-20251010-gmt-Homo_sapiens.gmt'
+    url = 'https://data.wikipathways.org/20260410/gmt/wikipathways-20260410-gmt-Homo_sapiens.gmt'
     filename = pharmebinetutils.download_file(url, out='data/')
 
     gmt_generator = read_gmt(filename)
@@ -300,7 +301,8 @@ def wikipathways():
         'url': wikipath_df['description'],
         'source': 'wikipathways',
         'license': 'CC BY 3.0',
-        'genes': wikipath_df.genes
+        'genes': wikipath_df.genes,
+        'wikipathways': 'true'
     })
     print(wikipath_df.head(2))
 
@@ -315,7 +317,7 @@ Combine the both data from the different source to one big one and generate a cy
 def combine_both_source():
     # Merge resources into a pathway dataframe
     pathway_df = pandas.concat([wikipath_df, pc_df], sort=True)
-    pathway_df = pathway_df[['identifier', 'synonyms', 'url', 'source', 'license', 'genes', 'xrefs']]
+    pathway_df = pathway_df[['identifier', 'synonyms', 'url', 'source', 'license', 'genes', 'xrefs', 'wikipathways','pathway_commons']]
     print(len(pathway_df))
 
     # Remove duplicate pathways
@@ -347,7 +349,10 @@ def combine_both_source():
     query = ''' Create (c1:pathway_multi{'''
     for property in pathway_df_without_duplicated:
         if property not in properties_which_are_list:
-            query += property + ':line.' + property + ', '
+            if (property not in ['wikipathways', 'pathway_commons']):
+                query += property + ':line.' + property + ', '
+            else:
+                query += property + ':toBoolean(line.' + property + '), '
         else:
             query += property + ':split(line.' + property + ',"|"), '
 
@@ -370,7 +375,7 @@ def combine_both_source():
         query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/pathway/output/gene.tsv',
                                                   query)
         file.write(query)
-        query = ' Merge (c1:gene_multi{identifier:line.id}) On Create Set c1.only_one="yes", c1.entrez_id=line.entrez_id '
+        query = ' Merge (c1:gene_multi{identifier:line.id}) On Create Set c1.only_one=True, c1.entrez_id=line.entrez_id '
         query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/pathway/output/gene.tsv',
                                                   query)
         file.write(query)
