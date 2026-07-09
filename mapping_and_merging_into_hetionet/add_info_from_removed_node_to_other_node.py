@@ -106,7 +106,7 @@ def merge_resource_to_node(delete_node, label, merged_node):
     # make all this source to a yes in the merged node
 
     for source in resources_list:
-        add_query = ''' s.%s="yes",''' % (dict_resources[source])
+        add_query = ''' s.%s=True,''' % (dict_resources[source])
         query_start += add_query
 
     # if it comes from CTD also add the ctd url

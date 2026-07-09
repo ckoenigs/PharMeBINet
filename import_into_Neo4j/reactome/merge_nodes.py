@@ -1,6 +1,5 @@
 import sys
 import datetime
-
 sys.path.append("../..")
 import create_connection_to_databases
 
@@ -96,7 +95,7 @@ def merge_resource_to_node(delete_node, label, merged_node, identifier_name, is_
             query = '''Match (s:%s{%s:"%s"}) Set'''
         query = query % (label, identifier_name, merged_node)
         for source in resources_list:
-            add_query = ''' s.%s="yes",''' % (dict_resources[source])
+            add_query = ''' s.%s=True,''' % (dict_resources[source])
             query += add_query
 
         query = query[0:-1] + ''' Return s'''
