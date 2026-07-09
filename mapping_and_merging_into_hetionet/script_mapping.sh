@@ -247,6 +247,15 @@ cd drugbank
 
 cd ..
 
+cd smpdb
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo smpdb
+
+./script_to_mapping_smpdb_2.sh $path_neo4j $path_to_project $password > output_script.txt
+
+cd ..
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo mapping table rxcui drugbank
@@ -312,7 +321,6 @@ cd ttd
 
 cd ..
 
-
 cd chebi
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -347,7 +355,7 @@ echo "Current time: $now"
 echo bindingDB
 cd bindingDB
 
-./script_merge_bindingDB.sh $path_neo4j $path_to_project $password > output_script.txt
+./script_merge_bindingDB.sh $path_neo4j $path_to_project $password $path_to_other_place_of_data > output_script.txt
 
 cd ..
 
@@ -356,7 +364,7 @@ echo "Current time: $now"
 echo pubchem
 cd pubchem
 
-./script_to_get_pubchems_information.sh $path_neo4j $path_to_project $password > output_script.txt
+./script_to_get_pubchems_information.sh $path_neo4j $path_to_project $password $path_to_other_place_of_data #> output_script.txt
 
 cd ..
 
@@ -547,13 +555,22 @@ cd ..
 
 # cd ..
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo gwas
+cd gwas
+
+./script_gwas_mapping_and_merging.sh $path_neo4j $path_to_project $password > output_script.txt
+
+cd ..
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo map symptoms to side effects
 cd connect_equal_edges/
 
-./script_phenotyp_mapping.sh $path_neo4j/ $path_to_project $password $path_to_other_place_of_data > output_script.txt
+./script_phenotyp_mapping.sh $path_neo4j/ $path_to_project $password $path_to_other_place_of_data #> output_script.txt
 
 
 cd ..
@@ -605,15 +622,6 @@ echo qptm
 
 
 ./script_qptm_mapping_and_integration.sh $path_neo4j $path_to_project $password > output_script.txt
-
-cd ..
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo gwas 
-cd gwas
-
-./script_gwas_mapping_and_merging.sh $path_neo4j $path_to_project $password > output_script.txt
 
 cd ..
 
