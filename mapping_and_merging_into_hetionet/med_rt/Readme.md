@@ -18,8 +18,7 @@ Then, the MED-RT chemical ingredients are mapped to the chemical.
         Then, there is a manual mapping.
         Next, is the mapping between the RxNorm identifier to chemical xref RxNorm id.
         The following mapping is between name and chemical name/synonym.
-        If they are still not mapped and have the xref mesh it tries to get a real mesh ID from RxNorm, because some mesh are SCUI IDs and not the normal Mesh ID. With the new mesh ID, it is tried to map to the chemical xref mesh.
-        If this did not work it tried to map with the RxNorm ID from RxNorm to the xrefs of chemical.
+        Then, the mesh id is mapped to UMLS CUI to RxCui with UMLS and mapped to the chemical xrefs.
         The following is mapping with the use of the RxNorm IDs from RxNorm and getting in RxNorm the drugbank ID. With the DrugBank ID, it is mapped to the chemical identifier.
         The xref with RxNorm ID tried to get the names from RxNorm and map the names to the names/synonyms of chemicals.
         Next, the synonyms are mapped to the chemical name/synonyms.
