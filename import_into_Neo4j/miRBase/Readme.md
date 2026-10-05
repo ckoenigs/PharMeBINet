@@ -8,4 +8,4 @@ Schema is below:
 
 ![er_diagram](schema.png)
 
-License: CC0 1.0 with attribution
+License: CC0 1.0

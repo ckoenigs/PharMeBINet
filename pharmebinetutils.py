@@ -71,7 +71,7 @@ dict_source_to_license = {
     'kegg': 'Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed.',
     'markerdb':'Attribution-NonCommercial 4.0 International CC BY-NC 4.0 Deed',
     'medrt':'UMLS license, available at https://uts.nlm.nih.gov/license.html',
-    'mirbase':'CC0 1.0 with attribution',
+    'mirbase':'CC0 1.0',
     'mondo':"CC-BY-SA 3.0",
     'ncbi':"https://www.ncbi.nlm.nih.gov/home/about/policies/",
     'ndfrt':'UMLS license, available at https://uts.nlm.nih.gov/license.html',
