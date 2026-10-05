@@ -177,7 +177,7 @@ def pathway_commons():
     print(pc_df.synonyms.value_counts())
 
     # wikipathways: CC BY 3.0
-    # reactome: CC BY 4.0
+    # reactome: CC0 1.0 (data; illustrations CC BY 4.0)
     # kegg: not open source
     # panther:GNU GPLv3
     # pid:not existing anymore?
@@ -196,7 +196,7 @@ def pathway_commons():
     # dictionary source to license
     source_to_license = {
         'wikipathways': 'CC BY 3.0',
-        'reactome': 'CC BY 4.0',
+        'reactome': 'CC0 1.0',
         'kegg': 'not open source',
         'panther': 'GNU GPLv3',
         'pid': 'not existing anymore?',
