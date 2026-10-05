@@ -56,7 +56,7 @@ dict_source_to_license = {
     'drugbank':'Attribution-NonCommercial 4.0 International',
     'drugcentral':"Creative Commons Attribution-ShareAlike 4.0 International Public License",
     'efo':"Apache-2.0",
-    'fideo':"CC-BY 4.0",
+    'fideo':"CC0 1.0",
     'foodon':'CC BY 4.0',
     'gencc':"CC0 1.0",
     'go':'CC BY 4.0',
