@@ -83,7 +83,7 @@ dict_source_to_license = {
     'ptmd':"ONLY freely available for academic research",
     'pubchem':"https://www.ncbi.nlm.nih.gov/home/about/policies/",
     'qptm':"ONLY freely available for academic research",
-    'reactome':"CC BY-SA 4.0",
+    'reactome':"CC0 1.0",
     'refseq':"https://www.ncbi.nlm.nih.gov/home/about/policies/",
     'rnadisease':"Provide data for non-commercial use, distribution, or reproduction in any medium, only if you properly cite the original work.",
     'rnainter':"Provide data for non-commercial use, distribution, or reproduction in any medium, only if you properly cite the original work.",

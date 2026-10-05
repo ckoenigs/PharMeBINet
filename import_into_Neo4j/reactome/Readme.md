@@ -24,4 +24,4 @@ Then my database is started and the Neo4j-GraphML-Importer (https://github.com/B
 The Reactome node gets a suffix and the indices of Reactome are also integrated with the import tool.
 java -jar Neo4j-GraphML-Importer-v1.0.0.jar -i reactome/pathwaydata.graphml  -e bolt://localhost:7687 --username neo4j --password test
 
-License: Creative Commons Attribution 4.0 International (CC BY 4.0) License 
+License: CC0 1.0
