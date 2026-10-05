@@ -23,8 +23,8 @@ dict_source_to_license = {
     'PubChem': 'https://www.ncbi.nlm.nih.gov/home/about/policies/',
     'LINCS L1000': 'https://lincsproject.org/LINCS/data/release-policy',
     # this have the hetionet license
-    'US Patent': 'CC0',
-    'PDSP Ki': 'CC0',
+    'US Patent': 'CC0 1.0',
+    'PDSP Ki': 'CC0 1.0',
     'DrugCentral': pharmebinetutils.dict_source_to_license['drugcentral'],
     'DrugBank': pharmebinetutils.dict_source_to_license['drugbank'],
     'ChEMBL': 'CC BY-SA 3.0',

@@ -15,4 +15,4 @@ Then my database is started and the Neo4j-GraphML-Importer (https://github.com/B
 The Hetionet node gets a suffix and the indices of Hetionet are also integrated with the import tool.
 java -jar Neo4j-GraphML-Importer-v1.0.0.jar -i data/pathwaydata.graphml  -e bolt://localhost:7687 --username neo4j --password test
 
-License: CC0 1.0 Universal + https://github.com/dhimmel/integrate/blob/d482033bcaa913a976faf4a6ee08497281c739c3/licenses/README.md
+License: CC0 1.0 + https://github.com/dhimmel/integrate/blob/d482033bcaa913a976faf4a6ee08497281c739c3/licenses/README.md

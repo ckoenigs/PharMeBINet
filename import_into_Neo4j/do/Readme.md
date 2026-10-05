@@ -7,6 +7,6 @@ Then the OBO file from the Disease Ontology will be transformed into node and re
 All terms are a node in DO all property-value pairs in OBO are a property in the node except for property key='is_a' and 'relationship'. They are for generating a different kind of relationships of the OBO file.
 Additionally, the cypher queries for the node and the different kinds of relationships are generated. After this, the data will be integrated into Neo4j with the Neo4j cypher-shell.
 
-License: CC0 1.0 Universal
+License: CC0 1.0
 
 DO is automatically updated.

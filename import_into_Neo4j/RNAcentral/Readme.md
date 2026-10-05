@@ -14,6 +14,6 @@ and edge TSV file which connects RNA nodes with RNA subnodes. In the last step, 
 Then the script executes the Neo4j cypher-shell to execute the cypher file to integrate the RNAcentral information.
 
 
-License: Creative Commons Zero license (CC0)
+License: CC0 1.0
 
 This is automatically updated if the files are removed from directory json_homo.

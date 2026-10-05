@@ -11,6 +11,6 @@ The schema is shown here:
 
 ![er_diagram](meta_graph_gencc.png)
 
-License: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
+License: CC0 1.0
 
 This data are automatically updated.

@@ -19,23 +19,23 @@ def create_connection_with_neo4j():
 
 # license  got from hetionet or manually found
 dict_source_to_license= {
-    'Bgee': 'CC0',
+    'Bgee': 'CC0 1.0',
     'TISSUES' : 'CC BY 4.0',
     'DISEASES':'CC BY 4.0',
     'DisGeNET': 'ODbL',
     'GWAS Catalog' : "CC BY 4.0",
     'LINCS L1000':'https://lincsproject.org/LINCS/data/release-policy',
     # this have the hetionet license
-    'DOAF':'CC0',
-    'hetio-dag':'CC0',
-    'II_literature':'CC0',
-    'HI-II-14':'CC0',
-    'II_binary':'CC0',
-    'Lit-BM-13':'CC0',
-    'Yu-11':'CC0',
-    'HI-I-05':'CC0',
-    'Venkatesan-09':'CC0',
-    'ERC':'CC0'
+    'DOAF':'CC0 1.0',
+    'hetio-dag':'CC0 1.0',
+    'II_literature':'CC0 1.0',
+    'HI-II-14':'CC0 1.0',
+    'II_binary':'CC0 1.0',
+    'Lit-BM-13':'CC0 1.0',
+    'Yu-11':'CC0 1.0',
+    'HI-I-05':'CC0 1.0',
+    'Venkatesan-09':'CC0 1.0',
+    'ERC':'CC0 1.0'
 }
 
 

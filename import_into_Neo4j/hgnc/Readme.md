@@ -6,6 +6,6 @@ Version: 2026-07-03
 
 BioDWH2 prepare transformation into GraphML file and with the GraphmML importert the data are add to Neo4j.
 
-License: CC0
+License: CC0 1.0
 
 This data are automatically updated.

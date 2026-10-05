@@ -17,6 +17,7 @@ dict_number_to_number = {
     '2': 'two',
     '4': 'four',
     '8': 'eight',
+    '16': 'sixteen'
 }
 
 

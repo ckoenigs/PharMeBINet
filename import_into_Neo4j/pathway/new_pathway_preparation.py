@@ -203,7 +203,7 @@ def pathway_commons():
         'netpath': 'CC BY 2.5',
         'inoh': 'unknown',
         'humancyc': 'acedemic',
-        'biofactoid':'CC0 1.0 Universal',
+        'biofactoid':'CC0 1.0',
         'pathbank': 'PathBank is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (PathBank) and the original publication. '
     }
 

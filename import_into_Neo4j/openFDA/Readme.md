@@ -19,6 +19,6 @@ This should have the form:
 
 ![er_diagram](picture/openFDA.png)
 
-License:CC0 1.0 Universal
+License:CC0 1.0
 
 This automatically download the latest version.

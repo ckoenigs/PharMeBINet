@@ -97,7 +97,7 @@ def generate_cypher_file_with_queries(properties, file_name, file_name_mapped):
 
         query_new = 'MATCH (n:Gene{identifier:line.gene_id}),(m:Disease{identifier:line.disease_id}) Create (m)<-[:ASSOCIATES_GaD{'
         query_new += ', '.join(
-            news) + ', license:"CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",  gencc:True }]-(n)'
+            news) + ', license:"CC0 1.0",  gencc:True }]-(n)'
         query_new = pharmebinetutils.get_query_import(path_of_directory,
                                                       f'mapping_and_merging_into_hetionet/gencc/{file_name}',
                                                       query_new)

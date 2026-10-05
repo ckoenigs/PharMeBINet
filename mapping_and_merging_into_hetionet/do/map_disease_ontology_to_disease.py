@@ -11,7 +11,7 @@ import pharmebinetutils
 output = open('output_fusion.txt', 'w', encoding='utf-8')
 
 # disease ontology license
-license = 'CC0 1.0 Universal'
+license = 'CC0 1.0'
 
 '''
 create a connection with neo4j
