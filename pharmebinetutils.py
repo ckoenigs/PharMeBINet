@@ -8,10 +8,13 @@ import pharmebinetutils
 import os
 import datetime
 import shutil
-import csv
 import urllib.request
 from urllib.error import HTTPError
 from urllib.parse import urlparse
+import struct
+import time
+#import playwright
+from playwright.sync_api import sync_playwright
 
 USE_VERSION_5 = True
 
@@ -34,67 +37,123 @@ get_all_properties_of_on_label = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys
 UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
 RETURN allfields order by allfields;'''
 
-request_headers = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) ' +
-                  'Chrome/35.0.1916.47 Safari/537.36'
-}
 
 dict_source_to_license = {
     'adrecs': 'CC BY-NC-SA 4.0',
     'aeolus': 'CC0 1.0',
-    'bindingdb':'CC BY 3.0 US Deed',
+    'bindingdb':'CC BY 3.0 + CC BY-SA 3.0',
     'biogrid':'The MIT License',
     'chebi':'CC BY 4.0',
     'cl':'CC BY 4.0',
     'clinvar':'https://www.ncbi.nlm.nih.gov/home/about/policies/',
     'ctd':"© 2002–2012 MDI Biological Laboratory. © 2012–2026 NC State University. All rights reserved.",
     'dbsnp':'https://www.ncbi.nlm.nih.gov/home/about/policies/',
-    'ddinter':'Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International',
-    'diseases': 'CC BY 4.0 Deed',
-    'disgenet': "Attribution-NonCommercial-ShareAlike 4.0 International License",
+    'ddinter':'CC BY-NC-SA 4.0',
+    'diseases': 'CC BY 4.0',
+    'disgenet': "CC BY-NC-SA 4.0",
     'do': 'CC0 1.0',
-    'drugbank':'Attribution-NonCommercial 4.0 International',
-    'drugcentral':"Creative Commons Attribution-ShareAlike 4.0 International Public License",
+    'drugbank':'CC BY-NC 4.0',
+    'drugcentral':"CC BY-SA 4.0",
     'efo':"Apache-2.0",
     'fideo':"CC0 1.0",
     'foodon':'CC BY 4.0',
     'gencc':"CC0 1.0",
     'go':'CC BY 4.0',
-    'gwas':"CC BY-NC 4.0 Deed",
+    'gwas':"EBI Terms of Use + CC0", #  https://www.ebi.ac.uk/about/terms-of-use/
     'hetionet':'CC0 1.0',
     'hgnc':'CC0 1.0',
-    'hippie':"free to use for academic purposes",
-    'hmdb':'Creative Commons (CC) Attribution-NonCommercial (NC) 4.0 International Licensing',
-    'hpo':'This service/product uses the Human Phenotype Ontology (v2026-02-16). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.',
-    'iid':"free to use for academic purposes",
-    'iptmnet':"CC BY-NC-SA 4.0 Deed",
-    'kegg': 'Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed.',
-    'markerdb':'Attribution-NonCommercial 4.0 International CC BY-NC 4.0 Deed',
-    'medrt':'US government work (VHA), published without license terms',
+    'hippie':"free for academic purposes", # Hippie itself is open source and not protected by any proprietary license. There are some source databases that had some restrictions on commercial usage etc. I think for academic purposes there aren't any restrictions though.
+    'hmdb':'CC BY-NC 4.0',
+    'hpo':'This service/product uses the Human Phenotype Ontology (v2026-02-16). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', #The HPO vocabularies, annotation files, tools and documentation are freely available. The HPO is copyrighted to protect the integrity of the vocabularies, which means that changes to the HPO vocabularies need to be done by HPO developers. However, anyone can download the HPO and use the ontologies or other HPO files under three conditions: That the Human Phenotype Ontology Consortium is acknowledged and cited properly. That any HPO Consortium file(s) displayed publicly include the date(s) and/or version number(s) of the relevant HPO file(s). That neither the content of the HPO file(s) nor the logical relationships embedded within the HPO file(s) be altered in any way. (Content additions and modifications have to be suggested using our issue tracker.) We suggest that you follow standard scientific citation practice if you use the HPO in publications. Users of the HPO should add the following statement to their online presence. This service/product uses the Human Phenotype Ontology (version information). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.
+    'iid':"free for academic purposes", # for academic purposes - it is free to use. For commercial, we can license it through UHN.
+    'iptmnet':"CC BY-NC-SA 4.0",
+    'kegg': 'Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed.', # Academic users may freely use the KEGG website athttps://www.kegg.jp/or its mirror site at GenomeNethttps://www.genome.jp/kegg/. Academic users who utilize KEGG for providing services are requested to obtain an academic service provider license, which is included in theKEGG FTP academic subscription.
+    'markerdb':'CC BY-NC 4.0',
+    'medrt':'US government work (VHA), UMLS License Level 0',
     'mirbase':'CC0 1.0',
-    'mondo':"CC-BY-SA 3.0",
+    'mondo':"CC BY 4.0",
     'ncbi':"https://www.ncbi.nlm.nih.gov/home/about/policies/",
-    'ndfrt':'US government work (VHA), published without license terms',
+    'ndfrt':'US government work (VHA), UMLS License Level 0',
     'omim':'https://www.omim.org/help/agreement',
     'openfda':'',
     'pathwaycommons':' All of the data provided by Pathway Commons is free! In particular, Pathway Commons distributes pathway information with the intellectual property restrictions of the source database; Only databases that are freely available for academics are included. All of the software that we provide is open-source.',
     'pharmgkb':"CC BY-SA 4.0",
     'pharmebinet':"CC0 1.0",
-    'ptmd':"ONLY freely available for academic research",
+    'ptmd':"Non-Commercial, Requires Attribution", # found only a license in ptmd v 1 so I think this is the same for 2
     'pubchem':"https://www.ncbi.nlm.nih.gov/home/about/policies/",
-    'qptm':"ONLY freely available for academic research",
+    'qptm':"Non-Commercial, Requires Attribution",
     'reactome':"CC0 1.0",
     'refseq':"https://www.ncbi.nlm.nih.gov/home/about/policies/",
-    'rnadisease':"Provide data for non-commercial use, distribution, or reproduction in any medium, only if you properly cite the original work.",
-    'rnainter':"Provide data for non-commercial use, distribution, or reproduction in any medium, only if you properly cite the original work.",
+    'rnadisease':"Non-Commercial, Requires Attribution",
+    'rnainter':"Non-Commercial, Requires Attribution",
     'sider':"CC BY-NC-SA 4.0",
-    'smpdb': "SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication",
-    'ttd':"No license",
+    'smpdb': "Non-Commercial, Requires Attribution",
+    'ttd':"Requires Attribution", # No license is required for using TTD data, just citing TTD when publishing your work.
     'uberon':"CC BY 3.0",
     'uniprot':'CC BY 4.0',
     'wikipathways': 'CC BY 3.0'
 
 }
+
+
+request_headers = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) ' +
+                  'Chrome/124.0.0.0 Safari/537.36',
+}
+
+
+request_headers_test = {
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+        "accept-language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
+        "cache-control": "max-age=0",
+        "sec-ch-ua": '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "none",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+ }
+
+def get_website_source(url: str) -> str:
+    request = urllib.request.Request(url, headers=request_headers)
+    with urllib.request.urlopen(request) as response:
+        return response.read().decode('utf-8')
+
+def get_website_source_with_playwright(url: str) -> str:
+    with sync_playwright() as p:
+        # Launch a headless browser (set headless=False if you want to watch it work)
+        browser = p.chromium.launch(headless=True, args=["--disable-gpu"])
+
+        # Create a clean browser context
+        context = browser.new_context(
+            viewport={"width": 1920, "height": 1080},
+            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+        )
+
+        page = context.new_page()
+
+        try:
+            print(f"Opening page: {url}")
+            page.goto(url, wait_until="domcontentloaded")
+
+            # Give Cloudflare a few seconds to run its JavaScript and redirect you
+            print("Waiting for Cloudflare verification to clear...")
+            time.sleep(6)
+
+            # Extract the fully rendered HTML source code
+            html_content = page.content()
+
+            return html_content
+
+        except Exception as e:
+            print(f"Playwright encountered an error: {e}")
+            return None
+        finally:
+            browser.close()
+
 
 def download_file(url: str, out: str = './', file_name: str or None = None, retries: int = 10, silent: bool = False,
                   force_download: bool = True) -> str or False:
@@ -150,6 +209,76 @@ def download_file(url: str, out: str = './', file_name: str or None = None, retr
             if not silent:
                 print('Download failed, retry %s/%s' % (counter_tries, retries))
 
+
+def get_gzip_modified_date(url):
+    # Set a header to look like a standard request
+    req = urllib.request.Request(url, headers=request_headers)
+
+    # Use HTTP Range header to fetch only the first 10 bytes
+    req.add_header("Range", "bytes=0-9")
+
+    try:
+        with urllib.request.urlopen(req) as response:
+            header_bytes = response.read(10)
+
+            # Ensure we got enough bytes and the file has the correct magic number
+            if len(header_bytes) < 10 or header_bytes[0:2] != b"\x1f\x8b":
+                return "Error: Not a valid gzip header or insufficient data."
+
+            # Extract the 4-byte MTIME (bytes 4-7) as a little-endian unsigned int
+            mtime_bytes = header_bytes[4:8]
+            timestamp = struct.unpack("<I", mtime_bytes)[0]
+
+            # A timestamp of 0 means no modification time was set during compression
+            if timestamp == 0:
+                return "No modification time stored in this gzip file."
+
+            # Convert Unix timestamp to a readable datetime object
+            return datetime.datetime.fromtimestamp(timestamp)
+
+    except Exception as e:
+        return f"Request failed: {e}"
+
+
+def parse_msdos_datetime(time_int, date_int):
+    # Extract time components from 16-bit integer
+    second = (time_int & 0x1F) * 2
+    minute = (time_int >> 5) & 0x3F
+    hour = (time_int >> 11) & 0x1F
+
+    # Extract date components from 16-bit integer
+    day = date_int & 0x1F
+    month = (date_int >> 5) & 0x0F
+    year = ((date_int >> 9) & 0x7F) + 1980
+
+    # Handle edge cases (e.g., MS-DOS empty timestamps) safely
+    try:
+        return datetime.datetime(year, month, day, hour, minute, max(0, min(second, 59)))
+    except ValueError:
+        return None
+
+def peek_zip_modification_datetime(url):
+    req = urllib.request.Request(url, headers=request_headers)
+    req.add_header("Range", "bytes=0-13")  # Fetch only the first 14 bytes
+
+    try:
+        with urllib.request.urlopen(req) as response:
+            data = response.read(14)
+
+            if len(data) < 14 or data[0:4] != b"PK\x03\x04":
+                return "Error: Not a valid ZIP file header."
+
+            # Unpack bytes 10-11 (time) and 12-13 (date) as Little-Endian unsigned shorts
+            time_bytes = data[10:12]
+            date_bytes = data[12:14]
+
+            time_int = struct.unpack("<H", time_bytes)[0]
+            date_int = struct.unpack("<H", date_bytes)[0]
+
+            return parse_msdos_datetime(time_int, date_int)
+
+    except Exception as e:
+        return f"Request failed: {e}"
 
 def print_timestamp():
     print(datetime.datetime.now())
