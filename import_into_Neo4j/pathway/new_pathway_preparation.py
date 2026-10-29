@@ -176,18 +176,6 @@ def pathway_commons():
     print(pc_df.source.value_counts())
     print(pc_df.synonyms.value_counts())
 
-    # wikipathways: CC BY 3.0
-    # reactome: CC0 1.0 (data; illustrations CC BY 4.0)
-    # kegg: not open source
-    # panther:GNU GPLv3
-    # pid:not existing anymore?
-    # netpath:CC BY 2.5
-    # inoh:unknown
-    # humancyc: not open source
-    # biofactoid: CC0 1.0 Legal Code
-    # pathbank: PathBank is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (PathBank) and the original publication.
-
-
     # filter only the open source sources
     # 'netpath', is currently not available
     keep = {'wikipathways', 'reactome', 'panther',  'pathbank','biofactoid'}
@@ -204,7 +192,7 @@ def pathway_commons():
         'inoh': 'unknown',
         'humancyc': 'acedemic',
         'biofactoid':'CC0 1.0',
-        'pathbank': 'PathBank is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (PathBank) and the original publication. '
+        'pathbank': 'CC-BY-NC 4.0' # from last publication
     }
 
     # add license to the different sources

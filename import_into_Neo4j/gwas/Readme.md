@@ -9,6 +9,6 @@ Schema is below:
 
 ![er_diagram](schema.png)
 
-License:https://www.ebi.ac.uk/about/terms-of-use/
+License:https://www.ebi.ac.uk/about/terms-of-use/ + CC0
 
 This data are automatically updated.

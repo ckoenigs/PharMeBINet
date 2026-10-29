@@ -8,4 +8,4 @@ Because these files have the same information as the other files but after the n
 
 Like in here:
 
-License: US government work (VHA), published without license terms
+License: US government work (VHA), UMLS License Level 0

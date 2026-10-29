@@ -11,7 +11,7 @@ Additionally, a cypher file is generated o remove all not connected NDF-RT nodes
 
 All data are integrated and removed into Neo4j cypher-shell and cypher files.
 
-License: US government work (VHA), published without license terms
+License: US government work (VHA), UMLS License Level 0
 
 Can not be updated anymore.
 

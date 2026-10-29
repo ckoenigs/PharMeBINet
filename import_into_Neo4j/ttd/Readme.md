@@ -8,6 +8,6 @@ Schema is below:
 
 ![er_diagram](schema.png)
 
-License: no license
+License: Requires Attribution
 
 This updated automatically.
