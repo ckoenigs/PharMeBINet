@@ -18,6 +18,11 @@ neo4j_bolt=$5
 #path other data source space
 path_data_source=$6
 
+# upgrade
+upgrade=$7
+
+exist_workspace=1
+
 # prepare directories
 if [ ! -d output ]; then
   mkdir output
@@ -40,10 +45,16 @@ then
     java -jar ../$biodwh2.jar --add-data-source $path_data_source/drugcentral DrugCentral
     # if not all is exported then the config need to be changed
     # dataSourceProperties: "DrugCentral" : { "forceExport" : false, "skipLINCSSignatures" : true, "skipFAERSReports" : true, "skipDrugLabelFullTexts" : true }
+    $exist_workspace=0
 
 fi
 
-java -jar ../$biodwh2.jar -u $path_data_source/drugcentral
+
+if [[ $exist_workspace -eq 0 || "${upgrade,,}" == "true"  ]]; then
+  echo possible automatically upgrade
+  java -jar ../$biodwh2.jar -u $path_data_source/drugcentral
+fi
+
 
 echo $import_tool
 

@@ -15,6 +15,11 @@ password=$4
 #neo4j_bolt
 neo4j_bolt=$5
 
+# upgrade
+upgrade=$6
+
+exist_workspace=1
+
 # prepare directories
 if [ ! -d output ]; then
   mkdir output
@@ -31,10 +36,13 @@ then
     java -jar ../$biodwh2.jar -c .
 
     java -jar ../$biodwh2.jar --add-data-source . DISEASES
-
+    $exist_workspace=0
 fi
 
-java -jar ../$biodwh2.jar -u .
+if [[ $exist_workspace -eq 0 || "${upgrade,,}" == "true"  ]]; then
+  echo possible automatically upgrade
+  java -jar ../$biodwh2.jar -u .
+fi
 
 echo $import_tool
 

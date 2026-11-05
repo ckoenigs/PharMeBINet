@@ -15,6 +15,11 @@ password=$4
 #neo4j_bolt
 neo4j_bolt=$5
 
+# upgrade
+upgrade=$6
+
+exist_workspace=1
+
 # prepare directories
 if [ ! -d output ]; then
   mkdir output
@@ -39,9 +44,13 @@ then
     echo $url 
 
     java -jar ../$biodwh2.jar --set-config . "dataSourceProperties.qPTM.downloadUrl" $url
+    $exist_workspace=0
 fi
 
-java -jar ../$biodwh2.jar -u .
+if [[ $exist_workspace -eq 0 || "${upgrade,,}" == "true"  ]]; then
+  echo possible automatically upgrade
+  java -jar ../$biodwh2.jar -u .
+fi
 
 echo $import_tool
 

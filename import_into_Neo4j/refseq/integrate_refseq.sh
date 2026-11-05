@@ -18,6 +18,11 @@ path_data_source=$5
 #neo4j_bolt
 neo4j_bolt=$6
 
+# upgrade
+upgrade=$7
+
+exist_workspace=1
+
 
 # prepare directories
 if [ ! -d output ]; then
@@ -40,10 +45,16 @@ then
     java -jar ../$biodwh2.jar -c $path_data_source/refseq
 
     java -jar ../$biodwh2.jar --add-data-source $path_data_source/refseq RefSeq
+    $exist_workspace=0
 
 fi
 
-java -jar ../$biodwh2.jar -u $path_data_source/refseq
+if [[ $exist_workspace -eq 0 || "${upgrade,,}" == "true"  ]]; then
+  echo possible automatically upgrade
+  java -jar ../$biodwh2.jar -u $path_data_source/refseq
+fi
+
+
 
 echo $import_tool
 
