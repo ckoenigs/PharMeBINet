@@ -186,7 +186,7 @@ def pathway_commons():
         'wikipathways': 'CC BY 3.0',
         'reactome': 'CC0 1.0',
         'kegg': 'not open source',
-        'panther': 'GNU GPLv3',
+        'panther': 'CC BY 4.0',
         'pid': 'not existing anymore?',
         'netpath': 'CC BY 2.5',
         'inoh': 'unknown',
