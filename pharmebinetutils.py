@@ -76,7 +76,7 @@ dict_source_to_license = {
     'ndfrt':'US government work (VHA), UMLS License Level 0',
     'omim':'https://www.omim.org/help/agreement',
     'openfda':'',
-    'pathwaycommons':' All of the data provided by Pathway Commons is free! In particular, Pathway Commons distributes pathway information with the intellectual property restrictions of the source database; Only databases that are freely available for academics are included. All of the software that we provide is open-source.',
+    'pathwaycommons':'CC-BY-NC 4.0', # "All of the data provided by Pathway Commons is free! In particular, Pathway Commons distributes pathway information with the intellectual property restrictions of the source database; Only databases that are freely available for academics are included." Based on used sources and highest license
     'pharmgkb':"CC BY-SA 4.0",
     'pharmebinet':"CC0 1.0",
     'ptmd':"Non-Commercial, Requires Attribution", # found only a license in ptmd v 1 so I think this is the same for 2
