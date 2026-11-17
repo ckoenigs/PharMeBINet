@@ -192,7 +192,7 @@ def pathway_commons():
         'inoh': 'unknown',
         'humancyc': 'acedemic',
         'biofactoid':'CC0 1.0',
-        'pathbank': 'CC-BY-NC 4.0' # from last publication
+        'pathbank': 'CC BY-NC 4.0' # from last publication
     }
 
     # add license to the different sources

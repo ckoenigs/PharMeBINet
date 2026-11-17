@@ -59,7 +59,7 @@ dict_source_to_license = {
     'foodon':'CC BY 4.0',
     'gencc':"CC0 1.0",
     'go':'CC BY 4.0',
-    'gwas':"EBI Terms of Use + CC0", #  https://www.ebi.ac.uk/about/terms-of-use/
+    'gwas':"EBI Terms of Use + CC0 1.0", #  https://www.ebi.ac.uk/about/terms-of-use/
     'hetionet':'CC0 1.0',
     'hgnc':'CC0 1.0',
     'hippie':"free for academic purposes", # Hippie itself is open source and not protected by any proprietary license. There are some source databases that had some restrictions on commercial usage etc. I think for academic purposes there aren't any restrictions though.
@@ -76,7 +76,7 @@ dict_source_to_license = {
     'ndfrt':'US government work (VHA), UMLS License Level 0',
     'omim':'https://www.omim.org/help/agreement',
     'openfda':'',
-    'pathwaycommons':'CC-BY-NC 4.0', # "All of the data provided by Pathway Commons is free! In particular, Pathway Commons distributes pathway information with the intellectual property restrictions of the source database; Only databases that are freely available for academics are included." Based on used sources and highest license
+    'pathwaycommons':'CC BY-NC 4.0', # "All of the data provided by Pathway Commons is free! In particular, Pathway Commons distributes pathway information with the intellectual property restrictions of the source database; Only databases that are freely available for academics are included." Based on used sources and highest license
     'pharmgkb':"CC BY-SA 4.0",
     'pharmebinet':"CC0 1.0",
     'ptmd':"Non-Commercial, Requires Attribution", # found only a license in ptmd v 1 so I think this is the same for 2
