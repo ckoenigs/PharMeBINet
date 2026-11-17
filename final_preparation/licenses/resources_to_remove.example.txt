@@ -1,0 +1,51 @@
+# Example list for remove_resources.py: resources whose license forbids commercial use or redistribution, or is
+# incompatible with releasing the remaining database under CC BY-SA 4.0.
+# One resource per line, "*" is a wildcard, everything after "#" is ignored.
+# Licenses are taken from resource_to_license.tsv; adapt the list to the intended use before running.
+
+# CC BY-NC-SA 4.0
+ADReCS
+DDinter
+DisGeNet
+iPTMnet
+SIDER
+
+# CC BY-NC 4.0
+DrugBank
+HMDB
+MarkerDB
+Pathbank
+Pathway Commons
+
+# Non-Commercial, Requires Attribution
+PTMD
+qPTM
+RNADisease
+RNAInter
+SMPDB
+Hetionet>DrugBank*
+
+# free for academic purposes
+HIPPIE
+IID
+
+# WHO ATC terms (via KEGG): copying and distribution for commercial purposes is not allowed
+KEGG
+
+# No license (all rights reserved)
+Hetionet>DOAF
+
+# No license, permission was granted only to Hetionet
+Hetionet>ERC
+Hetionet>II_binary
+Hetionet>II_literature
+
+# ODbL 1.0: its share-alike clause is incompatible with CC BY-SA
+Hetionet>DisGeNET
+
+# OMIM use agreement restricts redistribution
+OMIM
+
+# Check these terms:
+CTD
+Hetionet>LINCS L1000

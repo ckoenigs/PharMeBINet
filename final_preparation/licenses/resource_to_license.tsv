@@ -1,0 +1,92 @@
+resource	licenses	note
+ADReCS	CC BY-NC-SA 4.0	pharmebinetutils.dict_source_to_license
+AEOLUS	CC0 1.0	pharmebinetutils.dict_source_to_license
+BindingDB	CC BY 3.0 + CC BY-SA 3.0	pharmebinetutils.dict_source_to_license
+Biofactoid	CC0 1.0	import_into_Neo4j/pathway/new_pathway_preparation.py
+BioGRID	The MIT License	pharmebinetutils.dict_source_to_license
+Cell Ontology	CC BY 4.0	pharmebinetutils.dict_source_to_license ('cl')
+ChEBI	CC BY 4.0	pharmebinetutils.dict_source_to_license
+ClinVar	https://www.ncbi.nlm.nih.gov/home/about/policies/	pharmebinetutils.dict_source_to_license
+CTD	© 2002–2012 MDI Biological Laboratory. © 2012–2026 NC State University. All rights reserved.	pharmebinetutils.dict_source_to_license
+dbSNP	https://www.ncbi.nlm.nih.gov/home/about/policies/	pharmebinetutils.dict_source_to_license
+DDinter	CC BY-NC-SA 4.0	pharmebinetutils.dict_source_to_license
+Disease Ontology	CC0 1.0	pharmebinetutils.dict_source_to_license ('do')
+DISEASES	CC BY 4.0	pharmebinetutils.dict_source_to_license; same in import_into_Neo4j/diseases/Readme.md (main README table says CC BY-SA 4.0)
+DisGeNet	CC BY-NC-SA 4.0	pharmebinetutils.dict_source_to_license
+DrugBank	CC BY-NC 4.0	pharmebinetutils.dict_source_to_license
+DrugCentral	CC BY-SA 4.0	pharmebinetutils.dict_source_to_license
+EFO	Apache-2.0	pharmebinetutils.dict_source_to_license
+FIDEO	CC0 1.0	pharmebinetutils.dict_source_to_license
+FoodOn	CC BY 4.0	pharmebinetutils.dict_source_to_license
+GenCC	CC0 1.0	pharmebinetutils.dict_source_to_license
+GO	CC BY 4.0	pharmebinetutils.dict_source_to_license
+GWAS Catalog	EBI Terms of Use + CC0 1.0	pharmebinetutils.dict_source_to_license
+Hetionet	CC0 1.0	pharmebinetutils.dict_source_to_license
+Hetionet>Bgee	CC0 1.0	bgee.org: data released under CC0 (dhimmel/integrate licenses table (d482033): no license found)
+Hetionet>BindingDB	CC BY 3.0 + CC BY-SA 3.0	dhimmel/integrate licenses table (d482033): mixed CC BY 3.0 & CC BY-SA 3.0
+Hetionet>ChEMBL	CC BY-SA 3.0	not in dhimmel/integrate licenses table (d482033); ChEMBL license (as in hetionet/add_edges_to_compound.py)
+Hetionet>DISEASES	CC BY 4.0	dhimmel/integrate licenses table (d482033)
+Hetionet>DisGeNET	ODbL 1.0	dhimmel/integrate licenses table (d482033): ODbL
+Hetionet>DOAF	No license (all rights reserved)	Hetionet eLife 2017 Table 4: no license; permission request inconclusive (think-lab.github.io/d/107); no data license found (PLoS ONE CC BY covers only the article)
+Hetionet>DrugBank (carrier)	Non-Commercial, Requires Attribution	dhimmel/integrate licenses table (d482033): custom (DrugBank 4.2, commercial use requires permission)
+Hetionet>DrugBank (enzyme)	Non-Commercial, Requires Attribution	dhimmel/integrate licenses table (d482033): custom (DrugBank 4.2, commercial use requires permission)
+Hetionet>DrugBank (target)	Non-Commercial, Requires Attribution	dhimmel/integrate licenses table (d482033): custom (DrugBank 4.2, commercial use requires permission)
+Hetionet>DrugBank (transporter)	Non-Commercial, Requires Attribution	dhimmel/integrate licenses table (d482033): custom (DrugBank 4.2, commercial use requires permission)
+Hetionet>DrugCentral (ChEMBL)	CC BY 4.0	dhimmel/integrate licenses table (d482033): DrugCentral CC BY 4.0
+Hetionet>DrugCentral (IUPHAR)	CC BY 4.0	dhimmel/integrate licenses table (d482033): DrugCentral CC BY 4.0
+Hetionet>DrugCentral (KEGG DRUG)	CC BY 4.0	dhimmel/integrate licenses table (d482033): DrugCentral CC BY 4.0
+Hetionet>DrugCentral (label)	CC BY 4.0	dhimmel/integrate licenses table (d482033): DrugCentral CC BY 4.0
+Hetionet>DrugCentral (literature)	CC BY 4.0	dhimmel/integrate licenses table (d482033): DrugCentral CC BY 4.0
+Hetionet>ERC	Permission granted to Hetionet (no license)	Hetionet eLife 2017 Table 4: no license; authors granted Hetionet permission but may not be the rights holder (think-lab.github.io/d/107)
+Hetionet>GWAS Catalog	https://www.ebi.ac.uk/about/terms-of-use/	dhimmel/integrate licenses table (d482033): custom (EBI terms of use)
+Hetionet>hetio-dag	CC0 1.0	Hetionet eLife 2017 Table 4: no license; created by the Hetionet authors (Himmelstein & Baranzini 2015), no action required (think-lab.github.io/d/107); Hetionet own content CC0 1.0
+Hetionet>HI-I-05	CC BY 4.0	Hetionet eLife 2017 Table 4: no license, no response to permission request (think-lab.github.io/d/107); Human Interactome Database data now CC BY 4.0 (interactome-atlas.org terms of use)
+Hetionet>HI-II-14	CC BY 4.0	Hetionet eLife 2017 Table 4: no license, no response to permission request (think-lab.github.io/d/107); Human Interactome Database data now CC BY 4.0 (interactome-atlas.org terms of use)
+Hetionet>II_binary	Permission granted to Hetionet (no license)	Hetionet eLife 2017 Table 4: no license; Incomplete Interactome (Menche et al. 2015, Science supplement), author granted permission informally (think-lab.github.io/d/107, think-lab.github.io/d/111)
+Hetionet>II_literature	Permission granted to Hetionet (no license)	Hetionet eLife 2017 Table 4: no license; Incomplete Interactome (Menche et al. 2015, Science supplement), author granted permission informally (think-lab.github.io/d/107, think-lab.github.io/d/111)
+Hetionet>LINCS L1000	https://lincsproject.org/LINCS/data/release-policy	dhimmel/integrate licenses table (d482033): custom (LINCS L1000)
+Hetionet>Lit-BM-13	CC BY 4.0	Hetionet eLife 2017 Table 4: no license, no response to permission request (think-lab.github.io/d/107); Human Interactome Database data now CC BY 4.0 (interactome-atlas.org terms of use)
+Hetionet>MEDLINE cooccurrence	https://www.nlm.nih.gov/databases/journal.html	dhimmel/integrate licenses table (d482033): custom (MEDLINE)
+Hetionet>MeSH	https://www.nlm.nih.gov/mesh/termscon.html	dhimmel/integrate licenses table (d482033): custom (MeSH)
+Hetionet>PDSP Ki	Public Domain	"PDSP Ki database described by PDSP as ""a unique resource in the public domain"" (pdsp.unc.edu, NIMH funded)"
+Hetionet>PharmacotherapyDB	CC0 1.0	Hetionet project catalog, released as CC0 1.0 (figshare 10.6084/m9.figshare.3103054)
+Hetionet>PubChem	https://www.ncbi.nlm.nih.gov/home/about/policies/	not in dhimmel/integrate licenses table (d482033); NCBI policies as for PubChem
+Hetionet>STARGEO	CC0 1.0	Hetionet eLife 2017 Table 4: no license; listed by Hetionet as created by its authors, no action required (think-lab.github.io/d/107); Hetionet edges carry CC0 1.0
+Hetionet>TISSUES	CC BY 4.0	dhimmel/integrate licenses table (d482033)
+Hetionet>US Patent	Public Domain	USPTO: text and drawings of a patent are typically not subject to copyright (37 CFR 1.71)
+Hetionet>Venkatesan-09	CC BY 4.0	Hetionet eLife 2017 Table 4: no license, no response to permission request (think-lab.github.io/d/107); Human Interactome Database data now CC BY 4.0 (interactome-atlas.org terms of use)
+Hetionet>Yu-11	CC BY 4.0	Hetionet eLife 2017 Table 4: no license, no response to permission request (think-lab.github.io/d/107); Human Interactome Database data now CC BY 4.0 (interactome-atlas.org terms of use)
+HGNC	CC0 1.0	pharmebinetutils.dict_source_to_license
+HIPPIE	free for academic purposes	pharmebinetutils.dict_source_to_license
+HMDB	CC BY-NC 4.0	pharmebinetutils.dict_source_to_license; same in import_into_Neo4j/hmdb/Readme.md (main README table says CC BY-NC-SA 4.0)
+HPO	This service/product uses the Human Phenotype Ontology (v2026-02-16). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.	pharmebinetutils.dict_source_to_license
+IID	free for academic purposes	pharmebinetutils.dict_source_to_license
+iPTMnet	CC BY-NC-SA 4.0	pharmebinetutils.dict_source_to_license
+KEGG	Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed.	pharmebinetutils.dict_source_to_license (ATC from KEGG)
+MarkerDB	CC BY-NC 4.0	pharmebinetutils.dict_source_to_license; same in import_into_Neo4j/markerdb/Readme.md (main README table says CC BY-NC-SA 4.0)
+MED-RT	US government work (VHA), UMLS License Level 0	pharmebinetutils.dict_source_to_license
+miRBase	CC0 1.0	pharmebinetutils.dict_source_to_license
+MonDO	CC BY 4.0	pharmebinetutils.dict_source_to_license
+NCBI	https://www.ncbi.nlm.nih.gov/home/about/policies/	pharmebinetutils.dict_source_to_license
+NDF-RT	US government work (VHA), UMLS License Level 0	pharmebinetutils.dict_source_to_license
+OMIM	https://www.omim.org/help/agreement	pharmebinetutils.dict_source_to_license
+OpenBabel		tool used for computed chemical similarity, no license added
+Panther	CC BY 4.0	import_into_Neo4j/pathway/new_pathway_preparation.py
+Pathbank	CC BY-NC 4.0	import_into_Neo4j/pathway/new_pathway_preparation.py
+Pathway Commons	CC BY-NC 4.0	pharmebinetutils.dict_source_to_license
+PharMeBINet	CC0 1.0	pharmebinetutils.dict_source_to_license; content generated by PharMeBINet
+PharmGKB	CC BY-SA 4.0	pharmebinetutils.dict_source_to_license
+PTMD	Non-Commercial, Requires Attribution	pharmebinetutils.dict_source_to_license
+PubChem	https://www.ncbi.nlm.nih.gov/home/about/policies/	pharmebinetutils.dict_source_to_license
+qPTM	Non-Commercial, Requires Attribution	pharmebinetutils.dict_source_to_license
+rdKit		tool used for computed chemical similarity, no license added
+Reactome	CC0 1.0	pharmebinetutils.dict_source_to_license
+RefSeq	https://www.ncbi.nlm.nih.gov/home/about/policies/	pharmebinetutils.dict_source_to_license
+RNADisease	Non-Commercial, Requires Attribution	pharmebinetutils.dict_source_to_license
+RNAInter	Non-Commercial, Requires Attribution	pharmebinetutils.dict_source_to_license
+SIDER	CC BY-NC-SA 4.0	pharmebinetutils.dict_source_to_license
+SMPDB	Non-Commercial, Requires Attribution	pharmebinetutils.dict_source_to_license
+TTD	Requires Attribution	pharmebinetutils.dict_source_to_license
+UBERON	CC BY 3.0	pharmebinetutils.dict_source_to_license
+UniProt	CC BY 4.0	pharmebinetutils.dict_source_to_license
+Wikipathways	CC BY 3.0	pharmebinetutils.dict_source_to_license
